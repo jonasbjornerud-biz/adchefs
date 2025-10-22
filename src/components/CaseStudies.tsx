@@ -27,7 +27,7 @@ const caseStudies = [
 
 const CaseStudies = () => {
   return (
-    <section id="case-studies" className="py-24 bg-muted/30">
+    <section id="case-studies" className="py-24 bg-background/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Results That Matter</h2>
@@ -40,7 +40,7 @@ const CaseStudies = () => {
           {caseStudies.map((study, index) => (
             <Card 
               key={index}
-              className="border-2 hover:border-accent transition-all duration-300 hover:shadow-lg animate-slide-up"
+              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:border-accent/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent/10 animate-slide-up"
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <CardContent className="p-8">

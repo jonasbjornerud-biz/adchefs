@@ -8,40 +8,40 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 7%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
     --accent: 14 100% 61%;
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
     --ring: 14 100% 61%;
 
     --radius: 0.75rem;
 
-    /* Purple gradient colors */
-    --gradient-violet: 266 100% 50%;
-    --gradient-lavender: 270 58% 82%;
-    --gradient-pink: 329 100% 85%;
+    /* Lovable gradient colors - blue to pink */
+    --gradient-blue-top: 220 70% 50%;
+    --gradient-blue-mid: 220 80% 60%;
+    --gradient-pink-bottom: 350 100% 70%;
     
     /* Brand colors */
     --brand-orange: 14 100% 61%;
@@ -97,7 +97,7 @@ All colors MUST be HSL.
 
 @layer utilities {
   .gradient-hero {
-    background: #0a0118;
+    background: #0f1419;
     position: relative;
     overflow: hidden;
   }
@@ -107,25 +107,25 @@ All colors MUST be HSL.
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--gradient-violet) / 0.4), transparent 50%),
-      radial-gradient(ellipse 60% 50% at 50% 50%, hsl(var(--gradient-lavender) / 0.3), transparent 50%),
-      radial-gradient(ellipse 100% 60% at 50% 100%, hsl(var(--gradient-pink) / 0.2), transparent 60%);
-    animation: gradientShift 20s ease-in-out infinite;
+      radial-gradient(ellipse 100% 40% at 50% -10%, rgba(41, 98, 255, 0.15), transparent 60%),
+      radial-gradient(ellipse 120% 80% at 50% 50%, rgba(66, 133, 244, 0.25), transparent 70%),
+      radial-gradient(ellipse 140% 100% at 50% 100%, rgba(255, 107, 129, 0.2), transparent 80%);
+    animation: gradientShift 25s ease-in-out infinite;
   }
   
   .gradient-hero::after {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
-    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.06;
     pointer-events: none;
-    mix-blend-mode: soft-light;
+    mix-blend-mode: overlay;
   }
   
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--gradient-lavender)) 0%, hsl(var(--gradient-pink)) 100%);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
   }
 
   .animate-fade-in {
