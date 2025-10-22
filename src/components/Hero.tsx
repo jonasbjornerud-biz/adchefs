@@ -10,7 +10,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden animated-bg">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-hero">
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="max-w-[960px] mx-auto text-center animate-fade-in">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
