@@ -10,7 +10,14 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-hero">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Spline 3D Animated Background */}
+      <iframe 
+        src='https://my.spline.design/animatedgradientbackgroundforweb-rs2VXiRIYlDxZnAhmSPe6QRY/' 
+        frameBorder='0' 
+        className="absolute inset-0 w-full h-full"
+        title="3D Background Animation"
+      />
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="max-w-[960px] mx-auto text-center animate-fade-in">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
