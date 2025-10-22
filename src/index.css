@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 262 100% 62%;
+    --accent: 273 100% 14%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,7 +34,7 @@ All colors MUST be HSL.
 
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 262 100% 62%;
+    --ring: 273 100% 14%;
 
     --radius: 0.75rem;
 
@@ -44,7 +44,7 @@ All colors MUST be HSL.
     --gradient-pink-bottom: 350 100% 70%;
     
     /* Brand colors */
-    --brand-purple: 262 100% 62%;
+    --brand-purple: 273 100% 14%;
     --brand-black: 0 0% 0%;
     --brand-white: 0 0% 100%;
   }
@@ -68,7 +68,7 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 262 100% 62%;
+    --accent: 273 100% 14%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
@@ -76,7 +76,7 @@ All colors MUST be HSL.
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 262 100% 62%;
+    --ring: 273 100% 14%;
   }
 }
 
