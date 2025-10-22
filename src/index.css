@@ -99,7 +99,19 @@ All colors MUST be HSL.
   .gradient-hero {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(270deg, #120427 0%, #2e1361 35%, #7a27b6 70%, #ff4b7a 100%);
+    background: #0a0a1a;
+  }
+  
+  .gradient-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 140% 100% at 80% 60%, rgba(124, 59, 255, 0.35), transparent 65%),
+      radial-gradient(ellipse 120% 90% at 20% 70%, rgba(124, 59, 255, 0.45), transparent 60%),
+      radial-gradient(ellipse 100% 70% at 50% 85%, rgba(157, 78, 221, 0.3), transparent 70%),
+      radial-gradient(ellipse 90% 60% at 30% 40%, rgba(94, 23, 235, 0.25), transparent 65%);
+    filter: blur(80px);
   }
   
   .gradient-hero::after {
