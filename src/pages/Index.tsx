@@ -9,16 +9,32 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
-      <Navigation />
-      <Hero />
-      <HowItWorks />
-      <CaseStudies />
-      <CalendlyBooking />
-      <FAQ />
-      <ContactForm />
-      <Footer />
-    </div>
+    <>
+      {/* Fixed gradient background */}
+      <div className="site-gradient-bg" />
+      
+      {/* Page content */}
+      <div className="min-h-screen relative z-10">
+        <Navigation />
+        <Hero />
+        <div className="content-container my-8">
+          <HowItWorks />
+        </div>
+        <div className="content-container my-8">
+          <CaseStudies />
+        </div>
+        <div className="content-container my-8">
+          <CalendlyBooking />
+        </div>
+        <div className="content-container my-8">
+          <FAQ />
+        </div>
+        <div className="content-container my-8">
+          <ContactForm />
+        </div>
+        <Footer />
+      </div>
+    </>
   );
 };
 
