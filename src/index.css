@@ -170,4 +170,36 @@ All colors MUST be HSL.
       opacity: 0.98;
     }
   }
+
+  /* Animated gradient background */
+  .animated-bg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(270deg, #6b33ff, #a135ff, #ff3399, #ff6b4d);
+    background-size: 400% 400%;
+    animation: gradientFlow 18s ease infinite;
+    overflow: hidden;
+  }
+
+  /* Grain overlay texture */
+  .animated-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    background-blend-mode: overlay;
+    background-position: left top;
+    mix-blend-mode: overlay;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 }
