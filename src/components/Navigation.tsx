@@ -42,10 +42,10 @@ const Navigation = () => {
               FAQ
             </button>
             <Button 
-              onClick={() => scrollToSection("contact")}
-              className="bg-accent hover:bg-accent/90 text-white"
+              onClick={() => scrollToSection("booking")}
+              variant="cta"
             >
-              Get Started
+              Book Call Now
             </Button>
           </div>
         </div>

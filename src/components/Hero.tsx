@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const Hero = () => {
-  const scrollToContact = () => {
-    const element = document.getElementById("contact");
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
@@ -23,16 +23,17 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg"
-              onClick={scrollToContact}
-              className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto group"
+              variant="cta"
+              onClick={() => scrollToSection("booking")}
+              className="text-lg px-8 py-6 h-auto group"
             >
-              Get Started Today
+              Book Call Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
               size="lg"
               variant="outline"
-              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => scrollToSection("how-it-works")}
               className="bg-white/10 text-white border-white/20 hover:bg-white/20 text-lg px-8 py-6 h-auto backdrop-blur-sm"
             >
               See How It Works
