@@ -38,10 +38,10 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Lovable gradient colors */
-    --gradient-pink: 340 100% 70%;
-    --gradient-blue: 250 83% 60%;
-    --gradient-purple: 270 70% 65%;
+    /* Purple gradient colors */
+    --gradient-violet: 266 100% 50%;
+    --gradient-lavender: 270 58% 82%;
+    --gradient-pink: 329 100% 85%;
     
     /* Brand colors */
     --brand-orange: 14 100% 61%;
@@ -96,23 +96,36 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-lovable {
-    background: linear-gradient(135deg, hsl(var(--gradient-pink)) 0%, hsl(var(--gradient-purple)) 50%, hsl(var(--gradient-blue)) 100%);
+  .gradient-hero {
+    background: #0a0118;
     position: relative;
+    overflow: hidden;
   }
   
-  .gradient-lovable::before {
+  .gradient-hero::before {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-    opacity: 0.5;
+    background: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(var(--gradient-violet) / 0.4), transparent 50%),
+      radial-gradient(ellipse 60% 50% at 50% 50%, hsl(var(--gradient-lavender) / 0.3), transparent 50%),
+      radial-gradient(ellipse 100% 60% at 50% 100%, hsl(var(--gradient-pink) / 0.2), transparent 60%);
+    animation: gradientShift 20s ease-in-out infinite;
+  }
+  
+  .gradient-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.08;
     pointer-events: none;
+    mix-blend-mode: soft-light;
   }
   
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--gradient-pink)) 0%, hsl(var(--gradient-blue)) 100%);
+    background-image: linear-gradient(135deg, hsl(var(--gradient-lavender)) 0%, hsl(var(--gradient-pink)) 100%);
   }
 
   .animate-fade-in {
@@ -140,6 +153,21 @@ All colors MUST be HSL.
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes gradientShift {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    33% {
+      transform: translate(-5%, 5%) scale(1.05);
+      opacity: 0.95;
+    }
+    66% {
+      transform: translate(5%, -5%) scale(1.02);
+      opacity: 0.98;
     }
   }
 }
