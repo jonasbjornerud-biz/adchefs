@@ -1,20 +1,22 @@
-import { Zap, Users, Rocket } from "lucide-react";
+import aiHiring from "@/assets/ai-hiring.jpg";
+import editorDevelopment from "@/assets/editor-development.jpg";
+import creativeIntelligence from "@/assets/creative-intelligence.jpg";
 
 const steps = [
   {
-    icon: Zap,
-    title: "AI-Powered Automation",
-    description: "Our proprietary AI systems analyze your brand, products, and audience to generate creative briefs and automate repetitive editing tasks.",
+    image: aiHiring,
+    title: "AI-Powered Hiring",
+    description: "Screens 200+ video editors weekly to recruit the top 1% talent.",
   },
   {
-    icon: Users,
-    title: "Elite Editor Teams",
-    description: "Vetted professional editors refine and polish your content, ensuring brand consistency and high-quality output that converts.",
+    image: editorDevelopment,
+    title: "Editor Development System",
+    description: "Custom SOPs and QA processes built around your creative workflow to ensure consistent output.",
   },
   {
-    icon: Rocket,
-    title: "Scale & Deploy",
-    description: "Receive polished, platform-optimized video content ready to launch across all your marketing channels in record time.",
+    image: creativeIntelligence,
+    title: "Creative Intelligence Layer",
+    description: "Ad frameworks and AI insights tailored to your brand to sharpen creative strategy and direction",
   },
 ];
 
@@ -29,20 +31,42 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {steps.map((step, index) => (
             <div 
               key={index}
-              className="text-center animate-slide-up"
+              className="group relative animate-slide-up"
               style={{ animationDelay: `${index * 0.2}s` }}
             >
-              <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent/10">
-                <step.icon className="w-8 h-8 text-accent" />
+              <div className="relative overflow-hidden rounded-2xl bg-card border border-border/50 transition-all duration-500 hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/20 hover:-translate-y-2 transform perspective-1000">
+                {/* 3D Card Effect */}
+                <div className="relative transform-gpu transition-transform duration-500 group-hover:rotateX-2 group-hover:rotateY-2">
+                  {/* Image Container */}
+                  <div className="relative h-64 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 z-10" />
+                    <img 
+                      src={step.image} 
+                      alt={step.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-6 relative z-20">
+                    <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
+                      {step.title}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Shine Effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {step.description}
-              </p>
             </div>
           ))}
         </div>
