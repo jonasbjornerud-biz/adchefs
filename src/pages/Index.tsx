@@ -4,7 +4,6 @@ import HowItWorks from "@/components/HowItWorks";
 import CaseStudies from "@/components/CaseStudies";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
-import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -28,9 +27,6 @@ const Index = () => {
         </div>
         <div className="content-container my-8">
           <FAQ />
-        </div>
-        <div className="content-container my-8">
-          <ContactForm />
         </div>
         <Footer />
       </div>

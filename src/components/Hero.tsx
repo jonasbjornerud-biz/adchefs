@@ -13,11 +13,11 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="max-w-[960px] mx-auto text-center animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
-            Scale Your Creative Output with AI-Powered Video Systems
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-glow">
+            We cook up <span className="text-purple-highlight">ads</span> that <span className="text-purple-highlight">scale</span> your brand
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto">
-            AdChefs helps e-commerce brands produce high-quality video content at scale using AI-assisted workflows and elite editor teams.
+          <p className="text-xl md:text-2xl mb-8 text-white/80 max-w-2xl mx-auto text-glow">
+            Creative strategy, <span className="text-purple-highlight">AI insights</span>, and elite editors working together to deliver videos that drive consistent growth.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
