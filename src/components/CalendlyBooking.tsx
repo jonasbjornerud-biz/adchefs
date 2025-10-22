@@ -33,7 +33,7 @@ const CalendlyBooking = () => {
           {/* Right side - Calendly Widget */}
           <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-2 min-h-[700px]">
             <iframe
-              src="https://calendly.com/your-calendly-link"
+              src="https://calendly.com/jonas-adchefs/15"
               width="100%"
               height="700"
               frameBorder="0"
