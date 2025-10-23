@@ -79,7 +79,7 @@ const Hero = () => {
                         transform: `rotateY(${angle}deg) translateZ(350px)`,
                       }}
                     >
-                      <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-500 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                      <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
                         <img 
                           src={videoGifs[i]} 
                           alt={`Video ${i + 1}`}
