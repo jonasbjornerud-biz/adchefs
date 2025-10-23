@@ -44,6 +44,12 @@ const HowItWorks = () => {
                   {/* Image Container */}
                   <div className="relative h-64 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 z-10" />
+                    
+                    {/* Numbered Badge */}
+                    <div className="absolute top-4 left-4 z-20 w-12 h-12 rounded-full bg-primary/90 backdrop-blur-sm border-2 border-white/20 flex items-center justify-center shadow-lg">
+                      <span className="text-xl font-bold text-primary-foreground">{index + 1}</span>
+                    </div>
+                    
                     <img 
                       src={step.image} 
                       alt={step.title}
