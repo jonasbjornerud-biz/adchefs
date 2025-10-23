@@ -40,6 +40,17 @@ export const ParticleNetwork = () => {
       });
     }
 
+    // Get theme-appropriate colors
+    const getParticleColor = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      return isDark ? "rgba(255, 255, 255, 0.5)" : "rgba(147, 51, 234, 0.4)";
+    };
+
+    const getLineColor = (opacity: number) => {
+      const isDark = document.documentElement.classList.contains('dark');
+      return isDark ? `rgba(255, 255, 255, ${opacity})` : `rgba(147, 51, 234, ${opacity})`;
+    };
+
     // Animation loop
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,7 +70,7 @@ export const ParticleNetwork = () => {
         // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillStyle = getParticleColor();
         ctx.fill();
 
         // Draw connections
@@ -71,7 +82,7 @@ export const ParticleNetwork = () => {
           if (distance < connectionDistance) {
             const opacity = (1 - distance / connectionDistance) * 0.3;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+            ctx.strokeStyle = getLineColor(opacity);
             ctx.lineWidth = 0.5;
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(particles[j].x, particles[j].y);

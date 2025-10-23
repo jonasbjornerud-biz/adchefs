@@ -22,10 +22,10 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="py-24 bg-neutral-900/40">
+    <section id="how-it-works" className="py-24 bg-secondary/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">How It Works</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">How It Works</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Three simple steps to transform your creative production
           </p>

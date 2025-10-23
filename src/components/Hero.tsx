@@ -61,15 +61,15 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
           <div className="max-w-[700px] text-left animate-text-entrance">
-            <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
-              <span className="text-sm text-white/90">Blending AI automations with expert video editors</span>
+            <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-accent/10 backdrop-blur-sm border border-accent/20">
+              <span className="text-sm text-foreground/90">Blending AI automations with expert video editors</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-glow">
-              We cook up <span className="text-purple-highlight">ads</span> that{" "}
-              <span className="text-purple-highlight">scale</span> your brand
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground">
+              We cook up <span className="text-accent">ads</span> that{" "}
+              <span className="text-accent">scale</span> your brand
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-white/80 text-glow">
-              Creative strategy, <span className="text-purple-highlight">AI insights</span>, and elite editors working
+            <p className="text-xl md:text-2xl mb-8 text-muted-foreground">
+              Creative strategy, <span className="text-accent">AI insights</span>, and elite editors working
               together to deliver videos that drive consistent growth.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -92,18 +92,18 @@ const Hero = () => {
             {/* Navigation Arrows */}
             <button
               onClick={handlePrevious}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-accent/60 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
               aria-label="Previous video"
             >
-              <ChevronLeft className="w-6 h-6 text-white" />
+              <ChevronLeft className="w-6 h-6 text-foreground" />
             </button>
 
             <button
               onClick={handleNext}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-accent/60 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
               aria-label="Next video"
             >
-              <ChevronRight className="w-6 h-6 text-white" />
+              <ChevronRight className="w-6 h-6 text-foreground" />
             </button>
 
             <div className="stacked-carousel-container">
@@ -139,7 +139,7 @@ const Hero = () => {
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <div className="aspect-[9/16] w-[210px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+                    <div className="aspect-[9/16] w-[210px] rounded-2xl border border-border backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-lg hover:shadow-accent/30 transition-all duration-500 shadow-lg">
                       <img src={gif} alt={`Video ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                   </div>
