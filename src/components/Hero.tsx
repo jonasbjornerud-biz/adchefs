@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
 import gif3 from "@/assets/videos/GIF3.gif";
@@ -12,6 +13,7 @@ import gif8 from "@/assets/videos/GIF8.gif";
 const Hero = () => {
   const totalVideos = 8;
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(3);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -68,6 +70,9 @@ const Hero = () => {
           <div className="hidden lg:block relative h-[600px]">
             <div className="stacked-carousel-container">
               {videoGifs.map((gif, i) => {
+                const centerIndex = hoveredIndex ?? 3;
+                const offset = i - centerIndex;
+                
                 const positions = [
                   { x: -180, y: 40, rotate: -12, z: -100, scale: 0.85 },
                   { x: -120, y: 20, rotate: -8, z: -60, scale: 0.9 },
@@ -79,15 +84,18 @@ const Hero = () => {
                   { x: 240, y: 60, rotate: 16, z: -140, scale: 0.8 },
                 ];
                 
-                const pos = positions[i];
+                const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
+                const pos = positions[posIndex];
                 
                 return (
                   <div
                     key={i}
-                    className="stacked-carousel-item"
+                    className="stacked-carousel-item cursor-pointer"
+                    onMouseEnter={() => setHoveredIndex(i)}
+                    onMouseLeave={() => setHoveredIndex(3)}
                     style={{
                       transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
-                      zIndex: totalVideos - Math.abs(i - 3),
+                      zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
                     <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
