@@ -246,6 +246,7 @@ All colors MUST be HSL.
     width: 160px;
     height: 290px;
     transform-style: preserve-3d;
+    filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.15));
   }
 
   .carousel-rotate {

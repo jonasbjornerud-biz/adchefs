@@ -1,8 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import gif1 from "@/assets/videos/GIF1.gif";
+import gif2 from "@/assets/videos/GIF2.gif";
+import gif3 from "@/assets/videos/GIF3.gif";
+import gif4 from "@/assets/videos/GIF4.gif";
+import gif5 from "@/assets/videos/GIF5.gif";
+import gif6 from "@/assets/videos/GIF6.gif";
+import gif7 from "@/assets/videos/GIF7.gif";
+import gif8 from "@/assets/videos/GIF8.gif";
 
 const Hero = () => {
-  const totalVideos = 10;
+  const totalVideos = 8;
+  const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -70,12 +79,12 @@ const Hero = () => {
                         transform: `rotateY(${angle}deg) translateZ(350px)`,
                       }}
                     >
-                      <div className="aspect-[9/16] w-[160px] bg-neutral-800/50 rounded-2xl border border-white/10 backdrop-blur-sm overflow-hidden hover:border-accent/50 transition-all duration-300">
-                        {/* Placeholder for GIF - replace with actual GIF source */}
-                        <div className="w-full h-full flex items-center justify-center text-white/60 text-sm flex-col gap-2">
-                          <div className="text-lg font-bold">Video {i + 1}</div>
-                          <div className="text-xs">1080x1920</div>
-                        </div>
+                      <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition-all duration-500 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                        <img 
+                          src={videoGifs[i]} 
+                          alt={`Video ${i + 1}`}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                   );
