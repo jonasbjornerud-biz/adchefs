@@ -1,20 +1,18 @@
-import aiHiring from "@/assets/hiring.gif";
-import editorDevelopment from "@/assets/mentoring.gif";
-import creativeIntelligence from "@/assets/creative.gif";
+import { Sparkles, Users, Lightbulb } from "lucide-react";
 
 const steps = [
   {
-    image: aiHiring,
+    icon: Users,
     title: "AI-Powered Hiring",
     description: "Screens 200+ video editors weekly to recruit the top 1% talent.",
   },
   {
-    image: editorDevelopment,
+    icon: Sparkles,
     title: "Editor Development System",
     description: "Custom SOPs and QA processes built around your creative workflow to ensure consistent output.",
   },
   {
-    image: creativeIntelligence,
+    icon: Lightbulb,
     title: "Creative Intelligence Layer",
     description: "Ad frameworks and AI insights tailored to your brand to sharpen creative strategy and direction",
   },
@@ -31,44 +29,37 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {steps.map((step, index) => (
-            <div 
-              key={index}
-              className="group relative animate-slide-up"
-              style={{ animationDelay: `${index * 0.2}s` }}
-            >
-              <div className="relative overflow-hidden rounded-2xl bg-card border border-border/50 transition-all duration-500 hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/20 hover:-translate-y-2 transform perspective-1000">
-                {/* 3D Card Effect */}
-                <div className="relative transform-gpu transition-transform duration-500 group-hover:rotateX-2 group-hover:rotateY-2">
-                  {/* Image Container */}
-                  <div className="relative h-64 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 z-10" />
-                    <img 
-                      src={step.image} 
-                      alt={step.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-6 relative z-20">
-                    <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <div 
+                key={index}
+                className="group relative animate-slide-up"
+                style={{ animationDelay: `${index * 0.2}s` }}
+              >
+                <div className="relative overflow-hidden rounded-xl bg-background/40 backdrop-blur-xl border border-white/10 p-6 transition-all duration-300 hover:bg-background/60 hover:border-accent/50 hover:-translate-y-1">
+                  {/* Icon and Title */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-accent" />
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground">
                       {step.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {step.description}
-                    </p>
                   </div>
-                </div>
+                  
+                  {/* Description */}
+                  <p className="text-muted-foreground leading-relaxed">
+                    {step.description}
+                  </p>
 
-                {/* Shine Effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                  {/* Subtle glow effect on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl bg-gradient-to-br from-accent/5 to-transparent" />
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
