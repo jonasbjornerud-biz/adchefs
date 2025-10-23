@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { SplineScene } from "@/components/ui/splite";
-import { Spotlight } from "@/components/ui/spotlight";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
 import gif3 from "@/assets/videos/GIF3.gif";
@@ -14,9 +12,8 @@ import gif8 from "@/assets/videos/GIF8.gif";
 
 const Hero = () => {
   const totalVideos = 8;
-  // Use original upload order, center the last upload (#8)
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(1);
+  const [centerIndex, setCenterIndex] = useState(0);
   const [isAutoSpinning, setIsAutoSpinning] = useState(true);
 
   const scrollToSection = (id: string) => {
@@ -26,18 +23,39 @@ const Hero = () => {
     }
   };
 
-  // Auto-spin carousel on mount
+  // Auto-spin carousel on mount - linear with ease at end, landing on GIF2 (index 1)
   useEffect(() => {
-    let spinCount = 0;
-    const autoSpin = setInterval(() => {
-      setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
-      spinCount++;
-      if (spinCount >= 4) { // Spin through ~4 items in ~2 seconds
-        clearInterval(autoSpin);
+    const targetIndex = 1; // GIF2
+    const totalSteps = 8;
+    let currentStep = 0;
+    
+    const spin = () => {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        const progress = currentStep / totalSteps;
+        
+        // Linear for first 75%, then ease in for last 25%
+        let easedProgress;
+        if (progress < 0.75) {
+          easedProgress = progress;
+        } else {
+          const easeProgress = (progress - 0.75) / 0.25;
+          easedProgress = 0.75 + (0.25 * (1 - Math.pow(1 - easeProgress, 3)));
+        }
+        
+        const currentIndex = Math.round(easedProgress * totalVideos) % totalVideos;
+        setCenterIndex(currentIndex);
+        
+        // Variable delay - faster at start, slower at end
+        const delay = progress < 0.75 ? 200 : 300 + (progress - 0.75) * 800;
+        setTimeout(spin, delay);
+      } else {
+        setCenterIndex(targetIndex);
         setIsAutoSpinning(false);
       }
-    }, 500);
-    return () => clearInterval(autoSpin);
+    };
+    
+    spin();
   }, []);
 
   const handlePrevious = () => {
@@ -54,17 +72,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Non-interactive Spline robot background */}
-      <div className="absolute inset-0 z-0 opacity-20 scale-75 translate-y-32 mix-blend-screen">
-        <SplineScene 
-          scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
-          className="w-full h-full"
-        />
-      </div>
-      
-      {/* Optional static spotlight */}
-      <Spotlight className="top-0 left-1/2 -translate-x-1/2" fill="#6b4bff" />
-      
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
