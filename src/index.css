@@ -8,23 +8,23 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 7%;
+    --background: 270 75% 6%;
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 10%;
+    --card: 270 60% 8%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 10%;
+    --popover: 270 60% 8%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 7%;
+    --primary-foreground: 270 75% 6%;
 
-    --secondary: 0 0% 15%;
+    --secondary: 270 50% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 270 50% 12%;
+    --muted-foreground: 0 0% 70%;
 
     --accent: 260 100% 62%;
     --accent-foreground: 0 0% 98%;
@@ -32,41 +32,42 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 273 100% 14%;
+    --border: 270 40% 18%;
+    --input: 270 50% 12%;
+    --ring: 260 100% 62%;
 
     --radius: 0.75rem;
 
-    /* Lovable gradient colors - blue to pink */
-    --gradient-blue-top: 220 70% 50%;
-    --gradient-blue-mid: 220 80% 60%;
-    --gradient-pink-bottom: 350 100% 70%;
+    /* AI gradient colors */
+    --gradient-dark-start: 270 75% 6%;
+    --gradient-dark-mid: 270 100% 12%;
+    --gradient-dark-end: 270 100% 22%;
+    --gradient-glow: 260 100% 62%;
     
     /* Brand colors */
-    --brand-purple: 273 100% 14%;
-    --brand-black: 0 0% 0%;
+    --brand-purple: 260 100% 62%;
+    --brand-black: 270 75% 6%;
     --brand-white: 0 0% 100%;
   }
 
   .dark {
-    --background: 0 0% 5%;
+    --background: 270 75% 4%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 8%;
+    --card: 270 60% 6%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 8%;
+    --popover: 270 60% 6%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 270 75% 4%;
 
-    --secondary: 0 0% 15%;
+    --secondary: 270 50% 10%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 270 50% 10%;
+    --muted-foreground: 0 0% 70%;
 
     --accent: 260 100% 62%;
     --accent-foreground: 0 0% 100%;
@@ -74,9 +75,9 @@ All colors MUST be HSL.
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 273 100% 14%;
+    --border: 270 40% 16%;
+    --input: 270 50% 14%;
+    --ring: 260 100% 62%;
   }
 }
 
@@ -96,51 +97,76 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Site-wide AI gradient background - fixed layer */
   .site-gradient-bg {
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: #000000;
+    /* Base gradient: deep purple progression */
+    background: 
+      linear-gradient(135deg, #0A0018 0%, #20003F 40%, #3F0071 100%);
   }
   
+  /* Central radial glow + vignette */
   .site-gradient-bg::before {
     content: "";
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(ellipse 600px 600px at 50% 10%, rgba(126, 62, 255, 0.15), transparent 70%),
-      radial-gradient(ellipse 800px 800px at 80% 50%, rgba(94, 23, 235, 0.12), transparent 70%),
-      radial-gradient(ellipse 700px 700px at 20% 80%, rgba(75, 0, 130, 0.1), transparent 70%);
+      /* Hero center glow */
+      radial-gradient(ellipse 900px 700px at 50% 15%, rgba(126, 62, 255, 0.15), transparent 65%),
+      /* Soft dimensional falloff */
+      radial-gradient(ellipse 1200px 900px at 40% 60%, rgba(126, 62, 255, 0.08), transparent 70%),
+      /* Diagonal light for depth */
+      linear-gradient(145deg, rgba(63, 0, 113, 0.3) 0%, transparent 50%, rgba(10, 0, 24, 0.6) 100%),
+      /* Edge vignette */
+      radial-gradient(ellipse at center, transparent 20%, rgba(10, 0, 24, 0.4) 80%, rgba(10, 0, 24, 0.7) 100%);
   }
   
+  /* Ultra-fine grain texture */
   .site-gradient-bg::after {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
-    background-size: 150px 150px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
     background-repeat: repeat;
-    opacity: 0.4;
+    opacity: 0.05;
     pointer-events: none;
     mix-blend-mode: overlay;
   }
   
-  .content-container {
-    @apply relative z-10 max-w-7xl mx-auto px-6;
-    background: rgba(5, 5, 15, 0.7);
-    backdrop-filter: blur(10px);
-    box-shadow: 
-      0 0 120px rgba(126, 62, 255, 0.25),
-      0 0 200px rgba(126, 62, 255, 0.15),
-      0 20px 40px rgba(0, 0, 0, 0.5);
-    border-radius: 1rem;
+  /* Mobile: reduce vignette by 30% */
+  @media (max-width: 768px) {
+    .site-gradient-bg::before {
+      background: 
+        radial-gradient(ellipse 700px 500px at 50% 15%, rgba(126, 62, 255, 0.15), transparent 65%),
+        radial-gradient(ellipse 1000px 800px at 40% 60%, rgba(126, 62, 255, 0.06), transparent 70%),
+        linear-gradient(145deg, rgba(63, 0, 113, 0.25) 0%, transparent 50%, rgba(10, 0, 24, 0.5) 100%),
+        radial-gradient(ellipse at center, transparent 25%, rgba(10, 0, 24, 0.28) 80%, rgba(10, 0, 24, 0.49) 100%);
+    }
   }
   
+  /* Content containers with max-width and padding */
+  .content-container {
+    @apply relative z-10 mx-auto px-6 md:px-8;
+    max-width: 1280px;
+    background: rgba(10, 0, 24, 0.5);
+    backdrop-filter: blur(12px);
+    box-shadow: 
+      0 0 80px rgba(126, 62, 255, 0.12),
+      0 0 150px rgba(126, 62, 255, 0.08),
+      0 20px 50px rgba(0, 0, 0, 0.6);
+    border-radius: 1rem;
+    border: 1px solid rgba(126, 62, 255, 0.1);
+  }
+  
+  /* Subtle glow around containers */
   .content-container::before {
     content: "";
     position: absolute;
-    inset: -200px;
-    background: radial-gradient(ellipse 800px 800px at 50% 50%, rgba(126, 62, 255, 0.2), transparent 60%);
+    inset: -150px;
+    background: radial-gradient(ellipse 700px 700px at 50% 50%, rgba(126, 62, 255, 0.12), transparent 60%);
     z-index: -1;
     pointer-events: none;
   }
