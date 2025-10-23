@@ -5,13 +5,12 @@ import CaseStudies from "@/components/CaseStudies";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
-import DynamicBackground from "@/components/DynamicBackground";
 
 const Index = () => {
   return (
     <>
-      {/* Dynamic animated background */}
-      <DynamicBackground />
+      {/* Fixed gradient background */}
+      <div className="site-gradient-bg" />
       
       {/* Page content */}
       <div className="min-h-screen relative z-10">
