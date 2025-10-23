@@ -14,7 +14,7 @@ const Hero = () => {
   const totalVideos = 8;
   // Use original upload order, center the last upload (#8)
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(7);
+  const [centerIndex, setCenterIndex] = useState(1);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -41,13 +41,15 @@ const Hero = () => {
               <span className="text-sm text-white/90">Blending AI automations with expert video editors</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-glow">
-              We cook up <span className="text-purple-highlight">ads</span> that <span className="text-purple-highlight">scale</span> your brand
+              We cook up <span className="text-purple-highlight">ads</span> that{" "}
+              <span className="text-purple-highlight">scale</span> your brand
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-white/80 text-glow">
-              Creative strategy, <span className="text-purple-highlight">AI insights</span>, and elite editors working together to deliver videos that drive consistent growth.
+              Creative strategy, <span className="text-purple-highlight">AI insights</span>, and elite editors working
+              together to deliver videos that drive consistent growth.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start mb-12">
-              <Button 
+              <Button
                 size="lg"
                 variant="cta"
                 onClick={() => scrollToSection("booking")}
@@ -85,7 +87,7 @@ const Hero = () => {
             >
               <ChevronLeft className="w-6 h-6 text-white" />
             </button>
-            
+
             <button
               onClick={handleNext}
               className="absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-accent/60 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
@@ -97,7 +99,7 @@ const Hero = () => {
             <div className="stacked-carousel-container">
               {videoGifs.map((gif, i) => {
                 const offset = i - centerIndex;
-                
+
                 const positions = [
                   { x: -240, y: 50, rotate: -12, z: -140, scale: 0.84 },
                   { x: -165, y: 25, rotate: -8, z: -85, scale: 0.9 },
@@ -108,10 +110,10 @@ const Hero = () => {
                   { x: 240, y: 50, rotate: 12, z: -140, scale: 0.84 },
                   { x: 315, y: 72, rotate: 16, z: -190, scale: 0.78 },
                 ];
-                
+
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
                 const pos = positions[posIndex];
-                
+
                 return (
                   <div
                     key={i}
@@ -122,11 +124,7 @@ const Hero = () => {
                     }}
                   >
                     <div className="aspect-[9/16] w-[210px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
-                      <img 
-                        src={gif} 
-                        alt={`Video ${i + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={gif} alt={`Video ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                   </div>
                 );
