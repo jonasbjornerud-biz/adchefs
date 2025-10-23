@@ -13,8 +13,8 @@ import gif8 from "@/assets/videos/GIF8.gif";
 
 const Hero = () => {
   const totalVideos = 8;
-  const videoGifs = [gif1, gif2, gif3, gif5, gif4, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(1); // Start at GIF2 (index 1)
+  const videoGifs = [gif4, gif2, gif3, gif1, gif5, gif6, gif7, gif8];
+  const [centerIndex, setCenterIndex] = useState(1); // Start at GIF2 (index 1), GIF4 on left
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
