@@ -97,7 +97,7 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* Site-wide AI gradient background - fixed layer with radial hotspots */
+  /* DEPRECATED: Old static gradient background - replaced by DynamicBackground component
   .site-gradient-bg {
     position: fixed;
     inset: 0;
@@ -105,7 +105,6 @@ All colors MUST be HSL.
     background: linear-gradient(135deg, #020204 0%, #080410 40%, #0d0820 70%, #150a28 100%);
   }
   
-  /* Animated radial gradient with uneven distribution */
   .site-gradient-bg::before {
     content: "";
     position: absolute;
@@ -120,7 +119,6 @@ All colors MUST be HSL.
     animation: gradient-shift 25s ease-in-out infinite;
   }
   
-  /* Very heavy grain texture */
   .site-gradient-bg::after {
     content: "";
     position: absolute;
@@ -133,7 +131,6 @@ All colors MUST be HSL.
     mix-blend-mode: overlay;
   }
   
-  /* Slow gradient shift animation */
   @keyframes gradient-shift {
     0%, 100% {
       transform: translate(0, 0) rotate(0deg) scale(1);
@@ -149,7 +146,6 @@ All colors MUST be HSL.
     }
   }
   
-  /* Mobile: adjusted gradients */
   @media (max-width: 768px) {
     .site-gradient-bg::before {
       background: 
@@ -158,6 +154,12 @@ All colors MUST be HSL.
         radial-gradient(ellipse 700px 500px at 50% 50%, rgba(217, 70, 239, 0.12), transparent 55%);
       filter: blur(90px);
     }
+  }
+  */
+  
+  /* Dynamic background layer utility */
+  .dynamic-bg-layer {
+    @apply fixed inset-0 z-0 pointer-events-none;
   }
   
   /* Content containers with max-width and padding */
