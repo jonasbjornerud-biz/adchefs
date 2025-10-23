@@ -12,9 +12,9 @@ import gif8 from "@/assets/videos/GIF8.gif";
 
 const Hero = () => {
   const totalVideos = 8;
-  // Reordered: GIF1 left of center, GIF7 center, GIF4 right of center
-  const videoGifs = [gif8, gif6, gif1, gif7, gif4, gif2, gif3, gif5];
-  const [centerIndex, setCenterIndex] = useState(3);
+  // Use original upload order, center the last upload (#8)
+  const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
+  const [centerIndex, setCenterIndex] = useState(7);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -99,14 +99,14 @@ const Hero = () => {
                 const offset = i - centerIndex;
                 
                 const positions = [
-                  { x: -200, y: 45, rotate: -12, z: -120, scale: 0.82 },
-                  { x: -135, y: 22, rotate: -8, z: -70, scale: 0.88 },
-                  { x: -70, y: 8, rotate: -4, z: -35, scale: 0.94 },
+                  { x: -240, y: 50, rotate: -12, z: -140, scale: 0.84 },
+                  { x: -165, y: 25, rotate: -8, z: -85, scale: 0.9 },
+                  { x: -85, y: 10, rotate: -4, z: -40, scale: 0.96 },
                   { x: 0, y: 0, rotate: 0, z: 0, scale: 1 },
-                  { x: 70, y: 8, rotate: 4, z: -35, scale: 0.94 },
-                  { x: 135, y: 22, rotate: 8, z: -70, scale: 0.88 },
-                  { x: 200, y: 45, rotate: 12, z: -120, scale: 0.82 },
-                  { x: 265, y: 68, rotate: 16, z: -170, scale: 0.76 },
+                  { x: 85, y: 10, rotate: 4, z: -40, scale: 0.96 },
+                  { x: 165, y: 25, rotate: 8, z: -85, scale: 0.9 },
+                  { x: 240, y: 50, rotate: 12, z: -140, scale: 0.84 },
+                  { x: 315, y: 72, rotate: 16, z: -190, scale: 0.78 },
                 ];
                 
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
@@ -121,7 +121,7 @@ const Hero = () => {
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <div className="aspect-[9/16] w-[190px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+                    <div className="aspect-[9/16] w-[210px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
                       <img 
                         src={gif} 
                         alt={`Video ${i + 1}`}
