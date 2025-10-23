@@ -2,25 +2,26 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ParticleNetwork } from "./ParticleNetwork";
-import gif1 from "@/assets/videos/GIF1.gif";
-import gif2 from "@/assets/videos/GIF2.gif";
-import gif3 from "@/assets/videos/GIF3.gif";
-import gif4 from "@/assets/videos/GIF4.gif";
-import gif5 from "@/assets/videos/GIF5.gif";
-import gif6 from "@/assets/videos/GIF6.gif";
-import gif7 from "@/assets/videos/GIF7.gif";
-import gif8 from "@/assets/videos/GIF8.gif";
+import video1 from "@/assets/videos/GIF1.webm";
+import video2 from "@/assets/videos/GIF2.webm";
+import video3 from "@/assets/videos/GIF3.webm";
+import video4 from "@/assets/videos/GIF4.webm";
+import video5 from "@/assets/videos/GIF5.webm";
+import video6 from "@/assets/videos/GIF6.webm";
+import video7 from "@/assets/videos/GIF7.webm";
+import video8 from "@/assets/videos/GIF8.webm";
 
 const Hero = () => {
   const totalVideos = 8;
-  const videoGifs = [gif4, gif2, gif3, gif1, gif5, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(1); // Start at GIF2 (index 1), GIF4 on left
+  const videoSources = [video4, video2, video3, video1, video5, video6, video7, video8];
+  const [centerIndex, setCenterIndex] = useState(1); // Start at video2 (index 1), video4 on left
 
-  // Preload GIFs for faster loading
+  // Preload videos for faster loading
   useEffect(() => {
-    videoGifs.forEach((gif) => {
-      const img = new Image();
-      img.src = gif;
+    videoSources.forEach((videoSrc) => {
+      const video = document.createElement('video');
+      video.src = videoSrc;
+      video.preload = 'auto';
     });
   }, []);
 
@@ -92,7 +93,7 @@ const Hero = () => {
             </button>
 
             <div className="stacked-carousel-container">
-              {videoGifs.map((gif, i) => {
+              {videoSources.map((videoSrc, i) => {
                 let offset = i - centerIndex;
                 
                 // Wrap around logic for balanced distribution
@@ -122,7 +123,7 @@ const Hero = () => {
 
                 return (
                   <div
-                    key={gif as unknown as string}
+                    key={videoSrc as unknown as string}
                     className="stacked-carousel-item"
                     style={{
                       transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
@@ -130,11 +131,14 @@ const Hero = () => {
                     }}
                   >
                     <div className="aspect-[9/16] w-[140px] md:w-[180px] lg:w-[210px] rounded-xl md:rounded-2xl border border-border backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-lg hover:shadow-accent/30 transition-all duration-500 shadow-lg">
-                      <img 
-                        src={gif} 
-                        alt={`Video ${i + 1}`} 
+                      <video 
+                        src={videoSrc} 
                         className="w-full h-full object-cover"
-                        loading={Math.abs(i - centerIndex) <= 1 ? "eager" : "lazy"}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload={Math.abs(i - centerIndex) <= 1 ? "auto" : "metadata"}
                       />
                     </div>
                   </div>
