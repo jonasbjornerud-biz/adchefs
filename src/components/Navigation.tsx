@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navigation = () => {
   const scrollToSection = (id: string) => {
@@ -35,6 +36,7 @@ const Navigation = () => {
             >
               FAQ
             </button>
+            <ThemeToggle />
             <Button 
               onClick={() => scrollToSection("booking")}
               variant="cta"
