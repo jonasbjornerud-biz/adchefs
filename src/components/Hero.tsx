@@ -70,10 +70,10 @@ const Hero = () => {
                         transform: `rotateY(${angle}deg) translateZ(350px)`,
                       }}
                     >
-                      <div className="aspect-[9/16] w-[220px] bg-neutral-800/50 rounded-2xl border border-white/10 backdrop-blur-sm overflow-hidden hover:border-accent/50 transition-all duration-300">
+                      <div className="aspect-[9/16] w-[160px] bg-neutral-800/50 rounded-2xl border border-white/10 backdrop-blur-sm overflow-hidden hover:border-accent/50 transition-all duration-300">
                         {/* Placeholder for GIF - replace with actual GIF source */}
                         <div className="w-full h-full flex items-center justify-center text-white/60 text-sm flex-col gap-2">
-                          <div className="text-xl font-bold">Video {i + 1}</div>
+                          <div className="text-lg font-bold">Video {i + 1}</div>
                           <div className="text-xs">1080x1920</div>
                         </div>
                       </div>
