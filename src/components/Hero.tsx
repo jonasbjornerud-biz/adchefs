@@ -94,14 +94,19 @@ const Hero = () => {
                   offset += totalVideos;
                 }
 
+                // Hide items that are beyond the visible stack to avoid jitter
+                if (Math.abs(offset) > 3) {
+                  return null;
+                }
+
                 const positions = [
-                  { x: -240, y: 50, rotate: -12, z: -140, scale: 0.84 },
-                  { x: -165, y: 25, rotate: -8, z: -85, scale: 0.9 },
-                  { x: -85, y: 10, rotate: -4, z: -40, scale: 0.96 },
+                  { x: -220, y: 40, rotate: -10, z: -120, scale: 0.86 },
+                  { x: -150, y: 22, rotate: -7, z: -80, scale: 0.91 },
+                  { x: -75, y: 8, rotate: -3, z: -35, scale: 0.96 },
                   { x: 0, y: 0, rotate: 0, z: 0, scale: 1 },
-                  { x: 85, y: 10, rotate: 4, z: -40, scale: 0.96 },
-                  { x: 165, y: 25, rotate: 8, z: -85, scale: 0.9 },
-                  { x: 240, y: 50, rotate: 12, z: -140, scale: 0.84 },
+                  { x: 75, y: 8, rotate: 3, z: -35, scale: 0.96 },
+                  { x: 150, y: 22, rotate: 7, z: -80, scale: 0.91 },
+                  { x: 220, y: 40, rotate: 10, z: -120, scale: 0.86 },
                 ];
 
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
@@ -109,7 +114,7 @@ const Hero = () => {
 
                 return (
                   <div
-                    key={i}
+                    key={gif as unknown as string}
                     className="stacked-carousel-item"
                     style={{
                       transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,

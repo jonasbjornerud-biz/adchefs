@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
-import logo from "@/assets/logo.png";
 
 const Navigation = () => {
   const scrollToSection = (id: string) => {
@@ -15,7 +14,7 @@ const Navigation = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="AdChefs Logo" className="h-8 w-auto" />
+            <span className="text-2xl font-bold">AdChefs</span>
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
