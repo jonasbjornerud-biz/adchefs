@@ -11,46 +11,20 @@ import video6 from "@/assets/videos/GIF6.webm";
 import video7 from "@/assets/videos/GIF7.webm";
 import video8 from "@/assets/videos/GIF8.webm";
 
-interface HeroProps {
-  onVideosLoaded?: () => void;
-}
-
-const Hero = ({ onVideosLoaded }: HeroProps) => {
+const Hero = () => {
   const totalVideos = 8;
   const videoSources = [video4, video2, video3, video1, video5, video6, video7, video8];
   const [centerIndex, setCenterIndex] = useState(1); // Start at video2 (index 1), video4 on left
 
-  // Preload videos and notify when all are loaded
+  // Aggressive preloading for instant display
   useEffect(() => {
-    let loadedCount = 0;
-    const totalCount = videoSources.length;
-
-    const videoPromises = videoSources.map((videoSrc) => {
-      return new Promise<void>((resolve) => {
-        const video = document.createElement('video');
-        video.src = videoSrc;
-        video.preload = 'auto';
-        
-        video.onloadeddata = () => {
-          loadedCount++;
-          if (loadedCount === totalCount && onVideosLoaded) {
-            onVideosLoaded();
-          }
-          resolve();
-        };
-        
-        video.onerror = () => {
-          loadedCount++;
-          if (loadedCount === totalCount && onVideosLoaded) {
-            onVideosLoaded();
-          }
-          resolve();
-        };
-      });
+    videoSources.forEach((videoSrc) => {
+      const video = document.createElement('video');
+      video.src = videoSrc;
+      video.preload = 'auto';
+      video.load();
     });
-
-    Promise.all(videoPromises);
-  }, [onVideosLoaded]);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -165,7 +139,7 @@ const Hero = ({ onVideosLoaded }: HeroProps) => {
                         loop
                         muted
                         playsInline
-                        preload={Math.abs(i - centerIndex) <= 1 ? "auto" : "metadata"}
+                        preload="auto"
                       />
                     </div>
                   </div>
