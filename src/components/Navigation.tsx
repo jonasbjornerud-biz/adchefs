@@ -30,12 +30,6 @@ const Navigation = () => {
               Case Studies
             </button>
             <button
-              onClick={() => scrollToSection("testimonials")}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Testimonials
-            </button>
-            <button
               onClick={() => scrollToSection("faq")}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >

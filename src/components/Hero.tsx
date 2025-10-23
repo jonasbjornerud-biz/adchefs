@@ -13,6 +13,9 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="max-w-[960px] mx-auto text-center animate-fade-in">
+          <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
+            <span className="text-sm text-white/90">Blending AI automations with expert video editors</span>
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-glow">
             We cook up <span className="text-purple-highlight">ads</span> that <span className="text-purple-highlight">scale</span> your brand
           </h1>
