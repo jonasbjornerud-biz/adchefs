@@ -46,8 +46,8 @@ const HowItWorks = () => {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 z-10" />
                     
                     {/* Numbered Badge */}
-                    <div className="absolute top-4 left-4 z-20 w-12 h-12 rounded-full bg-purple-600/90 backdrop-blur-sm border-2 border-purple-400/30 flex items-center justify-center shadow-lg shadow-purple-500/50">
-                      <span className="text-xl font-bold text-white">{index + 1}</span>
+                    <div className="absolute top-4 left-4 z-20 w-12 h-12 rounded-full bg-accent/90 backdrop-blur-sm border-2 border-accent/30 flex items-center justify-center shadow-lg shadow-accent/50">
+                      <span className="text-xl font-bold text-accent-foreground">{index + 1}</span>
                     </div>
                     
                     <img 

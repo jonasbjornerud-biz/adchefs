@@ -8,23 +8,24 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 270 75% 6%;
-    --foreground: 0 0% 98%;
+    /* Light mode colors */
+    --background: 0 0% 98%;
+    --foreground: 270 75% 6%;
 
-    --card: 270 60% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 75% 6%;
 
-    --popover: 270 60% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 75% 6%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 270 75% 6%;
+    --primary: 270 75% 6%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 270 50% 12%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 260 30% 95%;
+    --secondary-foreground: 270 75% 6%;
 
-    --muted: 270 50% 12%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 260 20% 92%;
+    --muted-foreground: 270 20% 40%;
 
     --accent: 260 100% 62%;
     --accent-foreground: 0 0% 98%;
@@ -32,16 +33,16 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 270 40% 18%;
-    --input: 270 50% 12%;
+    --border: 260 20% 88%;
+    --input: 260 20% 92%;
     --ring: 260 100% 62%;
 
     --radius: 0.75rem;
 
-    /* AI gradient colors */
-    --gradient-dark-start: 270 75% 6%;
-    --gradient-dark-mid: 270 100% 12%;
-    --gradient-dark-end: 270 100% 22%;
+    /* Light mode gradient colors */
+    --gradient-light-start: 260 30% 98%;
+    --gradient-light-mid: 260 40% 95%;
+    --gradient-light-end: 260 50% 92%;
     --gradient-glow: 260 100% 62%;
     
     /* Brand colors */
@@ -78,6 +79,11 @@ All colors MUST be HSL.
     --border: 270 40% 16%;
     --input: 270 50% 14%;
     --ring: 260 100% 62%;
+    
+    /* Dark mode gradient colors */
+    --gradient-dark-start: 270 75% 6%;
+    --gradient-dark-mid: 270 100% 12%;
+    --gradient-dark-end: 270 100% 22%;
   }
 }
 
@@ -97,30 +103,44 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* Site-wide AI gradient background - fixed layer with radial hotspots */
+  /* Site-wide gradient background - fixed layer with radial hotspots */
   .site-gradient-bg {
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: linear-gradient(135deg, #020204 0%, #080410 40%, #0d0820 70%, #150a28 100%);
+    background: linear-gradient(135deg, #fafaff 0%, #f5f5ff 40%, #ededff 70%, #e5e5ff 100%);
   }
   
-  /* Animated radial gradient with uneven distribution */
+  /* Light mode: soft purple gradient */
   .site-gradient-bg::before {
     content: "";
     position: absolute;
     inset: 0;
+    background: 
+      radial-gradient(ellipse 1600px 1000px at 50% 20%, rgba(147, 51, 234, 0.08), rgba(255, 255, 255, 0.95) 55%),
+      radial-gradient(ellipse 1400px 900px at 30% 45%, rgba(168, 85, 247, 0.06), rgba(255, 255, 255, 0.95) 60%),
+      radial-gradient(ellipse 1200px 800px at 70% 65%, rgba(217, 70, 239, 0.05), rgba(255, 255, 255, 0.95) 58%),
+      radial-gradient(ellipse 1000px 700px at 20% 85%, rgba(109, 40, 217, 0.07), rgba(255, 255, 255, 0.95) 52%),
+      radial-gradient(ellipse 900px 600px at 85% 40%, rgba(147, 51, 234, 0.06), rgba(255, 255, 255, 0.95) 50%);
+    filter: blur(100px);
+    animation: gradient-shift 25s ease-in-out infinite;
+  }
+  
+  /* Dark mode gradient */
+  .dark .site-gradient-bg {
+    background: linear-gradient(135deg, #020204 0%, #080410 40%, #0d0820 70%, #150a28 100%);
+  }
+  
+  .dark .site-gradient-bg::before {
     background: 
       radial-gradient(ellipse 1600px 1000px at 50% 20%, rgba(147, 51, 234, 0.35), rgba(0, 0, 0, 0.9) 55%),
       radial-gradient(ellipse 1400px 900px at 30% 45%, rgba(168, 85, 247, 0.28), rgba(0, 0, 0, 0.95) 60%),
       radial-gradient(ellipse 1200px 800px at 70% 65%, rgba(217, 70, 239, 0.24), rgba(0, 0, 0, 0.92) 58%),
       radial-gradient(ellipse 1000px 700px at 20% 85%, rgba(109, 40, 217, 0.32), rgba(0, 0, 0, 0.9) 52%),
       radial-gradient(ellipse 900px 600px at 85% 40%, rgba(147, 51, 234, 0.26), rgba(0, 0, 0, 0.95) 50%);
-    filter: blur(100px);
-    animation: gradient-shift 25s ease-in-out infinite;
   }
   
-  /* Very heavy grain texture */
+  /* Subtle texture */
   .site-gradient-bg::after {
     content: "";
     position: absolute;
@@ -128,9 +148,13 @@ All colors MUST be HSL.
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4.5' numOctaves='8' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
     background-size: 180px 180px;
     background-repeat: repeat;
-    opacity: 0.6;
+    opacity: 0.3;
     pointer-events: none;
     mix-blend-mode: overlay;
+  }
+  
+  .dark .site-gradient-bg::after {
+    opacity: 0.6;
   }
   
   /* Slow gradient shift animation */
@@ -153,10 +177,17 @@ All colors MUST be HSL.
   @media (max-width: 768px) {
     .site-gradient-bg::before {
       background: 
+        radial-gradient(ellipse 1000px 700px at 20% 30%, rgba(147, 51, 234, 0.06), rgba(255, 255, 255, 0.95) 60%),
+        radial-gradient(ellipse 900px 600px at 80% 70%, rgba(168, 85, 247, 0.04), rgba(255, 255, 255, 0.95) 65%),
+        radial-gradient(ellipse 700px 500px at 50% 50%, rgba(217, 70, 239, 0.03), rgba(255, 255, 255, 0.95) 55%);
+      filter: blur(90px);
+    }
+    
+    .dark .site-gradient-bg::before {
+      background: 
         radial-gradient(ellipse 1000px 700px at 20% 30%, rgba(147, 51, 234, 0.2), transparent 60%),
         radial-gradient(ellipse 900px 600px at 80% 70%, rgba(168, 85, 247, 0.15), transparent 65%),
         radial-gradient(ellipse 700px 500px at 50% 50%, rgba(217, 70, 239, 0.12), transparent 55%);
-      filter: blur(90px);
     }
   }
   
