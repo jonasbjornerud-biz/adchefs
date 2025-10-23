@@ -27,18 +27,12 @@ const Hero = () => {
               size="lg"
               variant="cta"
               onClick={() => scrollToSection("booking")}
-              className="text-lg px-8 py-6 h-auto group"
+              className="text-lg px-8 py-6 h-auto group relative overflow-hidden shimmer-button"
             >
-              Book Call Now
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
-              size="lg"
-              variant="outline"
-              onClick={() => scrollToSection("how-it-works")}
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20 text-lg px-8 py-6 h-auto backdrop-blur-sm"
-            >
-              See How It Works
+              <span className="relative z-10 flex items-center">
+                Book Call Now
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </span>
             </Button>
           </div>
           <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
