@@ -23,39 +23,22 @@ const Hero = () => {
     }
   };
 
-  // Auto-spin carousel on mount - linear with ease at end, landing on GIF2 (index 1)
+  // Auto-spin carousel on mount - slow and linear, landing on GIF2 (index 1)
   useEffect(() => {
     const targetIndex = 1; // GIF2
-    const totalSteps = 8;
-    let currentStep = 0;
+    let currentIndex = 0;
     
-    const spin = () => {
-      if (currentStep < totalSteps) {
-        currentStep++;
-        const progress = currentStep / totalSteps;
-        
-        // Linear for first 75%, then ease in for last 25%
-        let easedProgress;
-        if (progress < 0.75) {
-          easedProgress = progress;
-        } else {
-          const easeProgress = (progress - 0.75) / 0.25;
-          easedProgress = 0.75 + (0.25 * (1 - Math.pow(1 - easeProgress, 3)));
-        }
-        
-        const currentIndex = Math.round(easedProgress * totalVideos) % totalVideos;
-        setCenterIndex(currentIndex);
-        
-        // Variable delay - faster at start, slower at end
-        const delay = progress < 0.75 ? 200 : 300 + (progress - 0.75) * 800;
-        setTimeout(spin, delay);
-      } else {
-        setCenterIndex(targetIndex);
+    const autoSpin = setInterval(() => {
+      currentIndex = (currentIndex + 1) % totalVideos;
+      setCenterIndex(currentIndex);
+      
+      if (currentIndex === targetIndex) {
+        clearInterval(autoSpin);
         setIsAutoSpinning(false);
       }
-    };
+    }, 600); // 600ms per transition = slower, linear pace
     
-    spin();
+    return () => clearInterval(autoSpin);
   }, []);
 
   const handlePrevious = () => {
