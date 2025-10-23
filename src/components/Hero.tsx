@@ -37,16 +37,16 @@ const Hero = () => {
           </div>
           <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-2">10x</div>
-              <div className="text-white/80 text-sm">Faster Production</div>
+              <div className="text-4xl font-bold text-white mb-2">52%</div>
+              <div className="text-white/80 text-sm">CPA Reduction</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-2">90%</div>
-              <div className="text-white/80 text-sm">Time Saved</div>
+              <div className="text-4xl font-bold text-white mb-2">3500+</div>
+              <div className="text-white/80 text-sm">Creatives Delivered</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-2">500+</div>
-              <div className="text-white/80 text-sm">Videos Delivered</div>
+              <div className="text-4xl font-bold text-white mb-2">70%</div>
+              <div className="text-white/80 text-sm">Faster Turnarounds</div>
             </div>
           </div>
         </div>

@@ -236,6 +236,13 @@ All colors MUST be HSL.
     }
   }
 
+  .shimmer-button {
+    box-shadow: 
+      0 0 40px rgba(126, 62, 255, 0.6),
+      0 0 80px rgba(126, 62, 255, 0.3),
+      0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
   .shimmer-button::before {
     content: '';
     position: absolute;
@@ -246,11 +253,12 @@ All colors MUST be HSL.
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
+      rgba(147, 51, 234, 0.6) 50%,
       transparent 100%
     );
     animation: shimmer 3s infinite;
     z-index: 1;
+    filter: blur(8px);
   }
 
 }

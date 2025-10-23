@@ -5,16 +5,12 @@ import CaseStudies from "@/components/CaseStudies";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
-import gradientBg from "@/assets/gradient-bg.jpg";
 
 const Index = () => {
   return (
     <>
       {/* Fixed gradient background */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${gradientBg})` }}
-      />
+      <div className="site-gradient-bg" />
       
       {/* Page content */}
       <div className="min-h-screen relative z-10">
