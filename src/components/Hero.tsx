@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ParticleNetwork } from "./ParticleNetwork";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
@@ -14,8 +14,7 @@ import gif8 from "@/assets/videos/GIF8.gif";
 const Hero = () => {
   const totalVideos = 8;
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(7); // Start at index 7
-  const [isAutoSpinning, setIsAutoSpinning] = useState(true);
+  const [centerIndex, setCenterIndex] = useState(1); // Start at GIF2 (index 1)
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -24,34 +23,12 @@ const Hero = () => {
     }
   };
 
-  // Auto-spin carousel on mount - show 2 videos then land on GIF2 (index 1)
-  useEffect(() => {
-    const sequence = [7, 0, 1]; // Show 2 videos (index 7, 0) then land on GIF2 (index 1)
-    let step = 0;
-    
-    const autoSpin = setInterval(() => {
-      step++;
-      if (step < sequence.length) {
-        setCenterIndex(sequence[step]);
-      } else {
-        clearInterval(autoSpin);
-        setIsAutoSpinning(false);
-      }
-    }, 700); // 700ms per transition for smooth, linear movement
-    
-    return () => clearInterval(autoSpin);
-  }, []);
-
   const handlePrevious = () => {
-    if (!isAutoSpinning) {
-      setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
-    }
+    setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
   };
 
   const handleNext = () => {
-    if (!isAutoSpinning) {
-      setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
-    }
+    setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
   };
 
   return (
@@ -88,7 +65,7 @@ const Hero = () => {
           </div>
 
           {/* Right side - Stacked Carousel */}
-          <div className="hidden lg:block relative h-[600px]">
+          <div className="hidden lg:block relative h-[600px] animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
             {/* Navigation Arrows */}
             <button
               onClick={handlePrevious}
