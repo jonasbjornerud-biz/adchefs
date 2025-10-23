@@ -1,6 +1,6 @@
-import aiHiring from "@/assets/ai-hiring.jpg";
-import editorDevelopment from "@/assets/editor-development.jpg";
-import creativeIntelligence from "@/assets/creative-intelligence.jpg";
+import aiHiring from "@/assets/hiring.gif";
+import editorDevelopment from "@/assets/mentoring.gif";
+import creativeIntelligence from "@/assets/creative.gif";
 
 const steps = [
   {
