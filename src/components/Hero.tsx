@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import gif1 from "@/assets/videos/GIF1.gif";
@@ -17,6 +17,7 @@ const Hero = () => {
   // Use original upload order, center the last upload (#8)
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
   const [centerIndex, setCenterIndex] = useState(1);
+  const [isAutoSpinning, setIsAutoSpinning] = useState(true);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -25,18 +26,36 @@ const Hero = () => {
     }
   };
 
+  // Auto-spin carousel on mount
+  useEffect(() => {
+    let spinCount = 0;
+    const autoSpin = setInterval(() => {
+      setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
+      spinCount++;
+      if (spinCount >= 4) { // Spin through ~4 items in ~2 seconds
+        clearInterval(autoSpin);
+        setIsAutoSpinning(false);
+      }
+    }, 500);
+    return () => clearInterval(autoSpin);
+  }, []);
+
   const handlePrevious = () => {
-    setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
+    if (!isAutoSpinning) {
+      setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
+    }
   };
 
   const handleNext = () => {
-    setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
+    if (!isAutoSpinning) {
+      setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
+    }
   };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Non-interactive Spline robot background */}
-      <div className="absolute inset-0 z-0 opacity-20 scale-75">
+      <div className="absolute inset-0 z-0 opacity-20 scale-75 translate-y-32 mix-blend-screen">
         <SplineScene 
           scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
           className="w-full h-full"
