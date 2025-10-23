@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { AuroraCanvas } from "@/components/ui/ambient-aurora";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
 import gif3 from "@/assets/videos/GIF3.gif";
@@ -32,7 +33,10 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0b0613]">
+      {/* Ambient Aurora Background */}
+      <AuroraCanvas speed={0.008} intensity={0.3} tint="#6b4bff" grain={0.08} />
+      
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
