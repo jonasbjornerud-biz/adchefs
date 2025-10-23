@@ -11,19 +11,46 @@ import video6 from "@/assets/videos/GIF6.webm";
 import video7 from "@/assets/videos/GIF7.webm";
 import video8 from "@/assets/videos/GIF8.webm";
 
-const Hero = () => {
+interface HeroProps {
+  onVideosLoaded?: () => void;
+}
+
+const Hero = ({ onVideosLoaded }: HeroProps) => {
   const totalVideos = 8;
   const videoSources = [video4, video2, video3, video1, video5, video6, video7, video8];
   const [centerIndex, setCenterIndex] = useState(1); // Start at video2 (index 1), video4 on left
 
-  // Preload videos for faster loading
+  // Preload videos and notify when all are loaded
   useEffect(() => {
-    videoSources.forEach((videoSrc) => {
-      const video = document.createElement('video');
-      video.src = videoSrc;
-      video.preload = 'auto';
+    let loadedCount = 0;
+    const totalCount = videoSources.length;
+
+    const videoPromises = videoSources.map((videoSrc) => {
+      return new Promise<void>((resolve) => {
+        const video = document.createElement('video');
+        video.src = videoSrc;
+        video.preload = 'auto';
+        
+        video.onloadeddata = () => {
+          loadedCount++;
+          if (loadedCount === totalCount && onVideosLoaded) {
+            onVideosLoaded();
+          }
+          resolve();
+        };
+        
+        video.onerror = () => {
+          loadedCount++;
+          if (loadedCount === totalCount && onVideosLoaded) {
+            onVideosLoaded();
+          }
+          resolve();
+        };
+      });
     });
-  }, []);
+
+    Promise.all(videoPromises);
+  }, [onVideosLoaded]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
