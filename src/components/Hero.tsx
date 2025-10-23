@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
@@ -12,14 +12,23 @@ import gif8 from "@/assets/videos/GIF8.gif";
 
 const Hero = () => {
   const totalVideos = 8;
-  const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(3);
+  // Reordered: GIF1 left of center, GIF7 center, GIF4 right of center
+  const videoGifs = [gif8, gif6, gif1, gif7, gif4, gif2, gif3, gif5];
+  const [centerIndex, setCenterIndex] = useState(3);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handlePrevious = () => {
+    setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
+  };
+
+  const handleNext = () => {
+    setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
   };
 
   return (
@@ -68,20 +77,36 @@ const Hero = () => {
 
           {/* Right side - Stacked Carousel */}
           <div className="hidden lg:block relative h-[600px]">
+            {/* Navigation Arrows */}
+            <button
+              onClick={handlePrevious}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-accent/60 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              aria-label="Previous video"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+            
+            <button
+              onClick={handleNext}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-accent/60 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              aria-label="Next video"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </button>
+
             <div className="stacked-carousel-container">
               {videoGifs.map((gif, i) => {
-                const centerIndex = hoveredIndex ?? 3;
                 const offset = i - centerIndex;
                 
                 const positions = [
-                  { x: -180, y: 40, rotate: -12, z: -100, scale: 0.85 },
-                  { x: -120, y: 20, rotate: -8, z: -60, scale: 0.9 },
-                  { x: -60, y: 5, rotate: -4, z: -30, scale: 0.95 },
+                  { x: -200, y: 45, rotate: -12, z: -120, scale: 0.82 },
+                  { x: -135, y: 22, rotate: -8, z: -70, scale: 0.88 },
+                  { x: -70, y: 8, rotate: -4, z: -35, scale: 0.94 },
                   { x: 0, y: 0, rotate: 0, z: 0, scale: 1 },
-                  { x: 60, y: 5, rotate: 4, z: -30, scale: 0.95 },
-                  { x: 120, y: 20, rotate: 8, z: -60, scale: 0.9 },
-                  { x: 180, y: 40, rotate: 12, z: -100, scale: 0.85 },
-                  { x: 240, y: 60, rotate: 16, z: -140, scale: 0.8 },
+                  { x: 70, y: 8, rotate: 4, z: -35, scale: 0.94 },
+                  { x: 135, y: 22, rotate: 8, z: -70, scale: 0.88 },
+                  { x: 200, y: 45, rotate: 12, z: -120, scale: 0.82 },
+                  { x: 265, y: 68, rotate: 16, z: -170, scale: 0.76 },
                 ];
                 
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
@@ -90,15 +115,13 @@ const Hero = () => {
                 return (
                   <div
                     key={i}
-                    className="stacked-carousel-item cursor-pointer"
-                    onMouseEnter={() => setHoveredIndex(i)}
-                    onMouseLeave={() => setHoveredIndex(3)}
+                    className="stacked-carousel-item"
                     style={{
                       transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+                    <div className="aspect-[9/16] w-[190px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
                       <img 
                         src={gif} 
                         alt={`Video ${i + 1}`}
