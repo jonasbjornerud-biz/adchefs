@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ParticleNetwork } from "./ParticleNetwork";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
@@ -15,6 +15,14 @@ const Hero = () => {
   const totalVideos = 8;
   const videoGifs = [gif4, gif2, gif3, gif1, gif5, gif6, gif7, gif8];
   const [centerIndex, setCenterIndex] = useState(1); // Start at GIF2 (index 1), GIF4 on left
+
+  // Preload GIFs for faster loading
+  useEffect(() => {
+    videoGifs.forEach((gif) => {
+      const img = new Image();
+      img.src = gif;
+    });
+  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -65,22 +73,22 @@ const Hero = () => {
           </div>
 
           {/* Right side - Stacked Carousel */}
-          <div className="hidden lg:block relative h-[600px] animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
+          <div className="relative h-[400px] md:h-[500px] lg:h-[600px] mt-8 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
             {/* Navigation Arrows */}
             <button
               onClick={handlePrevious}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
+              className="absolute left-0 md:left-0 top-1/2 -translate-y-1/2 z-[200] w-10 h-10 md:w-12 md:h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
               aria-label="Previous video"
             >
-              <ChevronLeft className="w-6 h-6 text-foreground" />
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
             </button>
 
             <button
               onClick={handleNext}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-12 h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
+              className="absolute right-0 md:right-0 top-1/2 -translate-y-1/2 z-[200] w-10 h-10 md:w-12 md:h-12 rounded-full bg-card/80 backdrop-blur-sm border border-border flex items-center justify-center hover:bg-accent/20 hover:border-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-accent/30"
               aria-label="Next video"
             >
-              <ChevronRight className="w-6 h-6 text-foreground" />
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
             </button>
 
             <div className="stacked-carousel-container">
@@ -121,8 +129,13 @@ const Hero = () => {
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <div className="aspect-[9/16] w-[210px] rounded-2xl border border-border backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-lg hover:shadow-accent/30 transition-all duration-500 shadow-lg">
-                      <img src={gif} alt={`Video ${i + 1}`} className="w-full h-full object-cover" />
+                    <div className="aspect-[9/16] w-[140px] md:w-[180px] lg:w-[210px] rounded-xl md:rounded-2xl border border-border backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-lg hover:shadow-accent/30 transition-all duration-500 shadow-lg">
+                      <img 
+                        src={gif} 
+                        alt={`Video ${i + 1}`} 
+                        className="w-full h-full object-cover"
+                        loading={Math.abs(i - centerIndex) <= 1 ? "eager" : "lazy"}
+                      />
                     </div>
                   </div>
                 );
