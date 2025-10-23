@@ -13,7 +13,7 @@ import gif8 from "@/assets/videos/GIF8.gif";
 const Hero = () => {
   const totalVideos = 8;
   const videoGifs = [gif1, gif2, gif3, gif4, gif5, gif6, gif7, gif8];
-  const [centerIndex, setCenterIndex] = useState(0);
+  const [centerIndex, setCenterIndex] = useState(7); // Start at index 7
   const [isAutoSpinning, setIsAutoSpinning] = useState(true);
 
   const scrollToSection = (id: string) => {
@@ -23,20 +23,20 @@ const Hero = () => {
     }
   };
 
-  // Auto-spin carousel on mount - slow and linear, landing on GIF2 (index 1)
+  // Auto-spin carousel on mount - show 2 videos then land on GIF2 (index 1)
   useEffect(() => {
-    const targetIndex = 1; // GIF2
-    let currentIndex = 0;
+    const sequence = [7, 0, 1]; // Show 2 videos (index 7, 0) then land on GIF2 (index 1)
+    let step = 0;
     
     const autoSpin = setInterval(() => {
-      currentIndex = (currentIndex + 1) % totalVideos;
-      setCenterIndex(currentIndex);
-      
-      if (currentIndex === targetIndex) {
+      step++;
+      if (step < sequence.length) {
+        setCenterIndex(sequence[step]);
+      } else {
         clearInterval(autoSpin);
         setIsAutoSpinning(false);
       }
-    }, 600); // 600ms per transition = slower, linear pace
+    }, 700); // 700ms per transition for smooth, linear movement
     
     return () => clearInterval(autoSpin);
   }, []);
