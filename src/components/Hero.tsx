@@ -72,7 +72,7 @@ const Hero = () => {
               Creative strategy, <span className="text-purple-highlight">AI insights</span>, and elite editors working
               together to deliver videos that drive consistent growth.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-start mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
               <Button
                 size="lg"
                 variant="cta"
@@ -84,20 +84,6 @@ const Hero = () => {
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Button>
-            </div>
-            <div className="grid grid-cols-3 gap-8 max-w-xl">
-              <div className="text-left">
-                <div className="text-4xl font-bold text-white mb-2">52%</div>
-                <div className="text-white/80 text-sm">CPA Reduction</div>
-              </div>
-              <div className="text-left">
-                <div className="text-4xl font-bold text-white mb-2">3500+</div>
-                <div className="text-white/80 text-sm">Creatives Delivered</div>
-              </div>
-              <div className="text-left">
-                <div className="text-4xl font-bold text-white mb-2">70%</div>
-                <div className="text-white/80 text-sm">Faster Turnarounds</div>
-              </div>
             </div>
           </div>
 
