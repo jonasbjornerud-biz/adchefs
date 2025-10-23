@@ -231,59 +231,6 @@ All colors MUST be HSL.
     animation: subtle-float 8s ease-in-out infinite;
   }
 
-  /* Video Showcase Grid */
-  .video-showcase-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 1rem;
-    height: 100%;
-    grid-template-areas:
-      "card1 card1 card2 card3"
-      "card1 card1 card2 card4"
-      "card5 card6 card7 card4"
-      "card5 card8 card7 card9"
-      "card10 card8 card10 card9";
-  }
-
-  .video-card {
-    position: relative;
-    animation: video-float 6s ease-in-out infinite;
-    transition: transform 0.3s ease;
-  }
-
-  .video-card:nth-child(odd) {
-    transform: rotate(-2deg);
-  }
-
-  .video-card:nth-child(even) {
-    transform: rotate(2deg);
-  }
-
-  .video-card:hover {
-    transform: scale(1.05) rotate(0deg) !important;
-    z-index: 10;
-  }
-
-  @keyframes video-float {
-    0%, 100% {
-      transform: translateY(0) rotate(var(--rotate, 0deg));
-    }
-    50% {
-      transform: translateY(-8px) rotate(var(--rotate, 0deg));
-    }
-  }
-
-  .video-card:nth-child(1) { --rotate: -2deg; animation-delay: 0s; }
-  .video-card:nth-child(2) { --rotate: 2deg; animation-delay: 0.3s; }
-  .video-card:nth-child(3) { --rotate: -1deg; animation-delay: 0.6s; }
-  .video-card:nth-child(4) { --rotate: 3deg; animation-delay: 0.9s; }
-  .video-card:nth-child(5) { --rotate: -3deg; animation-delay: 1.2s; }
-  .video-card:nth-child(6) { --rotate: 1deg; animation-delay: 1.5s; }
-  .video-card:nth-child(7) { --rotate: -2deg; animation-delay: 1.8s; }
-  .video-card:nth-child(8) { --rotate: 2deg; animation-delay: 2.1s; }
-  .video-card:nth-child(9) { --rotate: -1deg; animation-delay: 2.4s; }
-  .video-card:nth-child(10) { --rotate: 3deg; animation-delay: 2.7s; }
 
 
   .shimmer-button {
