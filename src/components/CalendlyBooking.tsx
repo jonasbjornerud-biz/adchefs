@@ -1,6 +1,6 @@
 const CalendlyBooking = () => {
   return (
-    <section id="booking" className="py-24 bg-background/30">
+    <section id="booking" className="py-24 bg-neutral-950/70">
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-start max-w-7xl mx-auto">
           {/* Left side - Information */}

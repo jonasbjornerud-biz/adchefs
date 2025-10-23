@@ -102,7 +102,7 @@ All colors MUST be HSL.
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: linear-gradient(135deg, #0a0a14 0%, #1a0a2e 40%, #2d1b4e 70%, #4a2862 100%);
+    background: linear-gradient(135deg, #050508 0%, #0f0820 40%, #1a0f32 70%, #2a1540 100%);
   }
   
   /* Animated diagonal gradient sweep */
@@ -111,10 +111,10 @@ All colors MUST be HSL.
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(ellipse 1400px 900px at 20% 30%, rgba(147, 51, 234, 0.25), transparent 60%),
-      radial-gradient(ellipse 1200px 800px at 80% 70%, rgba(168, 85, 247, 0.2), transparent 65%),
-      radial-gradient(ellipse 1000px 700px at 50% 50%, rgba(217, 70, 239, 0.15), transparent 55%),
-      radial-gradient(ellipse 800px 600px at 10% 80%, rgba(109, 40, 217, 0.18), transparent 50%);
+      radial-gradient(ellipse 1400px 900px at 20% 30%, rgba(147, 51, 234, 0.2), transparent 60%),
+      radial-gradient(ellipse 1200px 800px at 80% 70%, rgba(168, 85, 247, 0.15), transparent 65%),
+      radial-gradient(ellipse 1000px 700px at 50% 50%, rgba(217, 70, 239, 0.12), transparent 55%),
+      radial-gradient(ellipse 800px 600px at 10% 80%, rgba(109, 40, 217, 0.14), transparent 50%);
     filter: blur(120px);
     animation: gradient-shift 25s ease-in-out infinite;
   }
@@ -124,10 +124,10 @@ All colors MUST be HSL.
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 250px 250px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='7' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
     background-repeat: repeat;
-    opacity: 0.35;
+    opacity: 0.45;
     pointer-events: none;
     mix-blend-mode: overlay;
   }
@@ -233,6 +233,19 @@ All colors MUST be HSL.
     100% {
       transform: translateX(100%);
     }
+  }
+
+  @keyframes subtle-float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(0, -10px) scale(1.01);
+    }
+  }
+
+  .animate-subtle-float {
+    animation: subtle-float 8s ease-in-out infinite;
   }
 
   .shimmer-button {
