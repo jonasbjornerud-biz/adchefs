@@ -1,17 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
 
 const Hero = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const totalVideos = 10;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalVideos);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -65,29 +56,25 @@ const Hero = () => {
           </div>
 
           {/* Right side - 3D Carousel */}
-          <div className="hidden lg:block relative h-[700px]">
+          <div className="hidden lg:block relative h-[600px]">
             <div className="carousel-3d-container">
-              <div className="carousel-3d">
+              <div className="carousel-3d carousel-rotate">
                 {[...Array(totalVideos)].map((_, i) => {
                   const angle = (360 / totalVideos) * i;
-                  const offset = i - currentIndex;
-                  const isActive = i === currentIndex;
                   
                   return (
                     <div
                       key={i}
                       className="carousel-3d-item"
                       style={{
-                        transform: `rotateY(${angle - currentIndex * (360 / totalVideos)}deg) translateZ(450px)`,
-                        opacity: Math.abs(offset) <= 2 ? 1 : 0.3,
-                        zIndex: isActive ? 10 : 1,
+                        transform: `rotateY(${angle}deg) translateZ(350px)`,
                       }}
                     >
-                      <div className="aspect-[9/16] w-[280px] bg-neutral-800/50 rounded-2xl border border-white/10 backdrop-blur-sm overflow-hidden hover:border-accent/50 transition-all duration-300">
+                      <div className="aspect-[9/16] w-[220px] bg-neutral-800/50 rounded-2xl border border-white/10 backdrop-blur-sm overflow-hidden hover:border-accent/50 transition-all duration-300">
                         {/* Placeholder for GIF - replace with actual GIF source */}
                         <div className="w-full h-full flex items-center justify-center text-white/60 text-sm flex-col gap-2">
-                          <div className="text-2xl font-bold">Video {i + 1}</div>
-                          <div>1080x1920</div>
+                          <div className="text-xl font-bold">Video {i + 1}</div>
+                          <div className="text-xs">1080x1920</div>
                         </div>
                       </div>
                     </div>
