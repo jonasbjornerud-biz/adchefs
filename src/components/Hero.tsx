@@ -11,16 +11,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* UnicornStudio Background with overlay */}
-      <div className="absolute inset-0 w-full h-full">
-        <div 
-          data-us-project="HAczCrp9KHzB4URilldv" 
-          className="absolute inset-0 w-full h-full animate-subtle-float"
-          style={{ pointerEvents: 'none' }}
-        />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="max-w-[960px] mx-auto text-center animate-fade-in">
           <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
