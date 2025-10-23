@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "How does the AI-assisted video system work?",
-    answer: "Our proprietary AI analyzes your brand guidelines, product catalog, and target audience to generate creative briefs and automate repetitive editing tasks. Elite editors then refine the output to ensure premium quality and brand consistency.",
+    question: "How does the AI assisted video system work?",
+    answer: "The system analyzes top performing ads from leading US brands in your niche. It identifies creative patterns, angles, and hooks that drive conversions. These insights are turned into structured briefs that guide editors toward faster and more consistent ad creation.",
   },
   {
-    question: "What types of video content can you produce?",
-    answer: "We specialize in product demos, social media ads, testimonial videos, tutorial content, unboxing videos, and brand storytelling. Our system is optimized for e-commerce and DTC brands across all major platforms.",
+    question: "What's the difference between Creative Strategy and the Editor Plan?",
+    answer: "Creative Strategy focuses on concept direction, data analysis, and creative testing. The Editor Plan handles daily video production. You can choose one or combine both depending on your internal setup.",
   },
   {
-    question: "How quickly can you deliver completed videos?",
-    answer: "Typical turnaround time is 3-5 business days for standard projects. Rush orders can be accommodated with 24-48 hour delivery. Our AI automation significantly reduces production time compared to traditional agencies.",
+    question: "Can we use our own editors with your system?",
+    answer: "Yes. Your editors can fully integrate into our workflow and use the same data driven briefs, insights, and QA standards. You only subscribe to the strategy layer if you already have an editing team.",
+  },
+  {
+    question: "How fast is onboarding and first delivery?",
+    answer: "Onboarding takes seven to fourteen days. After your first brief is approved, finished videos are usually delivered within three to four business days depending on project volume.",
   },
   {
     question: "What's included in the monthly service?",
-    answer: "Plans include unlimited revisions, dedicated account manager, platform-specific optimization (YouTube, Instagram, TikTok, etc.), brand guidelines integration, and access to our stock footage library. Custom packages available.",
-  },
-  {
-    question: "Do you require a long-term contract?",
-    answer: "No long-term contracts required. We offer flexible month-to-month plans. Most clients stay with us because of the results, not because they have to.",
+    answer: "You get structured creative briefs, video deliverables, AI backed insights, and feedback rounds within scope. Everything is managed in your dashboard for speed and transparency.",
   },
   {
     question: "Can you match our existing brand style?",
-    answer: "Absolutely. Our onboarding process includes a deep dive into your brand guidelines, existing content, and style preferences. Our AI learns your brand language, and our editors ensure every video aligns perfectly with your vision.",
+    answer: "Yes. We create customized SOPs based on your product research, ideal customer profiles, and brand assets. Editors follow these systems precisely so every video fits your tone and creative direction.",
   },
 ];
 
