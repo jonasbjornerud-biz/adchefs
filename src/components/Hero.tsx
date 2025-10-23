@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { SplineScene } from "@/components/ui/splite";
+import { Spotlight } from "@/components/ui/spotlight";
 import gif1 from "@/assets/videos/GIF1.gif";
 import gif2 from "@/assets/videos/GIF2.gif";
 import gif3 from "@/assets/videos/GIF3.gif";
@@ -33,6 +35,17 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Non-interactive Spline robot background */}
+      <div className="absolute inset-0 z-0 opacity-60">
+        <SplineScene 
+          scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
+          className="w-full h-full"
+        />
+      </div>
+      
+      {/* Optional static spotlight */}
+      <Spotlight className="top-0 left-1/2 -translate-x-1/2" fill="#6b4bff" />
+      
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
