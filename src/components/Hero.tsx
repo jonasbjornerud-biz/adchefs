@@ -64,32 +64,42 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right side - 3D Carousel */}
+          {/* Right side - Stacked Carousel */}
           <div className="hidden lg:block relative h-[600px]">
-            <div className="carousel-3d-container">
-              <div className="carousel-3d carousel-rotate">
-                {[...Array(totalVideos)].map((_, i) => {
-                  const angle = (360 / totalVideos) * i;
-                  
-                  return (
-                    <div
-                      key={i}
-                      className="carousel-3d-item"
-                      style={{
-                        transform: `rotateY(${angle}deg) translateZ(350px)`,
-                      }}
-                    >
-                      <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
-                        <img 
-                          src={videoGifs[i]} 
-                          alt={`Video ${i + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+            <div className="stacked-carousel-container">
+              {videoGifs.map((gif, i) => {
+                const positions = [
+                  { x: -180, y: 40, rotate: -12, z: -100, scale: 0.85 },
+                  { x: -120, y: 20, rotate: -8, z: -60, scale: 0.9 },
+                  { x: -60, y: 5, rotate: -4, z: -30, scale: 0.95 },
+                  { x: 0, y: 0, rotate: 0, z: 0, scale: 1 },
+                  { x: 60, y: 5, rotate: 4, z: -30, scale: 0.95 },
+                  { x: 120, y: 20, rotate: 8, z: -60, scale: 0.9 },
+                  { x: 180, y: 40, rotate: 12, z: -100, scale: 0.85 },
+                  { x: 240, y: 60, rotate: 16, z: -140, scale: 0.8 },
+                ];
+                
+                const pos = positions[i];
+                
+                return (
+                  <div
+                    key={i}
+                    className="stacked-carousel-item"
+                    style={{
+                      transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
+                      zIndex: totalVideos - Math.abs(i - 3),
+                    }}
+                  >
+                    <div className="aspect-[9/16] w-[160px] rounded-2xl border border-white/20 backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+                      <img 
+                        src={gif} 
+                        alt={`Video ${i + 1}`}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
