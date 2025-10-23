@@ -36,7 +36,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Non-interactive Spline robot background */}
-      <div className="absolute inset-0 z-0 opacity-60">
+      <div className="absolute inset-0 z-0 opacity-20 scale-75">
         <SplineScene 
           scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" 
           className="w-full h-full"
@@ -49,7 +49,7 @@ const Hero = () => {
       <div className="container mx-auto px-6 py-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Content */}
-          <div className="max-w-[700px] text-left animate-fade-in">
+          <div className="max-w-[700px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-white/5 backdrop-blur-sm border border-white/10">
               <span className="text-sm text-white/90">Blending AI automations with expert video editors</span>
             </div>
