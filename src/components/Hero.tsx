@@ -98,7 +98,14 @@ const Hero = () => {
 
             <div className="stacked-carousel-container">
               {videoGifs.map((gif, i) => {
-                const offset = i - centerIndex;
+                let offset = i - centerIndex;
+                
+                // Wrap around logic for balanced distribution
+                if (offset > totalVideos / 2) {
+                  offset -= totalVideos;
+                } else if (offset < -totalVideos / 2) {
+                  offset += totalVideos;
+                }
 
                 const positions = [
                   { x: -240, y: 50, rotate: -12, z: -140, scale: 0.84 },
@@ -108,7 +115,6 @@ const Hero = () => {
                   { x: 85, y: 10, rotate: 4, z: -40, scale: 0.96 },
                   { x: 165, y: 25, rotate: 8, z: -85, scale: 0.9 },
                   { x: 240, y: 50, rotate: 12, z: -140, scale: 0.84 },
-                  { x: 315, y: 72, rotate: 16, z: -190, scale: 0.78 },
                 ];
 
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
