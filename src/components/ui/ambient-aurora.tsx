@@ -72,7 +72,7 @@ export const AuroraCanvas = ({
 
     initBlobs();
 
-    // Generate purple film grain
+    // Generate purple film grain with enhanced intensity
     const generateGrain = () => {
       const grainCanvas = document.createElement("canvas");
       grainCanvas.width = 200;
@@ -84,12 +84,12 @@ export const AuroraCanvas = ({
       const data = imageData.data;
 
       for (let i = 0; i < data.length; i += 4) {
-        const noise = (Math.random() - 0.5) * grain * 255;
-        // Purple-biased monochrome grain
-        data[i] = 107 + noise; // R (purple bias)
-        data[i + 1] = 75 + noise * 0.7; // G
-        data[i + 2] = 255 + noise * 0.8; // B (purple bias)
-        data[i + 3] = Math.abs(noise) * 0.5; // Alpha
+        const noise = (Math.random() - 0.5) * grain * 320;
+        // Purple-biased monochrome grain with more intensity
+        data[i] = 107 + noise * 1.2; // R (purple bias)
+        data[i + 1] = 75 + noise * 0.8; // G
+        data[i + 2] = 255 + noise; // B (purple bias)
+        data[i + 3] = Math.abs(noise) * 0.7; // Alpha - increased visibility
       }
 
       grainCtx.putImageData(imageData, 0, 0);
@@ -149,9 +149,9 @@ export const AuroraCanvas = ({
         );
       });
 
-      // Apply purple film grain
+      // Apply purple film grain with enhanced visibility
       if (grainPattern) {
-        ctx.globalAlpha = grain;
+        ctx.globalAlpha = Math.min(grain * 1.5, 1);
         ctx.globalCompositeOperation = "overlay";
         const pattern = ctx.createPattern(grainPattern, "repeat");
         if (pattern) {
