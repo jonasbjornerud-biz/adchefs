@@ -6,26 +6,25 @@ const CalendlyBooking = () => {
           {/* Left side - Information */}
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              🚀 Ready to scale your creative system?
+              Ready to scale your creative system?
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                We partner with only 2 to 3 new e-commerce brands per month, focusing on those serious about systemizing creative production and scaling profitably.
+                We work with only 2–3 e-commerce brands each month—brands ready to streamline creative operations and scale with precision.
               </p>
               <p className="font-semibold text-foreground">
                 Book a call only if you:
               </p>
               <ol className="space-y-3 list-decimal list-inside">
-                <li>Spend at least €5,000 per month on paid ads</li>
+                <li>Have a monthly ad spend of at least €5,000</li>
                 <li>Want to increase creative output efficiently</li>
-                <li>Value data-driven creative strategy powered by AI insights and top-tier video editors</li>
+                <li>Value data-driven creative strategy powered by AI insights and elite video editors</li>
               </ol>
               <p className="font-semibold text-foreground pt-4">
-                This is not a sales call.
+                This isn't a sales pitch.
               </p>
               <p>
-                It is a focused strategy chat to see if your brand fits our model.
-                If there is a strong match, we will prepare a custom creative growth plan showing exactly how to increase ad volume, consistency, and ROI through your chosen creative setup.
+                It's a strategy session to assess fit and, if aligned, outline a tailored plan to expand your ad volume, improve consistency, and maximize ROI through a scalable creative system.
               </p>
             </div>
           </div>
