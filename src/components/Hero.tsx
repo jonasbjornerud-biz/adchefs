@@ -14,7 +14,7 @@ import video8 from "@/assets/videos/GIF8.webm";
 const Hero = () => {
   const totalVideos = 8;
   const videoSources = [video4, video2, video3, video1, video5, video6, video7, video8];
-  const [centerIndex, setCenterIndex] = useState(1); // Start at video2 (index 1), video4 on left
+  const [centerIndex, setCenterIndex] = useState(0); // Start at video4/GIF9 (index 0) as center
 
   // Aggressive preloading for instant display
   useEffect(() => {
