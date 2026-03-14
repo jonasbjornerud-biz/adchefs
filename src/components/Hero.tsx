@@ -26,17 +26,17 @@ const Hero = () => {
   };
 
   return (
-    <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
+    <section className="hero-section relative h-screen flex items-center overflow-hidden">
       {/* CSS grain overlay */}
       <div className="hero-grain" />
-      <div className="container mx-auto px-6 py-12 md:py-20 relative z-10">
-        <div className="grid lg:grid-cols-[1fr_1.3fr] gap-8 lg:gap-16 items-center">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
           {/* Left side - Content */}
-          <div className="max-w-[540px] text-left animate-text-entrance">
+          <div className="max-w-[480px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.25)]">
               <span className="text-sm text-[#a0a0b8]">Blending AI automations with expert video editors</span>
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl lg:text-[4.2rem] font-bold mb-6 text-white leading-[1.08]">
               We cook up <span className="text-[#7e3dff]">ads</span> that{" "}
               <span className="text-[#7e3dff]">scale</span> your brand
             </h1>
@@ -60,7 +60,7 @@ const Hero = () => {
           </div>
 
           {/* Right side - Stacked Carousel */}
-          <div className="relative h-[400px] md:h-[550px] lg:h-[650px] mt-2 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
+          <div className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
             {/* Bloom glow behind cards */}
             <div className="carousel-bloom" />
             <div className="stacked-carousel-container">
@@ -78,13 +78,13 @@ const Hero = () => {
                 }
 
                 const positions = [
-                  { x: -240, y: 40, rotate: -10, z: -120, scale: 0.84 },
-                  { x: -160, y: 22, rotate: -7, z: -80, scale: 0.9 },
-                  { x: -80, y: 8, rotate: -3, z: -35, scale: 0.96 },
-                  { x: 0, y: 0, rotate: 0, z: 0, scale: 1 },
-                  { x: 80, y: 8, rotate: 3, z: -35, scale: 0.96 },
-                  { x: 160, y: 22, rotate: 7, z: -80, scale: 0.9 },
-                  { x: 240, y: 40, rotate: 10, z: -120, scale: 0.84 },
+                  { x: -260, y: 44, rotate: -11, z: -140, scale: 0.78 },
+                  { x: -175, y: 26, rotate: -7, z: -90, scale: 0.85 },
+                  { x: -88, y: 10, rotate: -3, z: -40, scale: 0.93 },
+                  { x: 0, y: 0, rotate: 0, z: 0, scale: 1.05 },
+                  { x: 88, y: 10, rotate: 3, z: -40, scale: 0.93 },
+                  { x: 175, y: 26, rotate: 7, z: -90, scale: 0.85 },
+                  { x: 260, y: 44, rotate: 11, z: -140, scale: 0.78 },
                 ];
 
                 const posIndex = Math.min(Math.max(offset + 3, 0), positions.length - 1);
@@ -103,22 +103,6 @@ const Hero = () => {
                   </div>
                 );
               })}
-            </div>
-
-            {/* Dot indicators */}
-            <div className="absolute bottom-2 md:bottom-4 left-1/2 -translate-x-1/2 z-[200] flex gap-2">
-              {videoSources.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCenterIndex(i)}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === centerIndex
-                      ? "w-6 h-2 bg-[#7e3dff]"
-                      : "w-2 h-2 bg-white/25 hover:bg-white/40"
-                  }`}
-                  aria-label={`Go to video ${i + 1}`}
-                />
-              ))}
             </div>
           </div>
         </div>
