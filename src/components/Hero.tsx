@@ -70,7 +70,7 @@ const Hero = () => {
           </div>
 
           {/* Right side - Stacked Carousel */}
-          <div className="relative h-[400px] md:h-[500px] lg:h-[600px] mt-8 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
+          <div className="relative h-[350px] md:h-[500px] lg:h-[600px] mt-4 lg:mt-0 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
             {/* Navigation Arrows */}
             <button
               onClick={handlePrevious}
