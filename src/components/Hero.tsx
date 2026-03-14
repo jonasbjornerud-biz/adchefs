@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useCallback } from "react";
 import VideoCard from "./VideoCard";
 
 const videoSources = [
@@ -14,20 +14,96 @@ const videoSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
 ];
 
+const DRAG_THRESHOLD = 50;
+
 const Hero = () => {
-  const totalVideos = 8;
+  const totalVideos = videoSources.length;
   const [centerIndex, setCenterIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Drag/touch state refs
+  const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
+  const isPointerDown = useRef(false);
+  const touchLocked = useRef<"horizontal" | "vertical" | null>(null);
+
+  const goNext = useCallback(() => {
+    setCenterIndex((prev) => (prev < totalVideos - 1 ? prev + 1 : 0));
+  }, [totalVideos]);
+
+  const goPrev = useCallback(() => {
+    setCenterIndex((prev) => (prev > 0 ? prev - 1 : totalVideos - 1));
+  }, [totalVideos]);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  // --- Mouse drag ---
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    isPointerDown.current = true;
+    dragStartX.current = e.clientX;
+    setIsDragging(false);
+    setDragOffset(0);
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isPointerDown.current) return;
+    const delta = e.clientX - dragStartX.current;
+    setDragOffset(delta * 0.3); // subtle follow
+    if (Math.abs(delta) > 5) setIsDragging(true);
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isPointerDown.current) return;
+    isPointerDown.current = false;
+    if (Math.abs(dragOffset) > DRAG_THRESHOLD * 0.3) {
+      if (dragOffset < 0) goNext();
+      else goPrev();
+    }
+    setDragOffset(0);
+    // Reset isDragging after a tick so click events on children are suppressed
+    setTimeout(() => setIsDragging(false), 0);
+  }, [dragOffset, goNext, goPrev]);
+
+  // --- Touch swipe ---
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    dragStartX.current = e.touches[0].clientX;
+    dragStartY.current = e.touches[0].clientY;
+    touchLocked.current = null;
+    setDragOffset(0);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    const dx = e.touches[0].clientX - dragStartX.current;
+    const dy = e.touches[0].clientY - dragStartY.current;
+
+    if (!touchLocked.current) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        touchLocked.current = Math.abs(dx) > Math.abs(dy) ? "horizontal" : "vertical";
+      }
+      return;
+    }
+
+    if (touchLocked.current === "vertical") return;
+
+    e.preventDefault();
+    setDragOffset(dx * 0.3);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (touchLocked.current === "horizontal" && Math.abs(dragOffset) > DRAG_THRESHOLD * 0.3) {
+      if (dragOffset < 0) goNext();
+      else goPrev();
+    }
+    setDragOffset(0);
+    touchLocked.current = null;
+  }, [dragOffset, goNext, goPrev]);
 
   return (
     <section className="hero-section relative h-screen flex items-center overflow-hidden">
-      {/* CSS grain overlay */}
       <div className="hero-grain" />
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
@@ -60,22 +136,41 @@ const Hero = () => {
           </div>
 
           {/* Right side - Stacked Carousel */}
-          <div className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
-            {/* Bloom glow behind cards */}
+          <div
+            className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in select-none"
+            style={{ animationDelay: '0.3s', animationFillMode: 'backwards', cursor: isDragging ? 'grabbing' : 'grab' }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Arrow buttons */}
+            <button
+              onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              className="carousel-arrow carousel-arrow-left"
+              aria-label="Previous video"
+            >
+              <ChevronLeft className="w-4 h-4 text-white/80 group-hover:text-white transition-colors" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              className="carousel-arrow carousel-arrow-right"
+              aria-label="Next video"
+            >
+              <ChevronRight className="w-4 h-4 text-white/80 group-hover:text-white transition-colors" />
+            </button>
+
             <div className="carousel-bloom" />
             <div className="stacked-carousel-container">
               {videoSources.map((videoSrc, i) => {
                 let offset = i - centerIndex;
-                
-                if (offset > totalVideos / 2) {
-                  offset -= totalVideos;
-                } else if (offset < -totalVideos / 2) {
-                  offset += totalVideos;
-                }
+                if (offset > totalVideos / 2) offset -= totalVideos;
+                else if (offset < -totalVideos / 2) offset += totalVideos;
 
-                if (Math.abs(offset) > 3) {
-                  return null;
-                }
+                if (Math.abs(offset) > 3) return null;
 
                 const positions = [
                   { x: -260, y: 44, rotate: -11, z: -140, scale: 0.78 },
@@ -95,7 +190,7 @@ const Hero = () => {
                     key={i}
                     className="stacked-carousel-item"
                     style={{
-                      transform: `translate(${pos.x}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
+                      transform: `translate(${pos.x + dragOffset}px, ${pos.y}px) rotateY(${pos.rotate}deg) translateZ(${pos.z}px) scale(${pos.scale})`,
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
