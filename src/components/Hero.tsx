@@ -3,29 +3,22 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ParticleNetwork } from "./ParticleNetwork";
 import VideoCard from "./VideoCard";
-import video1 from "@/assets/videos/GIF1.webm";
-import video2 from "@/assets/videos/GIF2.webm";
-import video3 from "@/assets/videos/GIF3.webm";
-import video4 from "@/assets/videos/GIF4.webm";
-import video5 from "@/assets/videos/GIF5.webm";
-import video6 from "@/assets/videos/GIF6.webm";
-import video7 from "@/assets/videos/GIF7.webm";
-import video8 from "@/assets/videos/GIF8.webm";
+
+const videoSources = [
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF2_wnilkz.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501820/GIF11_dfnd9x.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF6_eycqkn.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF7_xrgax0.webm",
+  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
+];
 
 const Hero = () => {
   const totalVideos = 8;
-  const videoSources = [video4, video2, video3, video1, video5, video6, video7, video8];
-  const [centerIndex, setCenterIndex] = useState(0); // Start at video4/GIF9 (index 0) as center
+  const [centerIndex, setCenterIndex] = useState(0);
 
-  // Aggressive preloading for instant display
-  useEffect(() => {
-    videoSources.forEach((videoSrc) => {
-      const video = document.createElement('video');
-      video.src = videoSrc;
-      video.preload = 'auto';
-      video.load();
-    });
-  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
