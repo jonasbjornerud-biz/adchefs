@@ -132,17 +132,7 @@ const Hero = () => {
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <div className="aspect-[9/16] w-[140px] md:w-[180px] lg:w-[210px] rounded-xl md:rounded-2xl border border-border backdrop-blur-sm overflow-hidden hover:border-accent/60 hover:shadow-lg hover:shadow-accent/30 transition-all duration-500 shadow-lg">
-                      <video 
-                        src={videoSrc} 
-                        className="w-full h-full object-cover"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                      />
-                    </div>
+                    <VideoCard src={videoSrc} isCenter={i === centerIndex} />
                   </div>
                 );
               })}
