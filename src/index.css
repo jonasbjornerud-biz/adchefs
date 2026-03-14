@@ -9,23 +9,23 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Light mode colors */
-    --background: 0 0% 98%;
-    --foreground: 270 75% 6%;
+    --background: 248 50% 98%;
+    --foreground: 240 50% 5%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 75% 6%;
+    --card-foreground: 240 50% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 75% 6%;
+    --popover-foreground: 240 50% 5%;
 
-    --primary: 270 75% 6%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 240 50% 5%;
+    --primary-foreground: 248 50% 98%;
 
-    --secondary: 260 30% 95%;
-    --secondary-foreground: 270 75% 6%;
+    --secondary: 250 30% 95%;
+    --secondary-foreground: 240 50% 5%;
 
-    --muted: 260 20% 92%;
-    --muted-foreground: 270 20% 40%;
+    --muted: 250 20% 92%;
+    --muted-foreground: 240 15% 38%;
 
     --accent: 260 100% 62%;
     --accent-foreground: 0 0% 98%;
@@ -33,22 +33,11 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 20% 88%;
-    --input: 260 20% 92%;
+    --border: 250 20% 88%;
+    --input: 250 20% 92%;
     --ring: 260 100% 62%;
 
     --radius: 0.75rem;
-
-    /* Light mode gradient colors */
-    --gradient-light-start: 260 30% 98%;
-    --gradient-light-mid: 260 40% 95%;
-    --gradient-light-end: 260 50% 92%;
-    --gradient-glow: 260 100% 62%;
-    
-    /* Brand colors */
-    --brand-purple: 260 100% 62%;
-    --brand-black: 270 75% 6%;
-    --brand-white: 0 0% 100%;
   }
 
   .dark {
@@ -306,16 +295,17 @@ All colors MUST be HSL.
     }
   }
 
-  /* Hero section — centered glow */
-  .hero-section {
+  /* Hero section — dark mode (default) */
+  .dark .hero-section {
     background:
       radial-gradient(ellipse 70% 50% at 55% 55%, rgba(126, 61, 255, 0.18) 0%, transparent 70%),
       radial-gradient(ellipse 30% 20% at 50% 8%, rgba(126, 61, 255, 0.10) 0%, transparent 65%),
       #09090f;
+    transition: background 0.3s ease;
   }
 
   @media (max-width: 768px) {
-    .hero-section {
+    .dark .hero-section {
       background:
         radial-gradient(ellipse 85% 45% at 50% 55%, rgba(126, 61, 255, 0.16) 0%, transparent 70%),
         radial-gradient(ellipse 40% 18% at 50% 5%, rgba(126, 61, 255, 0.08) 0%, transparent 65%),
@@ -323,8 +313,26 @@ All colors MUST be HSL.
     }
   }
 
-  /* Hero grain overlay */
-  .hero-grain {
+  /* Hero section — light mode */
+  .hero-section {
+    background:
+      radial-gradient(ellipse 70% 50% at 55% 55%, rgba(126, 61, 255, 0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 20% at 50% 8%, rgba(126, 61, 255, 0.05) 0%, transparent 65%),
+      #f5f4ff;
+    transition: background 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      background:
+        radial-gradient(ellipse 85% 45% at 50% 55%, rgba(126, 61, 255, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 18% at 50% 5%, rgba(126, 61, 255, 0.04) 0%, transparent 65%),
+        #f5f4ff;
+    }
+  }
+
+  /* Hero grain overlay — dark */
+  .dark .hero-grain {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -336,6 +344,20 @@ All colors MUST be HSL.
     mix-blend-mode: overlay;
   }
 
+  /* Hero grain overlay — light */
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    background-repeat: repeat;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s ease;
+  }
+
   /* Carousel bloom glow */
   .carousel-bloom {
     position: absolute;
@@ -344,6 +366,16 @@ All colors MUST be HSL.
     pointer-events: none;
     background: radial-gradient(ellipse 50% 40% at 50% 48%, rgba(126, 61, 255, 0.14) 0%, transparent 70%);
     filter: blur(50px);
+    transition: background 0.3s ease;
+  }
+
+  .dark .carousel-bloom {
+    background: radial-gradient(ellipse 50% 40% at 50% 48%, rgba(126, 61, 255, 0.14) 0%, transparent 70%);
+  }
+
+  /* Light mode bloom — subtle */
+  :not(.dark) .carousel-bloom {
+    background: radial-gradient(ellipse 50% 40% at 50% 48%, rgba(126, 61, 255, 0.05) 0%, transparent 70%);
   }
 
   /* Carousel arrow buttons */
