@@ -82,7 +82,7 @@ const VideoCard = ({ src, isCenter, preloadStrategy }: VideoCardProps) => {
           loop
           muted
           playsInline
-          preload="auto"
+          preload={preloadStrategy}
           onCanPlayThrough={handleLoaded}
         />
       )}
