@@ -9,23 +9,23 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Light mode colors */
-    --background: 0 0% 98%;
-    --foreground: 270 75% 6%;
+    --background: 248 50% 98%;
+    --foreground: 240 50% 5%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 75% 6%;
+    --card-foreground: 240 50% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 75% 6%;
+    --popover-foreground: 240 50% 5%;
 
-    --primary: 270 75% 6%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 240 50% 5%;
+    --primary-foreground: 248 50% 98%;
 
-    --secondary: 260 30% 95%;
-    --secondary-foreground: 270 75% 6%;
+    --secondary: 250 30% 95%;
+    --secondary-foreground: 240 50% 5%;
 
-    --muted: 260 20% 92%;
-    --muted-foreground: 270 20% 40%;
+    --muted: 250 20% 92%;
+    --muted-foreground: 240 15% 38%;
 
     --accent: 260 100% 62%;
     --accent-foreground: 0 0% 98%;
@@ -33,22 +33,11 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 20% 88%;
-    --input: 260 20% 92%;
+    --border: 250 20% 88%;
+    --input: 250 20% 92%;
     --ring: 260 100% 62%;
 
     --radius: 0.75rem;
-
-    /* Light mode gradient colors */
-    --gradient-light-start: 260 30% 98%;
-    --gradient-light-mid: 260 40% 95%;
-    --gradient-light-end: 260 50% 92%;
-    --gradient-glow: 260 100% 62%;
-    
-    /* Brand colors */
-    --brand-purple: 260 100% 62%;
-    --brand-black: 270 75% 6%;
-    --brand-white: 0 0% 100%;
   }
 
   .dark {
