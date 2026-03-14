@@ -312,7 +312,7 @@ All colors MUST be HSL.
       radial-gradient(ellipse 70% 50% at -10% 0%, rgba(126, 61, 255, 0.35) 0%, transparent 70%),
       radial-gradient(ellipse 40% 30% at 110% 100%, rgba(79, 31, 207, 0.25) 0%, transparent 65%),
       radial-gradient(ellipse 100% 4% at 50% 55%, rgba(126, 61, 255, 0.08) 0%, transparent 80%),
-      #07050f;
+      #0d0e17;
   }
 
   @media (max-width: 768px) {
