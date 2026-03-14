@@ -309,15 +309,18 @@ All colors MUST be HSL.
   /* Hero section pure CSS background */
   .hero-section {
     background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, #3b1f6e 0%, transparent 70%),
-      #080510;
+      radial-gradient(ellipse 100% 60% at 50% 5%, #5b21b6 0%, rgba(74, 29, 150, 0.6) 30%, transparent 70%),
+      radial-gradient(ellipse 50% 45% at 68% 15%, #4a1d96 0%, rgba(91, 33, 182, 0.4) 35%, transparent 65%),
+      radial-gradient(ellipse 40% 30% at 30% 25%, rgba(91, 33, 182, 0.25) 0%, transparent 60%),
+      #060410;
   }
 
   @media (max-width: 768px) {
     .hero-section {
       background:
-        radial-gradient(ellipse 90% 40% at 50% -10%, #3b1f6e 0%, transparent 70%),
-        #080510;
+        radial-gradient(ellipse 120% 50% at 50% -10%, #5b21b6 0%, rgba(74, 29, 150, 0.6) 30%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 65% 10%, #4a1d96 0%, rgba(91, 33, 182, 0.35) 35%, transparent 65%),
+        #060410;
     }
   }
 
@@ -327,11 +330,11 @@ All colors MUST be HSL.
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
     background-repeat: repeat;
-    opacity: 0.35;
-    mix-blend-mode: overlay;
+    opacity: 0.2;
+    mix-blend-mode: soft-light;
   }
 
 
