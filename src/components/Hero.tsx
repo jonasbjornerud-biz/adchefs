@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { ParticleNetwork } from "./ParticleNetwork";
+
 import VideoCard from "./VideoCard";
 
 const videoSources = [
