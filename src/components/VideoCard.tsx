@@ -3,9 +3,10 @@ import { useRef, useState, useEffect, useCallback } from "react";
 interface VideoCardProps {
   src: string;
   isCenter: boolean;
+  preloadStrategy: "auto" | "metadata" | "none";
 }
 
-const VideoCard = ({ src, isCenter }: VideoCardProps) => {
+const VideoCard = ({ src, isCenter, preloadStrategy }: VideoCardProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
@@ -81,7 +82,7 @@ const VideoCard = ({ src, isCenter }: VideoCardProps) => {
           loop
           muted
           playsInline
-          preload="auto"
+          preload={preloadStrategy}
           onCanPlayThrough={handleLoaded}
         />
       )}

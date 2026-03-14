@@ -125,7 +125,11 @@ const Hero = () => {
                       zIndex: i === centerIndex ? 100 : totalVideos - Math.abs(offset),
                     }}
                   >
-                    <VideoCard src={videoSrc} isCenter={i === centerIndex} />
+                    <VideoCard
+                      src={videoSrc}
+                      isCenter={i === centerIndex}
+                      preloadStrategy={Math.abs(offset) === 0 ? "auto" : Math.abs(offset) <= 1 ? "metadata" : "none"}
+                    />
                   </div>
                 );
               })}
