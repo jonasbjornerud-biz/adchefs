@@ -88,6 +88,8 @@ const Hero = () => {
               <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
             </button>
 
+            {/* Bloom glow behind cards */}
+            <div className="carousel-bloom" />
             <div className="stacked-carousel-container">
               {videoSources.map((videoSrc, i) => {
                 let offset = i - centerIndex;
