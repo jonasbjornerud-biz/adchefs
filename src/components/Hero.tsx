@@ -103,10 +103,10 @@ const Hero = () => {
   }, [dragOffset, goNext, goPrev]);
 
   return (
-    <section className="hero-section relative h-screen flex items-center overflow-hidden">
+    <section className="hero-section relative min-h-[100svh] flex items-center overflow-x-hidden pt-[calc(80px+env(safe-area-inset-top))] md:pt-0 md:h-screen">
       <div className="hero-grain" />
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
           {/* Left side - Content */}
           <div className="max-w-[480px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.25)]">
