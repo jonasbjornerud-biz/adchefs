@@ -306,7 +306,33 @@ All colors MUST be HSL.
     }
   }
 
+  /* Hero section pure CSS background */
+  .hero-section {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, #3b1f6e 0%, transparent 70%),
+      #080510;
+  }
 
+  @media (max-width: 768px) {
+    .hero-section {
+      background:
+        radial-gradient(ellipse 90% 40% at 50% -10%, #3b1f6e 0%, transparent 70%),
+        #080510;
+    }
+  }
+
+  /* Hero grain overlay */
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+  }
 
 
   .shimmer-button {
