@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 interface VideoCardProps {
   src: string;
   isCenter: boolean;
+  preloadStrategy: "auto" | "metadata" | "none";
 }
 
 const VideoCard = ({ src, isCenter }: VideoCardProps) => {
