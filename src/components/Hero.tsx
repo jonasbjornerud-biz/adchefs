@@ -138,7 +138,7 @@ const Hero = () => {
           {/* Right side - Stacked Carousel */}
           <div
             className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in select-none"
-            style={{ animationDelay: '0.3s', animationFillMode: 'backwards', cursor: isDragging ? 'grabbing' : 'grab' }}
+            style={{ animationDelay: '0.3s', animationFillMode: 'backwards', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'pan-y' }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
