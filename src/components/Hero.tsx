@@ -103,7 +103,7 @@ const Hero = () => {
   }, [dragOffset, goNext, goPrev]);
 
   return (
-    <section className="hero-section relative min-h-[100svh] flex items-center overflow-x-hidden pt-[calc(80px+env(safe-area-inset-top))] md:pt-0 md:h-screen">
+    <section className="hero-section relative min-h-[100svh] flex items-center pt-[calc(80px+env(safe-area-inset-top))] md:pt-0 md:h-screen">
       <div className="hero-grain" />
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
