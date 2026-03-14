@@ -306,20 +306,22 @@ All colors MUST be HSL.
     }
   }
 
-  /* Hero section pure CSS background */
+  /* Hero section — split aurora background */
   .hero-section {
     background:
-      radial-gradient(ellipse 60% 40% at 50% -5%, rgba(126, 61, 255, 0.5) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 30% at 62% 8%, rgba(126, 61, 255, 0.2) 0%, transparent 65%),
-      #0a0a0f;
+      radial-gradient(ellipse 70% 50% at -10% 0%, rgba(126, 61, 255, 0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 110% 100%, rgba(79, 31, 207, 0.25) 0%, transparent 65%),
+      radial-gradient(ellipse 100% 4% at 50% 55%, rgba(126, 61, 255, 0.08) 0%, transparent 80%),
+      #07050f;
   }
 
   @media (max-width: 768px) {
     .hero-section {
       background:
-        radial-gradient(ellipse 80% 35% at 50% -10%, rgba(126, 61, 255, 0.5) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 25% at 60% 5%, rgba(126, 61, 255, 0.18) 0%, transparent 65%),
-        #0a0a0f;
+        radial-gradient(ellipse 90% 45% at -15% 0%, rgba(126, 61, 255, 0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 25% at 115% 100%, rgba(79, 31, 207, 0.25) 0%, transparent 65%),
+        radial-gradient(ellipse 120% 4% at 50% 55%, rgba(126, 61, 255, 0.07) 0%, transparent 80%),
+        #07050f;
     }
   }
 
@@ -329,11 +331,21 @@ All colors MUST be HSL.
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-size: 150px 150px;
     background-repeat: repeat;
-    opacity: 0.18;
+    opacity: 0.15;
     mix-blend-mode: soft-light;
+  }
+
+  /* Carousel bloom glow */
+  .carousel-bloom {
+    position: absolute;
+    inset: -20%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(126, 61, 255, 0.12) 0%, transparent 70%);
+    filter: blur(40px);
   }
 
 
