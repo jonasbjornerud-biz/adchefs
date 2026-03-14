@@ -36,10 +36,11 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      <ParticleNetwork />
-      <div className="container mx-auto px-6 py-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className="hero-section relative min-h-screen flex items-center overflow-hidden">
+      {/* CSS grain overlay */}
+      <div className="hero-grain" />
+      <div className="container mx-auto px-6 py-16 md:py-32 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left side - Content */}
           <div className="max-w-[700px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-6 py-2 mb-6 rounded-full bg-accent/10 backdrop-blur-sm border border-accent/20">
