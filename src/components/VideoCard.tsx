@@ -53,7 +53,7 @@ const VideoCard = ({ src, isCenter }: VideoCardProps) => {
   return (
     <div
       ref={cardRef}
-      className="aspect-[9/16] w-[140px] md:w-[180px] lg:w-[210px] rounded-xl md:rounded-2xl overflow-hidden relative group"
+      className="aspect-[9/16] w-[140px] md:w-[180px] lg:w-[210px] rounded-xl md:rounded-2xl overflow-hidden relative group bg-white dark:bg-transparent shadow-[0_8px_32px_rgba(126,61,255,0.12)] dark:shadow-none transition-all duration-300"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
