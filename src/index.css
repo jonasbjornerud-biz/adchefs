@@ -334,4 +334,39 @@ All colors MUST be HSL.
     filter: blur(8px);
   }
 
+  /* Video card skeleton shimmer */
+  .video-skeleton-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 25%,
+      hsl(260 100% 62% / 0.08) 37%,
+      hsl(260 80% 50% / 0.12) 50%,
+      hsl(260 100% 62% / 0.08) 63%,
+      transparent 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Video vignette overlay */
+  .video-vignette {
+    background: radial-gradient(ellipse at center, transparent 55%, hsl(270 75% 4% / 0.45) 100%);
+  }
+
+  /* Glow pulse for center card */
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 15px hsl(260 100% 62% / 0.25), 0 0 30px hsl(260 100% 62% / 0.1);
+    }
+    50% {
+      box-shadow: 0 0 25px hsl(260 100% 62% / 0.4), 0 0 50px hsl(260 100% 62% / 0.2);
+    }
+  }
 }
