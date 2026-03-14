@@ -89,12 +89,12 @@ const VideoCard = ({ src, isCenter }: VideoCardProps) => {
       {/* Dark vignette overlay */}
       <div className="absolute inset-0 z-20 pointer-events-none rounded-xl md:rounded-2xl video-vignette" />
 
-      {/* Glowing border */}
+      {/* Border shimmer */}
       <div
         className={`absolute inset-0 z-30 pointer-events-none rounded-xl md:rounded-2xl border transition-all duration-500 ${
           isCenter
-            ? "border-accent/40 shadow-[0_0_20px_hsl(260,100%,62%,0.3)]"
-            : "border-border/60 group-hover:border-accent/50 group-hover:shadow-[0_0_15px_hsl(260,100%,62%,0.25)]"
+            ? "border-[rgba(126,61,255,0.45)] shadow-[0_0_20px_rgba(126,61,255,0.3)]"
+            : "border-white/[0.08] group-hover:border-[rgba(126,61,255,0.35)] group-hover:shadow-[0_0_15px_rgba(126,61,255,0.2)]"
         }`}
         style={{
           animation: isCenter ? "glow-pulse 3s ease-in-out infinite" : undefined,
