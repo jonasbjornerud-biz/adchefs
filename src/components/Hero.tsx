@@ -19,15 +19,6 @@ const Hero = () => {
   const totalVideos = 8;
   const [centerIndex, setCenterIndex] = useState(0);
 
-  // Aggressive preloading for instant display
-  useEffect(() => {
-    videoSources.forEach((videoSrc) => {
-      const video = document.createElement('video');
-      video.src = videoSrc;
-      video.preload = 'auto';
-      video.load();
-    });
-  }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
