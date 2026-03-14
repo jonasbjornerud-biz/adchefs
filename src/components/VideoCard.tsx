@@ -6,7 +6,7 @@ interface VideoCardProps {
   preloadStrategy: "auto" | "metadata" | "none";
 }
 
-const VideoCard = ({ src, isCenter }: VideoCardProps) => {
+const VideoCard = ({ src, isCenter, preloadStrategy }: VideoCardProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
