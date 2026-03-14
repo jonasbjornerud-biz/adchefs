@@ -93,8 +93,8 @@ const VideoCard = ({ src, isCenter }: VideoCardProps) => {
       <div
         className={`absolute inset-0 z-30 pointer-events-none rounded-xl md:rounded-2xl border transition-all duration-500 ${
           isCenter
-            ? "border-[rgba(126,61,255,0.45)] shadow-[0_0_20px_rgba(126,61,255,0.3)]"
-            : "border-white/[0.08] group-hover:border-[rgba(126,61,255,0.35)] group-hover:shadow-[0_0_15px_rgba(126,61,255,0.2)]"
+            ? "border-[rgba(126,61,255,0.45)] dark:shadow-[0_0_20px_rgba(126,61,255,0.3)] shadow-[0_0_20px_rgba(126,61,255,0.15)]"
+            : "border-[rgba(126,61,255,0.15)] dark:border-white/[0.08] group-hover:border-[rgba(126,61,255,0.35)] group-hover:shadow-[0_0_15px_rgba(126,61,255,0.2)]"
         }`}
         style={{
           animation: isCenter ? "glow-pulse 3s ease-in-out infinite" : undefined,
