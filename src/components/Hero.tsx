@@ -128,11 +128,23 @@ const Hero = () => {
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => {
+                  const carousel = document.querySelector('[data-carousel]');
+                  if (carousel) carousel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                className="text-lg px-8 py-6 h-auto border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-all"
+              >
+                See Our Work
+              </Button>
             </div>
           </div>
 
           {/* Right side - Stacked Carousel */}
           <div
+            data-carousel
             className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in select-none"
             style={{ animationDelay: '0.3s', animationFillMode: 'backwards', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'pan-y' }}
             onMouseDown={handleMouseDown}
