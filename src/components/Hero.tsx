@@ -5,12 +5,8 @@ import VideoCard from "./VideoCard";
 
 const videoSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF2_wnilkz.webm",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501820/GIF11_dfnd9x.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF6_eycqkn.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF7_xrgax0.webm",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
 ];
 
