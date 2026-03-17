@@ -105,7 +105,9 @@ const Hero = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-center">
           {/* Left side - Content */}
-          <div className="max-w-[480px] text-left animate-text-entrance">
+          <div className="max-w-[480px] text-left animate-text-entrance relative">
+            {/* Spotlight glow behind headline */}
+            <div className="absolute -top-20 -left-16 w-[400px] h-[400px] rounded-full bg-[hsl(260_100%_62%/0.15)] blur-[100px] pointer-events-none -z-10" />
             <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-white/[0.06] dark:bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.4)] dark:border-[rgba(126,61,255,0.25)] transition-colors duration-300">
               <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Blending AI automations with expert video editors</span>
             </div>
