@@ -71,19 +71,28 @@ const VideoCard = ({ src, isCenter }: VideoCardProps) => {
         </div>
       </div>
 
-      {/* Video */}
+      {/* Media */}
       {inView && (
-        <video
-          ref={videoRef}
-          src={src}
-          className={`w-full h-full object-cover transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          onCanPlayThrough={handleLoaded}
-        />
+        src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
+          <img
+            src={src}
+            className={`w-full h-full object-cover transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={handleLoaded}
+            alt=""
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={src}
+            className={`w-full h-full object-cover transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            onCanPlayThrough={handleLoaded}
+          />
+        )
       )}
 
       {/* Dark vignette overlay */}
