@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
@@ -45,7 +45,8 @@ const Hero = () => {
           together to deliver videos that drive consistent growth.
         </p>
 
-        <div className="text-sm md:text-base font-medium text-muted-foreground/70 border-l-2 border-accent/50 pl-3 max-w-xl mx-auto mb-8">
+        <div className="flex items-center justify-center gap-1.5 text-xs md:text-sm text-muted-foreground/60 mb-8">
+          <Check className="w-3.5 h-3.5 text-accent/60" />
           Pay per video. No retainers.
         </div>
 
