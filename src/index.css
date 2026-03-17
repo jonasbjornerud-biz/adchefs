@@ -97,7 +97,10 @@ All colors MUST be HSL.
     position: fixed;
     inset: 0;
     z-index: 0;
-    background: linear-gradient(135deg, #fafaff 0%, #f5f5ff 40%, #ededff 70%, #e5e5ff 100%);
+    background:
+      radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(135deg, #fafaff 0%, #f5f5ff 40%, #ededff 70%, #e5e5ff 100%);
+    background-size: 28px 28px, 100% 100%;
   }
   
   /* Light mode: soft purple gradient */
