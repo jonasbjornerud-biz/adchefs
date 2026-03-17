@@ -107,14 +107,15 @@ const Hero = () => {
           {/* Left side - Content */}
           <div className="max-w-[480px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-white/[0.06] dark:bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.4)] dark:border-[rgba(126,61,255,0.25)] transition-colors duration-300">
-              <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Pay per video. No retainers. No BS.</span>
+              <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Blending AI automations with expert video editors</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-[4.2rem] font-bold mb-6 text-[#0a0a14] dark:text-white leading-[1.08] transition-colors duration-300">
-              Scroll-stopping <span className="text-[#7e3dff]">ads</span>. Pay only per{" "}
-              <span className="text-[#7e3dff]">video</span>.
+              We cook up <span className="text-[#7e3dff]">ads</span> that{" "}
+              <span className="text-[#7e3dff]">scale</span> your brand
             </h1>
             <p className="text-lg md:text-xl mb-8 text-[#4a4a6a] dark:text-[#a0a0b8] leading-relaxed transition-colors duration-300">
-              Get high-converting video ads crafted by elite editors and <span className="text-[#7e3dff]">AI</span> — without locking into monthly retainers. Order what you need, when you need it.
+              Creative strategy, <span className="text-[#7e3dff]">AI insights</span>, and elite editors working
+              together to deliver videos that drive consistent growth.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <Button
@@ -124,27 +125,15 @@ const Hero = () => {
                 className="text-lg px-8 py-6 h-auto group relative overflow-hidden shimmer-button"
               >
                 <span className="relative z-10 flex items-center">
-                  Get Your First Video
+                  Book Call Now
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => {
-                  const carousel = document.querySelector('[data-carousel]');
-                  if (carousel) carousel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }}
-                className="text-lg px-8 py-6 h-auto border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-all"
-              >
-                See Our Work
               </Button>
             </div>
           </div>
 
           {/* Right side - Stacked Carousel */}
           <div
-            data-carousel
             className="relative h-[420px] md:h-[560px] lg:h-[70vh] max-h-[720px] animate-fade-in select-none"
             style={{ animationDelay: '0.3s', animationFillMode: 'backwards', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'pan-y' }}
             onMouseDown={handleMouseDown}

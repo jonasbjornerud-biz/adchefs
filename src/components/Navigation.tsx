@@ -41,7 +41,7 @@ const Navigation = () => {
               onClick={() => scrollToSection("booking")}
               variant="cta"
             >
-              Get Your First Video
+              Book Call Now
             </Button>
           </div>
         </div>

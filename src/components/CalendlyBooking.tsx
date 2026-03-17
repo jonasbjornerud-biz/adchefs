@@ -8,7 +8,15 @@ const CalendlyBooking = () => {
               Ready to scale your creative system?
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>Whether you need 1 video or 100, we'll create a plan that fits your budget.</p>
+              <p>We only work with 2 new e-commerce brands each month, ready to streamline creative operations and scale with precision.</p>
+              <p className="font-semibold text-foreground">
+                Book a call only if you:
+              </p>
+              <ol className="space-y-3 list-decimal list-inside">
+                <li>Have a monthly ad spend of at least €5,000</li>
+                <li>Want to increase creative output efficiently</li>
+                <li>Value data-driven creative strategy powered by AI insights and elite video editors</li>
+              </ol>
               <p className="font-semibold text-foreground pt-4">
                 This isn't a sales pitch.
               </p>
