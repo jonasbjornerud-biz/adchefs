@@ -6,14 +6,23 @@ const CalendlyBooking = () => {
           {/* Left side - Information */}
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Ready to meet your new editing team?
+              Ready to scale your creative system?
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>
-                We pair you with full-time editors who become an extension of your brand — without the overhead of a retainer. Book a free strategy call and see how it works.
+              <p>We only work with 2 new e-commerce brands each month, ready to streamline creative operations and scale with precision.</p>
+              <p className="font-semibold text-foreground">
+                Book a call only if you:
+              </p>
+              <ol className="space-y-3 list-decimal list-inside">
+                <li>Have a monthly ad spend of at least €5,000</li>
+                <li>Want to increase creative output efficiently</li>
+                <li>Value data-driven creative strategy powered by AI insights and elite video editors</li>
+              </ol>
+              <p className="font-semibold text-foreground pt-4">
+                This isn't a sales pitch.
               </p>
               <p>
-                Whether you need 10 videos a month or 100, you only pay for what we deliver.
+                It's a strategy session to assess fit and, if aligned, outline a tailored plan to expand your ad volume, improve consistency, and maximize ROI through a scalable creative system.
               </p>
             </div>
           </div>
