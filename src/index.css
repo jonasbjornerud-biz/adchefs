@@ -290,6 +290,7 @@ All colors MUST be HSL.
   /* Hero section — dark mode (default) */
   .dark .hero-section {
     background:
+      repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255, 255, 255, 0.015) 47px, rgba(255, 255, 255, 0.015) 48px),
       radial-gradient(ellipse 70% 50% at 55% 55%, rgba(126, 61, 255, 0.18) 0%, transparent 70%),
       radial-gradient(ellipse 30% 20% at 50% 8%, rgba(126, 61, 255, 0.10) 0%, transparent 65%),
       #09090f;
@@ -299,6 +300,7 @@ All colors MUST be HSL.
   @media (max-width: 768px) {
     .dark .hero-section {
       background:
+        repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255, 255, 255, 0.015) 47px, rgba(255, 255, 255, 0.015) 48px),
         radial-gradient(ellipse 85% 45% at 50% 55%, rgba(126, 61, 255, 0.16) 0%, transparent 70%),
         radial-gradient(ellipse 40% 18% at 50% 5%, rgba(126, 61, 255, 0.08) 0%, transparent 65%),
         #09090f;
