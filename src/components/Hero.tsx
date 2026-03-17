@@ -114,8 +114,7 @@ const Hero = () => {
               <span className="text-[#7e3dff]">video</span>.
             </h1>
             <p className="text-lg md:text-xl mb-8 text-[#4a4a6a] dark:text-[#a0a0b8] leading-relaxed transition-colors duration-300">
-              Creative strategy, <span className="text-[#7e3dff]">AI insights</span>, and elite editors working
-              together to deliver videos that drive consistent growth.
+              Get high-converting video ads crafted by elite editors and <span className="text-[#7e3dff]">AI</span> — without locking into monthly retainers. Order what you need, when you need it.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <Button
