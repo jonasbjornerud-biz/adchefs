@@ -29,19 +29,20 @@ const Hero = () => {
 
           <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-white/[0.06] dark:bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.4)] dark:border-[rgba(126,61,255,0.25)] transition-colors duration-300">
             <span className="text-sm text-muted-foreground transition-colors duration-300">
-              Dedicated editors. Pay per video. No retainers.
+              Blending AI automations with expert video editors
             </span>
           </div>
 
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground leading-[1.08] transition-colors duration-300 hero-headline-glow">
-            Your editing team —{" "}
+            We cook up <span className="text-accent">ads</span> that{" "}
             <br className="hidden sm:block" />
-            without the <span className="text-accent">retainer</span>.
+            <span className="text-accent">scale</span> your brand
           </h1>
         </div>
 
         <p className="text-lg md:text-xl mb-8 text-muted-foreground leading-relaxed max-w-2xl mx-auto transition-colors duration-300">
-          Get a dedicated team of full-time editors and AI-powered creative systems working on your brand — and only pay for the videos we deliver. No monthly fees. No lock-in contracts.
+          Creative strategy, <span className="text-accent">AI insights</span>, and elite editors working
+          together to deliver videos that drive consistent growth.
         </p>
 
         <div className="flex justify-center">
@@ -52,17 +53,10 @@ const Hero = () => {
             className="text-lg px-8 py-6 h-auto group relative overflow-hidden shimmer-button"
           >
             <span className="relative z-10 flex items-center">
-              Get Started
+              Book Call Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Button>
-        </div>
-
-        {/* Trust line */}
-        <div className="flex flex-wrap justify-center gap-6 mt-6 text-sm text-muted-foreground">
-          <span>✓ Dedicated editors</span>
-          <span>✓ 48hr turnaround</span>
-          <span>✓ Unlimited revisions</span>
         </div>
       </div>
 

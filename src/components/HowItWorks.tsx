@@ -5,18 +5,18 @@ import creativeIntelligence from "@/assets/creative.gif";
 const steps = [
   {
     image: aiHiring,
-    title: "We Match Your Brand",
-    description: "We assign dedicated full-time editors who learn your brand, your voice, and your audience inside out.",
+    title: "AI-Powered Hiring",
+    description: "Screens 200+ video editors weekly to recruit the top 1% talent.",
   },
   {
     image: editorDevelopment,
-    title: "We Produce",
-    description: "Your team creates scroll-stopping video ads using AI-assisted workflows — fast, consistent, and on-brand.",
+    title: "Editor Development System",
+    description: "Custom SOPs and QA processes built around your creative workflow to ensure consistent output.",
   },
   {
     image: creativeIntelligence,
-    title: "You Pay Per Video",
-    description: "No retainers, no subscriptions. You only pay for the videos we deliver. Scale up or down anytime.",
+    title: "Creative Intelligence Layer",
+    description: "Ad frameworks and AI insights tailored to your brand to sharpen creative strategy and direction",
   },
 ];
 
