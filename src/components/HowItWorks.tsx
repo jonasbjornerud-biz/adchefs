@@ -16,7 +16,7 @@ const steps = [
   {
     image: creativeIntelligence,
     title: "Deliver & *Iterate*",
-    description: "Get polished videos delivered fast. Review, request revisions, and keep the creative pipeline flowing — on your schedule.",
+    description: "Finished videos are delivered within days. Request revisions, approve finals, and keep your creative pipeline moving.",
   },
 ];
 
