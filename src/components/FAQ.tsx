@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "How does the AI assisted video system work?",
-    answer: "The system analyzes top performing ads from leading US brands in your niche. It identifies creative patterns, angles, and hooks that drive conversions. These insights are turned into structured briefs that guide editors toward faster and more consistent ad creation.",
+    question: "How does the pay-per-video model work?",
+    answer: "You get dedicated full-time editors assigned to your brand, but instead of a monthly retainer, you only pay for each video we deliver. It's the consistency of an in-house team with the flexibility of project-based pricing.",
   },
   {
-    question: "What's the difference between Creative Strategy and the Editor Plan?",
-    answer: "Creative Strategy focuses on concept direction, data analysis, and creative testing. The Editor Plan handles daily video production. You can choose one or combine both depending on your internal setup.",
+    question: "What's included in each video?",
+    answer: "Every video includes creative strategy, scripting, editing, and revisions. Your dedicated editors handle everything from concept to final cut.",
   },
   {
-    question: "Can we use our own editors with your system?",
-    answer: "Yes. Your editors can fully integrate into our workflow and use the same data driven briefs, insights, and QA standards. You only subscribe to the strategy layer if you already have an editing team.",
+    question: "How fast do you deliver?",
+    answer: "Most videos are delivered within 48 hours. Your editors work full-time on your account, so turnaround is fast and consistent.",
   },
   {
-    question: "How fast is onboarding and first delivery?",
-    answer: "Onboarding takes seven to fourteen days. After your first brief is approved, finished videos are usually delivered within three to four business days depending on project volume.",
+    question: "Do I get the same editors every time?",
+    answer: "Yes. We assign dedicated editors to your brand so they learn your style, tone, and audience. You're not getting random freelancers — you're getting a team.",
   },
   {
-    question: "What's included in the monthly service?",
-    answer: "You get structured creative briefs, video deliverables, AI backed insights, and feedback rounds within scope. Everything is managed in your dashboard for speed and transparency.",
+    question: "Do you offer volume pricing?",
+    answer: "Yes. The more videos you need, the lower the per-video cost. Book a call and we'll build a plan around your volume.",
   },
   {
-    question: "Can you match our existing brand style?",
-    answer: "Yes. We create customized SOPs based on your product research, ideal customer profiles, and brand assets. Editors follow these systems precisely so every video fits your tone and creative direction.",
+    question: "What if I'm not happy with a video?",
+    answer: "Every video comes with unlimited revisions until you're satisfied. Your editors won't move on until it's right.",
   },
 ];
 
