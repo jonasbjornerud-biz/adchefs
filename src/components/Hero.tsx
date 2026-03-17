@@ -45,8 +45,8 @@ const Hero = () => {
           together to deliver videos that drive consistent growth.
         </p>
 
-        <div className="text-lg md:text-xl font-semibold text-foreground/90 border-l-4 border-accent pl-4 max-w-xl mx-auto mb-8">
-          Pay per video. No retainers. No contracts.
+        <div className="text-sm md:text-base font-medium text-muted-foreground/70 border-l-2 border-accent/50 pl-3 max-w-xl mx-auto mb-8">
+          Pay per video. No retainers.
         </div>
 
         <div className="flex justify-center">
