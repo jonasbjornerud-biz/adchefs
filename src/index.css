@@ -125,10 +125,7 @@ All colors MUST be HSL.
     animation: gradient-shift 25s ease-in-out infinite;
   }
   
-  /* Dark mode gradient */
-  .dark .site-gradient-bg {
-    background: linear-gradient(135deg, #020204 0%, #080410 40%, #0d0820 70%, #150a28 100%);
-  }
+  
   
   .dark .site-gradient-bg::before {
     background: 
