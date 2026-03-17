@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "How does the AI assisted video system work?",
-    answer: "The system analyzes top performing ads from leading US brands in your niche. It identifies creative patterns, angles, and hooks that drive conversions. These insights are turned into structured briefs that guide editors toward faster and more consistent ad creation.",
+    question: "How does the pay-per-video model work?",
+    answer: "We assign dedicated full-time editors to your brand. Instead of a monthly retainer, you pay for each video delivered. Scale up or down based on what you need.",
   },
   {
-    question: "What's the difference between Creative Strategy and the Editor Plan?",
-    answer: "Creative Strategy focuses on concept direction, data analysis, and creative testing. The Editor Plan handles daily video production. You can choose one or combine both depending on your internal setup.",
+    question: "Do I get the same editors every time?",
+    answer: "Yes. Your editors learn your brand, tone, and audience over time. They're not random freelancers — they're a consistent team assigned to your account.",
+  },
+  {
+    question: "How fast is delivery?",
+    answer: "Most videos are delivered within three to four business days. Your editors work full-time on your account, so turnaround stays consistent even at higher volumes.",
   },
   {
     question: "Can we use our own editors with your system?",
-    answer: "Yes. Your editors can fully integrate into our workflow and use the same data driven briefs, insights, and QA standards. You only subscribe to the strategy layer if you already have an editing team.",
+    answer: "Yes. Your editors can integrate into our workflow and use the same data-driven briefs, AI insights, and QA standards. You subscribe to the strategy layer only.",
   },
   {
-    question: "How fast is onboarding and first delivery?",
-    answer: "Onboarding takes seven to fourteen days. After your first brief is approved, finished videos are usually delivered within three to four business days depending on project volume.",
-  },
-  {
-    question: "What's included in the monthly service?",
-    answer: "You get structured creative briefs, video deliverables, AI backed insights, and feedback rounds within scope. Everything is managed in your dashboard for speed and transparency.",
+    question: "What's included in each video?",
+    answer: "Creative strategy, scripting, editing, and revision rounds. Your dedicated editors handle the full process from brief to final cut.",
   },
   {
     question: "Can you match our existing brand style?",
-    answer: "Yes. We create customized SOPs based on your product research, ideal customer profiles, and brand assets. Editors follow these systems precisely so every video fits your tone and creative direction.",
+    answer: "Yes. We build customized SOPs based on your product research, ideal customer profiles, and brand assets. Every video follows your creative direction precisely.",
   },
 ];
 
