@@ -110,8 +110,8 @@ const Hero = () => {
               <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Pay per video. No retainers. No BS.</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-[4.2rem] font-bold mb-6 text-[#0a0a14] dark:text-white leading-[1.08] transition-colors duration-300">
-              We cook up <span className="text-[#7e3dff]">ads</span> that{" "}
-              <span className="text-[#7e3dff]">scale</span> your brand
+              Scroll-stopping <span className="text-[#7e3dff]">ads</span>. Pay only per{" "}
+              <span className="text-[#7e3dff]">video</span>.
             </h1>
             <p className="text-lg md:text-xl mb-8 text-[#4a4a6a] dark:text-[#a0a0b8] leading-relaxed transition-colors duration-300">
               Creative strategy, <span className="text-[#7e3dff]">AI insights</span>, and elite editors working
