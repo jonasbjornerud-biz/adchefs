@@ -11,24 +11,12 @@ const faqs = [
     answer: "We assign dedicated full-time editors to your brand. Instead of a monthly retainer, you pay for each video delivered. Scale up or down based on what you need.",
   },
   {
-    question: "Do I get the same editors every time?",
-    answer: "Yes. Your editors learn your brand, tone, and audience over time. They're not random freelancers — they're a consistent team assigned to your account.",
-  },
-  {
-    question: "How fast is delivery?",
-    answer: "Most videos are delivered within three to four business days. Your editors work full-time on your account, so turnaround stays consistent even at higher volumes.",
-  },
-  {
-    question: "Can we use our own editors with your system?",
-    answer: "Yes. Your editors can integrate into our workflow and use the same data-driven briefs, AI insights, and QA standards. You subscribe to the strategy layer only.",
-  },
-  {
-    question: "What's included in each video?",
-    answer: "Creative strategy, scripting, editing, and revision rounds. Your dedicated editors handle the full process from brief to final cut.",
-  },
-  {
     question: "Can you match our existing brand style?",
     answer: "Yes. We build customized SOPs based on your product research, ideal customer profiles, and brand assets. Every video follows your creative direction precisely.",
+  },
+  {
+    question: "How many revisions are included?",
+    answer: "Unlimited. We revise until you're happy with the final cut. There's no cap on revision rounds.",
   },
 ];
 
