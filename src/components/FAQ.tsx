@@ -7,28 +7,28 @@ import {
 
 const faqs = [
   {
-    question: "How does the pay-per-video model work?",
-    answer: "Simple — you pay for each video individually. No monthly fees, no retainers. Pick a package or request a custom quote, and we deliver.",
+    question: "How does the AI assisted video system work?",
+    answer: "The system analyzes top performing ads from leading US brands in your niche. It identifies creative patterns, angles, and hooks that drive conversions. These insights are turned into structured briefs that guide editors toward faster and more consistent ad creation.",
   },
   {
-    question: "What's included in a single video order?",
-    answer: "Every order includes creative strategy, scripting, editing, and revisions. We handle everything from concept to final cut.",
+    question: "What's the difference between Creative Strategy and the Editor Plan?",
+    answer: "Creative Strategy focuses on concept direction, data analysis, and creative testing. The Editor Plan handles daily video production. You can choose one or combine both depending on your internal setup.",
   },
   {
-    question: "How fast do you deliver?",
-    answer: "Most videos are delivered within 48 hours. Rush orders and bulk packages have flexible timelines based on scope.",
+    question: "Can we use our own editors with your system?",
+    answer: "Yes. Your editors can fully integrate into our workflow and use the same data driven briefs, insights, and QA standards. You only subscribe to the strategy layer if you already have an editing team.",
   },
   {
-    question: "Can I order just one video?",
-    answer: "Absolutely. That's the whole point. Order 1 video or 100 — there's no minimum commitment.",
+    question: "How fast is onboarding and first delivery?",
+    answer: "Onboarding takes seven to fourteen days. After your first brief is approved, finished videos are usually delivered within three to four business days depending on project volume.",
   },
   {
-    question: "Do you offer bulk discounts?",
-    answer: "Yes. The more videos you order, the lower the per-video cost. Ask us about bundle pricing.",
+    question: "What's included in the monthly service?",
+    answer: "You get structured creative briefs, video deliverables, AI backed insights, and feedback rounds within scope. Everything is managed in your dashboard for speed and transparency.",
   },
   {
-    question: "What if I'm not happy with the result?",
-    answer: "Every order comes with unlimited revisions until you're satisfied. We don't stop until it's right.",
+    question: "Can you match our existing brand style?",
+    answer: "Yes. We create customized SOPs based on your product research, ideal customer profiles, and brand assets. Editors follow these systems precisely so every video fits your tone and creative direction.",
   },
 ];
 
