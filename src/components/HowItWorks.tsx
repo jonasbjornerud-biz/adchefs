@@ -15,8 +15,8 @@ const steps = [
   },
   {
     image: creativeIntelligence,
-    title: "Creative Intelligence Layer",
-    description: "Ad frameworks and AI insights tailored to your brand to sharpen creative strategy and direction",
+    title: "Deliver & Iterate",
+    description: "Get polished videos delivered fast. Review, request revisions, and keep the creative pipeline flowing — on your schedule.",
   },
 ];
 
