@@ -53,7 +53,12 @@ const HowItWorks = () => {
                   </div>
                   <div className="p-6 relative z-20">
                     <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
-                      {step.title}
+                      {step.title.includes('*') 
+                        ? step.title.split(/\*([^*]+)\*/).map((part, j) => 
+                            j % 2 === 1 ? <em key={j} className="italic">{part}</em> : part
+                          )
+                        : step.title
+                      }
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       {step.description}

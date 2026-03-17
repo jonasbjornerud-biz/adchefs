@@ -40,10 +40,14 @@ const Hero = () => {
           </h1>
         </div>
 
-        <p className="text-lg md:text-xl mb-8 text-muted-foreground leading-relaxed max-w-2xl mx-auto transition-colors duration-300">
+        <p className="text-lg md:text-xl mb-4 text-muted-foreground leading-relaxed max-w-2xl mx-auto transition-colors duration-300">
           Creative strategy, <span className="text-accent">AI insights</span>, and elite editors working
           together to deliver videos that drive consistent growth.
         </p>
+
+        <div className="text-lg md:text-xl font-semibold text-foreground/90 border-l-4 border-accent pl-4 max-w-xl mx-auto mb-8">
+          Pay per video. No retainers. No contracts.
+        </div>
 
         <div className="flex justify-center">
           <Button
