@@ -107,7 +107,7 @@ const Hero = () => {
           {/* Left side - Content */}
           <div className="max-w-[480px] text-left animate-text-entrance">
             <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-white/[0.06] dark:bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.4)] dark:border-[rgba(126,61,255,0.25)] transition-colors duration-300">
-              <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Blending AI automations with expert video editors</span>
+              <span className="text-sm text-[#4a4a6a] dark:text-[#a0a0b8] transition-colors duration-300">Pay per video. No retainers. No BS.</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-[4.2rem] font-bold mb-6 text-[#0a0a14] dark:text-white leading-[1.08] transition-colors duration-300">
               We cook up <span className="text-[#7e3dff]">ads</span> that{" "}
