@@ -14,13 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          brand_name: string
+          created_at: string
+          id: string
+          is_admin: boolean
+          updated_at: string
+          user_id: string | null
+          username: string
+        }
+        Insert: {
+          brand_name: string
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          updated_at?: string
+          user_id?: string | null
+          username: string
+        }
+        Update: {
+          brand_name?: string
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          updated_at?: string
+          user_id?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      module_completions: {
+        Row: {
+          client_id: string
+          completed: boolean
+          completed_at: string
+          id: string
+          module_id: string
+        }
+        Insert: {
+          client_id: string
+          completed?: boolean
+          completed_at?: string
+          id?: string
+          module_id: string
+        }
+        Update: {
+          client_id?: string
+          completed?: boolean
+          completed_at?: string
+          id?: string
+          module_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_completions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "module_completions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modules: {
+        Row: {
+          client_id: string
+          content: Json | null
+          created_at: string
+          definition_of_done: string | null
+          icon: string | null
+          id: string
+          module_number: string
+          sort_order: number
+          stage_id: string
+          title: string
+        }
+        Insert: {
+          client_id: string
+          content?: Json | null
+          created_at?: string
+          definition_of_done?: string | null
+          icon?: string | null
+          id?: string
+          module_number?: string
+          sort_order?: number
+          stage_id: string
+          title: string
+        }
+        Update: {
+          client_id?: string
+          content?: Json | null
+          created_at?: string
+          definition_of_done?: string | null
+          icon?: string | null
+          id?: string
+          module_number?: string
+          sort_order?: number
+          stage_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "modules_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stages: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          sort_order: number
+          stage_number: number
+          title: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          stage_number: number
+          title: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          stage_number?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stages_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_client_id: { Args: { _user_id: string }; Returns: string }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
