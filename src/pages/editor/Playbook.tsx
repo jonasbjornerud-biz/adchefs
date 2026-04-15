@@ -32,7 +32,7 @@ export default function Playbook() {
       .select('*')
       .eq('user_id', user.id)
       .eq('is_admin', false)
-      .single();
+      .maybeSingle();
 
     if (!clientData) { navigate('/login'); return; }
     setClient(clientData as Client);
