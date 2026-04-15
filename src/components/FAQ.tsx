@@ -22,27 +22,29 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-28">
+    <section id="faq" className="py-28" aria-labelledby="faq-heading">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-accent mb-3 font-medium">Support</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Frequently Asked Questions</h2>
-          <p className="text-muted-foreground max-w-md mx-auto text-sm">
+        <div className="text-center mb-6 animate-slide-up">
+          <p className="section-label">Support</p>
+          <h2 id="faq-heading" className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto text-sm leading-relaxed">
             Everything you need to know about working with AdChefs
           </p>
         </div>
 
-        <div className="section-divider mb-14" />
+        <div className="section-divider mb-14" aria-hidden="true" />
 
-        <div className="max-w-2xl mx-auto space-y-3">
+        <div className="max-w-2xl mx-auto">
           <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="glass-card px-5 hover:!transform-none"
+                className="glass-card px-5 hover:!transform-none data-[state=open]:border-primary/20"
               >
-                <AccordionTrigger className="text-left text-sm font-medium hover:text-accent py-4">
+                <AccordionTrigger className="text-left text-sm font-medium hover:text-primary transition-colors duration-200 py-4 [&>svg]:text-primary/50">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
