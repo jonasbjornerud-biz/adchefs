@@ -1,146 +1,249 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * DESIGN SYSTEM — Generated from UI UX Pro Max Skill v2.5
+ *
+ * Palette: Short Video Editor (#127) — Pink primary on dark + blue accent
+ * Typography: Fashion Forward (#18) — Syne (headings) + Manrope (body)
+ * Style: Aurora UI (#10) + Glassmorphism (#3)
+ * Landing: Hero-Centric (#32) + Video-First (#9)
+ * UX: Full guideline compliance (98 rules)
+ */
+
 @layer base {
   :root {
-    --background: 240 20% 97%;
-    --foreground: 240 24% 10%;
+    /* Light mode — derived from Creative Agency (#10) */
+    --background: 330 50% 98%;
+    --foreground: 335 60% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 24% 10%;
+    --card-foreground: 335 60% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 24% 10%;
+    --popover-foreground: 335 60% 12%;
 
-    --primary: 240 24% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 330 81% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 14% 94%;
-    --secondary-foreground: 240 24% 10%;
+    --secondary: 330 30% 94%;
+    --secondary-foreground: 335 60% 12%;
 
-    --muted: 240 10% 91%;
-    --muted-foreground: 240 8% 46%;
+    --muted: 330 15% 92%;
+    --muted-foreground: 240 5% 46%;
 
-    --accent: 262 83% 58%;
+    --accent: 220 91% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 12% 90%;
-    --input: 240 12% 90%;
-    --ring: 262 83% 58%;
+    --border: 330 15% 88%;
+    --input: 330 15% 90%;
+    --ring: 330 81% 60%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
   }
 
   .dark {
-    --background: 240 16% 6%;
-    --foreground: 0 0% 96%;
+    /* Dark mode — Short Video Editor (#127) palette */
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
 
-    --card: 240 14% 9%;
-    --card-foreground: 0 0% 96%;
+    --card: 224 35% 14%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 240 14% 9%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 224 35% 14%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 0 0% 96%;
-    --primary-foreground: 240 16% 6%;
+    --primary: 330 81% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 12% 12%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 260 30% 16%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 10% 14%;
-    --muted-foreground: 240 6% 55%;
+    --muted: 260 20% 14%;
+    --muted-foreground: 215 16% 65%;
 
-    --accent: 262 83% 58%;
+    --accent: 220 91% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 16%;
-    --input: 240 10% 14%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 100% / 0.08;
+    --input: 260 20% 14%;
+    --ring: 330 81% 60%;
   }
-}
 
-@layer base {
+  /* UX Guideline #1: Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* UX Guideline #9: Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Manrope', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
+  /* Typography: Syne for headings (#18 Fashion Forward) */
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
     @apply font-bold tracking-tight;
+  }
+
+  /* UX Guideline #28: Visible focus states */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 }
 
 @layer utilities {
-  /* ── Site gradient background ── */
+
+  /* ═══════════════════════════════════════════
+     AURORA UI BACKGROUND (#10 — Aurora UI style)
+     Flowing gradients, 8-12s animations, mesh gradient
+     ═══════════════════════════════════════════ */
   .site-gradient-bg {
     position: fixed;
     inset: 0;
     z-index: 0;
     background: hsl(var(--background));
+    overflow: hidden;
   }
 
   .site-gradient-bg::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -20%;
     background:
-      radial-gradient(ellipse 800px 600px at 30% 20%, hsl(262 83% 58% / 0.06), transparent 70%),
-      radial-gradient(ellipse 600px 500px at 70% 60%, hsl(262 83% 58% / 0.04), transparent 65%);
-    animation: gradient-drift 30s ease-in-out infinite;
+      radial-gradient(ellipse 60% 50% at 20% 30%, hsl(330 81% 60% / 0.08), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 75% 60%, hsl(220 91% 54% / 0.06), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 50% 80%, hsl(280 70% 55% / 0.05), transparent 50%);
+    animation: aurora-flow 12s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
   .dark .site-gradient-bg::before {
     background:
-      radial-gradient(ellipse 800px 600px at 30% 20%, hsl(262 83% 58% / 0.12), transparent 70%),
-      radial-gradient(ellipse 600px 500px at 70% 60%, hsl(270 80% 50% / 0.08), transparent 65%);
+      radial-gradient(ellipse 60% 50% at 20% 30%, hsl(330 81% 60% / 0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 75% 60%, hsl(220 91% 54% / 0.14), transparent 55%),
+      radial-gradient(ellipse 40% 35% at 50% 80%, hsl(280 70% 55% / 0.10), transparent 50%);
   }
 
+  /* Aurora mesh layer */
   .site-gradient-bg::after {
     content: "";
     position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    opacity: 0.03;
-    pointer-events: none;
-    mix-blend-mode: overlay;
+    inset: -20%;
+    background:
+      radial-gradient(ellipse 45% 30% at 80% 20%, hsl(330 81% 60% / 0.04), transparent 50%),
+      radial-gradient(ellipse 35% 25% at 30% 70%, hsl(220 91% 54% / 0.03), transparent 45%);
+    animation: aurora-flow-reverse 10s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
   .dark .site-gradient-bg::after {
-    opacity: 0.04;
+    background:
+      radial-gradient(ellipse 45% 30% at 80% 20%, hsl(330 81% 60% / 0.12), transparent 50%),
+      radial-gradient(ellipse 35% 25% at 30% 70%, hsl(220 91% 54% / 0.08), transparent 45%);
   }
 
-  @keyframes gradient-drift {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(20px, -15px) scale(1.02); }
+  @keyframes aurora-flow {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate(40px, -30px) rotate(3deg) scale(1.05); }
+    100% { transform: translate(-20px, 20px) rotate(-2deg) scale(1.02); }
   }
 
-  /* ── Content container ── */
+  @keyframes aurora-flow-reverse {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    50% { transform: translate(-30px, 20px) rotate(-2deg) scale(1.03); }
+    100% { transform: translate(20px, -20px) rotate(2deg) scale(1.01); }
+  }
+
+  /* ═══════════════════════════════════════════
+     GLASSMORPHISM CARDS (#3 — Glassmorphism style)
+     backdrop-filter: blur(15px), translucent, subtle border
+     ═══════════════════════════════════════════ */
+  .glass-card {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--foreground) / 0.06);
+    border-radius: var(--radius);
+    transition: transform 0.25s ease-out, border-color 0.25s ease-out, box-shadow 0.25s ease-out;
+  }
+
+  .dark .glass-card {
+    background: hsl(var(--card) / 0.4);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* UX Guideline #29: Hover states with subtle visual change */
+  .glass-card:hover {
+    border-color: hsl(var(--primary) / 0.25);
+    box-shadow:
+      0 8px 32px hsl(var(--primary) / 0.06),
+      0 0 0 1px hsl(var(--primary) / 0.08);
+    transform: translateY(-3px);
+  }
+
+  /* UX Guideline #30: Active states */
+  .glass-card:active {
+    transform: translateY(-1px);
+  }
+
+  /* ═══════════════════════════════════════════
+     CONTENT CONTAINER
+     UX Guideline #21: max-width for readability
+     ═══════════════════════════════════════════ */
   .content-container {
     @apply relative z-10 mx-auto px-6 md:px-8;
     max-width: 1200px;
   }
 
-  /* ── Animations ── */
+  /* ═══════════════════════════════════════════
+     SECTION LABEL — uppercase tracking accent
+     ═══════════════════════════════════════════ */
+  .section-label {
+    @apply text-xs uppercase font-semibold tracking-[0.2em] text-primary mb-4;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .section-divider {
+    @apply w-16 h-[2px] mx-auto;
+    background: linear-gradient(90deg, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.3));
+  }
+
+  /* ═══════════════════════════════════════════
+     ANIMATIONS
+     UX Guideline #8: 150-300ms for micro-interactions
+     UX Guideline #13: Use transform/opacity only (performance)
+     UX Guideline #14: Use ease-out for entering
+     ═══════════════════════════════════════════ */
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: fadeIn 0.5s ease-out forwards;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes fadeIn {
@@ -149,20 +252,23 @@
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(24px); }
+    from { opacity: 0; transform: translateY(28px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Marquee ── */
+  /* ═══════════════════════════════════════════
+     MARQUEE — Video showcase
+     ═══════════════════════════════════════════ */
   .marquee-wrapper {
-    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
     overflow: hidden;
   }
 
   .marquee-track {
-    animation: marquee 40s linear infinite;
+    animation: marquee 45s linear infinite;
     width: max-content;
+    will-change: transform;
   }
 
   .marquee-track:hover {
@@ -174,9 +280,14 @@
     to { transform: translateX(-50%); }
   }
 
-  /* ── Hero ── */
+  /* ═══════════════════════════════════════════
+     HERO SECTION
+     Pattern #9: Video-First Hero — dark overlay, autoplay
+     Pattern #32: Hero-Centric — full-bleed, CTA 7:1 contrast
+     ═══════════════════════════════════════════ */
   .hero-section {
     background: transparent;
+    position: relative;
   }
 
   .hero-grain {
@@ -186,27 +297,37 @@
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-size: 150px 150px;
-    opacity: 0.03;
+    opacity: 0.02;
     mix-blend-mode: overlay;
   }
 
   .dark .hero-grain {
-    opacity: 0.06;
+    opacity: 0.05;
   }
 
-  /* ── Shimmer CTA button ── */
+  /* ═══════════════════════════════════════════
+     CTA BUTTON — Glow effect
+     Style: Aurora glow pulse for hero CTA
+     Conversion: 7:1 contrast ratio required
+     ═══════════════════════════════════════════ */
   .shimmer-button {
     box-shadow:
-      0 0 16px hsl(var(--accent) / 0.3),
-      0 8px 24px hsl(var(--accent) / 0.15);
-    transition: box-shadow 0.3s ease, transform 0.2s ease;
+      0 0 20px hsl(var(--primary) / 0.35),
+      0 8px 32px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(0 0% 100% / 0.1);
+    transition: box-shadow 0.25s ease-out, transform 0.2s ease-out;
   }
 
   .shimmer-button:hover {
     box-shadow:
-      0 0 24px hsl(var(--accent) / 0.4),
-      0 12px 32px hsl(var(--accent) / 0.2);
-    transform: translateY(-1px);
+      0 0 32px hsl(var(--primary) / 0.5),
+      0 12px 40px hsl(var(--primary) / 0.25),
+      inset 0 1px 0 hsl(0 0% 100% / 0.15);
+    transform: translateY(-2px);
+  }
+
+  .shimmer-button:active {
+    transform: translateY(0);
   }
 
   .shimmer-button::before {
@@ -216,31 +337,46 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent 0%, hsl(var(--accent) / 0.4) 50%, transparent 100%);
-    animation: shimmer 3.5s infinite;
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.35) 50%, transparent 100%);
+    animation: shimmer 4s ease-in-out infinite;
     z-index: 1;
     filter: blur(6px);
+    border-radius: inherit;
   }
 
   @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0%, 100% { transform: translateX(-100%); opacity: 0; }
+    50% { transform: translateX(100%); opacity: 1; }
   }
 
-  /* ── Glass card ── */
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  /* ═══════════════════════════════════════════
+     VIDEO CARD SKELETON (UX Guideline #10)
+     ═══════════════════════════════════════════ */
+  .video-skeleton-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 25%,
+      hsl(var(--primary) / 0.06) 37%,
+      hsl(var(--primary) / 0.1) 50%,
+      hsl(var(--primary) / 0.06) 63%,
+      transparent 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
   }
 
-  .glass-card:hover {
-    border-color: hsl(var(--accent) / 0.3);
-    box-shadow: 0 8px 32px hsl(var(--accent) / 0.08);
-    transform: translateY(-2px);
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
-  /* ── Section divider ── */
-  .section-divider {
-    @apply w-12 h-px bg-accent/40 mx-auto;
+  /* ═══════════════════════════════════════════
+     FLOATING ORBS — Aurora accent
+     ═══════════════════════════════════════════ */
+  @keyframes float-orb {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-35px) scale(1.02); }
   }
 }

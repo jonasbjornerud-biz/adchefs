@@ -14,7 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Satoshi', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['Syne', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -76,8 +77,8 @@ export default {
           to: { height: "0" },
         },
         "float-orb": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-40px)" },
+          "0%, 100%": { transform: "translateY(0) scale(1)" },
+          "50%": { transform: "translateY(-35px) scale(1.02)" },
         },
       },
       animation: {
