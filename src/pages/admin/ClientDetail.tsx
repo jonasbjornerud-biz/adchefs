@@ -26,10 +26,35 @@ function AdminModuleCard({
 }) {
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [justCompleted, setJustCompleted] = useState(false);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; color: string; angle: number; speed: number }[]>([]);
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isLocked) return;
+
+    if (!completed) {
+      // Trigger celebration
+      setJustCompleted(true);
+      const colors = ['#22c55e', '#4ade80', '#86efac', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
+      const newParticles = Array.from({ length: 16 }, (_, i) => ({
+        id: Date.now() + i,
+        x: 0,
+        y: 0,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        angle: (360 / 16) * i + (Math.random() * 20 - 10),
+        speed: 40 + Math.random() * 30,
+      }));
+      setParticles(newParticles);
+      setTimeout(() => { setJustCompleted(false); setParticles([]); }, 800);
+    }
+
+    onToggleComplete(module.id, !completed);
+  };
 
   return (
     <div
-      className={`group relative rounded-2xl border transition-all duration-300 overflow-hidden ${
+      className={`group relative rounded-2xl border transition-all duration-500 overflow-visible ${
         isLocked
           ? 'opacity-40 cursor-not-allowed border-border/20 bg-muted/5'
           : completed
@@ -37,25 +62,22 @@ function AdminModuleCard({
           : isActive
           ? 'border-sky-500/30 bg-gradient-to-br from-sky-500/[0.05] to-transparent shadow-[0_0_24px_-6px_hsl(200_90%_50%/0.1)]'
           : 'border-border/40 bg-card/40 hover:border-border/70 hover:bg-card/60'
-      }`}
+      } ${justCompleted ? 'scale-[1.01]' : ''}`}
     >
       {/* Active indicator bar */}
       {isActive && !isLocked && (
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-sky-600 rounded-full" />
       )}
       {completed && (
-        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
+        <div className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full transition-all duration-500 ${justCompleted ? 'shadow-[0_0_8px_hsl(160_84%_39%/0.6)]' : ''}`} />
       )}
 
       <div className="flex items-stretch">
         {/* Completion checkbox area */}
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!isLocked) onToggleComplete(module.id, !completed);
-          }}
+          onClick={handleToggle}
           disabled={isLocked}
-          className={`flex-shrink-0 w-16 flex items-center justify-center border-r transition-colors ${
+          className={`relative flex-shrink-0 w-16 flex items-center justify-center border-r transition-colors ${
             isLocked
               ? 'border-border/10 cursor-not-allowed'
               : completed
@@ -63,17 +85,34 @@ function AdminModuleCard({
               : 'border-border/20 hover:bg-sky-500/5 cursor-pointer'
           }`}
         >
+          {/* Particle burst */}
+          {particles.map(p => (
+            <span
+              key={p.id}
+              className="absolute w-1.5 h-1.5 rounded-full pointer-events-none"
+              style={{
+                background: p.color,
+                left: '50%',
+                top: '50%',
+                animation: `particle-burst 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards`,
+                transform: `translate(-50%, -50%)`,
+                ['--angle' as string]: `${p.angle}deg`,
+                ['--dist' as string]: `${p.speed}px`,
+              }}
+            />
+          ))}
+
           <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-300 ${
             completed
-              ? 'bg-emerald-500 shadow-[0_0_14px_hsl(160_84%_39%/0.35)] scale-100'
+              ? `bg-emerald-500 shadow-[0_0_14px_hsl(160_84%_39%/0.35)] ${justCompleted ? 'scale-125' : 'scale-100'}`
               : isLocked
               ? 'bg-muted/30 border border-border/30'
               : isActive
-              ? 'border-2 border-sky-400/70 hover:border-sky-400 shadow-[0_0_10px_hsl(200_90%_50%/0.12)]'
-              : 'border-2 border-border/40 hover:border-border/70'
+              ? 'border-2 border-sky-400/70 hover:border-sky-400 hover:scale-110 shadow-[0_0_10px_hsl(200_90%_50%/0.12)]'
+              : 'border-2 border-border/40 hover:border-border/70 hover:scale-110'
           }`}>
             {completed ? (
-              <Check className="w-4 h-4 text-white" strokeWidth={3} />
+              <Check className={`w-4 h-4 text-white transition-transform duration-300 ${justCompleted ? 'scale-125' : ''}`} strokeWidth={3} />
             ) : isLocked ? (
               <Lock className="w-3 h-3 text-muted-foreground/30" />
             ) : isActive ? (
@@ -81,7 +120,6 @@ function AdminModuleCard({
             ) : null}
           </div>
         </button>
-
         {/* Content area */}
         <button
           onClick={() => { if (!isLocked) setExpanded(!expanded); }}
