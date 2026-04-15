@@ -211,6 +211,3 @@ export default function PlaybookBuilder() {
     </div>
   );
 }
-
-// Need Edit icon import
-import { Edit } from 'lucide-react';
