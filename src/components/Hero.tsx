@@ -1,5 +1,5 @@
+import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
-import BackgroundElements from "./BackgroundElements";
 
 const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
@@ -18,53 +18,53 @@ const Hero = () => {
   const doubled = [...mediaSources, ...mediaSources];
 
   return (
-    <section className="section-steel min-h-[100svh] flex flex-col justify-center pt-20">
-      <BackgroundElements />
+    <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
+      <div className="hero-grain" />
 
-      <div className="container mx-auto px-8 relative z-10 text-center max-w-4xl">
-        {/* HUD Label */}
-        <div className="inline-block px-3 py-1 border mb-10" style={{ borderColor: "hsl(263 70% 50% / 0.3)", background: "hsl(263 70% 50% / 0.05)" }}>
-          <span className="mono-label" style={{ color: "hsl(263 70% 50%)" }}>
-            Visual Engineering Unit // 001
+      <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
+        <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
+          <span className="text-xs tracking-wide text-muted-foreground">
+            AI automations × expert video editors
           </span>
         </div>
 
-        {/* Massive Title */}
-        <h1
-          className="font-extrabold leading-[0.85] tracking-tighter uppercase mb-8 text-white"
-          style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
-        >
-          We cook
-          <br />
-          <span className="text-stroke">up ads</span>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
+          We cook up{" "}
+          <span className="text-accent">ads</span> that{" "}
+          <br className="hidden sm:block" />
+          <span className="text-accent">scale</span> your brand
         </h1>
 
-        <p className="text-lg md:text-xl text-white/40 leading-relaxed max-w-xl mx-auto mb-4">
-          Creative strategy, <span style={{ color: "hsl(263 70% 60%)" }}>AI insights</span>, and elite editors
-          working together to deliver high-performance video at scale.
+        <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
+          Creative strategy, <span className="text-accent">AI insights</span>, and elite editors
+          working together to deliver videos that drive consistent growth.
         </p>
 
-        <div className="flex items-center justify-center gap-4 mono-label text-white/20 mb-12">
-          <Check className="w-3 h-3" style={{ color: "hsl(263 70% 50% / 0.5)" }} />
-          <span>Pay per video. No retainers.</span>
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/50 mb-10">
+          <Check className="w-3.5 h-3.5 text-accent/50" />
+          Pay per video. No retainers.
         </div>
 
-        <button
+        <Button
+          size="lg"
+          variant="cta"
           onClick={() => scrollToSection("booking")}
-          className="plasma-button px-10 py-5 text-base group inline-flex items-center gap-3"
+          className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
         >
-          <span className="relative z-10">Book a Call</span>
-          <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-        </button>
+          <span className="relative z-10 flex items-center">
+            Book a Call
+            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </span>
+        </Button>
       </div>
 
       {/* Marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-24 mb-12 marquee-wrapper z-10">
+      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-20 mb-8 marquee-wrapper">
         <div className="marquee-track flex gap-4">
           {doubled.map((src, i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[260px] h-[360px] overflow-hidden film-frame"
+              className="flex-shrink-0 w-[240px] h-[340px] rounded-xl overflow-hidden border border-border/30"
             >
               {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
                 <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
