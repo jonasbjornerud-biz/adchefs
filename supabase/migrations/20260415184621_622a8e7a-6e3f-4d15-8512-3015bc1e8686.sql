@@ -1,0 +1,1 @@
+-- No schema changes needed, just a marker migration for the edge function update
