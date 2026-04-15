@@ -21,6 +21,13 @@ const Hero = () => {
     <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
       <div className="hero-grain" />
 
+      {/* Animated gradient orbs in hero */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+        <div className="hero-orb hero-orb-3" />
+      </div>
+
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
         <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
           <span className="text-xs tracking-wide text-muted-foreground">
