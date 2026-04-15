@@ -124,11 +124,9 @@ export default function PerformanceDashboard() {
       const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
 
-      // Editors: column A (skip row 1 "(All Editors)") + column C, deduplicated, then prepend "(All Editors)"
-      const editorsA = helpers.slice(1).map(r => r[0]).filter(Boolean).filter(n => n !== 'undefined');
-      const editorsC = helpers.slice(1).map(r => r[2]).filter(Boolean).filter(n => n !== 'undefined');
-      const editorSet = [...new Set([...editorsA, ...editorsC])];
-      const editors = ['(All Editors)', ...editorSet];
+      // Editors: column A only (skip row 1 header), then prepend "(All Editors)"
+      const editorsA = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
+      const editors = ['(All Editors)', ...new Set(editorsA)];
 
       const months = helpers.map(r => r[1]).filter(Boolean).filter(m => m !== 'undefined');
 
