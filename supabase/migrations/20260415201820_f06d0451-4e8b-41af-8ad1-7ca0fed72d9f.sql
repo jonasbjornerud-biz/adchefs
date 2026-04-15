@@ -1,0 +1,1 @@
+ALTER TABLE public.clients ADD COLUMN spreadsheet_id text;
