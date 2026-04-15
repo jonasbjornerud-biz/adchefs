@@ -1,113 +1,136 @@
 import { Brain, Users, RefreshCw } from "lucide-react";
 
 const HiringIllustration = () => (
-  <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-    {/* 5 candidate circles at top */}
-    {[60, 110, 160, 210, 260].map((x, i) => (
-      <g key={i}>
-        <circle cx={x} cy="50" r="20" fill="#e9e5ff" stroke="#c4b5fd" strokeWidth="1.5">
-          <animate attributeName="opacity" values={i < 4 ? "1;0.3;0.3" : "1;1;1"} dur="3s" repeatCount="indefinite" />
-        </circle>
-        <circle cx={x} cy="44" r="6" fill="#a78bfa">
-          <animate attributeName="opacity" values={i < 4 ? "1;0.3;0.3" : "1;1;1"} dur="3s" repeatCount="indefinite" />
-        </circle>
-        <path d={`M${x - 8},${56} Q${x},${64} ${x + 8},${56}`} stroke="#a78bfa" strokeWidth="2" fill="none">
-          <animate attributeName="opacity" values={i < 4 ? "1;0.3;0.3" : "1;1;1"} dur="3s" repeatCount="indefinite" />
-        </path>
-      </g>
-    ))}
+  <svg viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+    {/* Row of 5 people silhouettes */}
+    {[50, 100, 150, 200, 250].map((x, i) => {
+      const isSelected = i === 4;
+      return (
+        <g key={i}>
+          {/* Head */}
+          <circle cx={x} cy="38" r={isSelected ? 14 : 12} fill={isSelected ? "#8b5cf6" : "#ddd6fe"} stroke={isSelected ? "#7c3aed" : "#c4b5fd"} strokeWidth="2">
+            {!isSelected && <animate attributeName="opacity" values="1;0.35;1" dur="3s" begin={`${i * 0.3}s`} repeatCount="indefinite" />}
+          </circle>
+          {/* Body */}
+          <rect x={x - (isSelected ? 10 : 8)} y="56" width={isSelected ? 20 : 16} height={isSelected ? 24 : 20} rx="8" fill={isSelected ? "#8b5cf6" : "#ddd6fe"} stroke={isSelected ? "#7c3aed" : "#c4b5fd"} strokeWidth="2">
+            {!isSelected && <animate attributeName="opacity" values="1;0.35;1" dur="3s" begin={`${i * 0.3}s`} repeatCount="indefinite" />}
+          </rect>
+          {/* X mark on rejected */}
+          {!isSelected && (
+            <g>
+              <line x1={x - 6} y1="32" x2={x + 6} y2="44" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
+                <animate attributeName="opacity" values="0;0;1;1" dur="3s" begin={`${i * 0.3}s`} repeatCount="indefinite" />
+              </line>
+              <line x1={x + 6} y1="32" x2={x - 6} y2="44" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round">
+                <animate attributeName="opacity" values="0;0;1;1" dur="3s" begin={`${i * 0.3}s`} repeatCount="indefinite" />
+              </line>
+            </g>
+          )}
+          {/* Checkmark on selected */}
+          {isSelected && (
+            <g>
+              <circle cx={x} cy="38" r="20" fill="#8b5cf6" opacity="0.12">
+                <animate attributeName="r" values="18;26;18" dur="2s" repeatCount="indefinite" />
+              </circle>
+              <path d={`M${x - 5},${38} L${x - 1},${42} L${x + 7},${33}`} stroke="#22c55e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                <animate attributeName="opacity" values="0;1;1" dur="2s" repeatCount="indefinite" />
+              </path>
+            </g>
+          )}
+        </g>
+      );
+    })}
 
-    {/* Funnel */}
-    <path d="M40,90 L280,90 L200,140 L120,140 Z" fill="#f3f0ff" stroke="#c4b5fd" strokeWidth="1.5" />
-    
-    {/* Animated dots falling through funnel */}
-    <circle r="4" fill="#8b5cf6">
-      <animateMotion dur="2.5s" repeatCount="indefinite" path="M160,90 L160,140 L160,170" />
-      <animate attributeName="opacity" values="1;1;0" dur="2.5s" repeatCount="indefinite" />
-    </circle>
+    {/* Large funnel below */}
+    <path d="M30,105 L270,105 L180,165 L120,165 Z" fill="#f5f3ff" stroke="#c4b5fd" strokeWidth="2" />
+    <text x="150" y="130" textAnchor="middle" fontSize="13" fontWeight="700" fill="#7c3aed" fontFamily="system-ui">200+ Screened</text>
 
-    {/* Result: single star candidate */}
-    <circle cx="160" cy="175" r="16" fill="#8b5cf6" opacity="0.15">
-      <animate attributeName="r" values="14;20;14" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="160" cy="175" r="10" fill="#8b5cf6" />
-    <path d="M156,175 L158,178 L165,172" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    {/* Arrow down */}
+    <line x1="150" y1="168" x2="150" y2="188" stroke="#8b5cf6" strokeWidth="2.5" />
+    <path d="M143,184 L150,194 L157,184" fill="#8b5cf6" />
+
+    {/* Result badge */}
+    <rect x="105" y="196" width="90" height="24" rx="12" fill="#8b5cf6" />
+    <text x="150" y="212" textAnchor="middle" fontSize="12" fontWeight="700" fill="white" fontFamily="system-ui">Top 1%</text>
   </svg>
 );
 
 const MentoringIllustration = () => (
-  <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-    {/* Clipboard / SOP */}
-    <rect x="40" y="20" width="100" height="160" rx="12" fill="#f3f0ff" stroke="#c4b5fd" strokeWidth="1.5" />
-    <rect x="70" y="12" width="40" height="16" rx="8" fill="#c4b5fd" />
+  <svg viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+    {/* Left side: Course/Book icon */}
+    <rect x="30" y="30" width="110" height="150" rx="10" fill="#f5f3ff" stroke="#c4b5fd" strokeWidth="2" />
+    {/* Book spine */}
+    <rect x="30" y="30" width="14" height="150" rx="4" fill="#ddd6fe" />
+    {/* Title bar */}
+    <rect x="52" y="44" width="76" height="10" rx="5" fill="#c4b5fd" />
+    <text x="90" y="52" textAnchor="middle" fontSize="7" fontWeight="700" fill="white" fontFamily="system-ui">MASTERCLASS</text>
     
-    {/* Checklist items with sequential animation */}
-    {[50, 78, 106, 134].map((y, i) => (
+    {/* Chapter items with sequential check animation */}
+    {["Module 1", "Module 2", "Module 3", "Module 4"].map((label, i) => (
       <g key={i}>
-        <rect x="58" y={y} width="16" height="16" rx="4" fill="white" stroke="#c4b5fd" strokeWidth="1.5" />
-        <path d={`M${62},${y + 8} L${65},${y + 11} L${71},${y + 5}`} stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" fill="none">
-          <animate attributeName="opacity" values="0;0;1;1" dur="3s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
+        <rect x="52" y={68 + i * 28} width="18" height="18" rx="5" fill="white" stroke="#c4b5fd" strokeWidth="1.5" />
+        <path d={`M${56},${77 + i * 28} L${59},${80 + i * 28} L${66},${74 + i * 28}`} stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" fill="none">
+          <animate attributeName="opacity" values="0;0;1;1" dur="4s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
         </path>
-        <rect x="82" y={y + 4} width="48" height="8" rx="4" fill="#e9e5ff" />
+        <text x="78" y={81 + i * 28} fontSize="10" fontWeight="500" fill="#6d28d9" fontFamily="system-ui">{label}</text>
       </g>
     ))}
 
     {/* Arrow */}
-    <path d="M155,100 L185,100" stroke="#c4b5fd" strokeWidth="2.5" strokeLinecap="round" />
-    <path d="M180,94 L190,100 L180,106" fill="#c4b5fd" />
+    <line x1="150" y1="105" x2="175" y2="105" stroke="#c4b5fd" strokeWidth="3" strokeLinecap="round" />
+    <path d="M172,98 L182,105 L172,112" fill="#c4b5fd" />
 
-    {/* Quality meter / gauge */}
-    <circle cx="240" cy="95" r="55" fill="#f3f0ff" stroke="#e9e5ff" strokeWidth="1.5" />
-    <circle cx="240" cy="95" r="42" fill="none" stroke="#e9e5ff" strokeWidth="8" />
-    <circle cx="240" cy="95" r="42" fill="none" stroke="#8b5cf6" strokeWidth="8" 
-      strokeDasharray="264" strokeDashoffset="264" strokeLinecap="round"
-      transform="rotate(-90 240 95)">
-      <animate attributeName="stroke-dashoffset" values="264;40;264" dur="4s" repeatCount="indefinite" />
+    {/* Right side: Quality score ring */}
+    <circle cx="230" cy="105" r="60" fill="#f5f3ff" />
+    <circle cx="230" cy="105" r="48" fill="none" stroke="#ede9fe" strokeWidth="10" />
+    <circle cx="230" cy="105" r="48" fill="none" stroke="#8b5cf6" strokeWidth="10"
+      strokeDasharray="301" strokeDashoffset="301" strokeLinecap="round"
+      transform="rotate(-90 230 105)">
+      <animate attributeName="stroke-dashoffset" values="301;30;301" dur="4s" repeatCount="indefinite" />
     </circle>
-    <text x="240" y="90" textAnchor="middle" fontSize="22" fontWeight="800" fill="#7c3aed" fontFamily="system-ui">A+</text>
-    <text x="240" y="108" textAnchor="middle" fontSize="10" fontWeight="500" fill="#a78bfa" fontFamily="system-ui">Quality</text>
+    <text x="230" y="100" textAnchor="middle" fontSize="28" fontWeight="800" fill="#7c3aed" fontFamily="system-ui">98</text>
+    <text x="230" y="118" textAnchor="middle" fontSize="11" fontWeight="600" fill="#a78bfa" fontFamily="system-ui">QA Score</text>
   </svg>
 );
 
 const DeliveryIllustration = () => (
-  <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-    {/* Timeline bar */}
-    <rect x="40" y="90" width="240" height="6" rx="3" fill="#e9e5ff" />
+  <svg viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+    {/* Timeline track */}
+    <rect x="30" y="95" width="240" height="8" rx="4" fill="#ede9fe" />
     
-    {/* Animated progress fill */}
-    <rect x="40" y="90" height="6" rx="3" fill="#8b5cf6">
-      <animate attributeName="width" values="0;240;240;0" dur="4s" repeatCount="indefinite" />
+    {/* Animated fill */}
+    <rect x="30" y="95" height="8" rx="4" fill="#8b5cf6">
+      <animate attributeName="width" values="0;240;240;0" dur="5s" repeatCount="indefinite" />
     </rect>
 
-    {/* Milestone nodes */}
+    {/* 3 milestone nodes */}
     {[
-      { x: 100, label: "Draft", icon: "M94,55 L106,55 L106,72 L100,68 L94,72Z" },
-      { x: 160, label: "Review", icon: "M154,55 L166,55 L166,67 A6,6 0 0,1 154,67Z" },
-      { x: 220, label: "Ship", icon: "M214,55 L226,55 L226,67 L220,72 L214,67Z" },
+      { x: 70, label: "Draft", emoji: "📝" },
+      { x: 150, label: "Review", emoji: "🔍" },
+      { x: 230, label: "Ship", emoji: "🚀" },
     ].map((m, i) => (
       <g key={i}>
-        <circle cx={m.x} cy="93" r="12" fill="white" stroke="#8b5cf6" strokeWidth="2.5" />
-        <circle cx={m.x} cy="93" r="5" fill="#8b5cf6">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+        <circle cx={m.x} cy="99" r="18" fill="white" stroke="#8b5cf6" strokeWidth="3" />
+        <text x={m.x} y="105" textAnchor="middle" fontSize="16">{m.emoji}</text>
+        <text x={m.x} y="135" textAnchor="middle" fontSize="13" fontWeight="700" fill="#6d28d9" fontFamily="system-ui">{m.label}</text>
+        {/* Animated pulse on active */}
+        <circle cx={m.x} cy="99" r="18" fill="none" stroke="#8b5cf6" strokeWidth="2" opacity="0">
+          <animate attributeName="r" values="18;30;30" dur="5s" begin={`${i * 1.5}s`} repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.6;0;0" dur="5s" begin={`${i * 1.5}s`} repeatCount="indefinite" />
         </circle>
-        <text x={m.x} y="125" textAnchor="middle" fontSize="12" fontWeight="600" fill="#6d28d9" fontFamily="system-ui">{m.label}</text>
       </g>
     ))}
 
     {/* Traveling dot */}
-    <circle r="6" fill="#8b5cf6">
-      <animate attributeName="cx" values="40;280;40" dur="4s" repeatCount="indefinite" />
-      <animate attributeName="cy" values="93;93;93" dur="4s" repeatCount="indefinite" />
-    </circle>
-    <circle r="16" fill="#8b5cf6" opacity="0.12">
-      <animate attributeName="cx" values="40;280;40" dur="4s" repeatCount="indefinite" />
-      <animate attributeName="cy" values="93;93;93" dur="4s" repeatCount="indefinite" />
-      <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite" />
+    <circle r="8" fill="#8b5cf6">
+      <animate attributeName="cx" values="30;270;270;30" dur="5s" repeatCount="indefinite" />
+      <animate attributeName="cy" values="99;99;99;99" dur="5s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1;1;0;0" dur="5s" repeatCount="indefinite" />
     </circle>
 
-    {/* Infinite revisions badge */}
-    <rect x="110" y="148" width="100" height="32" rx="16" fill="#f3f0ff" stroke="#e9e5ff" strokeWidth="1.5" />
-    <text x="160" y="169" textAnchor="middle" fontSize="12" fontWeight="700" fill="#7c3aed" fontFamily="system-ui">∞ Revisions</text>
+    {/* Bottom badge */}
+    <rect x="95" y="158" width="110" height="36" rx="18" fill="#f5f3ff" stroke="#ddd6fe" strokeWidth="2" />
+    <text x="150" y="181" textAnchor="middle" fontSize="14" fontWeight="700" fill="#7c3aed" fontFamily="system-ui">∞ Revisions</text>
   </svg>
 );
 
@@ -122,13 +145,13 @@ const steps = [
     icon: Users,
     illustration: MentoringIllustration,
     title: "Editor Mentoring System",
-    description: "Custom SOPs and QA processes built around your creative workflow for consistent output.",
+    description: "Full masterclasses and courses built for your editors, with custom SOPs and QA to ensure consistent, on-brand output.",
   },
   {
     icon: RefreshCw,
     illustration: DeliveryIllustration,
     title: "Delivery & Iterations",
-    description: "Finished videos delivered within days. Request revisions, approve finals, repeat.",
+    description: "Finished videos delivered within days. Request unlimited revisions, approve finals, repeat.",
   },
 ];
 
@@ -150,7 +173,7 @@ const HowItWorks = () => {
               key={index}
               className="group rounded-2xl border border-[#e9e5ff] bg-white p-5 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300"
             >
-              <div className="h-[220px] mb-5 rounded-xl bg-white flex items-center justify-center">
+              <div className="h-[240px] mb-5 rounded-xl bg-white flex items-center justify-center">
                 <step.illustration />
               </div>
               <div className="flex items-center gap-2.5 mb-2">
