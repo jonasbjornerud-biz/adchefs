@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Client, Stage, Module, ModuleCompletion, StageWithModules } from '@/types/playbook';
 import { isModuleCompleted } from '@/lib/progression';
 import { logout } from '@/lib/auth';
-import { GraduationCap, BarChart3, ChevronRight, LogOut, Lock } from 'lucide-react';
+import { BarChart3, ChevronRight, LogOut, Lock, TrendingUp } from 'lucide-react';
 import Papa from 'papaparse';
 
 /* ── Shine animation keyframes (injected once) ── */
@@ -268,8 +268,9 @@ export default function ClientDashboard() {
           <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Here's your portal overview</p>
         </div>
 
-        {/* Editor Performance card */}
-        <div className="max-w-lg">
+        {/* Cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
+          {/* Editor Performance card */}
           {client.spreadsheet_id ? (
             <button
               onClick={() => navigate('/performance')}
@@ -351,6 +352,54 @@ export default function ClientDashboard() {
               </div>
             </div>
           )}
+
+          {/* Meta Ads card */}
+          <button
+            onClick={() => navigate('/ads')}
+            className="group text-left cursor-pointer w-full"
+            style={cardBase}
+            onMouseEnter={applyHover}
+            onMouseLeave={removeHover}
+          >
+            <div className="flex items-start justify-between mb-6">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1))',
+                  border: '1px solid rgba(139,92,246,0.2)',
+                  boxShadow: '0 0 20px rgba(139,92,246,0.1)',
+                }}
+              >
+                <TrendingUp className="w-5 h-5" style={{ color: '#8B5CF6' }} />
+              </div>
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" style={{ color: 'rgba(255,255,255,0.2)' }} />
+            </div>
+
+            <h3 className="text-base font-semibold text-white mb-1">Meta Ads</h3>
+            <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.3)' }}>Ad performance, ROAS, CTR, and spend analytics</p>
+
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { val: '—', label: 'CTR' },
+                { val: '—', label: 'ROAS' },
+                { val: '—', label: 'CPA' },
+              ].map((s, i) => (
+                <div key={i} className="text-center" style={statBoxStyle}>
+                  <p className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
+                  <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex items-center gap-1">
+              <span
+                className="text-sm font-semibold group-hover:translate-x-1 transition-all duration-300"
+                style={{ color: '#8B5CF6' }}
+              >
+                View Ad Performance →
+              </span>
+            </div>
+          </button>
         </div>
       </main>
     </div>
