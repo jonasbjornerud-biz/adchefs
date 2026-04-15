@@ -7,7 +7,7 @@ import { ProgressBar } from '@/components/playbook/ProgressBar';
 import { StageSection } from '@/components/playbook/StageSection';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/lib/auth';
-import { LogOut, Trophy } from 'lucide-react';
+import { LogOut, Trophy, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Playbook() {
@@ -18,9 +18,7 @@ export default function Playbook() {
   const [completions, setCompletions] = useState<ModuleCompletion[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     setLoading(true);
@@ -81,66 +79,72 @@ export default function Playbook() {
     }
   }, [client, toast]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading playbook...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm text-muted-foreground">Loading playbook…</span>
+        </div>
+      </div>
+    );
+  }
+
   if (!client) return null;
 
   const totalModules = stages.reduce((sum, s) => sum + s.modules.length, 0);
   const completedModules = stages.reduce((sum, s) => sum + s.modules.filter(m => isModuleCompleted(m.id, completions)).length, 0);
   const allComplete = totalModules > 0 && completedModules === totalModules;
 
-  const stage1 = stages.find(s => s.stage_number === 1);
-  const stages23 = stages.filter(s => s.stage_number > 1).sort((a, b) => a.stage_number - b.stage_number);
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">{client.brand_name}</h1>
-              <p className="text-sm text-muted-foreground">Video Editing Playbook</p>
+      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+        <div className="max-w-3xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-sky-500/10 flex items-center justify-center">
+                <BookOpen className="w-4.5 h-4.5 text-sky-500" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">{client.brand_name}</h1>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Editing Playbook</p>
+              </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/login'); }} className="text-muted-foreground">
-              <LogOut className="w-4 h-4 mr-1" /> Logout
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => { logout(); navigate('/login'); }}
+              className="text-muted-foreground hover:text-foreground rounded-xl text-xs"
+            >
+              <LogOut className="w-3.5 h-3.5 mr-1.5" /> Logout
             </Button>
           </div>
           <ProgressBar completed={completedModules} total={totalModules} />
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-10">
-        {/* Stage 1 */}
-        {stage1 && (
-          <StageSection
-            stage={stage1}
-            allStages={stages}
-            completions={completions}
-            onToggleComplete={handleToggleComplete}
-          />
-        )}
-
-        {/* Stages 2 & 3 */}
-        {stages23.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {stages23.map(stage => (
-              <StageSection
-                key={stage.id}
-                stage={stage}
-                allStages={stages}
-                completions={completions}
-                onToggleComplete={handleToggleComplete}
-              />
-            ))}
-          </div>
-        )}
+      <main className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+        {stages
+          .sort((a, b) => a.sort_order - b.sort_order)
+          .map(stage => (
+            <StageSection
+              key={stage.id}
+              stage={stage}
+              allStages={stages}
+              completions={completions}
+              onToggleComplete={handleToggleComplete}
+            />
+          ))}
 
         {/* Completion banner */}
         {allComplete && (
-          <div className="rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20 p-6 text-center space-y-2">
-            <Trophy className="w-10 h-10 text-emerald-500 mx-auto" />
-            <h3 className="text-lg font-semibold text-emerald-700 dark:text-emerald-400">🎉 All stages complete!</h3>
-            <p className="text-sm text-muted-foreground">You're now ready to edit live ads for {client.brand_name}.</p>
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.04] p-8 text-center space-y-3">
+            <Trophy className="w-12 h-12 text-emerald-500 mx-auto" />
+            <h3 className="text-xl font-bold text-emerald-600 dark:text-emerald-400">All stages complete! 🎉</h3>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              You're now ready to edit live ads for {client.brand_name}. Great work!
+            </p>
           </div>
         )}
       </main>
