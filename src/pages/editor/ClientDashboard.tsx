@@ -83,7 +83,7 @@ export default function ClientDashboard() {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Date.now() - parsed.lastSynced < CACHE_TTL) {
-          computePerfStats(parsed.eod, parsed.payment);
+          computePerfStats(parsed.eod, parsed.paymentRaw || []);
           return;
         }
       }
@@ -97,17 +97,19 @@ export default function ClientDashboard() {
       if (!eodRes.ok || !payRes.ok) return;
       const [eodText, payText] = await Promise.all([eodRes.text(), payRes.text()]);
       const eod = Papa.parse(eodText, { header: true, skipEmptyLines: true }).data as any[];
-      const payment = Papa.parse(payText, { header: true, skipEmptyLines: true }).data as any[];
-      localStorage.setItem(cacheKey, JSON.stringify({ eod, payment, lastSynced: Date.now() }));
-      computePerfStats(eod, payment);
+      const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
+      localStorage.setItem(cacheKey, JSON.stringify({ eod, paymentRaw, lastSynced: Date.now() }));
+      computePerfStats(eod, paymentRaw);
     } catch {}
   }
 
-  function computePerfStats(eod: any[], payment: any[]) {
+  function computePerfStats(eod: any[], paymentRaw: string[][]) {
     const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
     const filtered = eod.filter((r: any) => r.Month?.toLowerCase() === currentMonth.toLowerCase());
     const delivered = filtered.reduce((s: number, r: any) => s + (parseInt(r['Videos Delivered']) || 0), 0);
-    const approved = payment.filter((r: any) => r['Approved Month']?.toLowerCase() === currentMonth.toLowerCase() && r['Approval Date']?.trim()).length;
+    // Count non-empty column C (index 2) from row 5+ (index 4+) where column D matches current month
+    const rows = paymentRaw.slice(4);
+    const approved = rows.filter(r => r[2]?.trim() && r[3]?.trim()?.toLowerCase() === currentMonth.toLowerCase()).length;
     const uniqueDays = new Set(filtered.map((r: any) => r.Date)).size;
     const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
 
