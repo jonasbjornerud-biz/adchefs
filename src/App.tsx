@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import ClientDetail from "./pages/admin/ClientDetail";
 import ClientForm from "./pages/admin/ClientForm";
 import PlaybookBuilder from "./pages/admin/PlaybookBuilder";
+import AdminPlaybookView from "./pages/admin/AdminPlaybookView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/admin/clients/new" element={<AuthGuard requireAdmin><ClientForm /></AuthGuard>} />
             <Route path="/admin/clients/:clientId" element={<AuthGuard requireAdmin><ClientDetail /></AuthGuard>} />
             <Route path="/admin/clients/:clientId/playbook" element={<AuthGuard requireAdmin><PlaybookBuilder /></AuthGuard>} />
+            <Route path="/admin/clients/:clientId/playbook-view" element={<AuthGuard requireAdmin><AdminPlaybookView /></AuthGuard>} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
