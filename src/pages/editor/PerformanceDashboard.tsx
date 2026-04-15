@@ -4,20 +4,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import Papa from 'papaparse';
 import {
-  BarChart, Bar, LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer,
 } from 'recharts';
 import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
 interface EodRow { Month: string; Week: string; Date: string; Name: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
 interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved Month': string; [k: string]: string; }
-interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; months: string[]; lastSynced: number; }
+interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; months: string[]; lastSynced: number; paymentRaw: string[][]; }
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const COLORS = ['#8B5CF6', '#06b6d4', '#f59e0b', '#10B981', '#ec4899', '#3b82f6', '#ef4444', '#a78bfa'];
+
+const GLOW = '0 0 20px rgba(139, 92, 246, 0.08), 0 0 40px rgba(139, 92, 246, 0.04)';
+const GLOW_HOVER = '0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.08)';
+const CARD_STYLE: React.CSSProperties = { background: '#111113', border: '1px solid rgba(255,255,255,0.06)', boxShadow: GLOW };
 
 function parseCSV<T>(text: string): T[] {
   return Papa.parse<T>(text, { header: true, skipEmptyLines: true }).data;
@@ -26,11 +29,10 @@ function getCurrentMonth(): string {
   return new Date().toLocaleString('en-US', { month: 'long' });
 }
 
-/* Custom tooltip */
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg px-3 py-2 text-xs shadow-xl" style={{ background: '#1a1a1f', border: '1px solid rgba(139,92,246,0.3)' }}>
+    <div className="rounded-lg px-3 py-2 text-xs shadow-xl" style={{ background: '#1a1a1f', border: '1px solid rgba(139,92,246,0.3)', boxShadow: GLOW }}>
       <p className="text-white/50 mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
@@ -43,21 +45,35 @@ function ChartTooltip({ active, payload, label }: any) {
   );
 }
 
-/* Styled select */
-function DarkSelect({ value, onChange, options, placeholder }: { value: string; onChange: (v: string) => void; options: string[]; placeholder: string }) {
+function DarkSelect({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[]; placeholder?: string }) {
   return (
-    <div className="relative">
+    <div className="relative group">
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/80 cursor-pointer transition-colors focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/80 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: GLOW }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
       >
         {options.map(o => <option key={o} value={o} className="bg-[#111] text-white">{o}</option>)}
       </select>
       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </div>
+    </div>
+  );
+}
+
+function GlowCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  return (
+    <div
+      className={`rounded-xl transition-all duration-200 ${className}`}
+      style={{ ...CARD_STYLE, ...style }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
+    >
+      {children}
     </div>
   );
 }
@@ -71,9 +87,7 @@ export default function PerformanceDashboard() {
   const [editor, setEditor] = useState('(All Editors)');
   const [month, setMonth] = useState(getCurrentMonth());
 
-  useEffect(() => {
-    loadClient();
-  }, []);
+  useEffect(() => { loadClient(); }, []);
 
   async function loadClient() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -106,17 +120,25 @@ export default function PerformanceDashboard() {
       const [eodText, payText, helpText] = await Promise.all([eodRes.text(), payRes.text(), helpRes.text()]);
       const eod = parseCSV<EodRow>(eodText);
       const payment = parseCSV<PaymentRow>(payText);
+      // Raw payment for column-based approval counting (rows from index 4 onward = row 5+ in sheet)
+      const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
-      const editorsA = helpers.map(r => r[0]).filter(Boolean);
-      const editorsC = helpers.map(r => r[2]).filter(Boolean);
-      const editors = [...new Set([...editorsA, ...editorsC])].filter(n => n && n !== 'undefined');
+
+      // Editors: column A (skip row 1 "(All Editors)") + column C, deduplicated, then prepend "(All Editors)"
+      const editorsA = helpers.slice(1).map(r => r[0]).filter(Boolean).filter(n => n !== 'undefined');
+      const editorsC = helpers.slice(1).map(r => r[2]).filter(Boolean).filter(n => n !== 'undefined');
+      const editorSet = [...new Set([...editorsA, ...editorsC])];
+      const editors = ['(All Editors)', ...editorSet];
+
       const months = helpers.map(r => r[1]).filter(Boolean).filter(m => m !== 'undefined');
-      const cached: CachedData = { eod, payment, editors, months, lastSynced: Date.now() };
+
+      const cached: CachedData = { eod, payment, paymentRaw, editors, months, lastSynced: Date.now() };
       localStorage.setItem(cacheKey, JSON.stringify(cached));
       setData(cached);
     } catch (err: any) { setError(err.message || 'Unknown error'); } finally { setLoading(false); }
   }, []);
 
+  // EOD filtered by editor + month
   const filteredEod = useMemo(() => {
     if (!data) return [];
     return data.eod.filter(r => {
@@ -126,18 +148,56 @@ export default function PerformanceDashboard() {
     });
   }, [data, editor, month]);
 
-  const filteredPayment = useMemo(() => {
-    if (!data) return [];
-    return data.payment.filter(r => r['Approved Month']?.toLowerCase() === month.toLowerCase());
+  // Approval count: count non-empty column C (index 2) from row 5+ (index 4+) where column D matches month
+  const approvedCount = useMemo(() => {
+    if (!data?.paymentRaw) return 0;
+    const rows = data.paymentRaw.slice(4); // row 5 onward (0-indexed: 4+)
+    return rows.filter(r => {
+      const hasDate = r[2]?.trim(); // column C
+      const approvedMonth = r[3]?.trim(); // column D
+      return hasDate && approvedMonth?.toLowerCase() === month.toLowerCase();
+    }).length;
   }, [data, month]);
+
+  // Payment table rows filtered by month
+  const filteredPayment = useMemo(() => {
+    if (!data?.paymentRaw) return [];
+    const rows = data.paymentRaw.slice(4);
+    return rows
+      .filter(r => r[3]?.trim()?.toLowerCase() === month.toLowerCase())
+      .map(r => ({
+        brief: r[1]?.trim() || '',
+        date: r[2]?.trim() || '',
+        month: r[3]?.trim() || '',
+        approved: !!r[2]?.trim(),
+      }))
+      .filter(r => r.brief);
+  }, [data, month]);
+
+  // Monthly approved overview (all months, for the "Monthly Approved Videos" chart)
+  const monthlyApproved = useMemo(() => {
+    if (!data?.paymentRaw) return [];
+    const rows = data.paymentRaw.slice(4);
+    const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const map: Record<string, number> = {};
+    rows.forEach(r => {
+      const hasDate = r[2]?.trim();
+      const m = r[3]?.trim();
+      if (hasDate && m) {
+        map[m] = (map[m] || 0) + 1;
+      }
+    });
+    return Object.entries(map)
+      .sort(([a], [b]) => monthOrder.indexOf(a) - monthOrder.indexOf(b))
+      .map(([month, count]) => ({ month, count }));
+  }, [data]);
 
   const kpis = useMemo(() => {
     const delivered = filteredEod.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
-    const approved = filteredPayment.filter(r => r['Approval Date']?.trim()).length;
     const uniqueDays = new Set(filteredEod.map(r => r.Date)).size;
     const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
-    return { delivered, approved, avg };
-  }, [filteredEod, filteredPayment]);
+    return { delivered, approved: approvedCount, avg };
+  }, [filteredEod, approvedCount]);
 
   const dailyByWeek = useMemo(() => {
     const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
@@ -170,43 +230,19 @@ export default function PerformanceDashboard() {
     return [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b)).map(w => `Wk ${w}`);
   }, [filteredEod]);
 
-  const weeklyOutput = useMemo(() => {
+  // Weekly Output — ALL weeks across entire dataset for selected editor (not filtered by month)
+  const weeklyOutputAll = useMemo(() => {
+    if (!data) return [];
+    const editorFiltered = data.eod.filter(r => editor === '(All Editors)' || r.Name === editor);
     const map: Record<string, number> = {};
-    filteredEod.forEach(r => { const w = `Wk ${r.Week}`; map[w] = (map[w] || 0) + (parseInt(r['Videos Delivered']) || 0); });
-    return Object.entries(map).sort(([a], [b]) => parseInt(a.replace('Wk ', '')) - parseInt(b.replace('Wk ', ''))).map(([week, total]) => ({ week, total }));
-  }, [filteredEod]);
-
-  const weeklyLines = useMemo(() => {
-    if (editor !== '(All Editors)') {
-      const map: Record<string, number> = {};
-      filteredEod.forEach(r => { const w = `Wk ${r.Week}`; map[w] = (map[w] || 0) + (parseInt(r['Videos Delivered']) || 0); });
-      return Object.entries(map).sort(([a], [b]) => parseInt(a.replace('Wk ', '')) - parseInt(b.replace('Wk ', ''))).map(([week, total]) => ({ week, total }));
-    }
-    const editors = [...new Set(filteredEod.map(r => r.Name))];
-    const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
-    return weeks.map(w => {
-      const entry: any = { week: `Wk ${w}` };
-      editors.forEach(ed => {
-        entry[ed] = filteredEod.filter(r => r.Week === w && r.Name === ed).reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
-      });
-      return entry;
+    editorFiltered.forEach(r => {
+      const w = r.Week;
+      if (w) map[w] = (map[w] || 0) + (parseInt(r['Videos Delivered']) || 0);
     });
-  }, [filteredEod, editor]);
-
-  const lineEditors = useMemo(() => {
-    if (editor !== '(All Editors)') return [];
-    return [...new Set(filteredEod.map(r => r.Name))];
-  }, [filteredEod, editor]);
-
-  // Payment table
-  const paymentRows = useMemo(() => {
-    return filteredPayment.map(r => ({
-      brief: r['Brief Name'] || '',
-      date: r['Approval Date'] || '',
-      month: r['Approved Month'] || '',
-      approved: !!r['Approval Date']?.trim(),
-    })).filter(r => r.brief);
-  }, [filteredPayment]);
+    return Object.entries(map)
+      .sort(([a], [b]) => parseInt(a) - parseInt(b))
+      .map(([week, total]) => ({ week: `Wk ${week}`, total }));
+  }, [data, editor]);
 
   const noData = filteredEod.length === 0 && !loading;
 
@@ -229,7 +265,7 @@ export default function PerformanceDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#09090B' }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center" style={{ boxShadow: GLOW }}>
             <AlertCircle className="w-6 h-6 text-red-400" />
           </div>
           <p className="text-sm text-white/50">Failed to load performance data</p>
@@ -268,8 +304,10 @@ export default function PerformanceDashboard() {
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] text-white/40 hover:text-white/70 transition-colors"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] text-white/40 hover:text-white/70 transition-all duration-200"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', boxShadow: GLOW }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
             >
               <RefreshCw className="w-3 h-3" /> Sync
             </button>
@@ -285,12 +323,12 @@ export default function PerformanceDashboard() {
         </div>
 
         {noData ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3 rounded-2xl" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <GlowCard className="flex flex-col items-center justify-center py-20 gap-3 rounded-2xl">
             <FileBarChart className="w-10 h-10 text-white/10" />
             <p className="text-sm text-white/30">
               No data yet for <span className="text-white/60 font-medium">{editor}</span> in <span className="text-white/60 font-medium">{month}</span>
             </p>
-          </div>
+          </GlowCard>
         ) : (
           <>
             {/* KPI Cards */}
@@ -300,23 +338,22 @@ export default function PerformanceDashboard() {
                 { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#10B981' },
                 { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg, color: '#06b6d4' },
               ].map((kpi, i) => (
-                <div key={i} className="rounded-xl p-5 transition-all duration-200 hover:scale-[1.01]"
-                  style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <GlowCard key={i} className="p-5 hover:scale-[1.01]">
                   <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${kpi.color}15`, border: `1px solid ${kpi.color}25` }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${kpi.color}15`, border: `1px solid ${kpi.color}25`, boxShadow: GLOW }}>
                       <kpi.icon className="w-4 h-4" style={{ color: kpi.color }} />
                     </div>
                   </div>
                   <p className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</p>
                   <p className="text-[10px] uppercase tracking-widest text-white/30 mt-1">{kpi.label}</p>
-                </div>
+                </GlowCard>
               ))}
             </div>
 
             {/* Charts row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Daily by Week */}
-              <div className="rounded-xl p-5" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <GlowCard className="p-5">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Daily Deliveries by Week</h4>
                 <p className="text-[10px] text-white/30 mb-4">Grouped by weekday</p>
                 <div className="h-56">
@@ -333,73 +370,63 @@ export default function PerformanceDashboard() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </GlowCard>
 
-              {/* Weekly Output */}
-              <div className="rounded-xl p-5" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
+              {/* Weekly Output — all weeks, editor-filtered, NOT month-filtered */}
+              <GlowCard className="p-5">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Weekly Output</h4>
-                <p className="text-[10px] text-white/30 mb-4">Total videos per week</p>
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={weeklyOutput}>
-                      <defs>
-                        <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.9} />
-                          <stop offset="100%" stopColor="#6366F1" stopOpacity={0.6} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                      <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="total" fill="url(#barGradDark)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <p className="text-[10px] text-white/30 mb-4">Total videos per week (all time)</p>
+                <div className="h-56 overflow-x-auto">
+                  <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={weeklyOutputAll}>
+                        <defs>
+                          <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.9} />
+                            <stop offset="100%" stopColor="#6366F1" stopOpacity={0.6} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                        <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
+                        <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                        <Tooltip content={<ChartTooltip />} />
+                        <Bar dataKey="total" fill="url(#barGradDark)" radius={[3, 3, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-              </div>
+              </GlowCard>
             </div>
 
-            {/* Weekly Deliveries Line Chart */}
-            <div className="rounded-xl p-5" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <h4 className="text-sm font-semibold text-white mb-0.5">Weekly Deliveries</h4>
-              <p className="text-[10px] text-white/30 mb-4">Trend across weeks</p>
+            {/* Monthly Approved Videos — full overview, not filtered by month */}
+            <GlowCard className="p-5">
+              <h4 className="text-sm font-semibold text-white mb-0.5">Monthly Approved Videos</h4>
+              <p className="text-[10px] text-white/30 mb-4">Approved videos per month (all time overview)</p>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={weeklyLines}>
+                  <BarChart data={monthlyApproved}>
                     <defs>
-                      {editor === '(All Editors)' ? lineEditors.map((ed, i) => (
-                        <linearGradient key={ed} id={`area_${i}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={COLORS[i % COLORS.length]} stopOpacity={0.15} />
-                          <stop offset="100%" stopColor={COLORS[i % COLORS.length]} stopOpacity={0} />
-                        </linearGradient>
-                      )) : (
-                        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.15} />
-                          <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
-                        </linearGradient>
-                      )}
+                      <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10B981" stopOpacity={0.9} />
+                        <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
+                      </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip content={<ChartTooltip />} />
-                    <Legend wrapperStyle={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }} />
-                    {editor === '(All Editors)' ? lineEditors.map((ed, i) => (
-                      <Area key={ed} type="monotone" dataKey={ed} stroke={COLORS[i % COLORS.length]} strokeWidth={2} fill={`url(#area_${i})`} dot={{ r: 3, fill: COLORS[i % COLORS.length] }} />
-                    )) : (
-                      <Area type="monotone" dataKey="total" stroke="#8B5CF6" strokeWidth={2} fill="url(#areaGrad)" dot={{ r: 3, fill: '#8B5CF6' }} />
-                    )}
-                  </AreaChart>
+                    <Bar dataKey="count" fill="url(#approvedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </GlowCard>
 
             {/* Payment Status Table */}
-            {paymentRows.length > 0 && (
-              <div className="rounded-xl overflow-hidden" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
+            {filteredPayment.length > 0 && (
+              <GlowCard className="overflow-hidden">
                 <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                   <h4 className="text-sm font-semibold text-white">Payment Status</h4>
-                  <p className="text-[10px] text-white/30 mt-0.5">{paymentRows.filter(r => r.approved).length} approved in {month}</p>
+                  <p className="text-[10px] text-white/30 mt-0.5">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
@@ -412,7 +439,7 @@ export default function PerformanceDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {paymentRows.map((row, i) => (
+                      {filteredPayment.map((row, i) => (
                         <tr key={i} className="hover:bg-white/[0.02] transition-colors" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                           <td className="py-2.5 px-5 text-white/70">{row.brief}</td>
                           <td className="py-2.5 px-5 text-white/50" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{row.date || '—'}</td>
@@ -433,7 +460,7 @@ export default function PerformanceDashboard() {
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </GlowCard>
             )}
           </>
         )}
