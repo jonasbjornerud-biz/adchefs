@@ -1,22 +1,20 @@
-import aiHiring from "@/assets/hiring.gif";
-import editorDevelopment from "@/assets/mentoring.gif";
-import creativeIntelligence from "@/assets/creative.gif";
+import { Brain, Users, RefreshCw } from "lucide-react";
 
 const steps = [
   {
-    image: aiHiring,
+    icon: Brain,
     title: "AI-Powered Hiring",
-    description: "Screens 200+ video editors weekly to recruit the top 1% talent.",
+    description: "Screens 200+ video editors weekly to recruit the top 1% talent for your brand.",
   },
   {
-    image: editorDevelopment,
-    title: "Editor Development System",
-    description: "Custom SOPs and QA processes built around your creative workflow to ensure consistent output.",
+    icon: Users,
+    title: "Editor Mentoring System",
+    description: "Custom SOPs and QA processes built around your creative workflow for consistent output.",
   },
   {
-    image: creativeIntelligence,
-    title: "Deliver & Iterate",
-    description: "Finished videos are delivered within days. Request revisions, approve finals, and keep your creative pipeline moving.",
+    icon: RefreshCw,
+    title: "Delivery & Iterations",
+    description: "Finished videos delivered within days. Request revisions, approve finals, repeat.",
   },
 ];
 
@@ -38,24 +36,18 @@ const HowItWorks = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="group glass-card overflow-hidden animate-slide-up"
+              className="group feature-card animate-slide-up"
               style={{ animationDelay: `${index * 0.12}s` }}
             >
-              <div className="relative h-56 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/90 z-10" />
-                <div className="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-accent/90 flex items-center justify-center">
-                  <span className="text-xs font-bold text-accent-foreground">{index + 1}</span>
+              {/* Icon illustration area */}
+              <div className="feature-card-illustration mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:bg-accent/15 transition-colors duration-300">
+                  <step.icon className="w-6 h-6 text-accent" />
                 </div>
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
               </div>
-              <div className="p-5">
-                <h3 className="text-lg font-semibold mb-2 text-foreground">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
-              </div>
+
+              <h3 className="text-lg font-semibold mb-2 text-foreground">{step.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>
