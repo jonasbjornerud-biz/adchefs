@@ -423,7 +423,7 @@ export default function PerformanceDashboard() {
             {filteredPayment.length > 0 && (
               <GlowCard className="overflow-hidden">
                 <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                  <h4 className="text-sm font-semibold text-white">Payment Status</h4>
+                  <h4 className="text-sm font-semibold text-white">Approved Videos</h4>
                   <p className="text-[10px] text-white/30 mt-0.5">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
                 </div>
                 <div className="overflow-x-auto">
