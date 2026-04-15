@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookOpen, BarChart3, Edit, Trash2, RotateCcw, ChevronRight, Lock, Shield, Terminal } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generatePassword } from '@/lib/auth';
+import EditorPerformance from '@/components/EditorPerformance';
 
 /* ── Animated dot-grid background ── */
 function DotGrid() {
