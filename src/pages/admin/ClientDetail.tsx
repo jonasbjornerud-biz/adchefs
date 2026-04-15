@@ -228,124 +228,95 @@ export default function ClientDetail() {
           </div>
         </div>
 
-        {/* Dashboard cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* ── Playbook / Missions card ── */}
-          <button
-            onClick={() => navigate(`/admin/clients/${clientId}/playbook-view`)}
-            className="group text-left rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5"
-            style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              backdropFilter: 'blur(12px)',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)';
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(124,58,237,0.08), 0 8px 32px rgba(0,0,0,0.3)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.06)';
-              (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-            }}
-          >
-            <div className="flex items-start justify-between mb-6">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.12)' }}>
-                <Terminal className="w-5 h-5" style={{ color: '#a855f7' }} />
-              </div>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" style={{ color: 'rgba(255,255,255,0.15)' }} />
-            </div>
+        {/* Tab navigation */}
+        <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {[
+            { key: 'overview' as const, label: 'Mission Control', icon: Terminal, color: '#a855f7' },
+            { key: 'performance' as const, label: 'Editor Performance', icon: BarChart3, color: '#06b6d4' },
+          ].map(tab => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+              style={{
+                background: activeTab === tab.key ? 'rgba(255,255,255,0.06)' : 'transparent',
+                color: activeTab === tab.key ? '#e4e4ed' : '#6b6b80',
+                border: activeTab === tab.key ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+              }}>
+              <tab.icon className="w-3.5 h-3.5" style={{ color: activeTab === tab.key ? tab.color : '#6b6b80' }} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-            <h3 className="text-base font-semibold text-white mb-0.5">Mission Control</h3>
-            <p className="text-xs mb-6" style={{ color: '#6b6b80' }}>Clearance levels, SOPs, and progression tracking</p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[
-                { val: totalModules, label: 'Missions' },
-                { val: `${stagesComplete}/${stageCount}`, label: 'Clearance' },
-                { val: `${pct}%`, label: 'Complete', highlight: pct === 100 },
-              ].map((s, i) => (
-                <div key={i} className="rounded-xl p-3 text-center"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <p className={`text-lg font-bold font-mono ${s.highlight ? 'text-emerald-400' : 'text-white'}`}
-                    style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
-                  <p className="text-[9px] uppercase tracking-widest font-medium" style={{ color: '#6b6b80' }}>{s.label}</p>
+        {/* Tab content */}
+        {activeTab === 'overview' ? (
+          <div className="space-y-6">
+            {/* Playbook card */}
+            <button
+              onClick={() => navigate(`/admin/clients/${clientId}/playbook-view`)}
+              className="group w-full text-left rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                backdropFilter: 'blur(12px)',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)';
+                (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(124,58,237,0.08), 0 8px 32px rgba(0,0,0,0.3)';
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.06)';
+                (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+              }}
+            >
+              <div className="flex items-start justify-between mb-6">
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.12)' }}>
+                  <Terminal className="w-5 h-5" style={{ color: '#a855f7' }} />
                 </div>
-              ))}
-            </div>
-
-            <GlowProgress pct={pct} />
-
-            <div className="mt-5 flex items-center gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-widest group-hover:text-purple-300 transition-colors" style={{ color: '#a855f7' }}>
-                Enter Mission Control →
-              </span>
-            </div>
-          </button>
-
-          {/* ── Performance card (locked) ── */}
-          <div className="relative rounded-2xl p-6 overflow-hidden"
-            style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              backdropFilter: 'blur(12px)',
-            }}>
-            <div className="flex items-start justify-between mb-6">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.1)' }}>
-                <BarChart3 className="w-5 h-5" style={{ color: '#22d3ee' }} />
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" style={{ color: 'rgba(255,255,255,0.15)' }} />
               </div>
-            </div>
 
-            <h3 className="text-base font-semibold text-white mb-0.5">Editor Performance</h3>
-            <p className="text-xs mb-6" style={{ color: '#6b6b80' }}>Revision rates, turnaround times, quality metrics</p>
+              <h3 className="text-base font-semibold text-white mb-0.5">Mission Control</h3>
+              <p className="text-xs mb-6" style={{ color: '#6b6b80' }}>Clearance levels, SOPs, and progression tracking</p>
 
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {['Videos', 'Avg. Rev', 'Score'].map((label, i) => (
-                <div key={i} className="rounded-xl p-3 text-center"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <p className="text-lg font-bold font-mono" style={{ color: 'rgba(255,255,255,0.12)', fontFamily: "'JetBrains Mono', monospace" }}>—</p>
-                  <p className="text-[9px] uppercase tracking-widest font-medium" style={{ color: '#6b6b80' }}>{label}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
-              <div className="h-full w-0 rounded-full" style={{ background: 'rgba(6,182,212,0.15)' }} />
-            </div>
-
-            {/* Frosted lock overlay */}
-            <div className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center gap-3"
-              style={{ background: 'rgba(10,10,15,0.7)', backdropFilter: 'blur(6px)' }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  boxShadow: '0 0 20px rgba(124,58,237,0.1)',
-                }}>
-                <Lock className="w-5 h-5" style={{ color: '#6b6b80' }} />
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                {[
+                  { val: totalModules, label: 'Missions' },
+                  { val: `${stagesComplete}/${stageCount}`, label: 'Clearance' },
+                  { val: `${pct}%`, label: 'Complete', highlight: pct === 100 },
+                ].map((s, i) => (
+                  <div key={i} className="rounded-xl p-3 text-center"
+                    style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                    <p className={`text-lg font-bold font-mono ${s.highlight ? 'text-emerald-400' : 'text-white'}`}
+                      style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
+                    <p className="text-[9px] uppercase tracking-widest font-medium" style={{ color: '#6b6b80' }}>{s.label}</p>
+                  </div>
+                ))}
               </div>
-              <div className="text-center">
-                <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#8b8b9e' }}>
-                  Encrypted
+
+              <GlowProgress pct={pct} />
+
+              <div className="mt-5 flex items-center gap-2">
+                <span className="text-[10px] font-semibold uppercase tracking-widest group-hover:text-purple-300 transition-colors" style={{ color: '#a855f7' }}>
+                  Enter Mission Control →
                 </span>
-                <p className="text-[10px] mt-1" style={{ color: '#4a4a5c' }}>Module under development</p>
               </div>
+            </button>
+
+            {/* Quick actions */}
+            <div className="flex gap-3">
+              <Button
+                variant="outline" size="sm"
+                onClick={() => navigate(`/admin/clients/${clientId}/playbook`)}
+                className="rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white"
+              >
+                <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Playbook Content
+              </Button>
             </div>
           </div>
-        </div>
-
-        {/* Quick actions */}
-        <div className="flex gap-3">
-          <Button
-            variant="outline" size="sm"
-            onClick={() => navigate(`/admin/clients/${clientId}/playbook`)}
-            className="rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white"
-          >
-            <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Playbook Content
-          </Button>
-        </div>
+        ) : (
+          <EditorPerformance />
+        )}
       </main>
     </div>
   );
