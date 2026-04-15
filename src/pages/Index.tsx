@@ -11,25 +11,32 @@ const Index = () => {
       {/* Fixed gradient background */}
       <div className="site-gradient-bg" />
 
-      {/* Subtle floating orbs (below hero, for rest of page) */}
-      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute top-[50%] right-[5%] w-[350px] h-[350px] rounded-full bg-accent opacity-[0.03] blur-[130px] animate-[float-orb_24s_ease-in-out_4s_infinite]" />
-        <div className="absolute top-[75%] left-[30%] w-[450px] h-[450px] rounded-full bg-accent opacity-[0.03] blur-[150px] animate-[float-orb_28s_ease-in-out_8s_infinite]" />
-      </div>
-
       {/* Page content */}
       <div className="min-h-screen relative z-10">
         <Navigation />
         <Hero />
-        <div className="content-container my-8">
-          <HowItWorks />
+
+        {/* How It Works — white/clean background */}
+        <div className="section-band section-band-white">
+          <div className="content-container">
+            <HowItWorks />
+          </div>
         </div>
-        <div className="content-container my-8">
-          <CalendlyBooking />
+
+        {/* Booking — accent/purple tinted background */}
+        <div className="section-band section-band-accent">
+          <div className="content-container">
+            <CalendlyBooking />
+          </div>
         </div>
-        <div className="content-container my-8">
-          <FAQ />
+
+        {/* FAQ — white/clean background */}
+        <div className="section-band section-band-white">
+          <div className="content-container">
+            <FAQ />
+          </div>
         </div>
+
         <Footer />
       </div>
     </>
