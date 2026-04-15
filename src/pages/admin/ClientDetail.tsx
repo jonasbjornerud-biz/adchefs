@@ -79,9 +79,7 @@ function GlowProgress({ pct }: { pct: number }) {
   );
 }
 
-export default function ClientDetail() {
-  const { clientId } = useParams<{ clientId: string }>();
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'overview' | 'performance'>('overview');
   const { toast } = useToast();
   const [client, setClient] = useState<Client | null>(null);
   const [stages, setStages] = useState<StageWithModules[]>([]);
