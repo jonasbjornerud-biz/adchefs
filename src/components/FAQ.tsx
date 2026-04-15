@@ -23,16 +23,23 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="section-dark py-32">
-      <BackgroundElements variant="dark" />
+    <section id="faq" className="section-steel py-32 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+      <BackgroundElements />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-8 relative z-10">
         <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "hsl(262 83% 68%)" }}>
-            Support
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
-          <p className="text-white/40 max-w-md mx-auto text-sm">
+          <div className="inline-block px-3 py-1 border mb-6" style={{ borderColor: "hsl(263 70% 50% / 0.3)", background: "hsl(263 70% 50% / 0.05)" }}>
+            <span className="mono-label" style={{ color: "hsl(263 70% 50%)" }}>
+              Knowledge Base // 004
+            </span>
+          </div>
+          <h2
+            className="font-extrabold text-white uppercase mb-3"
+            style={{ fontSize: "clamp(2rem, 5vw, 4rem)", lineHeight: 0.9 }}
+          >
+            Frequently <span className="text-stroke">Asked</span>
+          </h2>
+          <p className="text-white/30 max-w-md mx-auto text-sm mt-4">
             Everything you need to know about working with AdChefs
           </p>
         </div>
@@ -45,12 +52,15 @@ const FAQ = () => {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.03] px-5 backdrop-blur-sm"
+                className="hud-card px-6"
               >
-                <AccordionTrigger className="text-left text-sm font-medium text-white/80 hover:text-white py-4 [&[data-state=open]]:text-white">
-                  {faq.question}
+                <AccordionTrigger className="text-left text-sm font-semibold text-white/70 hover:text-white py-5 [&[data-state=open]]:text-white transition-colors">
+                  <span className="flex items-center gap-4">
+                    <span className="mono-label text-white/20 shrink-0">{String(index + 1).padStart(2, '0')}</span>
+                    {faq.question}
+                  </span>
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-white/40 leading-relaxed pb-4">
+                <AccordionContent className="text-sm text-white/35 leading-relaxed pb-5 pl-10">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

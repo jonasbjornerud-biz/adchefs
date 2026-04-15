@@ -25,34 +25,46 @@ const Navigation = () => {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b"
       style={{
-        backgroundColor: scrolled ? "hsl(240 16% 6% / 0.8)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+        backgroundColor: scrolled ? "hsl(240 6% 4% / 0.85)" : "hsl(240 6% 4% / 0.4)",
+        backdropFilter: scrolled ? "blur(24px)" : "blur(8px)",
+        borderColor: "rgba(255,255,255,0.05)",
       }}
     >
-      <div className="container mx-auto px-6 h-14 flex items-center justify-between">
-        <span className="text-lg font-bold tracking-tight text-white">AdChefs</span>
+      <div className="max-w-[1440px] mx-auto px-8 h-20 flex items-center justify-between">
+        <div className="flex items-center gap-12">
+          <div className="text-xl font-extrabold tracking-tighter uppercase flex items-center gap-2 text-white">
+            <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "hsl(263 70% 50%)" }} />
+            AdChefs
+          </div>
+          <div className="hidden md:flex gap-8">
+            {navLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => scrollToSection(link.id)}
+                className="mono-label text-white/40 hover:text-white/80 transition-colors duration-200"
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => scrollToSection(link.id)}
-              className="text-sm text-white/40 hover:text-white/80 transition-colors duration-200"
-            >
-              {link.label}
-            </button>
-          ))}
-          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm">
-            Book a Call
-          </Button>
+        <div className="hidden md:flex items-center gap-6">
+          <span className="mono-label text-white/20 hidden lg:block">
+            STATUS: ACCEPTING_CLIENTS
+          </span>
+          <button
+            onClick={() => scrollToSection("booking")}
+            className="plasma-button px-6 py-2.5 text-xs"
+          >
+            Initialize Project
+          </button>
         </div>
 
         {/* Mobile toggle */}
-        <div className="flex md:hidden items-center gap-3">
+        <div className="flex md:hidden items-center">
           <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -62,21 +74,24 @@ const Navigation = () => {
       {/* Mobile menu */}
       {mobileOpen && (
         <div
-          className="md:hidden px-6 pb-6 pt-2 space-y-4 animate-fade-in"
-          style={{ backgroundColor: "hsl(240 16% 6% / 0.95)", backdropFilter: "blur(20px)" }}
+          className="md:hidden px-8 pb-6 pt-2 space-y-4 animate-fade-in border-t"
+          style={{ backgroundColor: "hsl(240 6% 4% / 0.95)", backdropFilter: "blur(24px)", borderColor: "rgba(255,255,255,0.05)" }}
         >
           {navLinks.map((link) => (
             <button
               key={link.id}
               onClick={() => scrollToSection(link.id)}
-              className="block w-full text-left text-sm text-white/40 hover:text-white/80 transition-colors"
+              className="block w-full text-left mono-label text-white/40 hover:text-white/80 transition-colors"
             >
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm" className="w-full">
-            Book a Call
-          </Button>
+          <button
+            onClick={() => { scrollToSection("booking"); setMobileOpen(false); }}
+            className="plasma-button w-full py-3 text-xs"
+          >
+            Initialize Project
+          </button>
         </div>
       )}
     </nav>

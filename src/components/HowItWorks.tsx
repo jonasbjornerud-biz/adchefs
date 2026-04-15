@@ -23,16 +23,23 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="section-dark py-32">
-      <BackgroundElements variant="dark" />
+    <section id="how-it-works" className="section-steel py-32 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+      <BackgroundElements />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-8 relative z-10">
         <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "hsl(262 83% 68%)" }}>
-            Process
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">How It Works</h2>
-          <p className="text-white/40 max-w-md mx-auto text-sm">
+          <div className="inline-block px-3 py-1 border mb-6" style={{ borderColor: "hsl(263 70% 50% / 0.3)", background: "hsl(263 70% 50% / 0.05)" }}>
+            <span className="mono-label" style={{ color: "hsl(263 70% 50%)" }}>
+              Operations Protocol // 002
+            </span>
+          </div>
+          <h2
+            className="font-extrabold text-white uppercase mb-3"
+            style={{ fontSize: "clamp(2rem, 5vw, 4rem)", lineHeight: 0.9 }}
+          >
+            How It <span className="text-stroke">Works</span>
+          </h2>
+          <p className="text-white/30 max-w-md mx-auto text-sm mt-4">
             Three steps to transform your creative production
           </p>
         </div>
@@ -43,27 +50,47 @@ const HowItWorks = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="group rounded-2xl overflow-hidden border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05] animate-slide-up"
-              style={{ animationDelay: `${index * 0.12}s` }}
+              className="group hud-card overflow-hidden animate-slide-up"
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div className="relative h-56 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[hsl(240_16%_6%/0.9)] z-10" />
-                <div
-                  className="absolute top-3 left-3 z-20 w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "hsl(262 83% 58% / 0.9)" }}
-                >
-                  <span className="text-xs font-bold text-white">{index + 1}</span>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[hsl(240_6%_4%)] z-10" />
+                {/* Step number with HUD style */}
+                <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
+                  <div className="w-8 h-8 flex items-center justify-center" style={{ background: "hsl(263 70% 50% / 0.9)" }}>
+                    <span className="text-xs font-bold text-white">{String(index + 1).padStart(2, '0')}</span>
+                  </div>
+                </div>
+                {/* Film metadata */}
+                <div className="absolute top-3 right-3 z-20 mono-label text-white/30">
+                  REC ●
                 </div>
                 <img
                   src={step.image}
                   alt={step.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale-[30%] group-hover:grayscale-0"
                 />
               </div>
-              <div className="p-5">
-                <h3 className="text-lg font-semibold mb-2 text-white">{step.title}</h3>
-                <p className="text-sm text-white/40 leading-relaxed">{step.description}</p>
+              <div className="p-6">
+                <h3 className="text-lg font-extrabold mb-2 text-white uppercase tracking-tight">{step.title}</h3>
+                <p className="text-sm text-white/35 leading-relaxed">{step.description}</p>
               </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Metrics bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-5xl mx-auto border-t pt-12" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+          {[
+            { label: "Throughput", value: "500+", sub: "Videos Delivered" },
+            { label: "Efficiency", value: "Top 1%", sub: "Editor Talent" },
+            { label: "Velocity", value: "48h", sub: "Avg Turnaround" },
+            { label: "Output", value: "∞", sub: "Revisions Included" },
+          ].map((metric, i) => (
+            <div key={i} className="space-y-1">
+              <div className="mono-label" style={{ color: "hsl(263 70% 50%)" }}>{metric.label}</div>
+              <div className="text-3xl font-extrabold tracking-tighter text-white tabular-nums">{metric.value}</div>
+              <div className="mono-label text-white/25">{metric.sub}</div>
             </div>
           ))}
         </div>
