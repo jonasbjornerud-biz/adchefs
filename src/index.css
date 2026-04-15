@@ -85,6 +85,65 @@
 }
 
 @layer utilities {
+  /* ── Meta Ads dashboard utilities ── */
+  .text-gradient {
+    background: linear-gradient(135deg, #8B5CF6, #A78BFA, #C4B5FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-primary-readable { color: rgba(255, 255, 255, 0.92); }
+  .text-secondary-readable { color: rgba(255, 255, 255, 0.55); }
+  .text-muted-readable { color: rgba(255, 255, 255, 0.35); }
+
+  .bg-page {
+    background-color: #06060A;
+    background-image:
+      radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.04) 0%, transparent 60%);
+  }
+
+  .bg-dot-grid {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .bg-card-surface {
+    background: rgba(17, 17, 22, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .bg-elevated {
+    background: rgba(22, 22, 30, 0.9);
+    backdrop-filter: blur(48px);
+    -webkit-backdrop-filter: blur(48px);
+  }
+
+  .bg-elevated-surface {
+    background: rgba(22, 22, 30, 0.95);
+  }
+
+  .bg-stat-box { background: rgba(139, 92, 246, 0.06); }
+
+  .border-purple { border-color: rgba(139, 92, 246, 0.1); }
+  .border-purple-hover { border-color: rgba(139, 92, 246, 0.25); }
+
+  .shadow-card {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.07), 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .shadow-stat { box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.05); }
+
+  .gradient-primary { background: linear-gradient(135deg, #8B5CF6, #6366F1); }
+
+  @keyframes card-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-card-enter { animation: card-enter 400ms ease-out both; }
+
   /* ── Site gradient background ── */
   .site-gradient-bg {
     position: fixed;

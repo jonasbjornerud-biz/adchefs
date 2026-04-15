@@ -47,6 +47,33 @@ export type Database = {
         }
         Relationships: []
       }
+      meta_ads_cache: {
+        Row: {
+          account_id: string
+          data: Json
+          fetched_at: string
+          id: string
+          since: string
+          until: string
+        }
+        Insert: {
+          account_id: string
+          data?: Json
+          fetched_at?: string
+          id?: string
+          since: string
+          until: string
+        }
+        Update: {
+          account_id?: string
+          data?: Json
+          fetched_at?: string
+          id?: string
+          since?: string
+          until?: string
+        }
+        Relationships: []
+      }
       module_completions: {
         Row: {
           client_id: string
