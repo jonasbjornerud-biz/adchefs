@@ -139,17 +139,17 @@
   }
 
   .dark .section-band-white {
-    background: hsl(240 14% 8%);
+    background: hsl(240 12% 13%);
   }
 
   .section-band-accent {
     background:
-      linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--accent) / 0.06) 50%, hsl(var(--background)) 100%);
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--accent) / 0.08) 50%, hsl(var(--background)) 100%);
   }
 
   .dark .section-band-accent {
     background:
-      linear-gradient(135deg, hsl(240 16% 6%) 0%, hsl(var(--accent) / 0.10) 50%, hsl(240 16% 6%) 100%);
+      linear-gradient(180deg, hsl(240 16% 6%) 0%, hsl(var(--accent) / 0.14) 50%, hsl(240 16% 6%) 100%);
   }
 
   /* ── Content container ── */
@@ -302,26 +302,28 @@
 
   /* ── Feature card (voxr-style) ── */
   .feature-card {
-    @apply bg-card border border-border/60 rounded-2xl p-6;
+    @apply bg-card border border-border/50 rounded-2xl p-5;
     transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   }
 
   .feature-card:hover {
-    border-color: hsl(var(--accent) / 0.25);
-    box-shadow: 0 8px 30px hsl(var(--accent) / 0.06);
-    transform: translateY(-2px);
+    border-color: hsl(var(--accent) / 0.3);
+    box-shadow: 0 12px 40px hsl(var(--accent) / 0.08);
+    transform: translateY(-3px);
   }
 
   .feature-card-illustration {
-    @apply w-full h-32 rounded-xl flex items-center justify-center;
+    @apply w-full rounded-xl flex items-center justify-center;
+    height: 180px;
     background:
-      linear-gradient(135deg, hsl(var(--accent) / 0.04) 0%, hsl(var(--accent) / 0.01) 100%);
-    border: 1px solid hsl(var(--border) / 0.4);
+      linear-gradient(160deg, hsl(var(--accent) / 0.03) 0%, transparent 100%);
+    border: 1px solid hsl(var(--border) / 0.5);
   }
 
   .dark .feature-card-illustration {
     background:
-      linear-gradient(135deg, hsl(var(--accent) / 0.08) 0%, hsl(var(--accent) / 0.02) 100%);
+      linear-gradient(160deg, hsl(var(--accent) / 0.06) 0%, hsl(var(--accent) / 0.01) 100%);
+    border-color: hsl(var(--accent) / 0.08);
   }
 
   /* ── Shimmer CTA button ── */
