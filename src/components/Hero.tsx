@@ -77,11 +77,18 @@ const Hero = () => {
 
       {/* Marquee */}
       <div className="relative w-screen left-1/2 -translate-x-1/2 mt-20 mb-8 marquee-wrapper">
-        <div className="marquee-track flex gap-4">
+        {/* Edge fade masks */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
+        
+        <div className="marquee-track flex gap-5">
           {doubled.map((src, i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[240px] h-[340px] rounded-xl overflow-hidden border border-border/30"
+              className="flex-shrink-0 w-[220px] h-[320px] rounded-2xl overflow-hidden border border-white/[0.08] ring-1 ring-white/[0.04]"
+              style={{
+                boxShadow: '0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)',
+              }}
             >
               {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
                 <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
