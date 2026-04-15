@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Check, Lock, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Check, Lock, ChevronRight, Circle } from 'lucide-react';
 import { Module, ModuleCompletion } from '@/types/playbook';
 import { isModuleCompleted } from '@/lib/progression';
 import { RichTextRenderer } from './RichTextRenderer';
@@ -15,7 +15,15 @@ interface ModuleCardProps {
 
 export function ModuleCard({ module, completions, isLocked, isActive, onToggleComplete }: ModuleCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState(0);
   const completed = isModuleCompleted(module.id, completions);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, [expanded, module.content]);
 
   const handleClick = () => {
     if (!isLocked) setExpanded(!expanded);
@@ -23,56 +31,87 @@ export function ModuleCard({ module, completions, isLocked, isActive, onToggleCo
 
   return (
     <div
-      className={`rounded-xl border transition-all duration-200 ${
+      className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${
         isLocked
-          ? 'opacity-50 cursor-not-allowed border-border/50 bg-muted/30'
+          ? 'opacity-40 cursor-not-allowed border-border/30 bg-muted/10'
           : completed
-          ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/10'
+          ? 'border-emerald-500/20 bg-emerald-500/[0.03] hover:border-emerald-500/30'
           : isActive
-          ? 'border-sky-500/40 bg-sky-50/30 dark:bg-sky-950/10 shadow-sm shadow-sky-500/5'
-          : 'border-border hover:border-border/80 bg-card hover:shadow-sm'
+          ? 'border-sky-500/30 bg-sky-500/[0.03] hover:border-sky-500/50 shadow-[0_0_20px_-5px_hsl(200_90%_50%/0.08)]'
+          : 'border-border/60 bg-card/50 hover:border-border hover:bg-card/80'
       }`}
     >
+      {/* Clickable header */}
       <button
         onClick={handleClick}
         disabled={isLocked}
-        className="w-full flex items-center gap-4 p-4 text-left"
+        className="w-full flex items-center gap-4 px-5 py-4 text-left cursor-pointer disabled:cursor-not-allowed"
       >
-        {/* Completion indicator */}
-        <div className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs ${
+        {/* Status indicator */}
+        <div className={`relative flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
           completed
-            ? 'bg-emerald-500 text-white'
+            ? 'bg-emerald-500 shadow-[0_0_12px_hsl(160_84%_39%/0.3)]'
             : isLocked
-            ? 'bg-muted text-muted-foreground'
-            : 'border-2 border-sky-400/60 text-sky-500'
+            ? 'bg-muted/50'
+            : isActive
+            ? 'border-2 border-sky-400 shadow-[0_0_10px_hsl(200_90%_50%/0.15)]'
+            : 'border-2 border-border/60'
         }`}>
-          {completed ? <Check className="w-4 h-4" /> : isLocked ? <Lock className="w-3.5 h-3.5" /> : null}
+          {completed ? (
+            <Check className="w-4 h-4 text-white" strokeWidth={3} />
+          ) : isLocked ? (
+            <Lock className="w-3.5 h-3.5 text-muted-foreground/50" />
+          ) : isActive ? (
+            <Circle className="w-2.5 h-2.5 fill-sky-400 text-sky-400" />
+          ) : null}
         </div>
 
-        {/* Module number */}
-        <span className="font-mono text-xs text-muted-foreground w-6">{module.module_number}</span>
+        {/* Icon + title */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg leading-none">{module.icon || '📄'}</span>
+            <span className={`font-semibold text-[15px] truncate ${
+              completed ? 'text-muted-foreground line-through decoration-emerald-500/30' : 'text-foreground'
+            }`}>
+              {module.title}
+            </span>
+          </div>
+          {module.definition_of_done && !expanded && (
+            <p className="text-xs text-muted-foreground mt-1 ml-[30px] line-clamp-1">
+              {module.definition_of_done}
+            </p>
+          )}
+        </div>
 
-        {/* Icon */}
-        <span className="text-lg">{module.icon || '📄'}</span>
-
-        {/* Title */}
-        <span className={`flex-1 font-medium text-sm ${completed ? 'text-muted-foreground' : 'text-foreground'}`}>
-          {module.title}
+        {/* Module number + chevron */}
+        <span className="font-mono text-[11px] text-muted-foreground/60 tracking-wider">
+          {module.module_number}
         </span>
-
-        {/* Expand icon */}
         {!isLocked && (
-          expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />
+          <ChevronRight className={`w-4 h-4 text-muted-foreground/40 transition-transform duration-300 ${
+            expanded ? 'rotate-90' : 'group-hover:translate-x-0.5'
+          }`} />
         )}
       </button>
 
-      {/* Expanded content */}
-      {expanded && !isLocked && (
-        <div className="px-4 pb-5 border-t border-border/50 pt-4 space-y-4">
+      {/* Expandable content */}
+      <div
+        ref={contentRef}
+        className="transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          maxHeight: expanded ? `${contentHeight + 100}px` : '0px',
+          opacity: expanded ? 1 : 0,
+        }}
+      >
+        <div className="px-5 pb-5 space-y-5">
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
           {module.definition_of_done && (
-            <div className="rounded-lg bg-sky-50 dark:bg-sky-950/20 border border-sky-200/50 dark:border-sky-800/30 p-3">
-              <p className="text-xs font-semibold text-sky-700 dark:text-sky-400 uppercase tracking-wider mb-1">Definition of Done</p>
-              <p className="text-sm text-foreground/80">{module.definition_of_done}</p>
+            <div className="rounded-xl bg-sky-500/[0.06] border border-sky-500/10 p-4">
+              <p className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-[0.15em] mb-1.5">
+                Definition of Done
+              </p>
+              <p className="text-sm text-foreground/70 leading-relaxed">{module.definition_of_done}</p>
             </div>
           )}
 
@@ -82,13 +121,13 @@ export function ModuleCard({ module, completions, isLocked, isActive, onToggleCo
             </div>
           )}
 
-          <div className="pt-2">
+          <div className="flex items-center gap-3 pt-2">
             {completed ? (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={(e) => { e.stopPropagation(); onToggleComplete(module.id, false); }}
-                className="text-muted-foreground"
+                className="text-muted-foreground rounded-xl text-xs h-9"
               >
                 Undo completion
               </Button>
@@ -96,14 +135,14 @@ export function ModuleCard({ module, completions, isLocked, isActive, onToggleCo
               <Button
                 size="sm"
                 onClick={(e) => { e.stopPropagation(); onToggleComplete(module.id, true); }}
-                className="bg-sky-500 hover:bg-sky-600 text-white"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs h-9 shadow-[0_2px_10px_hsl(160_84%_39%/0.25)]"
               >
-                <Check className="w-4 h-4 mr-1" /> Mark as completed
+                <Check className="w-3.5 h-3.5 mr-1.5" /> Mark complete
               </Button>
             )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

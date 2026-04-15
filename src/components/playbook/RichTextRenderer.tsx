@@ -14,14 +14,7 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
 
   return (
     <div
-      className="rich-text-content prose prose-sm max-w-none dark:prose-invert
-        prose-headings:font-semibold prose-headings:text-foreground
-        prose-p:text-foreground/80 prose-li:text-foreground/80
-        prose-a:text-sky-600 prose-a:no-underline hover:prose-a:underline
-        prose-table:border-collapse prose-td:border prose-td:border-border prose-td:p-2 prose-td:text-sm
-        prose-th:border prose-th:border-border prose-th:p-2 prose-th:text-sm prose-th:bg-muted/50 prose-th:font-semibold
-        prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:font-mono
-        prose-img:rounded-lg prose-img:max-w-full"
+      className="rich-text-content"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
