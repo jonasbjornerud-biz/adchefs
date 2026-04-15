@@ -21,11 +21,21 @@ const Hero = () => {
     <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
       <div className="hero-grain" />
 
-      {/* Animated gradient orbs in hero */}
+      {/* Animated mesh gradient background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
+        <div className="hero-orb hero-orb-4" />
+        {/* Animated grid lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04] dark:opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-accent" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hero-grid)" className="animate-[grid-drift_20s_linear_infinite]" />
+        </svg>
       </div>
 
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
