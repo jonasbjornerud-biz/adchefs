@@ -139,7 +139,7 @@
   }
 
   .dark .section-band-white {
-    background: hsl(240 12% 13%);
+    background: hsl(0 0% 100%);
   }
 
   .section-band-accent {
