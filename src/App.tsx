@@ -38,6 +38,7 @@ const App = () => (
             <Route path="/admin/clients/new" element={<AuthGuard requireAdmin><ClientForm /></AuthGuard>} />
             <Route path="/admin/clients/:clientId" element={<AuthGuard requireAdmin><ClientDetail /></AuthGuard>} />
             <Route path="/admin/clients/:clientId/playbook" element={<AuthGuard requireAdmin><PlaybookBuilder /></AuthGuard>} />
+            <Route path="/admin/clients/:clientId/playbook-view" element={<AuthGuard requireAdmin><AdminPlaybookView /></AuthGuard>} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
