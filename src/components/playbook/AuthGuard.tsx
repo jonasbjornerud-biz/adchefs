@@ -36,7 +36,7 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
         .maybeSingle();
 
       if (!client?.is_admin) {
-        navigate('/playbook');
+        navigate('/dashboard');
         return;
       }
     } else {

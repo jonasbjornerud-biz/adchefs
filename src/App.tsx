@@ -9,6 +9,8 @@ import { AuthGuard } from "@/components/playbook/AuthGuard";
 // Pages
 import Index from "./pages/Index";
 import Login from "./pages/editor/Login";
+import ClientDashboard from "./pages/editor/ClientDashboard";
+import PerformanceDashboard from "./pages/editor/PerformanceDashboard";
 import Playbook from "./pages/editor/Playbook";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ClientDetail from "./pages/admin/ClientDetail";
@@ -31,7 +33,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
 
-            {/* Editor */}
+            {/* Client */}
+            <Route path="/dashboard" element={<AuthGuard><ClientDashboard /></AuthGuard>} />
+            <Route path="/performance" element={<AuthGuard><PerformanceDashboard /></AuthGuard>} />
             <Route path="/playbook" element={<AuthGuard><Playbook /></AuthGuard>} />
 
             {/* Admin */}

@@ -7,10 +7,16 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+function extractSheetId(url: string): string | null {
+  const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  return match ? match[1] : null;
+}
+
 export default function ClientForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [brandName, setBrandName] = useState('');
+  const [sheetUrl, setSheetUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState<{ username: string; password: string } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -22,9 +28,10 @@ export default function ClientForm() {
     try {
       const username = brandToUsername(brandName);
       const password = generatePassword();
+      const spreadsheetId = sheetUrl.trim() ? extractSheetId(sheetUrl.trim()) : null;
 
       const { data, error } = await supabase.functions.invoke('manage-clients', {
-        body: { action: 'create_client', username, password, brand_name: brandName.trim() },
+        body: { action: 'create_client', username, password, brand_name: brandName.trim(), spreadsheet_id: spreadsheetId },
       });
 
       if (error) throw error;
@@ -75,14 +82,33 @@ export default function ClientForm() {
                 </p>
               )}
             </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-1.5 block">
+                Editor Performance Sheet URL <span className="text-muted-foreground font-normal">(optional)</span>
+              </label>
+              <Input
+                value={sheetUrl}
+                onChange={(e) => setSheetUrl(e.target.value)}
+                placeholder="https://docs.google.com/spreadsheets/d/..."
+                className="max-w-md"
+              />
+              {sheetUrl && extractSheetId(sheetUrl) && (
+                <p className="text-xs text-emerald-600 mt-1 font-mono">
+                  ✓ Sheet ID: {extractSheetId(sheetUrl)}
+                </p>
+              )}
+              {sheetUrl && !extractSheetId(sheetUrl) && (
+                <p className="text-xs text-red-500 mt-1">Invalid Google Sheets URL</p>
+              )}
+            </div>
             <Button onClick={handleCreate} disabled={!brandName.trim() || loading} className="bg-sky-500 hover:bg-sky-600 text-white">
               {loading ? 'Creating...' : 'Create Client'}
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20 p-5 space-y-3">
-              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">✅ Client created successfully</p>
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 space-y-3">
+              <p className="text-sm font-semibold text-emerald-700">✅ Client created successfully</p>
               <p className="text-xs text-muted-foreground">Save these credentials — the password won't be shown again.</p>
               <div className="bg-card rounded-lg border border-border p-4 font-mono text-sm space-y-1">
                 <p><span className="text-muted-foreground">Username:</span> {credentials.username}</p>
@@ -95,7 +121,7 @@ export default function ClientForm() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => navigate('/admin')}>Back to Dashboard</Button>
-              <Button onClick={() => { setCredentials(null); setBrandName(''); }} className="bg-sky-500 hover:bg-sky-600 text-white">
+              <Button onClick={() => { setCredentials(null); setBrandName(''); setSheetUrl(''); }} className="bg-sky-500 hover:bg-sky-600 text-white">
                 Create Another
               </Button>
             </div>
