@@ -151,7 +151,7 @@ export default function PerformanceDashboard() {
   // Approval count: count non-empty column C (index 2) from row 5+ (index 4+) where column D matches month
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
-    const rows = data.paymentRaw.slice(4); // row 5 onward (0-indexed: 4+)
+    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim()); // skip header, require Brief Name
     return rows.filter(r => {
       const hasDate = r[2]?.trim(); // column C
       const approvedMonth = r[3]?.trim(); // column D
@@ -162,7 +162,7 @@ export default function PerformanceDashboard() {
   // Payment table rows filtered by month
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(4);
+    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
     return rows
       .filter(r => r[3]?.trim()?.toLowerCase() === month.toLowerCase())
       .map(r => ({
@@ -177,7 +177,7 @@ export default function PerformanceDashboard() {
   // Monthly approved overview (all months, for the "Monthly Approved Videos" chart)
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(4);
+    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
     const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const map: Record<string, number> = {};
     rows.forEach(r => {
