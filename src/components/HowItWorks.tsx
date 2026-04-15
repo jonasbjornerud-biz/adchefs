@@ -15,59 +15,46 @@ const steps = [
   },
   {
     image: creativeIntelligence,
-    title: "Deliver & *Iterate*",
+    title: "Deliver & Iterate",
     description: "Finished videos are delivered within days. Request revisions, approve finals, and keep your creative pipeline moving.",
   },
 ];
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="py-24 bg-secondary/30">
+    <section id="how-it-works" className="py-28">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">How It Works</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Three simple steps to transform your creative production
+        <div className="text-center mb-6">
+          <p className="text-xs uppercase tracking-[0.2em] text-accent mb-3 font-medium">Process</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">How It Works</h2>
+          <p className="text-muted-foreground max-w-md mx-auto text-sm">
+            Three steps to transform your creative production
           </p>
         </div>
-        
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+
+        <div className="section-divider mb-16" />
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {steps.map((step, index) => (
-            <div 
+            <div
               key={index}
-              className="group relative animate-slide-up"
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className="group glass-card overflow-hidden animate-slide-up"
+              style={{ animationDelay: `${index * 0.12}s` }}
             >
-              <div className="relative overflow-hidden rounded-2xl bg-card border border-border/50 transition-all duration-500 hover:border-accent/50 hover:shadow-2xl hover:shadow-accent/20 hover:-translate-y-2 transform perspective-1000">
-                <div className="relative transform-gpu transition-transform duration-500 group-hover:rotateX-2 group-hover:rotateY-2">
-                  <div className="relative h-64 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 z-10" />
-                    <div className="absolute top-4 left-4 z-20 w-12 h-12 rounded-full bg-accent/90 backdrop-blur-sm border-2 border-accent/30 flex items-center justify-center shadow-lg shadow-accent/50">
-                      <span className="text-xl font-bold text-accent-foreground">{index + 1}</span>
-                    </div>
-                    <img 
-                      src={step.image} 
-                      alt={step.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="p-6 relative z-20">
-                    <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent">
-                      {step.title.includes('*') 
-                        ? step.title.split(/\*([^*]+)\*/).map((part, j) => 
-                            j % 2 === 1 ? <em key={j} className="italic">{part}</em> : part
-                          )
-                        : step.title
-                      }
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
+              <div className="relative h-56 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-card/90 z-10" />
+                <div className="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-accent/90 flex items-center justify-center">
+                  <span className="text-xs font-bold text-accent-foreground">{index + 1}</span>
                 </div>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-                </div>
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-5">
+                <h3 className="text-lg font-semibold mb-2 text-foreground">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
             </div>
           ))}

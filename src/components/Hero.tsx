@@ -18,60 +18,53 @@ const Hero = () => {
   const doubled = [...mediaSources, ...mediaSources];
 
   return (
-    <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-[calc(80px+env(safe-area-inset-top))] md:pt-20 overflow-hidden">
+    <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
       <div className="hero-grain" />
 
-      {/* Hero text — centered */}
-      <div className="container mx-auto px-6 relative z-10 text-center">
-        <div className="relative inline-block">
-          {/* Spotlight glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[hsl(260_100%_62%/0.10)] blur-[120px] pointer-events-none -z-10" />
-
-          <div className="inline-flex items-center justify-center px-5 py-1.5 mb-6 rounded-full bg-white/[0.06] dark:bg-[rgba(126,61,255,0.08)] backdrop-blur-md border border-[rgba(126,61,255,0.4)] dark:border-[rgba(126,61,255,0.25)] transition-colors duration-300">
-            <span className="text-sm text-muted-foreground transition-colors duration-300">
-              Blending AI automations with expert video editors
-            </span>
-          </div>
-
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground leading-[1.08] transition-colors duration-300 hero-headline-glow">
-            We cook up <span className="text-accent">ads</span> that{" "}
-            <br className="hidden sm:block" />
-            <span className="text-accent">scale</span> your brand
-          </h1>
+      <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
+        <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
+          <span className="text-xs tracking-wide text-muted-foreground">
+            AI automations × expert video editors
+          </span>
         </div>
 
-        <p className="text-lg md:text-xl mb-4 text-muted-foreground leading-relaxed max-w-2xl mx-auto transition-colors duration-300">
-          Creative strategy, <span className="text-accent">AI insights</span>, and elite editors working
-          together to deliver videos that drive consistent growth.
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
+          We cook up{" "}
+          <span className="text-accent">ads</span> that{" "}
+          <br className="hidden sm:block" />
+          <span className="text-accent">scale</span> your brand
+        </h1>
+
+        <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
+          Creative strategy, <span className="text-accent">AI insights</span>, and elite editors
+          working together to deliver videos that drive consistent growth.
         </p>
 
-        <div className="flex items-center justify-center gap-1.5 text-xs md:text-sm text-muted-foreground/60 mb-8">
-          <Check className="w-3.5 h-3.5 text-accent/60" />
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/50 mb-10">
+          <Check className="w-3.5 h-3.5 text-accent/50" />
           Pay per video. No retainers.
         </div>
 
-        <div className="flex justify-center">
-          <Button
-            size="lg"
-            variant="cta"
-            onClick={() => scrollToSection("booking")}
-            className="text-lg px-8 py-6 h-auto group relative overflow-hidden shimmer-button"
-          >
-            <span className="relative z-10 flex items-center">
-              Book Call Now
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
-        </div>
+        <Button
+          size="lg"
+          variant="cta"
+          onClick={() => scrollToSection("booking")}
+          className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+        >
+          <span className="relative z-10 flex items-center">
+            Book a Call
+            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </span>
+        </Button>
       </div>
 
-      {/* Full-width marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-16 mb-8 marquee-wrapper">
+      {/* Marquee */}
+      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-20 mb-8 marquee-wrapper">
         <div className="marquee-track flex gap-4">
           {doubled.map((src, i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[260px] h-[360px] rounded-xl overflow-hidden border border-white/5 shadow-lg shadow-[hsl(260_100%_62%/0.05)]"
+              className="flex-shrink-0 w-[240px] h-[340px] rounded-xl overflow-hidden border border-border/30"
             >
               {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
                 <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
