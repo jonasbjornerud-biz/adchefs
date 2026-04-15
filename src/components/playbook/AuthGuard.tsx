@@ -33,10 +33,26 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
         .from('clients')
         .select('is_admin')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (!client?.is_admin) {
         navigate('/playbook');
+        return;
+      }
+    } else {
+      // Editor route — check this user is a non-admin client
+      const { data: client } = await supabase
+        .from('clients')
+        .select('is_admin')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (client?.is_admin) {
+        navigate('/admin');
+        return;
+      }
+      if (!client) {
+        navigate('/login');
         return;
       }
     }

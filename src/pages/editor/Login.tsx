@@ -30,7 +30,7 @@ export default function Login() {
         .from('clients')
         .select('is_admin')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (client?.is_admin) {
         navigate('/admin');
