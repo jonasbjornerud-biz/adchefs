@@ -9,10 +9,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 const SHEET_ID = '1GU3ygb7Fx4TJJQn9gYZLBpo_ZqmpDHchEBpTy7POQH0';
@@ -29,11 +25,10 @@ interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved 
 interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; months: string[]; lastSynced: number; }
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#a855f7', '#06b6d4', '#f59e0b', '#22c55e', '#ec4899', '#3b82f6', '#ef4444', '#8b5cf6'];
+const COLORS = ['#7c3aed', '#06b6d4', '#f59e0b', '#22c55e', '#ec4899', '#3b82f6', '#ef4444', '#8b5cf6'];
 
 function parseCSV<T>(text: string): T[] {
-  const result = Papa.parse<T>(text, { header: true, skipEmptyLines: true });
-  return result.data;
+  return Papa.parse<T>(text, { header: true, skipEmptyLines: true }).data;
 }
 
 function getCurrentMonth(): string {
@@ -113,36 +108,28 @@ export default function EditorPerformance() {
     return { delivered, approved, rate, avg };
   }, [filteredEod, filteredPayment]);
 
-  // Chart 1: Daily Deliveries by Week
   const dailyByWeek = useMemo(() => {
     const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
-    // Map each row to a day-of-week — we infer from Date + Month
     const dayMap: Record<string, Record<string, number>> = {};
     WEEKDAYS.forEach(d => { dayMap[d] = {}; });
-
     filteredEod.forEach(row => {
       const dayStr = row['Select the working day the report is for'] || '';
-      // Try to extract day-of-week from the "Select..." column
       let dow = '';
       for (const wd of WEEKDAYS) {
         if (dayStr.toLowerCase().includes(wd.toLowerCase())) { dow = wd; break; }
       }
       if (!dow) {
-        // Fallback: compute from Date + Month
         const dateNum = parseInt(row.Date);
         const monthIdx = new Date(`${row.Month} 1, 2025`).getMonth();
         if (!isNaN(dateNum) && !isNaN(monthIdx)) {
           const d = new Date(2025, monthIdx, dateNum);
-          const dayIdx = d.getDay(); // 0=Sun
-          const mapped = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dayIdx];
+          const mapped = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
           if (WEEKDAYS.includes(mapped)) dow = mapped;
         }
       }
       if (!dow) return;
-      const wk = row.Week;
-      dayMap[dow][wk] = (dayMap[dow][wk] || 0) + (parseInt(row['Videos Delivered']) || 0);
+      dayMap[dow][row.Week] = (dayMap[dow][row.Week] || 0) + (parseInt(row['Videos Delivered']) || 0);
     });
-
     return WEEKDAYS.map(day => {
       const entry: any = { day };
       weeks.forEach(w => { entry[`Wk ${w}`] = dayMap[day]?.[w] || 0; });
@@ -151,11 +138,9 @@ export default function EditorPerformance() {
   }, [filteredEod]);
 
   const weekKeys = useMemo(() => {
-    const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
-    return weeks.map(w => `Wk ${w}`);
+    return [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b)).map(w => `Wk ${w}`);
   }, [filteredEod]);
 
-  // Chart 2: Weekly Output
   const weeklyOutput = useMemo(() => {
     const map: Record<string, number> = {};
     filteredEod.forEach(r => {
@@ -165,19 +150,14 @@ export default function EditorPerformance() {
     return Object.entries(map).sort(([a], [b]) => parseInt(a.replace('Wk ', '')) - parseInt(b.replace('Wk ', ''))).map(([week, total]) => ({ week, total }));
   }, [filteredEod]);
 
-  // Chart 3: Cumulative Deliveries
   const cumulative = useMemo(() => {
     if (editor === '(All Editors)') {
-      // One line per editor
       const editors = [...new Set(filteredEod.map(r => r.Name))];
       const allDays = [...new Set(filteredEod.map(r => parseInt(r.Date)))].filter(d => !isNaN(d)).sort((a, b) => a - b);
       return allDays.map(day => {
         const entry: any = { day };
         editors.forEach(ed => {
-          const prev = allDays.indexOf(day) > 0 ? allDays[allDays.indexOf(day) - 1] : null;
-          // Sum up to this day
-          entry[ed] = filteredEod
-            .filter(r => r.Name === ed && parseInt(r.Date) <= day)
+          entry[ed] = filteredEod.filter(r => r.Name === ed && parseInt(r.Date) <= day)
             .reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
         });
         return entry;
@@ -197,37 +177,22 @@ export default function EditorPerformance() {
     return [...new Set(filteredEod.map(r => r.Name))];
   }, [filteredEod, editor]);
 
-  const [sortCol, setSortCol] = useState<string>('Brief Name');
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-  const sortedPayment = useMemo(() => {
-    return [...filteredPayment].sort((a, b) => {
-      const va = (a as any)[sortCol] || '';
-      const vb = (b as any)[sortCol] || '';
-      return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
-    });
-  }, [filteredPayment, sortCol, sortDir]);
-
-  const toggleSort = (col: string) => {
-    if (sortCol === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
-    else { setSortCol(col); setSortDir('asc'); }
-  };
-
   const noData = filteredEod.length === 0 && !loading;
 
   const chartTooltipStyle = {
-    contentStyle: { background: 'rgba(15,15,25,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, fontSize: 12, fontFamily: "'JetBrains Mono', monospace" },
-    labelStyle: { color: '#a0a0b8' },
-    itemStyle: { color: '#e4e4ed' },
+    contentStyle: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 12, fontFamily: "'JetBrains Mono', monospace", boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
+    labelStyle: { color: '#64748b' },
+    itemStyle: { color: '#334155' },
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }} />)}
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl bg-slate-100" />)}
         </div>
-        <Skeleton className="h-64 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }} />
-        <Skeleton className="h-64 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }} />
+        <Skeleton className="h-64 rounded-xl bg-slate-100" />
+        <Skeleton className="h-64 rounded-xl bg-slate-100" />
       </div>
     );
   }
@@ -235,13 +200,13 @@ export default function EditorPerformance() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.15)' }}>
+        <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
           <AlertCircle className="w-6 h-6 text-red-400" />
         </div>
-        <p className="text-sm" style={{ color: '#8b8b9e' }}>Failed to load performance data</p>
-        <p className="text-xs font-mono" style={{ color: '#4a4a5c' }}>{error}</p>
+        <p className="text-sm text-slate-500">Failed to load performance data</p>
+        <p className="text-xs font-mono text-slate-400">{error}</p>
         <Button variant="outline" size="sm" onClick={() => fetchData(true)}
-          className="rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white">
+          className="rounded-lg text-xs border-slate-200 text-slate-500 hover:bg-slate-50">
           <RefreshCw className="w-3 h-3 mr-1.5" /> Retry
         </Button>
       </div>
@@ -249,49 +214,49 @@ export default function EditorPerformance() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Filters + Sync */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex gap-3">
           <Select value={editor} onValueChange={setEditor}>
-            <SelectTrigger className="w-[180px] h-9 rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#e4e4ed]">
+            <SelectTrigger className="w-[180px] h-9 rounded-lg text-xs border-slate-200 bg-white text-slate-700">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-lg border-white/[0.08] bg-[#14141f]">
+            <SelectContent className="rounded-lg border-slate-200 bg-white">
               {data?.editors.map(e => (
-                <SelectItem key={e} value={e} className="text-xs text-[#e4e4ed] focus:bg-white/[0.06]">{e}</SelectItem>
+                <SelectItem key={e} value={e} className="text-xs">{e}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={month} onValueChange={setMonth}>
-            <SelectTrigger className="w-[140px] h-9 rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#e4e4ed]">
+            <SelectTrigger className="w-[140px] h-9 rounded-lg text-xs border-slate-200 bg-white text-slate-700">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-lg border-white/[0.08] bg-[#14141f]">
+            <SelectContent className="rounded-lg border-slate-200 bg-white">
               {data?.months.map(m => (
-                <SelectItem key={m} value={m} className="text-xs text-[#e4e4ed] focus:bg-white/[0.06]">{m}</SelectItem>
+                <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className="flex items-center gap-3">
           {data && (
-            <span className="text-[10px] font-mono" style={{ color: '#4a4a5c' }}>
+            <span className="text-[10px] font-mono text-slate-400">
               Last synced: {new Date(data.lastSynced).toLocaleString()}
             </span>
           )}
           <Button variant="outline" size="sm" onClick={() => fetchData(true)}
-            className="rounded-lg text-[11px] h-7 px-2.5 border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white">
+            className="rounded-lg text-[11px] h-7 px-2.5 border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700">
             <RefreshCw className="w-3 h-3 mr-1" /> Sync now
           </Button>
         </div>
       </div>
 
       {noData ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <FileBarChart className="w-10 h-10" style={{ color: '#2a2a3c' }} />
-          <p className="text-sm" style={{ color: '#6b6b80' }}>
-            No data yet for <span className="text-[#a0a0b8] font-medium">{editor}</span> in <span className="text-[#a0a0b8] font-medium">{month}</span>
+        <div className="flex flex-col items-center justify-center py-20 gap-3 bg-white rounded-2xl border border-slate-200/80">
+          <FileBarChart className="w-10 h-10 text-slate-200" />
+          <p className="text-sm text-slate-400">
+            No data yet for <span className="text-slate-600 font-medium">{editor}</span> in <span className="text-slate-600 font-medium">{month}</span>
           </p>
         </div>
       ) : (
@@ -299,150 +264,91 @@ export default function EditorPerformance() {
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#a855f7' },
-              { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#06b6d4' },
-              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#22c55e' },
-              { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#f59e0b' },
+              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#7c3aed', bg: 'bg-violet-50', border: 'border-violet-100' },
+              { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#06b6d4', bg: 'bg-cyan-50', border: 'border-cyan-100' },
+              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#22c55e', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+              { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-100' },
             ].map((kpi, i) => (
-              <div key={i} className="rounded-xl p-5 transition-all duration-200 hover:border-white/[0.1]"
-                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div key={i} className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
-                  <kpi.icon className="w-3.5 h-3.5" style={{ color: kpi.color }} />
-                  <span className="text-[10px] uppercase tracking-widest font-medium" style={{ color: '#6b6b80' }}>{kpi.label}</span>
+                  <div className={`w-7 h-7 rounded-lg ${kpi.bg} ${kpi.border} border flex items-center justify-center`}>
+                    <kpi.icon className="w-3.5 h-3.5" style={{ color: kpi.color }} />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold font-mono text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                <p className="text-2xl font-bold font-mono text-slate-800" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                   {kpi.value}
                 </p>
+                <p className="text-[10px] uppercase tracking-widest font-medium text-slate-400 mt-1">{kpi.label}</p>
               </div>
             ))}
           </div>
 
           {/* Charts row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Chart 1: Daily Deliveries by Week */}
-            <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <h4 className="text-sm font-semibold text-white mb-1">Daily Deliveries by Week</h4>
-              <p className="text-[10px] mb-4" style={{ color: '#6b6b80' }}>Grouped by weekday, colored per week</p>
+            <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
+              <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Daily Deliveries by Week</h4>
+              <p className="text-[10px] text-slate-400 mb-4">Grouped by weekday, colored per week</p>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyByWeek} barCategoryGap="20%">
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                    <XAxis dataKey="day" tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="day" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 10, color: '#8b8b9e' }} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: '#64748b' }} />
                     {weekKeys.map((wk, i) => (
-                      <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[3, 3, 0, 0]} />
+                      <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Chart 2: Weekly Output */}
-            <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <h4 className="text-sm font-semibold text-white mb-1">Weekly Output</h4>
-              <p className="text-[10px] mb-4" style={{ color: '#6b6b80' }}>Total videos delivered per week</p>
+            <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
+              <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Weekly Output</h4>
+              <p className="text-[10px] text-slate-400 mb-4">Total videos delivered per week</p>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyOutput}>
                     <defs>
-                      <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#a855f7" stopOpacity={0.9} />
-                        <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.7} />
+                      <linearGradient id="barGradLight" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.85} />
+                        <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.6} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                    <XAxis dataKey="week" tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="week" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
-                    <Bar dataKey="total" fill="url(#barGrad)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="total" fill="url(#barGradLight)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
 
-          {/* Chart 3: Cumulative Deliveries (full width) */}
-          <div className="rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <h4 className="text-sm font-semibold text-white mb-1">Cumulative Deliveries</h4>
-            <p className="text-[10px] mb-4" style={{ color: '#6b6b80' }}>Running total across the month</p>
+          {/* Cumulative chart */}
+          <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
+            <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Cumulative Deliveries</h4>
+            <p className="text-[10px] text-slate-400 mb-4">Running total across the month</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={cumulative}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                  <XAxis dataKey="day" tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#6b6b80', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="day" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip {...chartTooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 10, color: '#8b8b9e' }} />
+                  <Legend wrapperStyle={{ fontSize: 10, color: '#64748b' }} />
                   {editor === '(All Editors)' ? (
                     cumulativeEditors.map((ed, i) => (
                       <Line key={ed} type="monotone" dataKey={ed} stroke={COLORS[i % COLORS.length]} strokeWidth={2} dot={false} />
                     ))
                   ) : (
-                    <Line type="monotone" dataKey="total" stroke="#a855f7" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="total" stroke="#7c3aed" strokeWidth={2} dot={false} />
                   )}
                 </LineChart>
               </ResponsiveContainer>
             </div>
-          </div>
-
-          {/* Payment Status Table */}
-          <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="p-5 pb-3">
-              <h4 className="text-sm font-semibold text-white mb-0.5">Payment Status</h4>
-              <p className="text-[10px]" style={{ color: '#6b6b80' }}>Approval tracking for {month}</p>
-            </div>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-white/[0.06] hover:bg-transparent">
-                  {['Brief Name', 'Approval Date', 'Approved Month', 'Status'].map(col => (
-                    <TableHead key={col}
-                      className="text-[10px] uppercase tracking-widest font-medium cursor-pointer select-none hover:text-white transition-colors"
-                      style={{ color: '#6b6b80' }}
-                      onClick={() => col !== 'Status' && toggleSort(col)}>
-                      {col} {sortCol === col ? (sortDir === 'asc' ? '↑' : '↓') : ''}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedPayment.length === 0 ? (
-                  <TableRow className="border-white/[0.06]">
-                    <TableCell colSpan={4} className="text-center py-8" style={{ color: '#4a4a5c' }}>
-                      No payment data for {month}
-                    </TableCell>
-                  </TableRow>
-                ) : sortedPayment.map((row, i) => (
-                  <TableRow key={i} className="border-white/[0.06] hover:bg-white/[0.02]">
-                    <TableCell className="text-xs text-[#e4e4ed] font-medium">{row['Brief Name']}</TableCell>
-                    <TableCell className="text-xs font-mono" style={{ color: '#8b8b9e' }}>{row['Approval Date'] || '—'}</TableCell>
-                    <TableCell className="text-xs" style={{ color: '#8b8b9e' }}>{row['Approved Month']}</TableCell>
-                    <TableCell>
-                      {row['Approval Date']?.trim() ? (
-                        <Badge className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/15">
-                          Approved
-                        </Badge>
-                      ) : (
-                        <Badge className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/15">
-                          Pending
-                        </Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-              {sortedPayment.length > 0 && (
-                <TableFooter className="bg-white/[0.02] border-white/[0.06]">
-                  <TableRow className="border-white/[0.06]">
-                    <TableCell className="text-xs font-semibold text-[#a0a0b8]">Total Approved</TableCell>
-                    <TableCell colSpan={3} className="text-xs font-bold font-mono text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                      {filteredPayment.filter(r => r['Approval Date']?.trim()).length}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
-              )}
-            </Table>
           </div>
         </>
       )}

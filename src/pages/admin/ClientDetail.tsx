@@ -1,77 +1,35 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Client, Stage, Module, ModuleCompletion, StageWithModules } from '@/types/playbook';
 import { isModuleCompleted } from '@/lib/progression';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BookOpen, BarChart3, Edit, Trash2, RotateCcw, ChevronRight, Lock, Shield, Terminal } from 'lucide-react';
+import { ArrowLeft, BarChart3, Edit, Trash2, RotateCcw, ChevronRight, Shield, BookOpen, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generatePassword } from '@/lib/auth';
 import EditorPerformance from '@/components/EditorPerformance';
 
-/* ── Animated dot-grid background ── */
-function DotGrid() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let raf: number;
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-
-    let t = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const gap = 32;
-      for (let x = gap; x < canvas.width; x += gap) {
-        for (let y = gap; y < canvas.height; y += gap) {
-          const wave = Math.sin((x + y) * 0.003 + t * 0.8) * 0.5 + 0.5;
-          const alpha = 0.06 + wave * 0.08;
-          ctx.beginPath();
-          ctx.arc(x, y, 1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(168, 130, 255, ${alpha})`;
-          ctx.fill();
-        }
-      }
-      t += 0.016;
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
-}
-
-/* ── Glowing progress bar ── */
-function GlowProgress({ pct }: { pct: number }) {
-  const allDone = pct === 100;
+/* ── Friendly progress bar ── */
+function ProgressBar({ pct }: { pct: number }) {
+  const done = pct === 100;
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-[#8b8b9e]">
-          {allDone ? '✦ All missions complete' : 'Mission progress'}
+        <span className="text-xs font-medium text-slate-500">
+          {done ? '🎉 All modules complete!' : 'Progress'}
         </span>
-        <span className="font-mono text-sm font-bold" style={{ color: allDone ? '#4ade80' : '#c084fc' }}>
+        <span className="text-sm font-bold font-mono" style={{ color: done ? '#16a34a' : '#7c3aed' }}>
           {pct}%
         </span>
       </div>
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+      <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{
             width: `${pct}%`,
-            background: allDone
+            background: done
               ? 'linear-gradient(90deg, #22c55e, #4ade80)'
-              : 'linear-gradient(90deg, #7c3aed, #a855f7, #06b6d4)',
-            boxShadow: allDone
-              ? '0 0 16px rgba(74, 222, 128, 0.5)'
-              : '0 0 16px rgba(168, 85, 247, 0.4), 0 0 32px rgba(6, 182, 212, 0.2)',
+              : 'linear-gradient(90deg, #7c3aed, #a78bfa)',
           }}
         />
       </div>
@@ -138,16 +96,16 @@ export default function ClientDetail() {
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#0a0a0f' }}>
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm text-[#6b6b80] font-mono">Initializing…</span>
+        <div className="w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-slate-400">Loading…</span>
       </div>
     </div>
   );
 
   if (!client) return (
-    <div className="min-h-screen flex items-center justify-center text-[#6b6b80]" style={{ background: '#0a0a0f' }}>
+    <div className="min-h-screen flex items-center justify-center bg-white text-slate-400">
       Client not found
     </div>
   );
@@ -159,89 +117,70 @@ export default function ClientDetail() {
   const stagesComplete = stages.filter(s => s.modules.length > 0 && s.modules.every(m => isModuleCompleted(m.id, completions))).length;
 
   return (
-    <div className="min-h-screen relative" style={{ background: '#0a0a0f', color: '#e4e4ed' }}>
-      <DotGrid />
-
-      {/* Ambient glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[400px] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.3), transparent 70%)', filter: 'blur(80px)' }} />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[350px] rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.25), transparent 70%)', filter: 'blur(80px)' }} />
-      </div>
-
+    <div className="min-h-screen bg-[#fafafa]">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b"
-        style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(10,10,15,0.8)', backdropFilter: 'blur(20px)' }}>
+      <header className="sticky top-0 z-30 bg-white border-b border-slate-200/80">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-xs transition-colors hover:text-white" style={{ color: '#6b6b80' }}>
-              <ArrowLeft className="w-3.5 h-3.5" /> All Clients
+            <button onClick={() => navigate('/admin')} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
-            <div className="h-4 w-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', color: '#fff' }}>
+            <div className="h-4 w-px bg-slate-200" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-[11px] font-bold text-white shadow-sm">
                 A
               </div>
               <div>
-                <span className="text-sm font-semibold text-white">AdChefs</span>
-                <span className="text-[10px] ml-2" style={{ color: '#6b6b80' }}>Editor Command Center</span>
+                <span className="text-sm font-semibold text-slate-800">AdChefs</span>
+                <span className="text-[10px] ml-2 text-slate-400">Client Portal</span>
               </div>
             </div>
           </div>
-          <div className="flex gap-1.5">
+          <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={resetPassword}
-              className="rounded-lg text-[11px] h-7 px-2.5 border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white">
+              className="rounded-lg text-[11px] h-7 px-2.5 border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700">
               <RotateCcw className="w-3 h-3 mr-1" /> Reset PW
             </Button>
             <Button variant="outline" size="sm" onClick={handleDelete}
-              className="rounded-lg text-[11px] h-7 px-2.5 border-white/[0.08] bg-white/[0.03] text-red-400/70 hover:bg-red-500/10 hover:text-red-400">
+              className="rounded-lg text-[11px] h-7 px-2.5 border-slate-200 text-red-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200">
               <Trash2 className="w-3 h-3 mr-1" /> Delete
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-6xl mx-auto px-6 py-10 space-y-10">
-        {/* Hero section */}
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.1))',
-              border: '1px solid rgba(124,58,237,0.15)',
-              color: '#c084fc',
-            }}>
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+        {/* Client hero */}
+        <div className="flex items-center gap-5">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 border border-violet-200/50 flex items-center justify-center text-xl font-bold text-violet-600 shrink-0">
             {client.brand_name.charAt(0)}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">{client.brand_name}</h1>
-            <div className="flex items-center gap-3 mt-1.5">
-              <span className="font-mono text-xs px-2 py-0.5 rounded-md"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', color: '#8b8b9e' }}>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">{client.brand_name}</h1>
+            <div className="flex items-center gap-3 mt-1">
+              <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 border border-slate-200/50">
                 @{client.username}
               </span>
-              <span className="flex items-center gap-1 text-[10px]" style={{ color: '#6b6b80' }}>
-                <Shield className="w-3 h-3" /> Admin access
+              <span className="flex items-center gap-1 text-[10px] text-slate-400">
+                <Shield className="w-3 h-3" /> Admin
               </span>
             </div>
           </div>
         </div>
 
         {/* Tab navigation */}
-        <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200/50 w-fit">
           {[
-            { key: 'overview' as const, label: 'Mission Control', icon: Terminal, color: '#a855f7' },
-            { key: 'performance' as const, label: 'Editor Performance', icon: BarChart3, color: '#06b6d4' },
+            { key: 'overview' as const, label: 'Playbook', icon: BookOpen },
+            { key: 'performance' as const, label: 'Editor Performance', icon: BarChart3 },
           ].map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200"
-              style={{
-                background: activeTab === tab.key ? 'rgba(255,255,255,0.06)' : 'transparent',
-                color: activeTab === tab.key ? '#e4e4ed' : '#6b6b80',
-                border: activeTab === tab.key ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
-              }}>
-              <tab.icon className="w-3.5 h-3.5" style={{ color: activeTab === tab.key ? tab.color : '#6b6b80' }} />
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
+                activeTab === tab.key
+                  ? 'bg-white text-slate-800 shadow-sm border border-slate-200/80'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}>
+              <tab.icon className="w-3.5 h-3.5" />
               {tab.label}
             </button>
           ))}
@@ -253,62 +192,47 @@ export default function ClientDetail() {
             {/* Playbook card */}
             <button
               onClick={() => navigate(`/admin/clients/${clientId}/playbook-view`)}
-              className="group w-full text-left rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5"
-              style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                backdropFilter: 'blur(12px)',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.3)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(124,58,237,0.08), 0 8px 32px rgba(0,0,0,0.3)';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.06)';
-                (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-              }}
+              className="group w-full text-left rounded-2xl p-6 bg-white border border-slate-200/80 shadow-sm transition-all duration-300 hover:shadow-md hover:border-violet-200 hover:-translate-y-0.5"
             >
-              <div className="flex items-start justify-between mb-6">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.12)' }}>
-                  <Terminal className="w-5 h-5" style={{ color: '#a855f7' }} />
+              <div className="flex items-start justify-between mb-5">
+                <div className="w-11 h-11 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-violet-500" />
                 </div>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" style={{ color: 'rgba(255,255,255,0.15)' }} />
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all" />
               </div>
 
-              <h3 className="text-base font-semibold text-white mb-0.5">Mission Control</h3>
-              <p className="text-xs mb-6" style={{ color: '#6b6b80' }}>Clearance levels, SOPs, and progression tracking</p>
+              <h3 className="text-base font-semibold text-slate-800 mb-0.5">Video Editing Playbook</h3>
+              <p className="text-xs text-slate-400 mb-5">SOPs, modules, and progression tracking</p>
 
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-3 gap-3 mb-5">
                 {[
-                  { val: totalModules, label: 'Missions' },
-                  { val: `${stagesComplete}/${stageCount}`, label: 'Clearance' },
+                  { val: totalModules, label: 'Modules' },
+                  { val: `${stagesComplete}/${stageCount}`, label: 'Stages' },
                   { val: `${pct}%`, label: 'Complete', highlight: pct === 100 },
                 ].map((s, i) => (
-                  <div key={i} className="rounded-xl p-3 text-center"
-                    style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                    <p className={`text-lg font-bold font-mono ${s.highlight ? 'text-emerald-400' : 'text-white'}`}
+                  <div key={i} className="rounded-xl p-3 text-center bg-slate-50 border border-slate-100">
+                    <p className={`text-lg font-bold font-mono ${s.highlight ? 'text-green-500' : 'text-slate-800'}`}
                       style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
-                    <p className="text-[9px] uppercase tracking-widest font-medium" style={{ color: '#6b6b80' }}>{s.label}</p>
+                    <p className="text-[9px] uppercase tracking-widest font-medium text-slate-400">{s.label}</p>
                   </div>
                 ))}
               </div>
 
-              <GlowProgress pct={pct} />
+              <ProgressBar pct={pct} />
 
-              <div className="mt-5 flex items-center gap-2">
-                <span className="text-[10px] font-semibold uppercase tracking-widest group-hover:text-purple-300 transition-colors" style={{ color: '#a855f7' }}>
-                  Enter Mission Control →
+              <div className="mt-5 flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3 text-violet-400" />
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-500 group-hover:text-violet-600 transition-colors">
+                  Open Playbook →
                 </span>
               </div>
             </button>
 
-            {/* Quick actions */}
             <div className="flex gap-3">
               <Button
                 variant="outline" size="sm"
                 onClick={() => navigate(`/admin/clients/${clientId}/playbook`)}
-                className="rounded-lg text-xs border-white/[0.08] bg-white/[0.03] text-[#a0a0b8] hover:bg-white/[0.06] hover:text-white"
+                className="rounded-lg text-xs border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700"
               >
                 <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Playbook Content
               </Button>
