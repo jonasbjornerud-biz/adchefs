@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Stage, Module, StageWithModules } from '@/types/playbook';
+import { Stage, Module } from '@/types/playbook';
 import { RichTextEditor } from '@/components/playbook/RichTextEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Plus, Trash2, GripVertical, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, GripVertical, Save, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface EditingModule {
