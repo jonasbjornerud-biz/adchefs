@@ -83,7 +83,7 @@ export default function ClientDashboard() {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Date.now() - parsed.lastSynced < CACHE_TTL) {
-          computePerfStats(parsed.eod, parsed.payment);
+          computePerfStats(parsed.eod, parsed.paymentRaw || []);
           return;
         }
       }
