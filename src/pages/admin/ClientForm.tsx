@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { createClientAuth, generatePassword, brandToUsername } from '@/lib/auth';
+import { generatePassword, brandToUsername } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Copy, Check } from 'lucide-react';
@@ -23,36 +23,12 @@ export default function ClientForm() {
       const username = brandToUsername(brandName);
       const password = generatePassword();
 
-      // Create Supabase auth user
-      const authData = await createClientAuth(username, password);
-      if (!authData.user) throw new Error('Failed to create auth user');
-
-      // Create client record
-      const { error } = await supabase.from('clients').insert({
-        user_id: authData.user.id,
-        brand_name: brandName.trim(),
-        username,
-        is_admin: false,
+      const { data, error } = await supabase.functions.invoke('manage-clients', {
+        body: { action: 'create_client', username, password, brand_name: brandName.trim() },
       });
 
       if (error) throw error;
-
-      // Get the new client ID
-      const { data: newClient } = await supabase
-        .from('clients')
-        .select('id')
-        .eq('username', username)
-        .single();
-
-      if (newClient) {
-        // Create default 3 stages
-        const stages = [
-          { client_id: newClient.id, title: 'SOP Modules', stage_number: 1, sort_order: 1 },
-          { client_id: newClient.id, title: 'Gear Up', stage_number: 2, sort_order: 2 },
-          { client_id: newClient.id, title: 'Learn More', stage_number: 3, sort_order: 3 },
-        ];
-        await supabase.from('stages').insert(stages);
-      }
+      if (data?.error) throw new Error(data.error);
 
       setCredentials({ username, password });
       toast({ title: 'Client created', description: `${brandName} is ready.` });

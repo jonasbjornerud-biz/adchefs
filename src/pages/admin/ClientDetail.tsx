@@ -7,7 +7,7 @@ import { ProgressBar } from '@/components/playbook/ProgressBar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Edit, Trash2, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { logout } from '@/lib/auth';
+import { generatePassword } from '@/lib/auth';
 
 export default function ClientDetail() {
   const { clientId } = useParams<{ clientId: string }>();
@@ -47,16 +47,34 @@ export default function ClientDetail() {
 
   async function handleDelete() {
     if (!confirm('Delete this client and all their data? This cannot be undone.')) return;
-    await supabase.from('clients').delete().eq('id', clientId!);
+    
+    const { data, error } = await supabase.functions.invoke('manage-clients', {
+      body: { action: 'delete_client', client_id: clientId },
+    });
+    
+    if (error || data?.error) {
+      toast({ title: 'Error', description: data?.error || error?.message, variant: 'destructive' });
+      return;
+    }
     toast({ title: 'Client deleted' });
     navigate('/admin');
   }
 
   async function resetPassword() {
-    const newPassword = prompt('Enter new password (or leave empty to auto-generate):');
-    // For simplicity, we'd need an edge function to reset password
-    // For now just show a message
-    toast({ title: 'Password reset', description: 'Use Supabase dashboard to reset the password for now.' });
+    const newPassword = generatePassword();
+    
+    const { data, error } = await supabase.functions.invoke('manage-clients', {
+      body: { action: 'reset_password', client_id: clientId, new_password: newPassword },
+    });
+    
+    if (error || data?.error) {
+      toast({ title: 'Error', description: data?.error || error?.message, variant: 'destructive' });
+      return;
+    }
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(`New password: ${newPassword}`);
+    toast({ title: 'Password reset', description: `New password copied to clipboard: ${newPassword}` });
   }
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading...</div>;
