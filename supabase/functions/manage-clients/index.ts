@@ -45,12 +45,15 @@ serve(async (req) => {
     if (!adminCheck?.is_admin) return new Response(JSON.stringify({ error: "Not an admin" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     if (action === "create_client") {
-      const { username, password, brand_name } = payload;
+      const { username, password, brand_name, spreadsheet_id } = payload;
       const email = `${username}@playbook.local`;
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({ email, password, email_confirm: true });
       if (authError) return new Response(JSON.stringify({ error: authError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-      const { data: clientData, error: clientError } = await supabase.from("clients").insert({ user_id: authData.user.id, brand_name, username, is_admin: false }).select().single();
+      const insertData: any = { user_id: authData.user.id, brand_name, username, is_admin: false };
+      if (spreadsheet_id) insertData.spreadsheet_id = spreadsheet_id;
+
+      const { data: clientData, error: clientError } = await supabase.from("clients").insert(insertData).select().single();
       if (clientError) {
         await supabase.auth.admin.deleteUser(authData.user.id);
         return new Response(JSON.stringify({ error: clientError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
