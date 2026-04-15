@@ -108,7 +108,7 @@ export default function ClientDashboard() {
     const filtered = eod.filter((r: any) => r.Month?.toLowerCase() === currentMonth.toLowerCase());
     const delivered = filtered.reduce((s: number, r: any) => s + (parseInt(r['Videos Delivered']) || 0), 0);
     // Count non-empty column C (index 2) from row 5+ (index 4+) where column D matches current month
-    const rows = paymentRaw.slice(4);
+    const rows = paymentRaw.slice(1).filter(r => r[1]?.trim());
     const approved = rows.filter(r => r[2]?.trim() && r[3]?.trim()?.toLowerCase() === currentMonth.toLowerCase()).length;
     const uniqueDays = new Set(filtered.map((r: any) => r.Date)).size;
     const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
