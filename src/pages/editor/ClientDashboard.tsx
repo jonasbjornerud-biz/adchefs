@@ -292,7 +292,7 @@ export default function ClientDashboard() {
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" style={{ color: 'rgba(255,255,255,0.2)' }} />
             </div>
 
-            <h3 className="text-base font-semibold text-white mb-1">Onboarding</h3>
+            <h3 className="text-base font-semibold text-white mb-1">Video Editor Onboarding</h3>
             <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.3)' }}>SOPs, modules, and progression tracking</p>
 
             {/* Mini stats */}
