@@ -5,7 +5,7 @@ const CalendlyBooking = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
           <div className="space-y-6">
             <p className="text-xs uppercase tracking-[0.2em] text-accent font-medium">Get started</p>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
               Ready to scale your creative system?
             </h2>
             <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
@@ -18,7 +18,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-2xl border-b border-border/30 transition-colors duration-300">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-2xl border-b border-border/40 transition-colors duration-300">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         <span className="text-xl font-bold tracking-tight text-foreground">AdChefs</span>
 
@@ -34,16 +34,8 @@ const Navigation = () => {
             </button>
           ))}
           <ThemeToggle />
-          <Button
-            onClick={() => scrollToSection("booking")}
-            variant="cta"
-            size="sm"
-            className="rounded-full pl-4 pr-2 gap-2"
-          >
+          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm">
             Book a Call
-            <span className="w-7 h-7 rounded-full bg-accent-foreground/20 flex items-center justify-center">
-              <ArrowRight className="w-3.5 h-3.5" />
-            </span>
           </Button>
         </div>
 
@@ -58,7 +50,7 @@ const Navigation = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-2xl border-b border-border/30 px-6 pb-6 pt-2 space-y-4 animate-fade-in">
+        <div className="md:hidden bg-background/95 backdrop-blur-2xl border-b border-border/40 px-6 pb-6 pt-2 space-y-4 animate-fade-in">
           {navLinks.map((link) => (
             <button
               key={link.id}
@@ -68,7 +60,7 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm" className="w-full rounded-full">
+          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm" className="w-full">
             Book a Call
           </Button>
         </div>
