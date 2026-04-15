@@ -8,60 +8,43 @@
   :root {
     --background: 240 20% 97%;
     --foreground: 240 24% 10%;
-
     --card: 0 0% 100%;
     --card-foreground: 240 24% 10%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 240 24% 10%;
-
     --primary: 240 24% 10%;
     --primary-foreground: 0 0% 98%;
-
     --secondary: 240 14% 94%;
     --secondary-foreground: 240 24% 10%;
-
     --muted: 240 10% 91%;
     --muted-foreground: 240 8% 46%;
-
     --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 240 12% 90%;
     --input: 240 12% 90%;
     --ring: 262 83% 58%;
-
     --radius: 0.75rem;
   }
 
   .dark {
     --background: 240 16% 6%;
     --foreground: 0 0% 96%;
-
     --card: 240 14% 9%;
     --card-foreground: 0 0% 96%;
-
     --popover: 240 14% 9%;
     --popover-foreground: 0 0% 96%;
-
     --primary: 0 0% 96%;
     --primary-foreground: 240 16% 6%;
-
     --secondary: 240 12% 12%;
     --secondary-foreground: 0 0% 96%;
-
     --muted: 240 10% 14%;
     --muted-foreground: 240 6% 55%;
-
     --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 240 10% 16%;
     --input: 240 10% 14%;
     --ring: 262 83% 58%;
@@ -75,6 +58,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -84,31 +68,23 @@
 }
 
 @layer utilities {
-  /* ── Site gradient background ── */
-  .site-gradient-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    background: hsl(var(--background));
+  /* ── Section Themes (explicit, not relying on global toggle) ── */
+  .section-dark {
+    background-color: hsl(240 16% 6%);
+    color: hsl(0 0% 96%);
+    position: relative;
+    overflow: hidden;
   }
 
-  .site-gradient-bg::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 800px 600px at 30% 20%, hsl(262 83% 58% / 0.06), transparent 70%),
-      radial-gradient(ellipse 600px 500px at 70% 60%, hsl(262 83% 58% / 0.04), transparent 65%);
-    animation: gradient-drift 30s ease-in-out infinite;
+  .section-light {
+    background-color: hsl(0 0% 100%);
+    color: hsl(240 24% 10%);
+    position: relative;
+    overflow: hidden;
   }
 
-  .dark .site-gradient-bg::before {
-    background:
-      radial-gradient(ellipse 800px 600px at 30% 20%, hsl(262 83% 58% / 0.12), transparent 70%),
-      radial-gradient(ellipse 600px 500px at 70% 60%, hsl(270 80% 50% / 0.08), transparent 65%);
-  }
-
-  .site-gradient-bg::after {
+  /* ── Noise overlay for dark sections ── */
+  .section-dark::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -117,21 +93,7 @@
     opacity: 0.03;
     pointer-events: none;
     mix-blend-mode: overlay;
-  }
-
-  .dark .site-gradient-bg::after {
-    opacity: 0.04;
-  }
-
-  @keyframes gradient-drift {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(20px, -15px) scale(1.02); }
-  }
-
-  /* ── Content container ── */
-  .content-container {
-    @apply relative z-10 mx-auto px-6 md:px-8;
-    max-width: 1200px;
+    z-index: 1;
   }
 
   /* ── Animations ── */
@@ -141,6 +103,7 @@
 
   .animate-slide-up {
     animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
   }
 
   @keyframes fadeIn {
@@ -151,6 +114,27 @@
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(3deg); }
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    33% { transform: translateX(15px) translateY(-10px); }
+    66% { transform: translateX(-10px) translateY(5px); }
+  }
+
+  @keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.04; }
+    50% { opacity: 0.08; }
   }
 
   /* ── Marquee ── */
@@ -174,38 +158,18 @@
     to { transform: translateX(-50%); }
   }
 
-  /* ── Hero ── */
-  .hero-section {
-    background: transparent;
-  }
-
-  .hero-grain {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 150px 150px;
-    opacity: 0.03;
-    mix-blend-mode: overlay;
-  }
-
-  .dark .hero-grain {
-    opacity: 0.06;
-  }
-
   /* ── Shimmer CTA button ── */
   .shimmer-button {
     box-shadow:
-      0 0 16px hsl(var(--accent) / 0.3),
-      0 8px 24px hsl(var(--accent) / 0.15);
+      0 0 16px hsl(262 83% 58% / 0.3),
+      0 8px 24px hsl(262 83% 58% / 0.15);
     transition: box-shadow 0.3s ease, transform 0.2s ease;
   }
 
   .shimmer-button:hover {
     box-shadow:
-      0 0 24px hsl(var(--accent) / 0.4),
-      0 12px 32px hsl(var(--accent) / 0.2);
+      0 0 24px hsl(262 83% 58% / 0.4),
+      0 12px 32px hsl(262 83% 58% / 0.2);
     transform: translateY(-1px);
   }
 
@@ -216,7 +180,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent 0%, hsl(var(--accent) / 0.4) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, hsl(262 83% 58% / 0.4) 50%, transparent 100%);
     animation: shimmer 3.5s infinite;
     z-index: 1;
     filter: blur(6px);
@@ -227,20 +191,9 @@
     100% { transform: translateX(100%); }
   }
 
-  /* ── Glass card ── */
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  }
-
-  .glass-card:hover {
-    border-color: hsl(var(--accent) / 0.3);
-    box-shadow: 0 8px 32px hsl(var(--accent) / 0.08);
-    transform: translateY(-2px);
-  }
-
   /* ── Section divider ── */
   .section-divider {
-    @apply w-12 h-px bg-accent/40 mx-auto;
+    @apply w-12 h-px mx-auto;
+    background-color: hsl(262 83% 58% / 0.4);
   }
 }

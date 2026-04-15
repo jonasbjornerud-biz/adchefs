@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import BackgroundElements from "./BackgroundElements";
 
 const faqs = [
   {
@@ -22,12 +23,16 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-28">
-      <div className="container mx-auto px-6">
+    <section id="faq" className="section-dark py-32">
+      <BackgroundElements variant="dark" />
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-accent mb-3 font-medium">Support</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Frequently Asked Questions</h2>
-          <p className="text-muted-foreground max-w-md mx-auto text-sm">
+          <p className="text-xs uppercase tracking-[0.25em] mb-3 font-medium" style={{ color: "hsl(262 83% 68%)" }}>
+            Support
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
+          <p className="text-white/40 max-w-md mx-auto text-sm">
             Everything you need to know about working with AdChefs
           </p>
         </div>
@@ -40,12 +45,12 @@ const FAQ = () => {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="glass-card px-5 hover:!transform-none"
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.03] px-5 backdrop-blur-sm"
               >
-                <AccordionTrigger className="text-left text-sm font-medium hover:text-accent py-4">
+                <AccordionTrigger className="text-left text-sm font-medium text-white/80 hover:text-white py-4 [&[data-state=open]]:text-white">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                <AccordionContent className="text-sm text-white/40 leading-relaxed pb-4">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
