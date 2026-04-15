@@ -268,88 +268,12 @@ export default function ClientDashboard() {
           <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Here's your portal overview</p>
         </div>
 
-        {/* Two cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Card 1: Onboarding */}
-          <button
-            onClick={() => navigate('/playbook')}
-            className="group text-left cursor-pointer"
-            style={cardBase}
-            onMouseEnter={applyHover}
-            onMouseLeave={removeHover}
-          >
-            <div className="flex items-start justify-between mb-6">
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1))',
-                  border: '1px solid rgba(139,92,246,0.2)',
-                  boxShadow: '0 0 20px rgba(139,92,246,0.1)',
-                }}
-              >
-                <GraduationCap className="w-5 h-5" style={{ color: '#8B5CF6' }} />
-              </div>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" style={{ color: 'rgba(255,255,255,0.2)' }} />
-            </div>
-
-            <h3 className="text-base font-semibold text-white mb-1">Video Editor Onboarding</h3>
-            <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.3)' }}>SOPs, modules, and progression tracking</p>
-
-            {/* Mini stats */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[
-                { val: totalModules, label: 'MODULES' },
-                { val: `${stagesComplete}/${stageCount}`, label: 'STAGES' },
-                { val: `${pct}%`, label: 'COMPLETE', highlight: pct === 100 },
-              ].map((s, i) => (
-                <div key={i} className="text-center" style={statBoxStyle}>
-                  <p
-                    className="text-2xl font-bold"
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      color: s.highlight ? '#34D399' : '#fff',
-                    }}
-                  >{s.val}</p>
-                  <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Progress bar */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.3)' }}>{pct === 100 ? '🎉 Complete!' : 'Progress'}</span>
-                <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: "'JetBrains Mono', monospace" }}>{pct}%</span>
-              </div>
-              <div className="h-2 rounded-full overflow-hidden relative" style={{ background: 'rgba(139,92,246,0.1)' }}>
-                <div
-                  className="h-full rounded-full transition-all duration-700 relative overflow-hidden progress-shine"
-                  style={{
-                    width: `${pct}%`,
-                    background: pct === 100
-                      ? 'linear-gradient(90deg, #10B981, #34D399)'
-                      : 'linear-gradient(90deg, #8B5CF6, #6366F1)',
-                    boxShadow: pct > 0 ? '0 0 12px rgba(139,92,246,0.4)' : 'none',
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex items-center gap-1">
-              <span
-                className="text-sm font-semibold group-hover:translate-x-1 transition-all duration-300"
-                style={{ color: '#8B5CF6' }}
-              >
-                Open Onboarding →
-              </span>
-            </div>
-          </button>
-
-          {/* Card 2: Editor Performance */}
+        {/* Editor Performance card */}
+        <div className="max-w-lg">
           {client.spreadsheet_id ? (
             <button
               onClick={() => navigate('/performance')}
-              className="group text-left cursor-pointer"
+              className="group text-left cursor-pointer w-full"
               style={cardBase}
               onMouseEnter={applyHover}
               onMouseLeave={removeHover}
