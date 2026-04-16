@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -16,11 +16,10 @@ const LOTTIE = {
 };
 
 // ────────────────────────────────────────────────────────────────────────────
-// Lottie loader hook — fetches once, recolors the JSON to brand purple
+// Lottie loader — recolors to brand purple AND rewrites text layers so the
+// animation actually says what the card itself says.
 // ────────────────────────────────────────────────────────────────────────────
-function recolorLottie(data: any): any {
-  // Walk the Lottie JSON and remap every color to our brand purple palette.
-  // Brand stops: deep -> mid -> light
+function transformLottie(data: any, textMap?: Record<string, string>): any {
   const palette: [number, number, number][] = [
     [0.486, 0.227, 0.929], // #7c3aed
     [0.659, 0.333, 0.969], // #a855f7
@@ -32,7 +31,7 @@ function recolorLottie(data: any): any {
 
   const visit = (node: any): void => {
     if (!node || typeof node !== "object") return;
-    // Solid color shape
+
     if (node.ty === "fl" || node.ty === "st") {
       if (node.c && Array.isArray(node.c.k)) {
         const k = node.c.k;
@@ -42,11 +41,9 @@ function recolorLottie(data: any): any {
         }
       }
     }
-    // Gradient
     if (node.ty === "gf" || node.ty === "gs") {
       if (node.g && Array.isArray(node.g.k?.k)) {
         const stops = node.g.k.k;
-        // Each color stop in Lottie gradient: [pos, r, g, b, pos, r, g, b, ...]
         for (let i = 0; i + 3 < stops.length; i += 4) {
           const [r, g, b] = pickColor();
           stops[i + 1] = r;
@@ -55,6 +52,16 @@ function recolorLottie(data: any): any {
         }
       }
     }
+    // Lottie text layer rewrite: ty === 5
+    if (node.ty === 5 && node.t?.d?.k) {
+      for (const k of node.t.d.k) {
+        const cur = k?.s?.t;
+        if (typeof cur === "string" && textMap && textMap[cur] !== undefined) {
+          k.s.t = textMap[cur];
+        }
+      }
+    }
+
     for (const key of Object.keys(node)) {
       const v = node[key];
       if (Array.isArray(v)) v.forEach(visit);
@@ -66,21 +73,19 @@ function recolorLottie(data: any): any {
   return cloned;
 }
 
-function useLottieJson(url: string) {
-  const [data, setData] = useState<any | null>(null);
+function useLottieJson(url: string, textMap?: Record<string, string>) {
+  const [raw, setRaw] = useState<any | null>(null);
   useEffect(() => {
     let alive = true;
     fetch(url)
       .then((r) => r.json())
-      .then((j) => {
-        if (alive) setData(recolorLottie(j));
-      })
+      .then((j) => { if (alive) setRaw(j); })
       .catch(() => {});
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [url]);
-  return data;
+  // re-transform if textMap changes
+  const mapKey = textMap ? JSON.stringify(textMap) : "";
+  return useMemo(() => (raw ? transformLottie(raw, textMap) : null), [raw, mapKey]);
 }
 
 // ────────────────────────────────────────────────────────────────────────────
