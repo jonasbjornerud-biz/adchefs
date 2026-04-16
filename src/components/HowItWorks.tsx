@@ -444,7 +444,7 @@ function MentoringVisual() {
             border: "1px solid rgba(168,85,247,0.30)",
           }}
         >
-          Certified
+          In training
         </div>
       </div>
     </div>
