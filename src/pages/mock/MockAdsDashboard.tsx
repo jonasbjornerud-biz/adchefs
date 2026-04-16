@@ -107,7 +107,10 @@ const MockAdsDashboard = () => {
         <OverviewChart ads={ads} />
 
         <div>
-          <h2 className="text-xs uppercase tracking-widest text-white/40 font-medium mb-4">Individual Ads</h2>
+          <h2 className="text-[10px] uppercase tracking-[0.18em] text-white/50 font-semibold mb-4 flex items-center gap-2">
+            <span className="w-1 h-1 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 6px rgba(168,85,247,0.8)' }} />
+            Individual Ads
+          </h2>
           <AdTable ads={ads} onSelect={setSelectedAd} />
         </div>
       </main>
