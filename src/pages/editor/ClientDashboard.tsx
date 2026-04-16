@@ -1,33 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { subDays, format } from 'date-fns';
-import { DateRange } from 'react-day-picker';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
-import { KpiCard } from '@/components/dashboard/KpiCard';
-import { AdTable } from '@/components/dashboard/AdTable';
-import { AdDetailPanel } from '@/components/dashboard/AdDetailPanel';
-import { OverviewChart } from '@/components/dashboard/OverviewChart';
-import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
-import { AdMetric } from '@/data/mockAds';
-import { useMetaAds } from '@/hooks/useMetaAds';
-import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, LogOut } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LogOut, BarChart3, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
+
+const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: subDays(new Date(), 13),
-    to: new Date(),
-  });
-
-  const since = dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : undefined;
-  const until = dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : undefined;
-  const { ads, metrics, isLoading, isLive, triggerFetch } = useMetaAds({ since, until });
 
   useEffect(() => {
     (async () => {
@@ -39,10 +22,6 @@ export default function ClientDashboard() {
       setLoading(false);
     })();
   }, []);
-
-  const dateLabel = dateRange?.from && dateRange?.to
-    ? `${format(dateRange.from, 'MMM d')} – ${format(dateRange.to, 'MMM d, yyyy')}`
-    : 'All time';
 
   if (loading) {
     return (
@@ -57,25 +36,47 @@ export default function ClientDashboard() {
 
   if (!client) return null;
 
+  const cards = [
+    {
+      title: 'Editor Performance',
+      description: 'Track deliveries, editor output, approval rates, and weekly trends across your team.',
+      icon: BarChart3,
+      route: '/performance',
+      accent: '#a855f7',
+      enabled: !!client.spreadsheet_id,
+    },
+    {
+      title: 'KPI Dashboard',
+      description: 'Monitor ad spend, ROAS, CTR, CPA, and revenue with real-time Meta Ads data.',
+      icon: TrendingUp,
+      route: '/ads',
+      accent: '#34d399',
+      enabled: true,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#09090f]">
-      {/* Purple glow */}
+    <div className="min-h-screen bg-[#09090f] relative overflow-hidden">
+      {/* Purple glow — top center */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)',
+        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 100%)',
+      }} />
+      {/* Secondary subtle glow */}
+      <div className="fixed inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 40% at 30% 80%, rgba(52,211,153,0.04) 0%, transparent 100%)',
       }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
-        <div className="max-w-[1200px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
+      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 16px rgba(168,85,247,0.3)' }}
+              style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}
             >
               {client.brand_name.charAt(0)}
             </div>
             <span className="text-sm font-medium text-white">{client.brand_name}</span>
-            <span className="text-[10px] text-white/30">Client Portal</span>
           </div>
           <button
             onClick={() => { logout(); navigate('/login'); }}
@@ -86,69 +87,100 @@ export default function ClientDashboard() {
         </div>
       </header>
 
-      <main className="max-w-[1200px] mx-auto px-5 md:px-8 py-8 space-y-7 relative z-10">
-        {/* Title + Date Picker + Fetch */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold">
-              <span className="text-white">Welcome back, </span>
-              <span style={{ color: '#a855f7' }}>{client.brand_name}</span>
-            </h1>
-            <p className="text-sm text-white/40 mt-1">
-              {dateLabel} · All campaigns
-              {isLoading ? (
-                <span className="inline-flex items-center gap-1 ml-2 text-[#a855f7]"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
-              ) : isLive ? (
-                <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Live</span>
-              ) : (
-                <span className="inline-flex items-center gap-1 ml-2 text-white/30"><WifiOff className="w-3 h-3" /> No data</span>
-              )}
-            </p>
+      {/* Main content */}
+      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16">
+        {/* Welcome */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium text-white/40 mb-6" style={{
+            background: 'rgba(168,85,247,0.08)',
+            boxShadow: '0 0 0 1px rgba(168,85,247,0.15) inset',
+          }}>
+            <Sparkles className="w-3 h-3 text-[#a855f7]" /> Client Portal
           </div>
-          <div className="flex items-center gap-2">
-            <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
-            <button
-              onClick={triggerFetch}
-              disabled={isLoading || !dateRange?.from || !dateRange?.to}
-              className="h-9 px-4 rounded-lg text-sm font-medium text-white flex items-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)' }}
-              onMouseEnter={e => { if (!(e.currentTarget as HTMLButtonElement).disabled) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(168,85,247,0.4)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
-            >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-              Fetch
-            </button>
-          </div>
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+            <span className="text-white">Welcome back,</span>
+            <br />
+            <span style={{
+              background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 20px rgba(168,85,247,0.5))',
+            }}>{client.brand_name}</span>
+          </h1>
+          <p className="text-white/30 text-base mt-4 max-w-md mx-auto">
+            Select a dashboard to view your performance data and insights.
+          </p>
         </div>
 
-        {/* KPI Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-[100px] rounded-2xl bg-[#111118]" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
-            <KpiCard label="CTR" value={`${metrics.avgCTR}%`} icon={<MousePointerClick className="w-3.5 h-3.5" />} trend={{ value: 12.3, positive: true }} delay={0} />
-            <KpiCard label="CPA" value={`$${metrics.avgCPA}`} icon={<DollarSign className="w-3.5 h-3.5" />} trend={{ value: 5.1, positive: false }} delay={100} />
-            <KpiCard label="ROAS" value={`${metrics.avgROAS}x`} icon={<TrendingUp className="w-3.5 h-3.5" />} trend={{ value: 8.7, positive: true }} delay={200} />
-            <KpiCard label="Hook Rate" value={`${metrics.avgHookRate}%`} icon={<Eye className="w-3.5 h-3.5" />} trend={{ value: 3.2, positive: true }} delay={300} />
-            <KpiCard label="Hold Rate" value={`${metrics.avgHoldRate}%`} icon={<Play className="w-3.5 h-3.5" />} trend={{ value: 1.8, positive: false }} delay={400} />
-          </div>
-        )}
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {cards.map((card) => {
+            const Icon = card.icon;
+            if (!card.enabled) {
+              return (
+                <div
+                  key={card.title}
+                  className="bg-[#111118] rounded-2xl p-8 opacity-40"
+                  style={{ boxShadow: CARD_SHADOW }}
+                >
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{
+                    background: `${card.accent}10`,
+                    boxShadow: `0 0 0 1px ${card.accent}20 inset`,
+                  }}>
+                    <Icon className="w-5 h-5" style={{ color: card.accent }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white/50 mb-2">{card.title}</h3>
+                  <p className="text-xs text-white/20 leading-relaxed">Not yet configured</p>
+                </div>
+              );
+            }
+            return (
+              <button
+                key={card.title}
+                onClick={() => navigate(card.route)}
+                className="group text-left cursor-pointer bg-[#111118] rounded-2xl p-8 transition-all duration-300 relative overflow-hidden"
+                style={{ boxShadow: CARD_SHADOW }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.boxShadow = `0 0 0 1px ${card.accent}30 inset, 0 0 40px ${card.accent}15, 0 4px 24px rgba(0,0,0,0.4)`;
+                  el.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.boxShadow = CARD_SHADOW;
+                  el.style.transform = 'translateY(0)';
+                }}
+              >
+                {/* Hover glow overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{
+                  background: `radial-gradient(ellipse at 30% 20%, ${card.accent}08, transparent 70%)`,
+                }} />
 
-        {/* Overview Chart */}
-        <OverviewChart ads={ads} />
+                <div className="relative">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300" style={{
+                      background: `${card.accent}10`,
+                      boxShadow: `0 0 0 1px ${card.accent}20 inset`,
+                    }}>
+                      <Icon className="w-5 h-5" style={{ color: card.accent }} />
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-white/40 group-hover:translate-x-1 transition-all duration-300" />
+                  </div>
 
-        {/* Ad Table */}
-        <div>
-          <h2 className="text-xs uppercase tracking-widest text-white/40 font-medium mb-4">Individual Ads</h2>
-          <AdTable ads={ads} onSelect={setSelectedAd} />
+                  <h3 className="text-xl font-semibold text-white mb-2">{card.title}</h3>
+                  <p className="text-sm text-white/30 leading-relaxed mb-8">{card.description}</p>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold transition-all duration-300 group-hover:translate-x-1" style={{ color: card.accent }}>
+                      Open Dashboard →
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </main>
-
-      {selectedAd && <AdDetailPanel ad={selectedAd} onClose={() => setSelectedAd(null)} />}
     </div>
   );
 }
