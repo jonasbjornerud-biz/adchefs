@@ -197,6 +197,30 @@ Deno.serve(async (req) => {
       console.log(`Got ${Object.keys(videoUrlMap).length} playable video URLs`);
     }
 
+    // Fetch ad preview URLs (batch, parallel)
+    const adIdsWithInsights = Array.from(adMap.keys());
+    let previewUrlMap: Record<string, string> = {};
+    if (adIdsWithInsights.length > 0) {
+      console.log(`Fetching preview URLs for ${adIdsWithInsights.length} ads`);
+      const previewPromises = adIdsWithInsights.map(async (adId) => {
+        try {
+          const res = await fetch(`${META_BASE_URL}/${adId}/previews?ad_format=DESKTOP_FEED_STANDARD&access_token=${accessToken}`);
+          const json = await res.json();
+          if (json.data?.[0]?.body) {
+            const body = json.data[0].body;
+            const match = body.match(/href="(https:\/\/www\.facebook\.com\/ads\/archive\/render_ad\/[^"]+)"/);
+            if (match) return { adId, url: match[1].replace(/&amp;/g, '&') };
+          }
+          return null;
+        } catch (_e) { return null; }
+      });
+      const results = await Promise.all(previewPromises);
+      for (const r of results) {
+        if (r) previewUrlMap[r.adId] = r.url;
+      }
+      console.log(`Got ${Object.keys(previewUrlMap).length} preview URLs`);
+    }
+
     // Build ad metrics
     const adMetrics = Array.from(adMap.entries()).map(([adId, info]) => {
       let totalSpend = 0, totalImpressions = 0, totalClicks = 0, totalConversions = 0, totalRevenue = 0;
@@ -236,6 +260,8 @@ Deno.serve(async (req) => {
 
       // Fallback: Ads Manager URL for when video source isn't available
       const adManagerUrl = `https://adsmanager.facebook.com/adsmanager/manage/ads?act=${rawAccountId}&selected_ad_ids=${adId}`;
+      // Preview URL from Ad Preview API, fallback to Ad Library
+      const viewAdUrl = previewUrlMap[adId] || `https://www.facebook.com/ads/library/?id=${adId}`;
 
       return {
         id: adId,
@@ -258,6 +284,7 @@ Deno.serve(async (req) => {
         thumbnail: hdThumbnailMap[adId] || thumbnailMap[adId] || '',
         videoUrl: videoUrlMap[adId] || '',
         adManagerUrl,
+        viewAdUrl,
         dailyData,
       };
     });

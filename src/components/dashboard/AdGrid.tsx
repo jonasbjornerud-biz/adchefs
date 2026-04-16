@@ -113,18 +113,18 @@ export function AdGrid({ ads, onSelect }: AdGridProps) {
                 </div>
               )}
 
-              {/* Play overlay — for non-video ads, link to Ads Manager */}
-              {!ad.videoUrl && ad.adManagerUrl && (
+              {/* View Ad button — always visible at bottom-right of thumbnail */}
+              {(ad.viewAdUrl || ad.adManagerUrl) && (
                 <a
-                  href={ad.adManagerUrl}
+                  href={ad.viewAdUrl || ad.adManagerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold text-white/80 hover:text-white transition-colors duration-200"
+                  style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
                 >
-                  <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center border border-white/20">
-                    <ExternalLink className="w-5 h-5 text-white" />
-                  </div>
+                  <ExternalLink className="w-3 h-3" />
+                  View Ad
                 </a>
               )}
 
