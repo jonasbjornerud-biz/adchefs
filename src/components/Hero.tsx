@@ -39,13 +39,6 @@ const Hero = () => {
           </span>
         </div>
 
-      <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
-        <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
-          <span className="text-xs tracking-wide text-muted-foreground">
-            AI automations × expert video editors
-          </span>
-        </div>
-
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
           We cook up{" "}
           <span className="hero-accent-word">ads</span> that{" "}
