@@ -388,7 +388,8 @@ function MentoringVisual() {
           border: "1px solid rgba(168,85,247,0.25)",
         }}
       >
-        <svg viewBox="0 0 100 100" className="w-[88px] h-[88px]">
+        <div className="relative w-[88px] h-[88px]">
+          <svg viewBox="0 0 100 100" className="w-full h-full">
           <defs>
             <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#c084fc" />
