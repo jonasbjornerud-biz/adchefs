@@ -87,49 +87,52 @@ const MetaAdsDashboard = () => {
         </div>
       </header>
 
-      <main className="max-w-[1280px] mx-auto px-5 md:px-8 py-10 space-y-8 relative z-10">
-        {/* Title + Date Picker + Fetch */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-3 text-[11px] font-medium text-white/70" style={{
-              background: 'rgba(168,85,247,0.10)',
-              border: '1px solid rgba(168,85,247,0.25)',
-            }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
-              {isLoading ? 'Loading…' : isLive ? 'Live data' : 'No data'}
-            </div>
-            <h1 className="text-4xl font-black text-white tracking-tight">KPI Dashboard</h1>
-            <p className="text-sm text-white/40 mt-1.5">
-              {dateLabel} · All campaigns
-              {isLoading ? (
-                <span className="inline-flex items-center gap-1 ml-2 text-[#a855f7]"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
-              ) : isLive ? (
-                <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Live</span>
-              ) : (
-                <span className="inline-flex items-center gap-1 ml-2 text-white/30"><WifiOff className="w-3 h-3" /> No data</span>
-              )}
-            </p>
+      {/* Hero band with horizon arc */}
+      <div className="relative">
+        <HorizonGlow height={320} />
+        <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-16 pb-20 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
+            background: 'rgba(168,85,247,0.12)',
+            border: '1px solid rgba(168,85,247,0.30)',
+            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+          }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            {isLoading ? 'Loading…' : isLive ? 'Live data' : 'No data'}
           </div>
-          <div className="flex items-center gap-2">
-            <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
-            <button
-              onClick={triggerFetch}
-              disabled={isLoading || !dateRange?.from || !dateRange?.to}
-              className="h-9 px-4 rounded-lg text-sm font-medium text-white flex items-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
-                boxShadow: '0 4px 16px -4px rgba(168,85,247,0.5)',
-              }}
-              onMouseEnter={e => { if (!(e.currentTarget as HTMLButtonElement).disabled) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(168,85,247,0.6)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px -4px rgba(168,85,247,0.5)'; }}
-            >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-              Fetch
-            </button>
-          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">KPI Dashboard</h1>
+          <p className="text-sm text-white/50 mt-3">
+            {dateLabel} · All campaigns
+            {isLoading ? (
+              <span className="inline-flex items-center gap-1 ml-2 text-[#a855f7]"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
+            ) : isLive ? (
+              <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Live</span>
+            ) : (
+              <span className="inline-flex items-center gap-1 ml-2 text-white/40"><WifiOff className="w-3 h-3" /> No data</span>
+            )}
+          </p>
+        </div>
+      </div>
+
+      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-10 space-y-8 relative z-10">
+        <div className="flex justify-end items-center gap-2">
+          <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
+          <button
+            onClick={triggerFetch}
+            disabled={isLoading || !dateRange?.from || !dateRange?.to}
+            className="h-9 px-4 rounded-lg text-sm font-medium text-white flex items-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+              boxShadow: '0 4px 16px -4px rgba(168,85,247,0.5)',
+            }}
+            onMouseEnter={e => { if (!(e.currentTarget as HTMLButtonElement).disabled) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(168,85,247,0.6)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px -4px rgba(168,85,247,0.5)'; }}
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+            Fetch
+          </button>
         </div>
 
-        {/* KPI Grid */}
+        {/* KPI Grid — order: ROAS, CPA, CTR, Hook Rate, Hold Rate */}
         {isLoading ? (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -138,9 +141,9 @@ const MetaAdsDashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
-            <KpiCard label="CTR" value={`${metrics.avgCTR}%`} icon={<MousePointerClick className="w-3.5 h-3.5" />} trend={{ value: 12.3, positive: true }} delay={0} spark={sparks.ctr} accent="purple" />
+            <KpiCard label="ROAS" value={`${metrics.avgROAS}x`} icon={<TrendingUp className="w-3.5 h-3.5" />} trend={{ value: 8.7, positive: true }} delay={0} spark={sparks.roas} accent="emerald" />
             <KpiCard label="CPA" value={`$${metrics.avgCPA}`} icon={<DollarSign className="w-3.5 h-3.5" />} trend={{ value: 5.1, positive: false }} delay={80} spark={sparks.cpa} accent="pink" />
-            <KpiCard label="ROAS" value={`${metrics.avgROAS}x`} icon={<TrendingUp className="w-3.5 h-3.5" />} trend={{ value: 8.7, positive: true }} delay={160} spark={sparks.roas} accent="emerald" />
+            <KpiCard label="CTR" value={`${metrics.avgCTR}%`} icon={<MousePointerClick className="w-3.5 h-3.5" />} trend={{ value: 12.3, positive: true }} delay={160} spark={sparks.ctr} accent="purple" />
             <KpiCard label="Hook Rate" value={`${metrics.avgHookRate}%`} icon={<Eye className="w-3.5 h-3.5" />} trend={{ value: 3.2, positive: true }} delay={240} spark={sparks.hook} accent="blue" />
             <KpiCard label="Hold Rate" value={`${metrics.avgHoldRate}%`} icon={<Play className="w-3.5 h-3.5" />} trend={{ value: 1.8, positive: false }} delay={320} spark={sparks.hold} accent="purple" />
           </div>
