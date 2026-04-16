@@ -786,10 +786,7 @@ const EditorEdge = () => {
             </span>
           </h2>
           <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
-            Most agencies hand you editors who push pixels. Ours are trained on
-            hook rates, hold curves, CPA and ROAS. They know which 3 seconds
-            make a winner, and why. That&apos;s how cuts go from nice
-            to printing money.
+            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
           </p>
 
           <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
