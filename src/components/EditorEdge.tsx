@@ -10,38 +10,50 @@ import {
   useTransform,
   useReducedMotion,
   AnimatePresence,
+  type MotionValue,
 } from "framer-motion";
 
 const ACCENT = "#a855f7";
 
 // Spring presets
 const SPRING_SOFT = { type: "spring" as const, stiffness: 90, damping: 18, mass: 0.9 };
-const SPRING_TIGHT = { type: "spring" as const, stiffness: 220, damping: 22, mass: 0.6 };
 const SPRING_OVERSHOOT = { type: "spring" as const, stiffness: 260, damping: 14, mass: 0.7 };
 
-// Hook: count-up driven by framer's animate (manual interpolation)
-function useCountUp(target: number, active: boolean, duration = 1.1, decimals = 0) {
+// One-shot count-up: animates from 0 → target ONCE when active becomes true.
+// Never re-runs, never resets, never loops.
+function useCountUpOnce(target: number, active: boolean, duration = 1.2, decimals = 0) {
   const [val, setVal] = useState(0);
+  const startedRef = useRef(false);
   useEffect(() => {
-    if (!active) return;
+    if (!active || startedRef.current) return;
+    startedRef.current = true;
     let raf = 0;
     const start = performance.now();
-    const from = 0;
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / (duration * 1000));
-      // easeOutCubic
       const eased = 1 - Math.pow(1 - t, 3);
-      setVal(from + (target - from) * eased);
+      setVal(target * eased);
       if (t < 1) raf = requestAnimationFrame(tick);
+      else setVal(target);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [target, active, duration]);
+  }, [active, target, duration]);
   return Number(val.toFixed(decimals));
 }
 
+// Parallax helpers: produce a motion value that translates a layer based on cursor.
+// depth: 0 = static, 1 = max parallax. Recommended: bg 0.3, mid 0.6, fg 1.0
+function useParallax(mx: MotionValue<number>, my: MotionValue<number>, depthX: number, depthY: number) {
+  const tx = useSpring(useTransform(mx, [0, 1], [-depthX, depthX]), { stiffness: 90, damping: 18 });
+  const ty = useSpring(useTransform(my, [0, 1], [-depthY, depthY]), { stiffness: 90, damping: 18 });
+  return { tx, ty };
+}
+
+type VisualRender = (ctx: { active: boolean; mx: MotionValue<number>; my: MotionValue<number> }) => React.ReactNode;
+
 // ────────────────────────────────────────────────────────────────────────────
-// Card shell with parallax tilt on hover + sequenced entry
+// Card shell — perspective container, internal layers receive parallax values
 // ────────────────────────────────────────────────────────────────────────────
 function FeatureCard({
   title,
@@ -50,26 +62,25 @@ function FeatureCard({
   variant = "left",
   delay = 0,
   className = "",
-  onSettled,
 }: {
   title: string;
   description: string;
-  visual: (settled: boolean) => React.ReactNode;
+  visual: VisualRender;
   variant?: "left" | "right" | "bottom";
   delay?: number;
   className?: string;
-  onSettled?: () => void;
 }) {
   const reduce = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const inView = useInView(cardRef, { once: true, margin: "-15% 0% -15% 0%" });
   const [settled, setSettled] = useState(false);
 
-  // Tilt
+  // Cursor coords normalized 0..1, default centered (0.5)
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.5);
-  const rx = useSpring(useTransform(my, [0, 1], [4, -4]), { stiffness: 200, damping: 20 });
-  const ry = useSpring(useTransform(mx, [0, 1], [-4, 4]), { stiffness: 200, damping: 20 });
+  // Card-level subtle tilt (very small)
+  const rx = useSpring(useTransform(my, [0, 1], [3, -3]), { stiffness: 200, damping: 22 });
+  const ry = useSpring(useTransform(mx, [0, 1], [-3, 3]), { stiffness: 200, damping: 22 });
   const glowX = useTransform(mx, [0, 1], ["0%", "100%"]);
   const glowY = useTransform(my, [0, 1], ["0%", "100%"]);
 
@@ -100,18 +111,14 @@ function FeatureCard({
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : initial}
       transition={{ ...SPRING_SOFT, delay }}
       onAnimationComplete={() => {
-        if (!settled) {
-          setSettled(true);
-          onSettled?.();
-        }
+        if (!settled) setSettled(true);
       }}
       style={{
         rotateX: reduce ? 0 : rx,
         rotateY: reduce ? 0 : ry,
         transformPerspective: 1200,
         transformStyle: "preserve-3d",
-        background:
-          "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
+        background: "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
         border: "1px solid rgba(255,255,255,0.06)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
@@ -129,14 +136,14 @@ function FeatureCard({
       }
       className={`mw-card group relative overflow-hidden rounded-3xl ${className}`}
     >
-      {/* Cursor-follow glow */}
+      {/* Cursor-follow glow (independent highlight — moves opposite to layers, gives lighting illusion) */}
       <motion.div
         className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
           background: useTransform(
             [glowX, glowY] as never,
             ([x, y]: any) =>
-              `radial-gradient(420px circle at ${x} ${y}, rgba(168,85,247,0.18), transparent 60%)`
+              `radial-gradient(460px circle at ${x} ${y}, rgba(168,85,247,0.20), transparent 60%)`,
           ),
         }}
       />
@@ -171,8 +178,15 @@ function FeatureCard({
         </p>
       </div>
 
-      <div className="relative h-[280px] overflow-hidden">
-        {visual(settled)}
+      {/* Visual region — its own perspective context for child layer transforms */}
+      <div
+        className="relative h-[280px] overflow-hidden"
+        style={{
+          perspective: "1000px",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {visual({ active: settled, mx, my })}
         {/* Purple-tinted grain overlay (per visual) */}
         <div className="absolute inset-0 pointer-events-none mw-grain-purple" />
       </div>
@@ -181,7 +195,7 @@ function FeatureCard({
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 1: Trained on your KPIs — Neural network "Editor Brain"
+// VISUAL 1: Trained on your KPIs — Editor Brain (static values, parallax layers)
 // ════════════════════════════════════════════════════════════════════════════
 const BRAIN_NODES = [
   { id: "roas", label: "ROAS", x: 12, y: 24, value: "4.2x" },
@@ -191,192 +205,219 @@ const BRAIN_NODES = [
   { id: "ctr",  label: "CTR",  x: 88, y: 82, value: "3.4%" },
 ];
 
-function EditorBrainVisual({ active }: { active: boolean }) {
+function EditorBrainVisual({ active, mx, my }: { active: boolean; mx: MotionValue<number>; my: MotionValue<number> }) {
   const reduce = useReducedMotion();
   const W = 400, H = 280;
   const center = { x: W / 2, y: H / 2 - 6 };
   const [hovered, setHovered] = useState<string | null>(null);
 
+  // Layer parallax (small offsets in px). Background slowest, foreground most.
+  const bg = useParallax(mx, my, 4, 3);
+  const mid = useParallax(mx, my, 8, 6);
+  const fg = useParallax(mx, my, 14, 10);
+
+  // Light sweep travels independently of objects
+  const lightX = useTransform(mx, [0, 1], ["35%", "65%"]);
+  const lightY = useTransform(my, [0, 1], ["35%", "65%"]);
+
   return (
-    <div className="absolute inset-0">
-      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="brainGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(168,85,247,0.55)" />
-            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
-          </radialGradient>
-          <linearGradient id="brainCore" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#c084fc" />
-            <stop offset="100%" stopColor="#7c3aed" />
-          </linearGradient>
-        </defs>
-
-        {/* Ambient glow — fade in */}
-        <motion.ellipse
-          cx={center.x}
-          cy={center.y}
-          rx="160"
-          ry="100"
-          fill="url(#brainGlow)"
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={active ? { opacity: 1, scale: 1 } : { opacity: 0 }}
-          transition={{ duration: 1.4, ease: "easeOut" }}
-          style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+    <div className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
+      {/* BACKGROUND LAYER (slowest, deepest) */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ x: bg.tx, y: bg.ty, z: -40, transform: "translateZ(-40px)" }}
+      >
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="brainGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="rgba(168,85,247,0.55)" />
+              <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+            </radialGradient>
+          </defs>
+          <motion.ellipse
+            cx={center.x}
+            cy={center.y}
+            rx="160"
+            ry="100"
+            fill="url(#brainGlow)"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={active ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
+            style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+          />
+        </svg>
+        {/* Soft moving highlight, independent of objects */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none mix-blend-screen"
+          style={{
+            background: useTransform(
+              [lightX, lightY] as never,
+              ([lx, ly]: any) =>
+                `radial-gradient(280px circle at ${lx} ${ly}, rgba(232,213,255,0.10), transparent 65%)`,
+            ),
+          }}
         />
+      </motion.div>
 
-        {/* Connection lines DRAW outward from center */}
+      {/* MID LAYER: connection lines + center hex */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ x: mid.tx, y: mid.ty }}
+      >
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="brainCore" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#c084fc" />
+              <stop offset="100%" stopColor="#7c3aed" />
+            </linearGradient>
+          </defs>
+
+          {BRAIN_NODES.map((n, i) => {
+            const x = (n.x / 100) * W;
+            const y = (n.y / 100) * H;
+            const cx = (x + center.x) / 2;
+            const cy = (y + center.y) / 2 + (i % 2 ? 18 : -18);
+            const d = `M ${center.x},${center.y} Q ${cx},${cy} ${x},${y}`;
+            const isHover = hovered === n.id;
+            const dim = hovered && !isHover;
+            return (
+              <g key={n.id}>
+                <motion.path
+                  d={d}
+                  fill="none"
+                  stroke={isHover ? "rgba(232,213,255,0.85)" : "rgba(168,85,247,0.22)"}
+                  strokeWidth={isHover ? 1.4 : 1}
+                  style={{ opacity: dim ? 0.25 : 1, transition: "stroke 0.3s, stroke-width 0.3s, opacity 0.3s" }}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={active ? { pathLength: 1, opacity: dim ? 0.25 : 1 } : { pathLength: 0, opacity: 0 }}
+                  transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: [0.22, 0.9, 0.3, 1] }}
+                />
+                {active && !reduce && (
+                  <>
+                    <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
+                      <animateMotion dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" path={d} />
+                      <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" />
+                    </circle>
+                  </>
+                )}
+              </g>
+            );
+          })}
+
+          <motion.g
+            style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={active ? { scale: [0, 1.08, 1], opacity: 1 } : { scale: 0, opacity: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 0.9, 0.3, 1] }}
+          >
+            <motion.g
+              animate={reduce ? undefined : { scale: [1, 1.04, 1] }}
+              transition={{ duration: 3.4, ease: "easeInOut", repeat: Infinity }}
+              style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+            >
+              <polygon
+                points={hexPoints(center.x, center.y, 44)}
+                fill="none"
+                stroke="rgba(168,85,247,0.45)"
+                strokeWidth="1"
+                style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
+              />
+              <polygon
+                points={hexPoints(center.x, center.y, 32)}
+                fill="url(#brainCore)"
+                opacity="0.95"
+                style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.8))" }}
+              />
+              <polygon
+                points={hexPoints(center.x, center.y, 18)}
+                fill="none"
+                stroke="rgba(255,255,255,0.5)"
+                strokeWidth="1"
+              />
+            </motion.g>
+          </motion.g>
+
+          {active && !reduce && (
+            <polygon
+              points={hexPoints(center.x, center.y, 32)}
+              fill="none"
+              stroke="rgba(168,85,247,0.6)"
+              strokeWidth="1.5"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="scale"
+                additive="sum"
+                values="1;1.8"
+                dur="2.6s"
+                begin="0.8s"
+                repeatCount="indefinite"
+              />
+              <animate attributeName="opacity" values="0.7;0" dur="2.6s" begin="0.8s" repeatCount="indefinite" />
+            </polygon>
+          )}
+        </svg>
+
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{ marginTop: -6 }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+          transition={{ ...SPRING_OVERSHOOT, delay: 0.25 }}
+        >
+          <Brain className="w-7 h-7 text-white" style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))" }} />
+        </motion.div>
+      </motion.div>
+
+      {/* FOREGROUND LAYER: KPI bubbles (closest, most parallax) */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ x: fg.tx, y: fg.ty }}
+      >
         {BRAIN_NODES.map((n, i) => {
-          const x = (n.x / 100) * W;
-          const y = (n.y / 100) * H;
-          const cx = (x + center.x) / 2;
-          const cy = (y + center.y) / 2 + (i % 2 ? 18 : -18);
-          const d = `M ${center.x},${center.y} Q ${cx},${cy} ${x},${y}`;
           const isHover = hovered === n.id;
           const dim = hovered && !isHover;
           return (
-            <g key={n.id}>
-              <motion.path
-                d={d}
-                fill="none"
-                stroke={isHover ? "rgba(232,213,255,0.85)" : "rgba(168,85,247,0.22)"}
-                strokeWidth={isHover ? 1.4 : 1}
-                style={{ opacity: dim ? 0.25 : 1, transition: "stroke 0.3s, stroke-width 0.3s, opacity 0.3s" }}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={active ? { pathLength: 1, opacity: dim ? 0.25 : 1 } : { pathLength: 0, opacity: 0 }}
-                transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: [0.22, 0.9, 0.3, 1] }}
-              />
-              {/* Particles travel along line — start after line draws */}
-              {active && !reduce && (
-                <>
-                  <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
-                    <animateMotion dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" path={d} />
-                    <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" />
-                  </circle>
-                  <circle r="1.4" fill="#fff" opacity="0.7">
-                    <animateMotion dur={`${3.4 + i * 0.22}s`} begin={`${1.3 + i * 0.12}s`} repeatCount="indefinite" path={d} />
-                  </circle>
-                </>
-              )}
-            </g>
+            <motion.div
+              key={n.id}
+              className="absolute"
+              style={{
+                left: `${n.x}%`,
+                top: `${n.y}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={
+                active
+                  ? { opacity: dim ? 0.55 : 1, scale: 1 }
+                  : { opacity: 0, scale: 0.8 }
+              }
+              transition={{
+                opacity: { duration: 0.4, delay: 0.6 + i * 0.12 },
+                scale: { ...SPRING_OVERSHOOT, delay: 0.6 + i * 0.12 },
+              }}
+              onMouseEnter={() => setHovered(n.id)}
+              onMouseLeave={() => setHovered(null)}
+              whileHover={reduce ? undefined : { y: -4, scale: 1.06 }}
+            >
+              <div
+                className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md cursor-default"
+                style={{
+                  background: "rgba(20,16,32,0.85)",
+                  border: `1px solid ${isHover ? "rgba(232,213,255,0.7)" : "rgba(168,85,247,0.45)"}`,
+                  boxShadow: isHover
+                    ? "0 0 22px rgba(232,213,255,0.55)"
+                    : "0 0 14px rgba(168,85,247,0.35)",
+                  transition: "box-shadow 0.3s, border-color 0.3s",
+                }}
+              >
+                <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
+                <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
+              </div>
+            </motion.div>
           );
         })}
-
-        {/* Center hex — soft pulse */}
-        <motion.g
-          style={{ transformOrigin: `${center.x}px ${center.y}px` }}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={active ? { scale: [0, 1.08, 1], opacity: 1 } : { scale: 0, opacity: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 0.9, 0.3, 1] }}
-        >
-          <motion.g
-            animate={reduce ? undefined : { scale: [1, 1.04, 1] }}
-            transition={{ duration: 3.4, ease: "easeInOut", repeat: Infinity }}
-            style={{ transformOrigin: `${center.x}px ${center.y}px` }}
-          >
-            <polygon
-              points={hexPoints(center.x, center.y, 44)}
-              fill="none"
-              stroke="rgba(168,85,247,0.45)"
-              strokeWidth="1"
-              style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
-            />
-            <polygon
-              points={hexPoints(center.x, center.y, 32)}
-              fill="url(#brainCore)"
-              opacity="0.95"
-              style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.8))" }}
-            />
-            <polygon
-              points={hexPoints(center.x, center.y, 18)}
-              fill="none"
-              stroke="rgba(255,255,255,0.5)"
-              strokeWidth="1"
-            />
-          </motion.g>
-        </motion.g>
-
-        {/* Pulse ring (only after settle) */}
-        {active && !reduce && (
-          <polygon
-            points={hexPoints(center.x, center.y, 32)}
-            fill="none"
-            stroke="rgba(168,85,247,0.6)"
-            strokeWidth="1.5"
-          >
-            <animateTransform
-              attributeName="transform"
-              type="scale"
-              additive="sum"
-              values="1;1.8"
-              dur="2.6s"
-              begin="0.8s"
-              repeatCount="indefinite"
-            />
-            <animate attributeName="opacity" values="0.7;0" dur="2.6s" begin="0.8s" repeatCount="indefinite" />
-          </polygon>
-        )}
-      </svg>
-
-      {/* Center brain icon */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ marginTop: -6 }}
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
-        transition={{ ...SPRING_OVERSHOOT, delay: 0.25 }}
-      >
-        <Brain className="w-7 h-7 text-white" style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))" }} />
       </motion.div>
-
-      {/* KPI bubbles — staggered in, idle float, lift on hover */}
-      {BRAIN_NODES.map((n, i) => {
-        const isHover = hovered === n.id;
-        const dim = hovered && !isHover;
-        return (
-          <motion.div
-            key={n.id}
-            className="absolute"
-            style={{
-              left: `${n.x}%`,
-              top: `${n.y}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={
-              active
-                ? {
-                    opacity: dim ? 0.55 : 1,
-                    scale: 1,
-                    y: reduce ? 0 : [0, -3, 0, 3, 0],
-                  }
-                : { opacity: 0, scale: 0.8 }
-            }
-            transition={{
-              opacity: { duration: 0.4, delay: 0.6 + i * 0.12 },
-              scale: { ...SPRING_OVERSHOOT, delay: 0.6 + i * 0.12 },
-              y: { duration: 5 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: 1.2 + i * 0.2 },
-            }}
-            onMouseEnter={() => setHovered(n.id)}
-            onMouseLeave={() => setHovered(null)}
-            whileHover={reduce ? undefined : { y: -4, scale: 1.06 }}
-          >
-            <div
-              className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md cursor-default"
-              style={{
-                background: "rgba(20,16,32,0.85)",
-                border: `1px solid ${isHover ? "rgba(232,213,255,0.7)" : "rgba(168,85,247,0.45)"}`,
-                boxShadow: isHover
-                  ? "0 0 22px rgba(232,213,255,0.55)"
-                  : "0 0 14px rgba(168,85,247,0.35)",
-                transition: "box-shadow 0.3s, border-color 0.3s",
-              }}
-            >
-              <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
-              <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
-            </div>
-          </motion.div>
-        );
-      })}
     </div>
   );
 }
@@ -391,7 +432,7 @@ function hexPoints(cx: number, cy: number, r: number): string {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 2: Editor Delivery Tracker — bars grow with stagger + count-up
+// VISUAL 2: Editor Delivery Tracker — STATIC, predefined values, one-shot
 // ════════════════════════════════════════════════════════════════════════════
 const DELIVERY_EDITORS = [
   { name: "Liam",  color: "#a855f7" },
@@ -400,312 +441,349 @@ const DELIVERY_EDITORS = [
   { name: "Iris",  color: "#d8b4fe" },
 ];
 
-const DELIVERY_WEEKS = 6;
+// Hand-crafted, deterministic data per editor (delivered, approved) for 6 weeks.
+// All values are realistic and final — they do NOT change after animation.
+const DELIVERY_DATA: Record<string, { delivered: number; approved: number }[]> = {
+  Liam:  [{ delivered: 8, approved: 7 }, { delivered: 9, approved: 7 }, { delivered: 7, approved: 6 }, { delivered: 10, approved: 8 }, { delivered: 9, approved: 8 }, { delivered: 8, approved: 7 }],
+  Sofia: [{ delivered: 7, approved: 6 }, { delivered: 8, approved: 7 }, { delivered: 9, approved: 8 }, { delivered: 8, approved: 7 }, { delivered: 10, approved: 9 }, { delivered: 9, approved: 8 }],
+  Noah:  [{ delivered: 6, approved: 5 }, { delivered: 7, approved: 6 }, { delivered: 8, approved: 6 }, { delivered: 9, approved: 7 }, { delivered: 8, approved: 7 }, { delivered: 9, approved: 8 }],
+  Iris:  [{ delivered: 9, approved: 8 }, { delivered: 10, approved: 9 }, { delivered: 9, approved: 8 }, { delivered: 10, approved: 9 }, { delivered: 9, approved: 8 }, { delivered: 10, approved: 9 }],
+};
 
-function EditorDeliveryTrackerVisual({ active }: { active: boolean }) {
+function EditorDeliveryTrackerVisual({ active, mx, my }: { active: boolean; mx: MotionValue<number>; my: MotionValue<number> }) {
   const reduce = useReducedMotion();
   const [activeEditor, setActiveEditor] = useState(0);
-  const [animKey, setAnimKey] = useState(0);
   const [hoverBar, setHoverBar] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!active) return;
-    const t = setInterval(() => {
-      setActiveEditor((x) => (x + 1) % DELIVERY_EDITORS.length);
-      setAnimKey((k) => k + 1);
-    }, 3200);
-    return () => clearInterval(t);
-  }, [active]);
-
-  const data = useMemo(() => {
-    const out: Record<string, { delivered: number; approved: number }[]> = {};
-    DELIVERY_EDITORS.forEach((e) => {
-      let seed = e.name.charCodeAt(0) * 11 + e.name.charCodeAt(1) * 3;
-      const rand = () => {
-        seed = (seed * 9301 + 49297) % 233280;
-        return seed / 233280;
-      };
-      const arr = [];
-      for (let i = 0; i < DELIVERY_WEEKS; i++) {
-        const delivered = 6 + Math.floor(rand() * 5);
-        const approved = Math.max(4, delivered - Math.floor(rand() * 3));
-        arr.push({ delivered, approved: Math.min(approved, delivered) });
-      }
-      out[e.name] = arr;
-    });
-    return out;
-  }, []);
+  // Parallax layers
+  const bg = useParallax(mx, my, 4, 3);
+  const mid = useParallax(mx, my, 8, 6);
+  const fg = useParallax(mx, my, 14, 10);
+  const lightX = useTransform(mx, [0, 1], ["30%", "70%"]);
 
   const W = 400, H = 280;
   const PAD_X = 28, PAD_TOP = 44, PAD_BOTTOM = 56;
   const innerW = W - PAD_X * 2;
   const innerH = H - PAD_TOP - PAD_BOTTOM;
-  const groupW = innerW / DELIVERY_WEEKS;
+  const groupW = innerW / 6;
   const barW = (groupW - 8) / 2;
   const maxVal = 12;
 
   const activeName = DELIVERY_EDITORS[activeEditor].name;
   const activeColor = DELIVERY_EDITORS[activeEditor].color;
-  const activeData = data[activeName];
+  const activeData = DELIVERY_DATA[activeName];
   const totalDelivered = activeData.reduce((s, d) => s + d.delivered, 0);
   const totalApproved = activeData.reduce((s, d) => s + d.approved, 0);
   const approvalRate = Math.round((totalApproved / totalDelivered) * 100);
 
-  // Count-up approval %
-  const approvalDisplay = useCountUp(approvalRate, active, 1.0, 0);
+  // ONE-SHOT count-up: animates only once on first activation; switching editors does not re-animate.
+  const approvalDisplay = useCountUpOnce(approvalRate, active, 1.1, 0);
+  // Track whether bars have completed entrance (no re-entry on editor switch)
+  const [barsRevealed, setBarsRevealed] = useState(false);
+  useEffect(() => {
+    if (active && !barsRevealed) {
+      const t = setTimeout(() => setBarsRevealed(true), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [active, barsRevealed]);
 
   return (
-    <div className="absolute inset-0 px-3 pt-2">
-      {/* Top header */}
-      <div className="absolute left-5 top-3 right-5 flex items-center justify-between z-10">
-        <div className="flex items-center gap-2">
-          <motion.div
-            className="w-2 h-2 rounded-full"
-            style={{ background: activeColor, boxShadow: `0 0 8px ${activeColor}` }}
-            animate={reduce ? undefined : { opacity: [1, 0.4, 1], scale: [1, 0.85, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <AnimatePresence mode="wait">
+    <div className="absolute inset-0 px-3 pt-2" style={{ transformStyle: "preserve-3d" }}>
+      {/* BACKGROUND: gridlines + ambient sweep */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ x: bg.tx, y: bg.ty, transform: "translateZ(-30px)" }}
+      >
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+          {[0, 4, 8, 12].map((v, gi) => {
+            const y = PAD_TOP + innerH - (v / maxVal) * innerH;
+            return (
+              <motion.g
+                key={v}
+                initial={{ opacity: 0 }}
+                animate={active ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 + gi * 0.04 }}
+              >
+                <line
+                  x1={PAD_X}
+                  x2={W - PAD_X}
+                  y1={y}
+                  y2={y}
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth="1"
+                  strokeDasharray={v === 0 ? "0" : "2 4"}
+                />
+                <text
+                  x={PAD_X - 6}
+                  y={y + 3}
+                  textAnchor="end"
+                  fontSize="8"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontWeight="600"
+                  fill="rgba(255,255,255,0.30)"
+                >
+                  {v}
+                </text>
+              </motion.g>
+            );
+          })}
+        </svg>
+        {/* Soft cursor-follow highlight (independent of objects) */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none mix-blend-screen"
+          style={{
+            background: useTransform(
+              lightX,
+              (lx: any) => `radial-gradient(260px circle at ${lx} 60%, rgba(232,213,255,0.10), transparent 65%)`,
+            ),
+          }}
+        />
+      </motion.div>
+
+      {/* MID: bars */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ x: mid.tx, y: mid.ty }}
+      >
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id={`delGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={activeColor} stopOpacity="0.45" />
+              <stop offset="100%" stopColor={activeColor} stopOpacity="0.08" />
+            </linearGradient>
+            <linearGradient id={`appGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={activeColor} stopOpacity="1" />
+              <stop offset="100%" stopColor={activeColor} stopOpacity="0.55" />
+            </linearGradient>
+            <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={activeColor} stopOpacity="0" />
+              <stop offset="50%" stopColor="#fff" stopOpacity="0.45" />
+              <stop offset="100%" stopColor={activeColor} stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          {activeData.map((d, i) => {
+            const gx = PAD_X + i * groupW + 4;
+            const dH = (d.delivered / maxVal) * innerH;
+            const aH = (d.approved / maxVal) * innerH;
+            const dY = PAD_TOP + innerH - dH;
+            const aY = PAD_TOP + innerH - aH;
+            const isHover = hoverBar === i;
+            const hoverScale = isHover ? 1.06 : 1;
+            // Bars animate from 0 → final ONCE on first reveal. On editor switch, they stay at scale=1 and just re-render heights instantly.
+            const initial = barsRevealed ? { scaleY: 1 } : { scaleY: 0 };
+            const animate = active ? { scaleY: hoverScale } : { scaleY: 0 };
+            const transition = barsRevealed
+              ? { type: "tween" as const, duration: 0.25 }
+              : { ...SPRING_OVERSHOOT, delay: 0.25 + i * 0.08 };
+            const transitionApp = barsRevealed
+              ? { type: "tween" as const, duration: 0.25 }
+              : { ...SPRING_OVERSHOOT, delay: 0.32 + i * 0.08 };
+            return (
+              <g
+                key={i}
+                onMouseEnter={() => setHoverBar(i)}
+                onMouseLeave={() => setHoverBar(null)}
+                style={{ cursor: "pointer" }}
+              >
+                <motion.rect
+                  x={gx}
+                  y={dY}
+                  width={barW}
+                  height={dH}
+                  rx="3"
+                  fill={`url(#delGrad-${activeEditor})`}
+                  stroke={activeColor}
+                  strokeOpacity="0.35"
+                  strokeWidth="1"
+                  initial={initial}
+                  animate={animate}
+                  transition={transition}
+                  style={{
+                    transformOrigin: `${gx + barW / 2}px ${PAD_TOP + innerH}px`,
+                    filter: `drop-shadow(0 0 ${isHover ? 12 : 6}px ${activeColor}${isHover ? "aa" : "55"})`,
+                  }}
+                />
+                <motion.rect
+                  x={gx + barW + 4}
+                  y={aY}
+                  width={barW}
+                  height={aH}
+                  rx="3"
+                  fill={`url(#appGrad-${activeEditor})`}
+                  initial={initial}
+                  animate={animate}
+                  transition={transitionApp}
+                  style={{
+                    transformOrigin: `${gx + barW + 4 + barW / 2}px ${PAD_TOP + innerH}px`,
+                    filter: `drop-shadow(0 0 ${isHover ? 14 : 8}px ${activeColor})`,
+                  }}
+                />
+                {/* Approved label appears AFTER bars on initial reveal; instant on editor switch */}
+                <motion.text
+                  x={gx + barW + 4 + barW / 2}
+                  y={aY - 4}
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontWeight="700"
+                  fill="#fff"
+                  initial={barsRevealed ? { opacity: 1 } : { opacity: 0 }}
+                  animate={active ? { opacity: 1 } : { opacity: 0 }}
+                  transition={barsRevealed ? { duration: 0.2 } : { duration: 0.4, delay: 0.85 + i * 0.06 }}
+                >
+                  {d.approved}
+                </motion.text>
+                <text
+                  x={gx + barW + 2}
+                  y={H - PAD_BOTTOM + 14}
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontWeight="600"
+                  fill={isHover ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.40)"}
+                  style={{ transition: "fill 0.2s" }}
+                >
+                  W{i + 1}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* ONE-SHOT light sweep — only on initial reveal */}
+          {active && !reduce && !barsRevealed && (
+            <motion.rect
+              x={PAD_X}
+              y={PAD_TOP}
+              width="60"
+              height={innerH}
+              fill="url(#sweepGrad)"
+              initial={{ x: PAD_X - 80, opacity: 0 }}
+              animate={{ x: W - PAD_X, opacity: [0, 0.5, 0] }}
+              transition={{ duration: 1.4, delay: 1.0, ease: "easeInOut" }}
+              style={{ mixBlendMode: "screen" }}
+            />
+          )}
+        </svg>
+      </motion.div>
+
+      {/* FOREGROUND: header + pills (closest, most parallax) */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ x: fg.tx, y: fg.ty }}
+      >
+        <div className="absolute left-5 top-3 right-5 flex items-center justify-between z-10 pointer-events-auto">
+          <div className="flex items-center gap-2">
             <motion.div
-              key={activeName}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.3 }}
-              className="text-[11px] uppercase tracking-wider font-semibold text-white"
-            >
-              {activeName}
-            </motion.div>
-          </AnimatePresence>
-          <div className="text-[10px] font-medium text-white/40">· last 6 weeks</div>
-        </div>
-        <div className="flex items-baseline gap-1">
-          <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Approval</span>
-          <span
-            className="text-[14px] font-bold tabular-nums"
-            style={{ color: activeColor, textShadow: `0 0 12px ${activeColor}99` }}
-          >
-            {approvalDisplay}%
-          </span>
-        </div>
-      </div>
-
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id={`delGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={activeColor} stopOpacity="0.45" />
-            <stop offset="100%" stopColor={activeColor} stopOpacity="0.08" />
-          </linearGradient>
-          <linearGradient id={`appGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={activeColor} stopOpacity="1" />
-            <stop offset="100%" stopColor={activeColor} stopOpacity="0.55" />
-          </linearGradient>
-        </defs>
-
-        {/* Y-axis gridlines */}
-        {[0, 4, 8, 12].map((v, gi) => {
-          const y = PAD_TOP + innerH - (v / maxVal) * innerH;
-          return (
-            <motion.g
-              key={v}
-              initial={{ opacity: 0 }}
-              animate={active ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 + gi * 0.04 }}
-            >
-              <line
-                x1={PAD_X}
-                x2={W - PAD_X}
-                y1={y}
-                y2={y}
-                stroke="rgba(255,255,255,0.06)"
-                strokeWidth="1"
-                strokeDasharray={v === 0 ? "0" : "2 4"}
-              />
-              <text
-                x={PAD_X - 6}
-                y={y + 3}
-                textAnchor="end"
-                fontSize="8"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="600"
-                fill="rgba(255,255,255,0.30)"
+              className="w-2 h-2 rounded-full"
+              style={{ background: activeColor, boxShadow: `0 0 8px ${activeColor}` }}
+              animate={reduce ? undefined : { opacity: [1, 0.4, 1], scale: [1, 0.85, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeName}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.3 }}
+                className="text-[11px] uppercase tracking-wider font-semibold text-white"
               >
-                {v}
-              </text>
-            </motion.g>
-          );
-        })}
-
-        {/* Bars per week — spring overshoot, stagger left → right */}
-        {activeData.map((d, i) => {
-          const gx = PAD_X + i * groupW + 4;
-          const dH = (d.delivered / maxVal) * innerH;
-          const aH = (d.approved / maxVal) * innerH;
-          const dY = PAD_TOP + innerH - dH;
-          const aY = PAD_TOP + innerH - aH;
-          const isHover = hoverBar === i;
-          const hoverScale = isHover ? 1.06 : 1;
-          return (
-            <g
-              key={`${animKey}-${i}`}
-              onMouseEnter={() => setHoverBar(i)}
-              onMouseLeave={() => setHoverBar(null)}
-              style={{ cursor: "pointer" }}
+                {activeName}
+              </motion.div>
+            </AnimatePresence>
+            <div className="text-[10px] font-medium text-white/40">· last 6 weeks</div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Approval</span>
+            <span
+              className="text-[14px] font-bold tabular-nums"
+              style={{ color: activeColor, textShadow: `0 0 12px ${activeColor}99` }}
             >
-              {/* Delivered (back) */}
-              <motion.rect
-                x={gx}
-                y={dY}
-                width={barW}
-                height={dH}
-                rx="3"
-                fill={`url(#delGrad-${activeEditor})`}
-                stroke={activeColor}
-                strokeOpacity="0.35"
-                strokeWidth="1"
-                initial={{ scaleY: 0, opacity: 0.4 }}
-                animate={active ? { scaleY: hoverScale, opacity: 1 } : { scaleY: 0, opacity: 0.4 }}
-                transition={{ ...SPRING_OVERSHOOT, delay: 0.25 + i * 0.08 }}
+              {/* On editor switch, shows new value instantly (no re-animation) since count-up is one-shot */}
+              {barsRevealed ? approvalRate : approvalDisplay}%
+            </span>
+          </div>
+        </div>
+
+        <div className="absolute left-4 right-4 bottom-3 flex items-center justify-between gap-2 pointer-events-auto">
+          <div className="flex gap-1.5">
+            {DELIVERY_EDITORS.map((e, i) => (
+              <button
+                key={e.name}
+                onClick={() => setActiveEditor(i)}
+                className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-2 py-1 rounded-full"
                 style={{
-                  transformOrigin: `${gx + barW / 2}px ${PAD_TOP + innerH}px`,
-                  filter: `drop-shadow(0 0 ${isHover ? 12 : 6}px ${activeColor}${isHover ? "aa" : "55"})`,
+                  color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
+                  background: i === activeEditor ? `${e.color}25` : "rgba(255,255,255,0.03)",
+                  border: i === activeEditor ? `1px solid ${e.color}66` : "1px solid rgba(255,255,255,0.06)",
+                  boxShadow: i === activeEditor ? `0 0 12px -2px ${e.color}` : "none",
                 }}
-              />
-              {/* Approved (front) */}
-              <motion.rect
-                x={gx + barW + 4}
-                y={aY}
-                width={barW}
-                height={aH}
-                rx="3"
-                fill={`url(#appGrad-${activeEditor})`}
-                initial={{ scaleY: 0 }}
-                animate={active ? { scaleY: hoverScale } : { scaleY: 0 }}
-                transition={{ ...SPRING_OVERSHOOT, delay: 0.32 + i * 0.08 }}
-                style={{
-                  transformOrigin: `${gx + barW + 4 + barW / 2}px ${PAD_TOP + innerH}px`,
-                  filter: `drop-shadow(0 0 ${isHover ? 14 : 8}px ${activeColor})`,
-                }}
-              />
-              {/* Approved value label — appears AFTER bars */}
-              <motion.text
-                x={gx + barW + 4 + barW / 2}
-                y={aY - 4}
-                textAnchor="middle"
-                fontSize="9"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="700"
-                fill="#fff"
-                initial={{ opacity: 0, y: aY }}
-                animate={active ? { opacity: 1, y: aY - 4 } : { opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.85 + i * 0.06 }}
               >
-                {d.approved}
-              </motion.text>
-              {/* Week label */}
-              <text
-                x={gx + barW + 2}
-                y={H - PAD_BOTTOM + 14}
-                textAnchor="middle"
-                fontSize="9"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="600"
-                fill={isHover ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.40)"}
-                style={{ transition: "fill 0.2s" }}
-              >
-                W{i + 1}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Vertical light sweep — single pass after bars */}
-        {active && !reduce && (
-          <motion.rect
-            key={`sweep-${animKey}`}
-            x={PAD_X}
-            y={PAD_TOP}
-            width="60"
-            height={innerH}
-            fill="url(#sweepGrad)"
-            initial={{ x: PAD_X - 80, opacity: 0 }}
-            animate={{ x: W - PAD_X, opacity: [0, 0.5, 0] }}
-            transition={{ duration: 1.4, delay: 1.0, ease: "easeInOut" }}
-            style={{ mixBlendMode: "screen" }}
-          />
-        )}
-        <defs>
-          <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={activeColor} stopOpacity="0" />
-            <stop offset="50%" stopColor="#fff" stopOpacity="0.45" />
-            <stop offset="100%" stopColor={activeColor} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Editor pills + legend */}
-      <div className="absolute left-4 right-4 bottom-3 flex items-center justify-between gap-2">
-        <div className="flex gap-1.5">
-          {DELIVERY_EDITORS.map((e, i) => (
-            <button
-              key={e.name}
-              onClick={() => { setActiveEditor(i); setAnimKey((k) => k + 1); }}
-              className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-2 py-1 rounded-full"
-              style={{
-                color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
-                background: i === activeEditor ? `${e.color}25` : "rgba(255,255,255,0.03)",
-                border: i === activeEditor ? `1px solid ${e.color}66` : "1px solid rgba(255,255,255,0.06)",
-                boxShadow: i === activeEditor ? `0 0 12px -2px ${e.color}` : "none",
-              }}
-            >
-              <motion.span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: e.color, boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none" }}
-                animate={i === activeEditor && !reduce ? { scale: [1, 1.3, 1] } : { scale: 1 }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              />
-              {e.name}
-            </button>
-          ))}
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: e.color, boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none" }}
+                />
+                {e.name}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}40`, border: `1px solid ${activeColor}55` }} />
+              Delivered
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm" style={{ background: activeColor }} />
+              Approved
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}40`, border: `1px solid ${activeColor}55` }} />
-            Delivered
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm" style={{ background: activeColor }} />
-            Approved
-          </span>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 3: KPI Dashboard — line draws, area fades after, dot travels, count-ups
+// VISUAL 3: KPI Dashboard — STATIC predefined series, one-shot animations
 // ════════════════════════════════════════════════════════════════════════════
 const KPI_DEFS = [
-  { key: "roas", label: "ROAS", unit: "x", color: "#c084fc", base: 3.4, amp: 0.28, range: [1.8, 5.2] as [number, number] },
-  { key: "cpa",  label: "CPA",  unit: "€", color: "#a855f7", base: 22,  amp: 1.6,  range: [12, 38]   as [number, number] },
-  { key: "ctr",  label: "CTR",  unit: "%", color: "#d8b4fe", base: 3.2, amp: 0.32, range: [1.5, 5.5] as [number, number] },
-  { key: "hook", label: "Hook", unit: "%", color: "#e9d5ff", base: 38,  amp: 3.5,  range: [25, 55]   as [number, number] },
-  { key: "hold", label: "Hold", unit: "%", color: "#7c3aed", base: 26,  amp: 2.6,  range: [15, 38]   as [number, number] },
+  { key: "roas", label: "ROAS", unit: "x", color: "#c084fc", final: 4.18, range: [1.8, 5.2] as [number, number] },
+  { key: "cpa",  label: "CPA",  unit: "€", color: "#a855f7", final: 19,    range: [12, 38]   as [number, number] },
+  { key: "ctr",  label: "CTR",  unit: "%", color: "#d8b4fe", final: 3.42,  range: [1.5, 5.5] as [number, number] },
+  { key: "hook", label: "Hook", unit: "%", color: "#e9d5ff", final: 42,    range: [25, 55]   as [number, number] },
+  { key: "hold", label: "Hold", unit: "%", color: "#7c3aed", final: 31,    range: [15, 38]   as [number, number] },
 ];
 
 const POINTS = 56;
-const TICK_MS = 850;
-
-function smoothStep(prev: number, target: number, k = 0.4) {
-  return prev + (target - prev) * k;
-}
 
 function fmtKpi(v: number, key: string) {
   if (key === "roas") return v.toFixed(2);
   if (key === "cpa") return v.toFixed(0);
   if (key === "ctr") return v.toFixed(2);
   return v.toFixed(1);
+}
+
+// Deterministic seeded series builder — produces a stable, pleasant curve ending at the "final" value.
+function buildStaticSeries(seed: number, range: [number, number], finalVal: number, points: number): number[] {
+  let s = seed;
+  const rand = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  const arr: number[] = [];
+  let v = (range[0] + range[1]) / 2;
+  for (let i = 0; i < points - 1; i++) {
+    const t = i / (points - 1);
+    // Bias gently toward the final value over time
+    const target = (range[0] + range[1]) / 2 * (1 - t) + finalVal * t;
+    v += (target - v) * 0.18 + (rand() - 0.5) * (range[1] - range[0]) * 0.05;
+    v = Math.max(range[0] + 0.5, Math.min(range[1] - 0.5, v));
+    arr.push((v - range[0]) / (range[1] - range[0]));
+  }
+  // Force last point to exactly the final value
+  arr.push((finalVal - range[0]) / (range[1] - range[0]));
+  return arr;
 }
 
 function buildSparkPath(values: number[], w: number, h: number, padX = 2, padY = 4): string {
@@ -733,37 +811,21 @@ function buildSparkArea(values: number[], w: number, h: number, padX = 2, padY =
   return `${line} L ${(w - padX).toFixed(2)},${(h - padY).toFixed(2)} L ${padX.toFixed(2)},${(h - padY).toFixed(2)} Z`;
 }
 
-// Mini KPI tile with count-up + delta + sparkline
 function MiniKpiTile({
   def,
   values,
-  latest,
-  prev,
   active,
   index,
 }: {
   def: typeof KPI_DEFS[number];
   values: number[];
-  latest: number;
-  prev: number;
   active: boolean;
   index: number;
 }) {
   const w = 220, h = 64;
-  const delta = latest - prev;
-  const goodDirection = def.key === "cpa" ? delta < 0 : delta > 0;
-  const deltaPct = prev !== 0 ? (delta / prev) * 100 : 0;
-  const arrow = delta > 0 ? "▲" : delta < 0 ? "▼" : "·";
-  const deltaColor = goodDirection ? "#a3e635" : "rgba(255,255,255,0.45)";
-
-  // Count-up to current latest (one-shot on first activate)
-  const [hasInit, setHasInit] = useState(false);
-  useEffect(() => {
-    if (active) setHasInit(true);
-  }, [active]);
   const decimals = def.key === "cpa" ? 0 : def.key === "roas" || def.key === "ctr" ? 2 : 1;
-  const display = useCountUp(latest, active && !hasInit ? false : active, 1.1, decimals);
-  const showDelta = hasInit;
+  // ONE-SHOT count-up
+  const display = useCountUpOnce(def.final, active, 1.2, decimals);
 
   return (
     <motion.div
@@ -791,7 +853,6 @@ function MiniKpiTile({
           initial={{ opacity: 0 }}
           animate={active ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
-          style={{ transition: "d 0.85s linear" }}
         />
         <motion.path
           d={buildSparkPath(values, w, h, 2, 6)}
@@ -803,10 +864,7 @@ function MiniKpiTile({
           initial={{ pathLength: 0 }}
           animate={active ? { pathLength: 1 } : { pathLength: 0 }}
           transition={{ duration: 1.0, delay: 0.8 + index * 0.1, ease: [0.22, 0.9, 0.3, 1] }}
-          style={{
-            filter: `drop-shadow(0 0 4px ${def.color}cc)`,
-            transition: "d 0.85s linear",
-          }}
+          style={{ filter: `drop-shadow(0 0 4px ${def.color}cc)` }}
         />
       </svg>
 
@@ -825,83 +883,29 @@ function MiniKpiTile({
             {def.unit !== "€" && <span className="text-white/45 text-[10px] ml-0.5">{def.unit}</span>}
           </div>
         </div>
-        <AnimatePresence>
-          {showDelta && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35, delay: 0.1 }}
-              className="text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
-              style={{
-                color: deltaColor,
-                background: goodDirection ? "rgba(163,230,53,0.10)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${goodDirection ? "rgba(163,230,53,0.25)" : "rgba(255,255,255,0.06)"}`,
-              }}
-            >
-              {arrow} {Math.abs(deltaPct).toFixed(1)}%
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.div>
   );
 }
 
-function KpiDashboardVisual({ active }: { active: boolean }) {
+function KpiDashboardVisual({ active, mx, my }: { active: boolean; mx: MotionValue<number>; my: MotionValue<number> }) {
   const reduce = useReducedMotion();
-  const [series, setSeries] = useState<Record<string, number[]>>(() => {
-    const init: Record<string, number[]> = {};
-    KPI_DEFS.forEach((m) => {
-      const arr: number[] = [];
-      let v = m.base;
-      for (let i = 0; i < POINTS; i++) {
-        v += (Math.random() - 0.5) * m.amp;
-        v = Math.max(m.range[0], Math.min(m.range[1], v));
-        arr.push((v - m.range[0]) / (m.range[1] - m.range[0]));
-      }
-      init[m.key] = arr;
-    });
-    return init;
-  });
-  const [latest, setLatest] = useState<Record<string, number>>(() => {
-    const o: Record<string, number> = {};
-    KPI_DEFS.forEach((m) => (o[m.key] = m.base));
-    return o;
-  });
-  const [prev, setPrev] = useState<Record<string, number>>(() => {
-    const o: Record<string, number> = {};
-    KPI_DEFS.forEach((m) => (o[m.key] = m.base));
-    return o;
-  });
 
-  useEffect(() => {
-    if (!active) return;
-    const t = setInterval(() => {
-      setSeries((curr) => {
-        const next: Record<string, number[]> = {};
-        const newLatest: Record<string, number> = {};
-        const newPrev: Record<string, number> = {};
-        KPI_DEFS.forEach((m) => {
-          const arr = curr[m.key];
-          const last = arr[arr.length - 1];
-          const before = arr[arr.length - 2] ?? last;
-          const baseNorm = (m.base - m.range[0]) / (m.range[1] - m.range[0]);
-          const drift = (baseNorm - last) * 0.08;
-          const target = last + drift + (Math.random() - 0.5) * 0.18;
-          const clamped = Math.max(0.04, Math.min(0.96, target));
-          const smoothed = smoothStep(last, clamped, 0.6);
-          next[m.key] = [...arr.slice(1), smoothed];
-          newLatest[m.key] = m.range[0] + smoothed * (m.range[1] - m.range[0]);
-          newPrev[m.key] = m.range[0] + before * (m.range[1] - m.range[0]);
-        });
-        setLatest(newLatest);
-        setPrev(newPrev);
-        return next;
-      });
-    }, TICK_MS);
-    return () => clearInterval(t);
-  }, [active]);
+  // Build static, deterministic series ONCE per definition. They never change.
+  const allSeries = useMemo(() => {
+    const o: Record<string, number[]> = {};
+    KPI_DEFS.forEach((m, idx) => {
+      o[m.key] = buildStaticSeries(13 + idx * 41, m.range, m.final, POINTS);
+    });
+    return o;
+  }, []);
+
+  // Parallax layers
+  const bg = useParallax(mx, my, 4, 3);
+  const mid = useParallax(mx, my, 8, 6);
+  const fg = useParallax(mx, my, 14, 10);
+  const lightX = useTransform(mx, [0, 1], ["30%", "70%"]);
+  const lightY = useTransform(my, [0, 1], ["30%", "70%"]);
 
   const roas = KPI_DEFS[0];
   const others = KPI_DEFS.slice(1);
@@ -911,8 +915,7 @@ function KpiDashboardVisual({ active }: { active: boolean }) {
   const innerW = FW - PAD_L - PAD_R;
   const innerH = FH - PAD_T - PAD_B;
 
-  const roasValues = series[roas.key];
-  const roasLatest = latest[roas.key];
+  const roasValues = allSeries[roas.key];
   const roasMin = roas.range[0], roasMax = roas.range[1];
 
   function buildFeaturedLine(values: number[]): string {
@@ -940,17 +943,18 @@ function KpiDashboardVisual({ active }: { active: boolean }) {
   const dotX = PAD_L + innerW;
   const dotY = PAD_T + (1 - lastNorm) * innerH;
 
-  // Count-up for ROAS headline
-  const roasDisplay = useCountUp(roasLatest, active, 1.4, 2);
+  // ONE-SHOT count-up for ROAS headline
+  const roasDisplay = useCountUpOnce(roas.final, active, 1.4, 2);
 
   return (
-    <div className="absolute inset-0 px-5 pt-2 pb-3 flex flex-col">
-      {/* Top header */}
+    <div className="absolute inset-0 px-5 pt-2 pb-3 flex flex-col" style={{ transformStyle: "preserve-3d" }}>
+      {/* FOREGROUND header (most parallax) */}
       <motion.div
         className="flex items-center justify-between mb-2 z-10"
         initial={{ opacity: 0, y: -6 }}
         animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
         transition={{ duration: 0.5, delay: 0.1 }}
+        style={{ x: fg.tx, y: fg.ty }}
       >
         <div className="flex items-center gap-2">
           <Activity className="w-3.5 h-3.5 text-white/70" />
@@ -971,7 +975,7 @@ function KpiDashboardVisual({ active }: { active: boolean }) {
       </motion.div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-3 min-h-0">
-        {/* Featured ROAS */}
+        {/* Featured ROAS — internal layered parallax */}
         <motion.div
           className="relative rounded-2xl overflow-hidden"
           initial={{ opacity: 0, x: -16, scale: 0.97 }}
@@ -981,10 +985,123 @@ function KpiDashboardVisual({ active }: { active: boolean }) {
             background: "linear-gradient(180deg, rgba(28,20,46,0.7) 0%, rgba(14,10,26,0.7) 100%)",
             border: "1px solid rgba(168,85,247,0.22)",
             boxShadow: "inset 0 0 40px rgba(168,85,247,0.08)",
+            transformStyle: "preserve-3d",
           }}
         >
-          {/* Header inside featured */}
-          <div className="absolute left-3 top-2.5 right-3 flex items-end justify-between z-10">
+          {/* BG: gridlines + ambient highlight */}
+          <motion.div className="absolute inset-0" style={{ x: bg.tx, y: bg.ty, transform: "translateZ(-30px)" }}>
+            <svg viewBox={`0 0 ${FW} ${FH}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+              {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
+                const y = PAD_T + p * innerH;
+                const v = roasMin + (1 - p) * (roasMax - roasMin);
+                return (
+                  <motion.g
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={active ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 + i * 0.04 }}
+                  >
+                    <line
+                      x1={PAD_L}
+                      x2={FW - PAD_R}
+                      y1={y}
+                      y2={y}
+                      stroke="rgba(255,255,255,0.05)"
+                      strokeWidth="1"
+                      strokeDasharray={p === 1 ? "0" : "2 5"}
+                    />
+                    <text
+                      x={PAD_L - 6}
+                      y={y + 3}
+                      textAnchor="end"
+                      fontSize="8"
+                      fontFamily="ui-sans-serif, system-ui, sans-serif"
+                      fontWeight="600"
+                      fill="rgba(255,255,255,0.30)"
+                    >
+                      {v.toFixed(1)}x
+                    </text>
+                  </motion.g>
+                );
+              })}
+            </svg>
+            <motion.div
+              className="absolute inset-0 pointer-events-none mix-blend-screen"
+              style={{
+                background: useTransform(
+                  [lightX, lightY] as never,
+                  ([lx, ly]: any) =>
+                    `radial-gradient(320px circle at ${lx} ${ly}, rgba(232,213,255,0.10), transparent 65%)`,
+                ),
+              }}
+            />
+          </motion.div>
+
+          {/* MID: line + area */}
+          <motion.div className="absolute inset-0" style={{ x: mid.tx, y: mid.ty }}>
+            <svg viewBox={`0 0 ${FW} ${FH}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="featRoasArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor={roas.color} stopOpacity="0.45" />
+                  <stop offset="100%" stopColor={roas.color} stopOpacity="0" />
+                </linearGradient>
+                <linearGradient id="featRoasLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#a855f7" />
+                  <stop offset="100%" stopColor="#e9d5ff" />
+                </linearGradient>
+              </defs>
+
+              {/* Area fades in AFTER line completes */}
+              <motion.path
+                d={buildFeaturedArea(roasValues)}
+                fill="url(#featRoasArea)"
+                initial={{ opacity: 0 }}
+                animate={active ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.7, delay: 1.7 }}
+              />
+              {/* Line draws ONCE left → right, then stays */}
+              <motion.path
+                d={buildFeaturedLine(roasValues)}
+                fill="none"
+                stroke="url(#featRoasLine)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={active ? { pathLength: 1 } : { pathLength: 0 }}
+                transition={{ duration: 1.5, delay: 0.55, ease: [0.22, 0.9, 0.3, 1] }}
+                style={{ filter: `drop-shadow(0 0 8px ${roas.color}cc)` }}
+              />
+
+              {/* Time labels */}
+              {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
+                const x = PAD_L + (i / 4) * innerW;
+                return (
+                  <motion.text
+                    key={label}
+                    x={x}
+                    y={FH - 6}
+                    textAnchor="middle"
+                    fontSize="8"
+                    fontFamily="ui-sans-serif, system-ui, sans-serif"
+                    fontWeight="600"
+                    fill="rgba(255,255,255,0.30)"
+                    initial={{ opacity: 0 }}
+                    animate={active ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 0.5, delay: 1.9 + i * 0.05 }}
+                  >
+                    {label}
+                  </motion.text>
+                );
+              })}
+            </svg>
+          </motion.div>
+
+          {/* FG: header text + leading dot */}
+          <motion.div
+            className="absolute left-3 top-2.5 right-3 flex items-end justify-between z-10 pointer-events-none"
+            style={{ x: fg.tx, y: fg.ty }}
+          >
             <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: roas.color, boxShadow: `0 0 6px ${roas.color}` }} />
@@ -1000,135 +1117,47 @@ function KpiDashboardVisual({ active }: { active: boolean }) {
                 {roasMin.toFixed(1)}x – {roasMax.toFixed(1)}x
               </span>
             </div>
-          </div>
+          </motion.div>
 
-          <svg viewBox={`0 0 ${FW} ${FH}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="featRoasArea" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor={roas.color} stopOpacity="0.45" />
-                <stop offset="100%" stopColor={roas.color} stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="featRoasLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#a855f7" />
-                <stop offset="100%" stopColor="#e9d5ff" />
-              </linearGradient>
-            </defs>
-
-            {/* Y grid */}
-            {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
-              const y = PAD_T + p * innerH;
-              const v = roasMin + (1 - p) * (roasMax - roasMin);
-              return (
-                <motion.g
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  animate={active ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 + i * 0.04 }}
-                >
-                  <line
-                    x1={PAD_L}
-                    x2={FW - PAD_R}
-                    y1={y}
-                    y2={y}
-                    stroke="rgba(255,255,255,0.05)"
-                    strokeWidth="1"
-                    strokeDasharray={p === 1 ? "0" : "2 5"}
-                  />
-                  <text
-                    x={PAD_L - 6}
-                    y={y + 3}
-                    textAnchor="end"
-                    fontSize="8"
-                    fontFamily="ui-sans-serif, system-ui, sans-serif"
-                    fontWeight="600"
-                    fill="rgba(255,255,255,0.30)"
-                  >
-                    {v.toFixed(1)}x
-                  </text>
-                </motion.g>
-              );
-            })}
-
-            {/* Area — fades in AFTER line draws */}
-            <motion.path
-              d={buildFeaturedArea(roasValues)}
-              fill="url(#featRoasArea)"
-              initial={{ opacity: 0 }}
-              animate={active ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.7, delay: 1.7 }}
-              style={{ transition: "d 0.85s linear" }}
-            />
-            {/* Line — DRAWS left to right */}
-            <motion.path
-              d={buildFeaturedLine(roasValues)}
-              fill="none"
-              stroke="url(#featRoasLine)"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              animate={active ? { pathLength: 1 } : { pathLength: 0 }}
-              transition={{ duration: 1.5, delay: 0.55, ease: [0.22, 0.9, 0.3, 1] }}
-              style={{
-                filter: `drop-shadow(0 0 8px ${roas.color}cc)`,
-                transition: "d 0.85s linear",
-              }}
-            />
-
-            {/* Leading dot — appears after line draws */}
-            <motion.g
-              initial={{ opacity: 0, scale: 0.4 }}
-              animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }}
-              transition={{ ...SPRING_OVERSHOOT, delay: 2.0 }}
-              style={{ transition: "transform 0.85s linear", transformOrigin: `${dotX}px ${dotY}px` }}
-            >
+          {/* FG: leading dot pulses gently (visual only — value beneath is fixed) */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{ x: fg.tx, y: fg.ty }}
+            initial={{ opacity: 0 }}
+            animate={active ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.4, delay: 2.0 }}
+          >
+            <svg viewBox={`0 0 ${FW} ${FH}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
               <circle cx={dotX} cy={dotY} r="10" fill={roas.color} opacity="0.18">
-                <animate attributeName="r" values="6;14;6" dur="2.4s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.25;0;0.25" dur="2.4s" repeatCount="indefinite" />
+                {!reduce && (
+                  <>
+                    <animate attributeName="r" values="6;14;6" dur="2.4s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.25;0;0.25" dur="2.4s" repeatCount="indefinite" />
+                  </>
+                )}
               </circle>
               <circle cx={dotX} cy={dotY} r="4" fill={roas.color} opacity="0.5" />
               <circle cx={dotX} cy={dotY} r="2.4" fill="#fff"
                 style={{ filter: `drop-shadow(0 0 6px ${roas.color})` }} />
-            </motion.g>
-
-            {/* Time labels */}
-            {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
-              const x = PAD_L + (i / 4) * innerW;
-              return (
-                <motion.text
-                  key={label}
-                  x={x}
-                  y={FH - 6}
-                  textAnchor="middle"
-                  fontSize="8"
-                  fontFamily="ui-sans-serif, system-ui, sans-serif"
-                  fontWeight="600"
-                  fill="rgba(255,255,255,0.30)"
-                  initial={{ opacity: 0 }}
-                  animate={active ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.5, delay: 1.9 + i * 0.05 }}
-                >
-                  {label}
-                </motion.text>
-              );
-            })}
-          </svg>
+            </svg>
+          </motion.div>
         </motion.div>
 
-        {/* Mini tile grid */}
-        <div className="grid grid-cols-2 gap-2.5">
+        {/* Mini tile grid (foreground) */}
+        <motion.div
+          className="grid grid-cols-2 gap-2.5"
+          style={{ x: fg.tx, y: fg.ty }}
+        >
           {others.map((m, idx) => (
             <MiniKpiTile
               key={m.key}
               def={m}
-              values={series[m.key]}
-              latest={latest[m.key]}
-              prev={prev[m.key]}
+              values={allSeries[m.key]}
               active={active}
               index={idx}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -1152,7 +1181,6 @@ const EditorEdge = () => {
       className="relative py-28 overflow-hidden"
       style={{ background: "#09090f" }}
     >
-      {/* Drifting radial glows behind cards */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
@@ -1189,7 +1217,6 @@ const EditorEdge = () => {
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div ref={headerRef} className="text-center mb-16">
-          {/* Eyebrow chip — scale in with bloom */}
           <motion.div
             initial={{ opacity: 0, scale: 0.7 }}
             animate={headerInView ? { opacity: 1, scale: 1 } : {}}
@@ -1205,7 +1232,6 @@ const EditorEdge = () => {
             What sets us apart
           </motion.div>
 
-          {/* Staggered headline */}
           <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
             {headline.map((w, i) => (
               <motion.span
@@ -1248,7 +1274,6 @@ const EditorEdge = () => {
             Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
           </motion.p>
 
-          {/* CTA pill — scale in with glow bloom */}
           <motion.div
             initial={{ opacity: 0, scale: 0.6, filter: "blur(8px)" }}
             animate={headerInView ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
@@ -1265,32 +1290,30 @@ const EditorEdge = () => {
           </motion.div>
         </div>
 
-        {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <FeatureCard
             variant="left"
             delay={0}
             title="Trained on your KPIs"
             description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
-            visual={(settled) => <EditorBrainVisual active={settled} />}
+            visual={({ active, mx, my }) => <EditorBrainVisual active={active} mx={mx} my={my} />}
           />
           <FeatureCard
             variant="right"
             delay={0.15}
             title="Editor delivery tracker"
             description="Delivered vs approved videos per editor, week by week. See exactly who is shipping and who is shipping work that lands."
-            visual={(settled) => <EditorDeliveryTrackerVisual active={settled} />}
+            visual={({ active, mx, my }) => <EditorDeliveryTrackerVisual active={active} mx={mx} my={my} />}
           />
         </div>
 
-        {/* Bottom row: KPI Dashboard full width */}
         <div className="grid grid-cols-1 gap-5 mb-16">
           <FeatureCard
             variant="bottom"
             delay={0.35}
             title="KPI Dashboard"
             description="ROAS front and centre, with CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving."
-            visual={(settled) => <KpiDashboardVisual active={settled} />}
+            visual={({ active, mx, my }) => <KpiDashboardVisual active={active} mx={mx} my={my} />}
           />
         </div>
 
@@ -1335,7 +1358,6 @@ const EditorEdge = () => {
       </div>
 
       <style>{`
-        /* Section grain */
         .mw-grain-bg {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
           background-size: 220px 220px;
@@ -1343,17 +1365,12 @@ const EditorEdge = () => {
           opacity: 0.05;
         }
 
-        /* Per-visual purple-tinted grain */
         .mw-grain-purple {
           background-image:
             url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.66  0 0 0 0 0.33  0 0 0 0 0.97  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
           background-size: 180px 180px;
           mix-blend-mode: soft-light;
           opacity: 0.35;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .mw-grain-bg, .mw-grain-purple { animation: none !important; }
         }
       `}</style>
     </section>
