@@ -460,13 +460,9 @@
     50%      { opacity: 1; }
   }
 
-  /* ── Hero accent gradient words ── */
+  /* ── Hero accent words: solid brand purple (matches CTA) ── */
   .hero-accent-word {
-    background: linear-gradient(135deg, #a855f7, #c084fc, #d8b4fe);
-    -webkit-background-clip: text;
-            background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: hsl(var(--accent));
   }
 
   /* ── Feature card (voxr-style) ── */
