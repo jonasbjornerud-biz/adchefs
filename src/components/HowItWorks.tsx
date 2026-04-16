@@ -93,186 +93,175 @@ function StepCard({
 // VISUAL 1: AI-Powered Hiring — funnel of candidates filtered to top 1%
 // ════════════════════════════════════════════════════════════════════════════
 function HiringVisual() {
-  const [scanIdx, setScanIdx] = useState(0);
+  const [activeStage, setActiveStage] = useState(0);
+  const [tick, setTick] = useState(0);
+
+  const STAGES = [
+    { label: "Applicants",    count: 247, pct: 1.0  },
+    { label: "AI screened",   count: 62,  pct: 0.74 },
+    { label: "Skills test",   count: 14,  pct: 0.46 },
+    { label: "Hired",         count: 1,   pct: 0.18 },
+  ];
 
   useEffect(() => {
-    const t = setInterval(() => setScanIdx((i) => (i + 1) % 6), 1400);
+    const t = setInterval(() => setActiveStage((i) => (i + 1) % STAGES.length), 1400);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setTick((v) => v + 1), 80);
     return () => clearInterval(t);
   }, []);
 
   const W = 400, H = 260;
-  // 5 columns × 4 rows of candidates, plus 1 winner at right
-  const cols = 5;
-  const rows = 4;
-  const startX = 40;
-  const startY = 50;
-  const spacingX = 38;
-  const spacingY = 40;
-  const winnerX = 340;
-  const winnerY = 130;
+  const fLeft = 60;
+  const fRight = 340;
+  const fTop = 56;
+  const stageH = 38;
+  const stageGap = 8;
 
   return (
     <div className="absolute inset-0">
-      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <radialGradient id="hiringGlow" cx="80%" cy="50%" r="50%">
+          <radialGradient id="hiringGlow" cx="50%" cy="100%" r="60%">
             <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
             <stop offset="100%" stopColor="rgba(168,85,247,0)" />
           </radialGradient>
+          <linearGradient id="stageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.10)" />
+            <stop offset="50%" stopColor="rgba(168,85,247,0.22)" />
+            <stop offset="100%" stopColor="rgba(168,85,247,0.10)" />
+          </linearGradient>
+          <linearGradient id="stageGradActive" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.25)" />
+            <stop offset="50%" stopColor="rgba(192,132,252,0.55)" />
+            <stop offset="100%" stopColor="rgba(168,85,247,0.25)" />
+          </linearGradient>
           <linearGradient id="winnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#c084fc" />
             <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
 
-        <ellipse cx={winnerX} cy={winnerY} rx="80" ry="100" fill="url(#hiringGlow)" />
+        <ellipse cx={W / 2} cy={H + 10} rx="180" ry="90" fill="url(#hiringGlow)" />
 
-        {/* Candidate grid */}
-        {Array.from({ length: rows }).map((_, r) =>
-          Array.from({ length: cols }).map((_, c) => {
-            const cx = startX + c * spacingX;
-            const cy = startY + r * spacingY;
-            const idx = r * cols + c;
-            const passed = idx === 12; // arbitrary "winner" in grid
-            return (
-              <g key={`${r}-${c}`}>
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r="9"
-                  fill={passed ? "rgba(168,85,247,0.20)" : "rgba(255,255,255,0.04)"}
-                  stroke={passed ? "rgba(168,85,247,0.7)" : "rgba(255,255,255,0.10)"}
-                  strokeWidth="1"
-                >
-                  {!passed && (
-                    <animate
-                      attributeName="opacity"
-                      values="1;0.35;1"
-                      dur="3s"
-                      begin={`${(idx % 5) * 0.18}s`}
-                      repeatCount="indefinite"
-                    />
-                  )}
-                </circle>
-                {/* simple person icon */}
-                <circle cx={cx} cy={cy - 1.5} r="2.5" fill={passed ? "#fff" : "rgba(255,255,255,0.45)"} />
-                <path
-                  d={`M${cx - 4},${cy + 5} Q${cx},${cy + 1} ${cx + 4},${cy + 5}`}
-                  stroke={passed ? "#fff" : "rgba(255,255,255,0.45)"}
-                  strokeWidth="1.4"
-                  fill="none"
-                  strokeLinecap="round"
-                />
-                {/* X for failed */}
-                {!passed && (
-                  <g opacity="0.45">
-                    <line
-                      x1={cx + 5}
-                      y1={cy - 5}
-                      x2={cx + 9}
-                      y2={cy - 1}
-                      stroke="#f87171"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1={cx + 9}
-                      y1={cy - 5}
-                      x2={cx + 5}
-                      y2={cy - 1}
-                      stroke="#f87171"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                    />
-                  </g>
-                )}
-              </g>
-            );
-          })
-        )}
+        {/* Funnel stages — each row narrows */}
+        {STAGES.map((s, i) => {
+          const y = fTop + i * (stageH + stageGap);
+          const fullW = fRight - fLeft;
+          const w = fullW * s.pct;
+          const x = fLeft + (fullW - w) / 2;
+          const isActive = i === activeStage;
+          const isLast = i === STAGES.length - 1;
 
-        {/* Sweeping AI scan column */}
-        {Array.from({ length: cols }).map((_, c) => {
-          const x = startX + c * spacingX;
-          const isActive = c === scanIdx % cols;
           return (
-            <rect
-              key={c}
-              x={x - 14}
-              y={startY - 14}
-              width="28"
-              height={spacingY * rows - 12}
-              rx="6"
-              fill={isActive ? "rgba(168,85,247,0.10)" : "transparent"}
-              stroke={isActive ? "rgba(168,85,247,0.45)" : "transparent"}
-              strokeWidth="1"
-              style={{ transition: "all 0.6s ease" }}
-            />
+            <g key={i}>
+              {/* Track (light background) */}
+              <rect
+                x={fLeft}
+                y={y}
+                width={fullW}
+                height={stageH}
+                rx={stageH / 2}
+                fill="rgba(255,255,255,0.025)"
+                stroke="rgba(255,255,255,0.04)"
+                strokeWidth="1"
+              />
+              {/* Stage bar */}
+              <rect
+                x={x}
+                y={y}
+                width={w}
+                height={stageH}
+                rx={stageH / 2}
+                fill={isLast ? "url(#winnerGrad)" : (isActive ? "url(#stageGradActive)" : "url(#stageGrad)")}
+                stroke={isActive || isLast ? "rgba(168,85,247,0.65)" : "rgba(168,85,247,0.22)"}
+                strokeWidth="1"
+                style={{
+                  transition: "all 0.6s ease",
+                  filter: isActive || isLast ? "drop-shadow(0 0 10px rgba(168,85,247,0.45))" : "none",
+                }}
+              />
+
+              {/* Count badge */}
+              <text
+                x={x + w / 2}
+                y={y + stageH / 2 + 4}
+                textAnchor="middle"
+                fontSize="13"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="800"
+                fill="#fff"
+                style={{ textShadow: isLast ? "0 0 10px rgba(168,85,247,0.8)" : "none" }}
+              >
+                {s.count}
+              </text>
+
+              {/* Stage label (left side, outside bar) */}
+              <text
+                x={fLeft - 8}
+                y={y + stageH / 2 + 3.5}
+                textAnchor="end"
+                fontSize="9"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="600"
+                fill={isActive || isLast ? "rgba(233,213,255,0.95)" : "rgba(255,255,255,0.45)"}
+                letterSpacing="0.3"
+                style={{ transition: "fill 0.4s ease" }}
+              >
+                {s.label}
+              </text>
+
+              {/* Connector line to next stage */}
+              {i < STAGES.length - 1 && (
+                <>
+                  <line
+                    x1={x + w / 2}
+                    y1={y + stageH}
+                    x2={fLeft + fullW / 2}
+                    y2={y + stageH + stageGap}
+                    stroke="rgba(168,85,247,0.25)"
+                    strokeWidth="1"
+                    strokeDasharray="2 2"
+                  />
+                </>
+              )}
+            </g>
           );
         })}
 
-        {/* Connecting line to winner */}
-        <path
-          d={`M${startX + (cols - 1) * spacingX + 12},${startY + 1.5 * spacingY} Q${winnerX - 60},${winnerY - 30} ${winnerX - 24},${winnerY}`}
-          fill="none"
-          stroke="rgba(168,85,247,0.5)"
-          strokeWidth="1.5"
-          strokeDasharray="3 4"
-        >
-          <animate attributeName="stroke-dashoffset" values="0;-14" dur="1.8s" repeatCount="indefinite" />
-        </path>
-
-        {/* Winner avatar */}
-        <g style={{ transformOrigin: `${winnerX}px ${winnerY}px` }} className="hiw-breath">
-          <circle cx={winnerX} cy={winnerY} r="28" fill="url(#winnerGrad)"
-            style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.7))" }} />
-          <circle cx={winnerX} cy={winnerY - 5} r="7" fill="#fff" opacity="0.95" />
-          <path
-            d={`M${winnerX - 11},${winnerY + 13} Q${winnerX},${winnerY + 4} ${winnerX + 11},${winnerY + 13}`}
-            stroke="#fff"
-            strokeWidth="3"
-            fill="none"
-            strokeLinecap="round"
-            opacity="0.95"
-          />
-        </g>
-
-        {/* Pulse ring around winner */}
-        <circle cx={winnerX} cy={winnerY} r="28" fill="none" stroke="rgba(168,85,247,0.55)" strokeWidth="1.2">
-          <animate attributeName="r" values="28;58" dur="2.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.7;0" dur="2.4s" repeatCount="indefinite" />
-        </circle>
+        {/* Animated traveling dot down the funnel center */}
+        {(() => {
+          const cycle = (tick % 60) / 60; // 0..1
+          const totalH = STAGES.length * (stageH + stageGap);
+          const dy = fTop + cycle * totalH;
+          return (
+            <circle
+              cx={fLeft + (fRight - fLeft) / 2}
+              cy={dy}
+              r="2.5"
+              fill="#fff"
+              opacity={1 - cycle * 0.6}
+              style={{ filter: "drop-shadow(0 0 6px #c084fc)" }}
+            />
+          );
+        })()}
 
         {/* Top label */}
         <g>
           <rect
-            x="20" y="14"
-            width="92" height="22"
+            x={W / 2 - 64} y="14"
+            width="128" height="22"
             rx="11"
             fill="rgba(20,16,32,0.85)"
             stroke="rgba(168,85,247,0.30)"
             strokeWidth="1"
           />
-          <text x="66" y="29" textAnchor="middle"
+          <text x={W / 2} y="29" textAnchor="middle"
             fontSize="10" fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700" fill="rgba(255,255,255,0.85)">
-            200+ screened
-          </text>
-        </g>
-
-        {/* Bottom label near winner */}
-        <g>
-          <rect
-            x={winnerX - 38} y={winnerY + 48}
-            width="76" height="22"
-            rx="11"
-            fill="url(#winnerGrad)"
-            style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
-          />
-          <text x={winnerX} y={winnerY + 63} textAnchor="middle"
-            fontSize="10" fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="800" fill="#fff" letterSpacing="0.5">
-            TOP 1%
+            fontWeight="700" fill="rgba(255,255,255,0.85)" letterSpacing="0.5">
+            AI HIRING FUNNEL
           </text>
         </g>
       </svg>
@@ -284,7 +273,7 @@ function HiringVisual() {
           <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]"
             style={{ boxShadow: "0 0 8px #a855f7" }} />
         </span>
-        AI scanning
+        Live
       </div>
     </div>
   );
@@ -414,25 +403,25 @@ function MentoringVisual() {
             strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray="251"
-            strokeDashoffset={251 - (251 * 0.92)}
+            strokeDashoffset={251 - (251 * 0.78)}
             transform="rotate(-90 50 50)"
             style={{ filter: "drop-shadow(0 0 6px rgba(168,85,247,0.6))" }}
           >
             <animate
               attributeName="stroke-dashoffset"
-              values={`${251 - (251 * 0.85)};${251 - (251 * 0.96)};${251 - (251 * 0.85)}`}
+              values={`${251 - (251 * 0.74)};${251 - (251 * 0.82)};${251 - (251 * 0.74)}`}
               dur="3.6s"
               repeatCount="indefinite"
             />
           </circle>
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 22 }}>
           <span className="text-[22px] font-extrabold text-white leading-none tabular-nums"
             style={{ textShadow: "0 0 12px rgba(168,85,247,0.7)" }}>
-            A+
+            78<span className="text-[14px] font-bold text-white/70">%</span>
           </span>
           <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 mt-1">
-            Quality score
+            Completion
           </span>
         </div>
 
@@ -444,7 +433,7 @@ function MentoringVisual() {
             border: "1px solid rgba(168,85,247,0.30)",
           }}
         >
-          Certified
+          In training
         </div>
       </div>
     </div>
