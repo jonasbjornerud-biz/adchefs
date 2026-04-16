@@ -260,9 +260,9 @@ export default function PerformanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090f]">
-        <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
-        <div className="max-w-[1200px] mx-auto px-5 md:px-8 py-8 space-y-6 relative z-10">
+      <div className="min-h-screen bg-[#06060c]">
+        <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)' }} />
+        <div className="max-w-[1280px] mx-auto px-5 md:px-8 py-8 space-y-6 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => <div key={i} className="h-[100px] rounded-2xl bg-[#111118] animate-pulse" />)}
           </div>
