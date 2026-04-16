@@ -6,6 +6,7 @@ import { KpiCard } from "@/components/dashboard/KpiCard";
 import { AdTable } from "@/components/dashboard/AdTable";
 import { AdDetailPanel } from "@/components/dashboard/AdDetailPanel";
 import { OverviewChart } from "@/components/dashboard/OverviewChart";
+import { HorizonGlow } from "@/components/dashboard/HorizonGlow";
 import { DateRangePicker } from "@/components/dashboard/DateRangePicker";
 import { AdMetric, getAggregateMetrics } from "@/data/mockAds";
 import { generateMockAds } from "@/data/mockDemoData";
