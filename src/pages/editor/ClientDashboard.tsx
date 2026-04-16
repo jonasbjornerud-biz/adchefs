@@ -303,12 +303,21 @@ export default function ClientDashboard() {
                   <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-white/45 leading-relaxed mb-6 flex-1">
+                  <p className="text-sm text-white/45 leading-relaxed">
                     {enabled ? card.description : 'Not yet configured. Contact your account manager to enable this dashboard.'}
                   </p>
 
+                  {enabled && (
+                    <WtdStats
+                      rangeLabel={card.rangeLabel}
+                      stats={card.stats}
+                      accent={accent}
+                      loading={wtdData.loading}
+                    />
+                  )}
+
                   {/* Footer: status pill */}
-                  <div className="flex items-center justify-between pt-5 border-t border-white/[0.05]">
+                  <div className="flex items-center justify-between pt-5 border-t border-white/[0.05] mt-auto">
                     <div
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-medium tracking-wide"
                       style={{
