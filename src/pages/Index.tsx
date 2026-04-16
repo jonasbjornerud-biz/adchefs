@@ -17,15 +17,15 @@ const Index = () => {
         <Navigation />
         <Hero />
 
+        {/* What Sets Us Apart — dark section, directly under hero */}
+        <EditorEdge />
+
         {/* How It Works — white/clean background */}
         <div className="section-band section-band-white">
           <div className="content-container">
             <HowItWorks />
           </div>
         </div>
-
-        {/* What Sets Us Apart — dark section */}
-        <EditorEdge />
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">
