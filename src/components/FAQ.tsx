@@ -7,52 +7,51 @@ import {
 
 const faqs = [
   {
-    question: "How does the pay-per-video model work?",
-    answer: "We assign dedicated full-time editors to your brand. Instead of a monthly retainer, you pay for each video delivered. Scale up or down based on what you need.",
+    q: "How are editors selected?",
+    a: "Every editor goes through a multi-step vetting process. We evaluate editing skill, creative instinct, and — most importantly — their ability to understand performance metrics. Only editors who can think in terms of CTR, hook rate, and hold rate make it through.",
   },
   {
-    question: "Can you match our existing brand style?",
-    answer: "Yes. We build customized SOPs based on your product research, ideal customer profiles, and brand assets. Every video follows your creative direction precisely.",
+    q: "What happens if I'm not happy with my editor?",
+    a: "You request a free replacement. No awkward conversations, no delays. We swap in a new editor who's already been briefed on your brand and KPI targets.",
   },
   {
-    question: "How many revisions are included?",
-    answer: "Unlimited. We revise until you're happy with the final cut. There's no cap on revision rounds.",
+    q: "Do I need to provide a brief or SOP?",
+    a: "It helps, but it's not required. During onboarding, we work with you to build a lightweight creative brief that captures your brand, tone, and performance goals. Your editor uses this as their playbook.",
+  },
+  {
+    q: "How long until my first video is delivered?",
+    a: "Most clients receive their first video within 5–7 business days of onboarding. After that, delivery is on a rolling basis depending on your plan volume.",
+  },
+  {
+    q: "What platforms do you create for?",
+    a: "Primarily Meta (Facebook/Instagram) and TikTok. We can also adapt formats for YouTube Shorts, Pinterest, and other short-form platforms on request.",
+  },
+  {
+    q: "Is there a contract or minimum commitment?",
+    a: "No long-term contracts. You pay monthly and can cancel anytime. We believe our work keeps you — not a contract.",
   },
 ];
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-28">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#7c3aed] mb-3 font-medium">Support</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a2e] mb-3">Frequently Asked Questions</h2>
-          <p className="text-[#6b7280] max-w-md mx-auto text-sm">
-            Everything you need to know about working with AdChefs
-          </p>
-        </div>
+    <section id="faq" className="py-24 bg-white">
+      <div className="container mx-auto px-6 max-w-2xl">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-12 text-center">
+          Frequently asked questions
+        </h2>
 
-        <div className="w-full max-w-2xl mx-auto mt-14">
-          <Accordion type="single" collapsible className="w-full space-y-3">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="rounded-xl border border-[#f0ecff] bg-white px-5 hover:!transform-none"
-                style={{
-                  boxShadow: '0 1px 3px rgba(139,92,246,0.04), 0 4px 12px rgba(139,92,246,0.04)',
-                }}
-              >
-                <AccordionTrigger className="text-left text-sm font-medium text-[#1a1a2e] hover:text-[#7c3aed] py-4">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#6b7280] leading-relaxed pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+        <Accordion type="single" collapsible className="w-full">
+          {faqs.map((faq, i) => (
+            <AccordionItem key={i} value={`faq-${i}`} className="border-border">
+              <AccordionTrigger className="text-left text-sm font-semibold text-foreground hover:no-underline cursor-pointer py-5">
+                {faq.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5">
+                {faq.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   );
