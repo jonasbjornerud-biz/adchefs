@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -33,7 +32,6 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <ThemeToggle />
           <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm">
             Book a Call
           </Button>
@@ -41,7 +39,6 @@ const Navigation = () => {
 
         {/* Mobile toggle */}
         <div className="flex md:hidden items-center gap-3">
-          <ThemeToggle />
           <button onClick={() => setMobileOpen(!mobileOpen)} className="text-foreground">
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
