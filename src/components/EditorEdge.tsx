@@ -6,7 +6,7 @@ const features = [
     icon: TrendingUp,
     title: "KPI-Trained Editors",
     description:
-      "Our editors don't just edit — they understand CTR, hook rate, hold rate, and what drives revenue. Every cut is made with performance in mind.",
+      "Our editors don't just edit. They understand CTR, hook rate, hold rate, and what drives revenue. Every cut is made with performance in mind.",
   },
   {
     icon: BarChart3,
@@ -24,7 +24,7 @@ const features = [
     icon: RefreshCw,
     title: "Free Replacements",
     description:
-      "If an editor underperforms, request a free replacement. No questions asked, no extra cost. We guarantee quality.",
+      "If an editor underperforms, request a free replacement. No questions asked, no extra cost.",
   },
 ];
 
@@ -74,8 +74,7 @@ const EditorEdge = () => {
             </span>
           </h2>
           <p className="text-white/40 max-w-xl mx-auto text-base leading-relaxed">
-            We don't just assign editors. We train them on your KPIs, track their output,
-            and guarantee results — or replace them for free.
+            We don't just assign editors. We train them on your KPIs.
           </p>
         </div>
 
