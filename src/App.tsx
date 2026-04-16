@@ -18,6 +18,9 @@ import ClientDetail from "./pages/admin/ClientDetail";
 import ClientForm from "./pages/admin/ClientForm";
 import PlaybookBuilder from "./pages/admin/PlaybookBuilder";
 import AdminPlaybookView from "./pages/admin/AdminPlaybookView";
+import MockClientDashboard from "./pages/mock/MockClientDashboard";
+import MockAdsDashboard from "./pages/mock/MockAdsDashboard";
+import MockPerformanceDashboard from "./pages/mock/MockPerformanceDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
