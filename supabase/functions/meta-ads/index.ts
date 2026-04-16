@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
     }
 
     // Fetch ad statuses + creatives (using adcreatives edge for reliable video_id + picture)
-    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,adcreatives.limit(1){picture,video_id,thumbnail_url}&limit=500&access_token=${accessToken}`;
+    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,adcreatives.limit(1){picture,object_story_spec,thumbnail_url}&limit=500&access_token=${accessToken}`;
     let statusMap: Record<string, string> = {};
     let thumbnailMap: Record<string, string> = {};
     let videoIdMap: Record<string, string> = {};
@@ -123,10 +123,11 @@ Deno.serve(async (req) => {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
         const creative = ad.adcreatives?.data?.[0];
         if (creative) {
-          // Use 'picture' (highest res) over 'thumbnail_url' (low res)
           if (creative.picture) thumbnailMap[ad.id] = creative.picture;
           else if (creative.thumbnail_url) thumbnailMap[ad.id] = creative.thumbnail_url;
-          if (creative.video_id) videoIdMap[ad.id] = creative.video_id;
+          // Extract video_id from object_story_spec
+          const videoId = creative.object_story_spec?.video_data?.video_id;
+          if (videoId) videoIdMap[ad.id] = videoId;
         }
       }
       console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
