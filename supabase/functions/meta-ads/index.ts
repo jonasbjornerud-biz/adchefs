@@ -137,27 +137,28 @@ Deno.serve(async (req) => {
       console.log(`Fetching details for ${uniqueCreativeIds.length} creatives`);
       const creativePromises = uniqueCreativeIds.map(async (creativeId) => {
         try {
-          const url = `${META_BASE_URL}/${creativeId}?fields=video_id,picture,thumbnail_url&access_token=${accessToken}`;
+          const url = `${META_BASE_URL}/${creativeId}?fields=video_id,image_url,thumbnail_url,object_story_spec&access_token=${accessToken}`;
           const res = await fetch(url);
           const json = await res.json();
           if (json.error) {
-            console.log(`Creative ${creativeId} error:`, json.error.message?.slice(0, 200));
+            console.log(`Creative ${creativeId} error:`, json.error.message?.slice(0, 100));
             return null;
           }
-          return { id: creativeId, video_id: json.video_id || '', picture: json.picture || '', thumbnail_url: json.thumbnail_url || '' };
+          const videoId = json.video_id || json.object_story_spec?.video_data?.video_id || '';
+          const imageUrl = json.image_url || json.thumbnail_url || json.object_story_spec?.video_data?.image_url || '';
+          return { id: creativeId, video_id: videoId, image_url: imageUrl };
         } catch (e) { console.log(`Creative ${creativeId} fetch failed:`, e.message); return null; }
       });
       const creativeResults = await Promise.all(creativePromises);
-      const creativeDetailsMap: Record<string, { video_id: string; picture: string; thumbnail_url: string }> = {};
+      const creativeDetailsMap: Record<string, { video_id: string; image_url: string }> = {};
       for (const r of creativeResults) {
-        if (r) creativeDetailsMap[r.id] = { video_id: r.video_id, picture: r.picture, thumbnail_url: r.thumbnail_url };
+        if (r) creativeDetailsMap[r.id] = { video_id: r.video_id, image_url: r.image_url };
       }
       // Map back to ad IDs
       for (const [adId, creativeId] of Object.entries(adCreativeMap)) {
         const c = creativeDetailsMap[creativeId];
         if (!c) continue;
-        if (c.picture) thumbnailMap[adId] = c.picture;
-        else if (c.thumbnail_url) thumbnailMap[adId] = c.thumbnail_url;
+        if (c.image_url) thumbnailMap[adId] = c.image_url;
         if (c.video_id) videoIdMap[adId] = c.video_id;
       }
       console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
