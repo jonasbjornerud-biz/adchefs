@@ -153,8 +153,14 @@ function FeatureCard({
 // ────────────────────────────────────────────────────────────────────────────
 // Visual #1 — KPI Dashboard (moneywise smarter-tracking Lottie, recoloured)
 // ────────────────────────────────────────────────────────────────────────────
-function LottieVisual({ url }: { url: string }) {
-  const data = useLottieJson(url);
+function LottieVisual({
+  url,
+  textMap,
+}: {
+  url: string;
+  textMap?: Record<string, string>;
+}) {
+  const data = useLottieJson(url, textMap);
   const ref = useRef<LottieRefCurrentProps>(null);
   if (!data) {
     return <div className="absolute inset-0 mw-skeleton" />;
