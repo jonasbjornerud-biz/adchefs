@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, GraduationCap, Repeat2 } from "lucide-react";
+import { ArrowRight, Sparkles, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ACCENT = "#a855f7";
