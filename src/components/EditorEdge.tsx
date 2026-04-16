@@ -1,404 +1,449 @@
+import { useEffect, useRef, useState } from "react";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  Sparkles,
-  TrendingUp,
-  BarChart3,
-  Zap,
-  FileSpreadsheet,
-  Activity,
-  DollarSign,
-  Users,
-  Calendar,
-  CheckCircle2,
-  Cable,
-  Brain,
-} from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const ACCENT = "#a855f7";
 
+// Moneywise's actual Lottie animations (publicly hosted, render perfectly)
+const LOTTIE = {
+  smarterTracking:
+    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3dce38346f6ce873258_smarter%20tracking.json",
+  automate:
+    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3ef1044fca43e45ed23_automated%20finances.json",
+  cashflow:
+    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3ef9e2ca754aea8c353_cashflow%20snapshot%20(2).json",
+};
+
 // ────────────────────────────────────────────────────────────────────────────
-// Card shell — animated gradient sweep, grain shimmer, organic hover
+// Lottie loader hook — fetches once, recolors the JSON to brand purple
+// ────────────────────────────────────────────────────────────────────────────
+function recolorLottie(data: any): any {
+  // Walk the Lottie JSON and remap every color to our brand purple palette.
+  // Brand stops: deep -> mid -> light
+  const palette: [number, number, number][] = [
+    [0.486, 0.227, 0.929], // #7c3aed
+    [0.659, 0.333, 0.969], // #a855f7
+    [0.753, 0.518, 0.988], // #c084fc
+    [0.914, 0.835, 1.0],   // #e9d5ff
+  ];
+  let idx = 0;
+  const pickColor = () => palette[idx++ % palette.length];
+
+  const visit = (node: any): void => {
+    if (!node || typeof node !== "object") return;
+    // Solid color shape
+    if (node.ty === "fl" || node.ty === "st") {
+      if (node.c && Array.isArray(node.c.k)) {
+        const k = node.c.k;
+        if (typeof k[0] === "number") {
+          const [r, g, b] = pickColor();
+          node.c.k = [r, g, b, k[3] ?? 1];
+        }
+      }
+    }
+    // Gradient
+    if (node.ty === "gf" || node.ty === "gs") {
+      if (node.g && Array.isArray(node.g.k?.k)) {
+        const stops = node.g.k.k;
+        // Each color stop in Lottie gradient: [pos, r, g, b, pos, r, g, b, ...]
+        for (let i = 0; i + 3 < stops.length; i += 4) {
+          const [r, g, b] = pickColor();
+          stops[i + 1] = r;
+          stops[i + 2] = g;
+          stops[i + 3] = b;
+        }
+      }
+    }
+    for (const key of Object.keys(node)) {
+      const v = node[key];
+      if (Array.isArray(v)) v.forEach(visit);
+      else if (typeof v === "object") visit(v);
+    }
+  };
+  const cloned = JSON.parse(JSON.stringify(data));
+  visit(cloned);
+  return cloned;
+}
+
+function useLottieJson(url: string) {
+  const [data, setData] = useState<any | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch(url)
+      .then((r) => r.json())
+      .then((j) => {
+        if (alive) setData(recolorLottie(j));
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [url]);
+  return data;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Card shell (smaller, refined motion — no spinning borders, no cheap pulses)
 // ────────────────────────────────────────────────────────────────────────────
 function FeatureCard({
   title,
   description,
   visual,
-  className = "",
   delay = 0,
+  className = "",
 }: {
   title: string;
   description: string;
   visual: React.ReactNode;
-  className?: string;
   delay?: number;
+  className?: string;
 }) {
   return (
     <div
       className={`mw-card group relative overflow-hidden rounded-3xl ${className}`}
       style={{
         animationDelay: `${delay}s`,
+        background:
+          "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        boxShadow:
+          "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
     >
-      {/* Animated conic gradient border sweep */}
-      <div className="mw-card-border" aria-hidden />
-
-      {/* Inner surface */}
-      <div className="mw-card-surface relative">
-        {/* Top inner highlight */}
-        <div className="absolute inset-x-8 top-0 h-px pointer-events-none mw-top-line" />
-
-        {/* Continuously breathing horizon glow at the bottom */}
-        <div className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon" />
-
-        {/* Drifting grain shimmer overlay */}
-        <div className="absolute inset-0 pointer-events-none mw-grain" />
-
-        <div className="relative p-7 pb-0">
-          <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">
-            {title}
-          </h3>
-          <p className="text-sm text-white/45 leading-relaxed max-w-md">
-            {description}
-          </p>
-        </div>
-
-        <div className="relative mt-6 h-[280px]">{visual}</div>
-      </div>
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #1 — KPI bars that breathe + a pill that floats
-// ────────────────────────────────────────────────────────────────────────────
-function KpiVisual() {
-  const bars = [38, 62, 48, 78, 92, 70, 55, 84];
-  return (
-    <div className="absolute inset-0 flex items-end justify-center px-8 pb-10 pt-6">
-      {/* Floating pill that drifts */}
+      {/* Top inner highlight */}
       <div
-        className="absolute top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium text-white/85 z-10 mw-drift"
+        className="absolute inset-x-8 top-0 h-px pointer-events-none"
         style={{
-          background: "rgba(168,85,247,0.15)",
-          border: "1px solid rgba(168,85,247,0.35)",
-          boxShadow: "0 0 24px -6px rgba(168,85,247,0.6)",
-          backdropFilter: "blur(12px)",
+          background:
+            "linear-gradient(90deg, transparent, rgba(168,85,247,0.55), transparent)",
         }}
-      >
-        <Activity className="w-3 h-3 mw-pulse-icon" style={{ color: ACCENT }} />
-        Spend Trends · Live
+      />
+      {/* Subtle, slow horizon glow — no obvious pulse */}
+      <div
+        className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.40) 0%, rgba(168,85,247,0.10) 35%, transparent 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+
+      <div className="relative p-7 pb-2">
+        <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">
+          {title}
+        </h3>
+        <p className="text-sm text-white/45 leading-relaxed max-w-md">
+          {description}
+        </p>
       </div>
 
-      <div className="relative w-full h-full flex items-end justify-between gap-2">
-        {bars.map((h, i) => (
-          <div
-            key={i}
-            className="flex-1 rounded-t-md relative overflow-hidden mw-bar"
-            style={
-              {
-                "--h": `${h}%`,
-                "--delay": `${i * 0.18}s`,
-              } as React.CSSProperties
-            }
-          >
-            {/* Inner wet-glass highlight */}
-            <div
-              className="absolute inset-x-0 top-0 h-1/3 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.20), transparent)",
-              }}
-            />
-            {/* Vertical sheen sweep */}
-            <div
-              className="absolute inset-0 mw-bar-sheen pointer-events-none"
-              style={{ animationDelay: `${i * 0.25}s` }}
-            />
-          </div>
-        ))}
-      </div>
+      <div className="relative h-[260px]">{visual}</div>
     </div>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual #2 — Drifting chips with breathing glow
+// Visual #1 — KPI Dashboard (moneywise smarter-tracking Lottie, recoloured)
 // ────────────────────────────────────────────────────────────────────────────
-function ConnectedVisual() {
-  const chips = [
-    { icon: DollarSign, label: "Ad Spend Sync", x: 0 },
-    { icon: Users, label: "Editor Tracking", x: -18 },
-    { icon: BarChart3, label: "ROAS Monitoring", x: 12 },
-    { icon: CheckCircle2, label: "Approval Flow", x: -6 },
-  ];
+function LottieVisual({ url }: { url: string }) {
+  const data = useLottieJson(url);
+  const ref = useRef<LottieRefCurrentProps>(null);
+  if (!data) {
+    return <div className="absolute inset-0 mw-skeleton" />;
+  }
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 px-8 py-8">
-      {chips.map(({ icon: Icon, label, x }, i) => (
-        <div
-          key={i}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-medium text-white/90 mw-chip"
-          style={
-            {
-              background: "rgba(168,85,247,0.10)",
-              border: "1px solid rgba(168,85,247,0.28)",
-              boxShadow:
-                "0 0 24px -6px rgba(168,85,247,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-              backdropFilter: "blur(10px)",
-              "--x": `${x}px`,
-              "--delay": `${i * 0.6}s`,
-            } as React.CSSProperties
-          }
-        >
-          <Icon className="w-3.5 h-3.5" style={{ color: ACCENT }} />
-          {label}
-        </div>
-      ))}
+    <div className="absolute inset-0 flex items-end justify-center">
+      <Lottie
+        lottieRef={ref}
+        animationData={data}
+        loop
+        autoplay
+        rendererSettings={{ preserveAspectRatio: "xMidYMax slice" }}
+        style={{ width: "100%", height: "100%" }}
+      />
     </div>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual #3 — Integrations cluster with rotating central glow + floating icons
+// Visual #2 — Editors trained on KPIs (moneywise automate Lottie, recoloured)
 // ────────────────────────────────────────────────────────────────────────────
-function IntegrationsVisual() {
-  const items = [
-    { Icon: Zap, x: "8%", y: "20%", size: 56, delay: 0 },
-    { Icon: FileSpreadsheet, x: "78%", y: "18%", size: 56, delay: 0.5 },
-    { Icon: Brain, x: "12%", y: "62%", size: 64, delay: 1 },
-    { Icon: Calendar, x: "70%", y: "60%", size: 56, delay: 1.5 },
-    { Icon: Cable, x: "44%", y: "38%", size: 80, delay: 0.25 },
-  ];
+// (uses LottieVisual)
+
+// ────────────────────────────────────────────────────────────────────────────
+// Visual #3 — Meta-focused integrations (custom, Meta logo + orbit)
+// ────────────────────────────────────────────────────────────────────────────
+function MetaIntegrationVisual() {
   return (
     <div className="absolute inset-0">
-      {/* Slowly rotating central glow */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[220px] pointer-events-none mw-rotor" />
-
-      {items.map(({ Icon, x, y, size, delay }, i) => (
-        <div
-          key={i}
-          className="absolute rounded-2xl flex items-center justify-center mw-icon-tile"
-          style={
-            {
-              left: x,
-              top: y,
-              width: size,
-              height: size,
-              background:
-                "linear-gradient(135deg, rgba(168,85,247,0.30), rgba(124,58,237,0.10))",
-              border: "1px solid rgba(168,85,247,0.35)",
-              boxShadow:
-                "0 0 24px -4px rgba(168,85,247,0.45), inset 0 1px 0 rgba(255,255,255,0.12)",
-              backdropFilter: "blur(8px)",
-              "--delay": `${delay}s`,
-            } as React.CSSProperties
-          }
-        >
-          <Icon
-            className="text-white"
-            style={{
-              width: size * 0.42,
-              height: size * 0.42,
-              filter: "drop-shadow(0 0 8px rgba(168,85,247,0.6))",
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #4 — KPI brain: continuously rolling stat tiles
-// ────────────────────────────────────────────────────────────────────────────
-function EditorBrainVisual() {
-  return (
-    <div className="absolute inset-0 px-8 py-6">
-      {/* Wave backdrop */}
+      {/* Slow concentric rings */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-30"
-        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 400 280"
+        className="absolute inset-0 w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
       >
         <defs>
-          <pattern
-            id="editor-wave"
-            width="40"
-            height="40"
-            patternUnits="userSpaceOnUse"
-            patternTransform="translate(0 0)"
-          >
-            <path
-              d="M0 20 Q 10 10, 20 20 T 40 20"
-              stroke="rgba(168,85,247,0.35)"
-              fill="none"
-              strokeWidth="0.8"
-            />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#editor-wave)" className="mw-wave-shift" />
-      </svg>
-
-      {/* Stat card 1 — drifts up/down */}
-      <div
-        className="absolute left-6 top-12 w-[62%] rounded-2xl p-3.5 flex items-center justify-between mw-stat"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.10))",
-          border: "1px solid rgba(168,85,247,0.35)",
-          boxShadow:
-            "0 12px 32px -8px rgba(168,85,247,0.35), inset 0 1px 0 rgba(255,255,255,0.10)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-white/55 font-semibold">
-            Hook rate · this week
-          </div>
-          <div className="text-lg font-bold text-white tabular-nums mt-0.5">
-            38% <span className="text-[#a855f7] text-sm">↑ 9%</span>
-          </div>
-        </div>
-        <div
-          className="text-[10px] font-semibold px-2 py-1 rounded-md"
-          style={{ background: "rgba(255,255,255,0.10)", color: "#fff" }}
-        >
-          Live
-        </div>
-      </div>
-
-      {/* Stat card 2 — opposite phase drift */}
-      <div
-        className="absolute right-6 bottom-10 w-[62%] rounded-2xl p-3.5 flex items-center justify-between mw-stat mw-stat-alt"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(168,85,247,0.18), rgba(124,58,237,0.08))",
-          border: "1px solid rgba(168,85,247,0.30)",
-          boxShadow:
-            "0 12px 32px -8px rgba(168,85,247,0.30), inset 0 1px 0 rgba(255,255,255,0.08)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-white/55 font-semibold">
-            ROAS · 7d avg
-          </div>
-          <div className="text-lg font-bold text-white tabular-nums mt-0.5">
-            4.62x <span className="text-[#a855f7] text-sm">↑ 0.4</span>
-          </div>
-        </div>
-        <div
-          className="text-[10px] font-semibold px-2 py-1 rounded-md"
-          style={{ background: "rgba(255,255,255,0.10)", color: "#fff" }}
-        >
-          Live
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #5 — Continuously redrawing ROAS line + tracking dot
-// ────────────────────────────────────────────────────────────────────────────
-function RoasChartVisual() {
-  const ref = useRef<SVGPathElement | null>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const len = ref.current.getTotalLength();
-    ref.current.style.strokeDasharray = `${len}`;
-    ref.current.style.strokeDashoffset = `${len}`;
-    ref.current.style.animation = "mw-draw 4.5s ease-in-out infinite";
-    (ref.current.style as any).setProperty("--len", `${len}`);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 px-6 pt-2 pb-6">
-      <svg
-        viewBox="0 0 400 200"
-        className="w-full h-full"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="roas-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
+          <radialGradient id="metaGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.55)" />
+            <stop offset="60%" stopColor="rgba(168,85,247,0.10)" />
             <stop offset="100%" stopColor="rgba(168,85,247,0)" />
-          </linearGradient>
-          <linearGradient id="roas-line" x1="0" y1="0" x2="1" y2="0">
+          </radialGradient>
+          <linearGradient id="metaLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#c084fc" />
-            <stop offset="100%" stopColor="#a855f7" />
+            <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
 
-        {[40, 90, 140].map((y, i) => (
-          <line
-            key={i}
-            x1="0"
-            x2="400"
-            y1={y}
-            y2={y}
-            stroke="rgba(255,255,255,0.05)"
+        {/* Central glow */}
+        <ellipse cx="200" cy="140" rx="120" ry="80" fill="url(#metaGlow)" />
+
+        {/* Three rotating rings, different speeds */}
+        <g className="mw-orbit-slow" style={{ transformOrigin: "200px 140px" }}>
+          <ellipse
+            cx="200"
+            cy="140"
+            rx="135"
+            ry="72"
+            fill="none"
+            stroke="rgba(168,85,247,0.20)"
+            strokeWidth="1"
+            strokeDasharray="2 6"
+          />
+        </g>
+        <g
+          className="mw-orbit-mid"
+          style={{ transformOrigin: "200px 140px" }}
+        >
+          <ellipse
+            cx="200"
+            cy="140"
+            rx="100"
+            ry="54"
+            fill="none"
+            stroke="rgba(168,85,247,0.30)"
             strokeWidth="1"
           />
-        ))}
+          {/* Travelling particle on ring */}
+          <circle cx="300" cy="140" r="3" fill="#fff">
+            <animateMotion
+              dur="6s"
+              repeatCount="indefinite"
+              path="M 100,0 a 100,54 0 1,1 -200,0 a 100,54 0 1,1 200,0"
+            />
+          </circle>
+        </g>
+        <g className="mw-orbit-fast" style={{ transformOrigin: "200px 140px" }}>
+          <ellipse
+            cx="200"
+            cy="140"
+            rx="65"
+            ry="36"
+            fill="none"
+            stroke="rgba(168,85,247,0.40)"
+            strokeWidth="1.2"
+          />
+        </g>
 
-        <path
-          d="M0,150 C50,140 80,120 120,110 S 200,80 240,70 300,50 340,40 380,28 400,22 L400,200 L0,200 Z"
-          fill="url(#roas-fill)"
-          opacity="0.7"
-          className="mw-fill-pulse"
-        />
-        <path
-          ref={ref}
-          d="M0,150 C50,140 80,120 120,110 S 200,80 240,70 300,50 340,40 380,28 400,22"
+        {/* Central Meta logo (infinity-style ∞ from official Meta mark) */}
+        <g
+          transform="translate(160 110)"
+          className="mw-meta-breath"
+          style={{ transformOrigin: "40px 30px" }}
+        >
+          <path
+            d="M0,30 C0,12 12,0 26,0 C36,0 44,6 52,18 L60,30 L68,18 C76,6 84,0 94,0 C108,0 120,12 120,30 C120,48 108,60 94,60 C84,60 76,54 68,42 L60,30 L52,42 C44,54 36,60 26,60 C12,60 0,48 0,30 Z M14,30 C14,40 20,46 26,46 C32,46 38,40 44,30 C38,20 32,14 26,14 C20,14 14,20 14,30 Z M76,30 C82,40 88,46 94,46 C100,46 106,40 106,30 C106,20 100,14 94,14 C88,14 82,20 76,30 Z"
+            fill="url(#metaLogoGrad)"
+            style={{ filter: "drop-shadow(0 0 16px rgba(168,85,247,0.7))" }}
+            transform="scale(0.7)"
+          />
+        </g>
+
+        {/* Floating signal pulses outward from logo */}
+        <circle
+          cx="200"
+          cy="140"
+          r="0"
           fill="none"
-          stroke="url(#roas-line)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          style={{ filter: "drop-shadow(0 0 8px rgba(168,85,247,0.6))" }}
-        />
-
-        {/* Tracking dot that travels along the path */}
-        <circle r="4" fill="#fff" className="mw-trace-dot">
-          <animateMotion
-            dur="4.5s"
+          stroke="rgba(168,85,247,0.6)"
+          strokeWidth="1.5"
+        >
+          <animate attributeName="r" values="0;90" dur="3.5s" repeatCount="indefinite" />
+          <animate
+            attributeName="opacity"
+            values="0.7;0"
+            dur="3.5s"
             repeatCount="indefinite"
-            path="M0,150 C50,140 80,120 120,110 S 200,80 240,70 300,50 340,40 380,28 400,22"
+          />
+        </circle>
+        <circle
+          cx="200"
+          cy="140"
+          r="0"
+          fill="none"
+          stroke="rgba(168,85,247,0.5)"
+          strokeWidth="1.5"
+        >
+          <animate
+            attributeName="r"
+            values="0;90"
+            dur="3.5s"
+            begin="1.75s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values="0.7;0"
+            dur="3.5s"
+            begin="1.75s"
+            repeatCount="indefinite"
           />
         </circle>
       </svg>
 
-      {/* Floating tooltip */}
-      <div
-        className="absolute rounded-xl px-3 py-2 mw-drift"
+      {/* Bottom label */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium text-white/85"
         style={{
-          left: "62%",
-          top: "16%",
-          background: "rgba(20,16,32,0.92)",
-          border: "1px solid rgba(168,85,247,0.4)",
-          boxShadow:
-            "0 8px 24px -4px rgba(0,0,0,0.6), 0 0 20px -4px rgba(168,85,247,0.4)",
+          background: "rgba(168,85,247,0.12)",
+          border: "1px solid rgba(168,85,247,0.30)",
           backdropFilter: "blur(10px)",
-          minWidth: "120px",
         }}
       >
-        <div className="text-[10px] font-medium text-white/55 mb-1">
-          Apr 14, 2026
-        </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-white/85">
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: ACCENT, boxShadow: `0 0 6px ${ACCENT}` }}
-          />
-          ROAS · 4.62x
-        </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-white/55 mt-0.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-white/35" />
-          Spend · $3,840
-        </div>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: "0 0 8px #a855f7" }} />
+        Meta Marketing API · Connected
       </div>
     </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Visual #4 — Live Metric Tracking by Editor (custom dynamic leaderboard)
+// ────────────────────────────────────────────────────────────────────────────
+interface EditorRow {
+  name: string;
+  initials: string;
+  ctr: number;
+  hook: number;
+  hold: number;
+}
+
+function EditorMetricsVisual() {
+  const baseEditors: EditorRow[] = [
+    { name: "Marcus L.", initials: "ML", ctr: 3.8, hook: 42, hold: 28 },
+    { name: "Priya S.",  initials: "PS", ctr: 4.2, hook: 38, hold: 31 },
+    { name: "Jake R.",   initials: "JR", ctr: 2.9, hook: 35, hold: 22 },
+    { name: "Amina K.",  initials: "AK", ctr: 3.5, hook: 40, hold: 26 },
+  ];
+
+  const [editors, setEditors] = useState(baseEditors);
+
+  // Subtly tick the metrics every 1.6s — feels live
+  useEffect(() => {
+    const t = setInterval(() => {
+      setEditors((prev) =>
+        prev.map((e) => ({
+          ...e,
+          ctr: Math.max(2, Math.min(5.5, e.ctr + (Math.random() - 0.5) * 0.18)),
+          hook: Math.max(28, Math.min(52, e.hook + (Math.random() - 0.5) * 1.4)),
+          hold: Math.max(18, Math.min(38, e.hold + (Math.random() - 0.5) * 1.0)),
+        }))
+      );
+    }, 1600);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 px-5 pt-1 pb-5 flex flex-col gap-1.5 overflow-hidden">
+      {/* Column headers */}
+      <div className="grid grid-cols-[28px_1fr_46px_46px_46px] gap-2 px-2 text-[9px] uppercase tracking-wider text-white/35 font-semibold">
+        <span></span>
+        <span>Editor</span>
+        <span className="text-right">CTR</span>
+        <span className="text-right">Hook</span>
+        <span className="text-right">Hold</span>
+      </div>
+
+      {editors.map((e, i) => {
+        const max = Math.max(...editors.map((x) => x.hook));
+        const widthPct = (e.hook / max) * 100;
+        return (
+          <div
+            key={e.name}
+            className="relative grid grid-cols-[28px_1fr_46px_46px_46px] items-center gap-2 px-2 py-2 rounded-lg overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,0.025)",
+              border: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
+            {/* Animated bar fill behind row */}
+            <div
+              className="absolute inset-y-0 left-0 pointer-events-none"
+              style={{
+                width: `${widthPct}%`,
+                background:
+                  "linear-gradient(90deg, rgba(168,85,247,0.18), rgba(168,85,247,0.04) 80%, transparent)",
+                transition: "width 1.4s cubic-bezier(.2,.7,.2,1)",
+              }}
+            />
+
+            <div
+              className="relative w-6 h-6 rounded-md flex items-center justify-center text-[9px] font-bold text-white"
+              style={{
+                background: "linear-gradient(135deg, #a855f7, #7c3aed)",
+                boxShadow: "0 0 12px -2px rgba(168,85,247,0.6)",
+              }}
+            >
+              {e.initials}
+            </div>
+            <span className="relative text-[12px] text-white/85 font-medium truncate">
+              {e.name}
+            </span>
+            <MetricCell value={`${e.ctr.toFixed(1)}%`} accent />
+            <MetricCell value={`${e.hook.toFixed(0)}%`} />
+            <MetricCell value={`${e.hold.toFixed(0)}%`} />
+          </div>
+        );
+      })}
+
+      {/* Live indicator */}
+      <div className="absolute right-5 top-2 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wider text-[#a855f7]">
+        <span className="relative flex w-1.5 h-1.5">
+          <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
+          <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: "0 0 8px #a855f7" }} />
+        </span>
+        Live
+      </div>
+    </div>
+  );
+}
+
+function MetricCell({ value, accent }: { value: string; accent?: boolean }) {
+  // animate the numeric change with a tiny vertical slide
+  const [display, setDisplay] = useState(value);
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    if (value === display) return;
+    setPhase(1);
+    const t = setTimeout(() => {
+      setDisplay(value);
+      setPhase(0);
+    }, 180);
+    return () => clearTimeout(t);
+  }, [value, display]);
+
+  return (
+    <span
+      className="relative text-right text-[12px] font-semibold tabular-nums transition-all duration-200"
+      style={{
+        color: accent ? "#e9d5ff" : "rgba(255,255,255,0.85)",
+        transform: phase ? "translateY(-3px)" : "translateY(0)",
+        opacity: phase ? 0 : 1,
+      }}
+    >
+      {display}
+    </span>
   );
 }
 
@@ -416,14 +461,19 @@ const EditorEdge = () => {
       className="relative py-28 overflow-hidden"
       style={{ background: "#09090f" }}
     >
-      {/* Continuously drifting purple ambient glow */}
-      <div className="absolute inset-0 pointer-events-none mw-ambient" />
-
-      {/* Animated grain overlay (drifts, like moneywise) */}
-      <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
+      {/* Ambient glow + grain */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none mw-grain-bg"
+      />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
-        {/* Section header */}
         <div className="text-center mb-16">
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
@@ -463,34 +513,34 @@ const EditorEdge = () => {
             delay={0}
             title="KPI Dashboard"
             description="Real-time spend, ROAS and creative performance — synced live from Meta Ads."
-            visual={<KpiVisual />}
+            visual={<LottieVisual url={LOTTIE.smarterTracking} />}
           />
           <FeatureCard
             delay={0.1}
-            title="Connected Back-End"
-            description="Every data source unified in one portal you log into 24/7."
-            visual={<ConnectedVisual />}
+            title="Editors trained on your KPIs"
+            description="Hook rate. Hold rate. CPA. ROAS. Our team studies what your winners share — then engineers more of them."
+            visual={<LottieVisual url={LOTTIE.automate} />}
           />
           <FeatureCard
             delay={0.2}
-            title="Seamless Integrations"
-            description="Meta Ads, Google Sheets, Calendly — wired in from day one."
-            visual={<IntegrationsVisual />}
+            title="Built for Meta"
+            description="Direct Meta Marketing API integration. Spend, ROAS and creative metrics piped in live — no exports, no lag."
+            visual={<MetaIntegrationVisual />}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
           <FeatureCard
             delay={0.3}
-            title="Editors trained on your KPIs"
-            description="Hook rate. Hold rate. CPA. ROAS. Our team studies what your winners share — then engineers more of them."
-            visual={<EditorBrainVisual />}
+            title="Cash Flow Snapshot"
+            description="Monthly spend vs revenue, surfaced at a glance with the same back-end every client logs into."
+            visual={<LottieVisual url={LOTTIE.cashflow} />}
           />
           <FeatureCard
             delay={0.4}
-            title="Live ROAS Tracking"
-            description="Every dollar spent against revenue earned — visualised, day by day, in real time."
-            visual={<RoasChartVisual />}
+            title="Live editor metrics"
+            description="Track average CTR, hook rate and hold rate per editor — see exactly who&apos;s driving the curve."
+            visual={<EditorMetricsVisual />}
           />
         </div>
 
@@ -509,243 +559,63 @@ const EditorEdge = () => {
         </div>
       </div>
 
-      {/* ──────────────────────────────────────────────────────────────────
-          All animations live here — continuous, fluid, moneywise-style
-         ────────────────────────────────────────────────────────────────── */}
       <style>{`
-        /* Background ambient glow that drifts */
-        .mw-ambient {
-          background:
-            radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 35% at 20% 30%, rgba(168,85,247,0.08) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 35% at 80% 70%, rgba(168,85,247,0.10) 0%, transparent 70%);
-          animation: mw-ambient-drift 18s ease-in-out infinite alternate;
-        }
-        @keyframes mw-ambient-drift {
-          0%   { transform: translate3d(0, 0, 0) scale(1); }
-          50%  { transform: translate3d(-1.5%, 1%, 0) scale(1.03); }
-          100% { transform: translate3d(1.5%, -1%, 0) scale(1.02); }
-        }
-
-        /* Drifting grain across the section */
-        .mw-grain-bg {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-          background-size: 220px 220px;
-          mix-blend-mode: overlay;
-          opacity: 0.06;
-          animation: mw-grain-shift 8s steps(8) infinite;
-        }
-        @keyframes mw-grain-shift {
-          0%   { background-position: 0 0; }
-          25%  { background-position: -40px 30px; }
-          50%  { background-position: 40px -20px; }
-          75%  { background-position: -30px -40px; }
-          100% { background-position: 0 0; }
-        }
-
-        /* Card entrance + perpetual subtle breathing */
         .mw-card {
           opacity: 0;
           transform: translateY(20px);
           animation: mw-card-in 1s cubic-bezier(.2,.7,.2,1) forwards;
-          transition: transform .6s cubic-bezier(.2,.7,.2,1);
+          transition: transform .5s cubic-bezier(.2,.7,.2,1), border-color .5s ease, box-shadow .5s ease;
         }
         @keyframes mw-card-in {
           to { opacity: 1; transform: translateY(0); }
         }
-        .mw-card:hover { transform: translateY(-4px); }
-
-        /* Conic gradient border that slowly rotates */
-        .mw-card-border {
-          position: absolute;
-          inset: -1px;
-          border-radius: 24px;
-          padding: 1px;
-          background:
-            conic-gradient(from 0deg,
-              rgba(168,85,247,0.0) 0deg,
-              rgba(168,85,247,0.45) 60deg,
-              rgba(168,85,247,0.0) 140deg,
-              rgba(168,85,247,0.0) 220deg,
-              rgba(168,85,247,0.35) 280deg,
-              rgba(168,85,247,0.0) 360deg);
-          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-                  mask-composite: exclude;
-          opacity: 0.55;
-          animation: mw-spin 14s linear infinite;
-          pointer-events: none;
+        .mw-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(168,85,247,0.30) !important;
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.10) inset,
+            0 0 0 1px rgba(168,85,247,0.20) inset,
+            0 30px 80px -20px rgba(168,85,247,0.25),
+            0 0 60px -10px rgba(168,85,247,0.18) !important;
         }
+
+        .mw-horizon {
+          opacity: 0.55;
+          transition: opacity 0.8s ease;
+        }
+        .mw-card:hover .mw-horizon { opacity: 0.95; }
+
+        .mw-grain-bg {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+          background-size: 220px 220px;
+          mix-blend-mode: overlay;
+          opacity: 0.05;
+        }
+
+        .mw-skeleton {
+          background:
+            linear-gradient(90deg, transparent, rgba(168,85,247,0.06), transparent);
+          background-size: 200% 100%;
+          animation: mw-shimmer 1.6s infinite;
+        }
+        @keyframes mw-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+
+        .mw-orbit-slow { animation: mw-spin 28s linear infinite; }
+        .mw-orbit-mid  { animation: mw-spin 18s linear infinite reverse; }
+        .mw-orbit-fast { animation: mw-spin 12s linear infinite; }
         @keyframes mw-spin { to { transform: rotate(360deg); } }
 
-        /* Card surface */
-        .mw-card-surface {
-          background: linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%);
-          border-radius: 24px;
-          height: 100%;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          box-shadow:
-            0 1px 0 rgba(255,255,255,0.08) inset,
-            0 0 0 1px rgba(255,255,255,0.04) inset,
-            0 20px 60px -20px rgba(0,0,0,0.6);
+        .mw-meta-breath { animation: mw-breath 4.5s ease-in-out infinite; }
+        @keyframes mw-breath {
+          0%, 100% { transform: translate(160px, 110px) scale(1); }
+          50%      { transform: translate(160px, 110px) scale(1.06); }
         }
 
-        /* Top inner highlight that breathes */
-        .mw-top-line {
-          background: linear-gradient(90deg, transparent, rgba(168,85,247,0.65), transparent);
-          opacity: 0.5;
-          animation: mw-line-pulse 5s ease-in-out infinite;
-        }
-        @keyframes mw-line-pulse {
-          0%, 100% { opacity: 0.35; transform: scaleX(0.85); }
-          50%      { opacity: 0.85; transform: scaleX(1); }
-        }
-
-        /* Continuously breathing horizon glow */
-        .mw-horizon {
-          background: radial-gradient(ellipse 60% 100% at 50% 100%,
-            rgba(168,85,247,0.50) 0%,
-            rgba(168,85,247,0.12) 35%,
-            transparent 70%);
-          filter: blur(20px);
-          animation: mw-horizon-breath 6s ease-in-out infinite;
-        }
-        @keyframes mw-horizon-breath {
-          0%, 100% { opacity: 0.5;  transform: translateY(0)    scaleX(1); }
-          50%      { opacity: 0.85; transform: translateY(-6px) scaleX(1.05); }
-        }
-
-        /* Per-card grain shimmer (sweeps slowly) */
-        .mw-grain {
-          background-image:
-            url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-          background-size: 180px 180px;
-          mix-blend-mode: overlay;
-          opacity: 0.07;
-          animation: mw-grain-shift 6s steps(6) infinite reverse;
-        }
-
-        /* KPI bars: grow once, then breathe forever */
-        .mw-bar {
-          height: var(--h);
-          background: linear-gradient(180deg, rgba(168,85,247,0.95) 0%, rgba(124,58,237,0.45) 100%);
-          box-shadow: 0 0 20px rgba(168,85,247,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
-          transform-origin: bottom;
-          animation:
-            mw-bar-in 1.2s var(--delay) ease-out backwards,
-            mw-bar-breathe 3.6s var(--delay) ease-in-out infinite;
-        }
-        @keyframes mw-bar-in {
-          from { transform: scaleY(0); opacity: 0; }
-          to   { transform: scaleY(1); opacity: 1; }
-        }
-        @keyframes mw-bar-breathe {
-          0%, 100% { transform: scaleY(1);    filter: brightness(1); }
-          50%      { transform: scaleY(0.94); filter: brightness(1.15); }
-        }
-        .mw-bar-sheen {
-          background: linear-gradient(180deg, transparent, rgba(255,255,255,0.18), transparent);
-          transform: translateY(-100%);
-          animation: mw-sheen 4.2s ease-in-out infinite;
-        }
-        @keyframes mw-sheen {
-          0%   { transform: translateY(-100%); }
-          50%  { transform: translateY(100%); }
-          100% { transform: translateY(100%); }
-        }
-
-        /* Drifting pill / tooltip */
-        .mw-drift { animation: mw-drift 6s ease-in-out infinite; }
-        @keyframes mw-drift {
-          0%, 100% { transform: translate(-50%, 0) translateY(0); }
-          50%      { transform: translate(-50%, 0) translateY(-5px); }
-        }
-        /* tooltip override (no -50% center) */
-        .mw-card .mw-drift:not(.text-white\\/85) {}
-        .mw-pulse-icon { animation: mw-icon-pulse 2.4s ease-in-out infinite; }
-        @keyframes mw-icon-pulse {
-          0%, 100% { transform: scale(1);    opacity: 1; }
-          50%      { transform: scale(1.18); opacity: 0.85; }
-        }
-
-        /* Chips drift on different phases */
-        .mw-chip {
-          transform: translateX(var(--x));
-          animation: mw-chip-float 5.5s var(--delay) ease-in-out infinite;
-        }
-        @keyframes mw-chip-float {
-          0%, 100% { transform: translateX(var(--x)) translateY(0); box-shadow: 0 0 24px -6px rgba(168,85,247,0.40), inset 0 1px 0 rgba(255,255,255,0.06); }
-          50%      { transform: translateX(var(--x)) translateY(-6px); box-shadow: 0 0 32px -4px rgba(168,85,247,0.55), inset 0 1px 0 rgba(255,255,255,0.10); }
-        }
-
-        /* Integration tiles float continuously */
-        .mw-icon-tile {
-          animation: mw-tile-float 5s var(--delay) ease-in-out infinite;
-        }
-        @keyframes mw-tile-float {
-          0%, 100% { transform: translateY(0)   rotate(-1deg); }
-          50%      { transform: translateY(-8px) rotate(1deg); }
-        }
-        .mw-rotor {
-          background: radial-gradient(circle, rgba(168,85,247,0.40) 0%, transparent 65%);
-          filter: blur(28px);
-          animation: mw-rotor-spin 16s linear infinite, mw-rotor-pulse 5s ease-in-out infinite;
-        }
-        @keyframes mw-rotor-spin  { to { transform: translate(-50%,-50%) rotate(360deg); } }
-        @keyframes mw-rotor-pulse {
-          0%, 100% { opacity: 0.7; }
-          50%      { opacity: 1;   }
-        }
-
-        /* Editor stats drift on opposite phases */
-        .mw-stat     { animation: mw-stat-float 5.5s ease-in-out infinite; }
-        .mw-stat-alt { animation: mw-stat-float 5.5s ease-in-out infinite; animation-delay: -2.75s; }
-        @keyframes mw-stat-float {
-          0%, 100% { transform: translateY(0); }
-          50%      { transform: translateY(-6px); }
-        }
-        .mw-wave-shift {
-          animation: mw-wave-pan 12s linear infinite;
-        }
-        @keyframes mw-wave-pan {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-40px); }
-        }
-
-        /* ROAS line: continuously redraws */
-        @keyframes mw-draw {
-          0%   { stroke-dashoffset: var(--len); }
-          50%  { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: 0; }
-        }
-        .mw-fill-pulse { animation: mw-fill-pulse 4.5s ease-in-out infinite; }
-        @keyframes mw-fill-pulse {
-          0%, 100% { opacity: 0.55; }
-          50%      { opacity: 0.85; }
-        }
-        .mw-trace-dot { filter: drop-shadow(0 0 8px rgba(168,85,247,0.95)); }
-
-        /* Respect reduced motion */
         @media (prefers-reduced-motion: reduce) {
-          .mw-card,
-          .mw-card-border,
-          .mw-top-line,
-          .mw-horizon,
-          .mw-grain,
-          .mw-grain-bg,
-          .mw-ambient,
-          .mw-bar,
-          .mw-bar-sheen,
-          .mw-drift,
-          .mw-pulse-icon,
-          .mw-chip,
-          .mw-icon-tile,
-          .mw-rotor,
-          .mw-stat,
-          .mw-stat-alt,
-          .mw-wave-shift,
-          .mw-fill-pulse {
+          .mw-card, .mw-orbit-slow, .mw-orbit-mid, .mw-orbit-fast, .mw-meta-breath, .mw-skeleton {
             animation: none !important;
           }
         }
