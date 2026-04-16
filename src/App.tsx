@@ -18,6 +18,9 @@ import ClientDetail from "./pages/admin/ClientDetail";
 import ClientForm from "./pages/admin/ClientForm";
 import PlaybookBuilder from "./pages/admin/PlaybookBuilder";
 import AdminPlaybookView from "./pages/admin/AdminPlaybookView";
+import MockClientDashboard from "./pages/mock/MockClientDashboard";
+import MockAdsDashboard from "./pages/mock/MockAdsDashboard";
+import MockPerformanceDashboard from "./pages/mock/MockPerformanceDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +48,11 @@ const App = () => (
             <Route path="/admin/clients/:clientId" element={<AuthGuard requireAdmin><ClientDetail /></AuthGuard>} />
             <Route path="/admin/clients/:clientId/playbook" element={<AuthGuard requireAdmin><PlaybookBuilder /></AuthGuard>} />
             <Route path="/admin/clients/:clientId/playbook-view" element={<AuthGuard requireAdmin><AdminPlaybookView /></AuthGuard>} />
+
+            {/* Mock / Demo */}
+            <Route path="/mock" element={<MockClientDashboard />} />
+            <Route path="/mock/ads" element={<MockAdsDashboard />} />
+            <Route path="/mock/performance" element={<MockPerformanceDashboard />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
