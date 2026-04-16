@@ -973,7 +973,7 @@ const EditorEdge = () => {
           <FeatureCard
             delay={0.2}
             title="KPI Dashboard"
-            description="CTR, hook rate, hold rate, ROAS and CPA. Streaming live across every editor on your account, in one shared view."
+            description="ROAS front and centre, with CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving."
             visual={<KpiDashboardVisual />}
           />
         </div>
