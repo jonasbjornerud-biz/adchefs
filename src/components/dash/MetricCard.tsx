@@ -4,7 +4,7 @@ import { GlassCard } from './GlassCard';
 
 interface MetricCardProps {
   label: string;
-  value: string | number;
+  value?: string | number;
   numericValue?: number;          // for count-up animation
   prefix?: string;                // e.g. '$'
   suffix?: string;                // e.g. '%', 'x'
