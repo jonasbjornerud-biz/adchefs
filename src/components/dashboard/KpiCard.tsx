@@ -78,6 +78,23 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, accent = 
       {/* Top sheen */}
       <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${a.glow}, transparent)` }} />
 
+      {/* Hover purple bloom from top edge (matches reference) */}
+      <div
+        className="absolute inset-x-0 top-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          height: '70%',
+          background: `radial-gradient(ellipse 70% 100% at 50% 0%, ${a.glow} 0%, transparent 65%)`,
+        }}
+      />
+      {/* Hover top highlight line */}
+      <div
+        className="absolute inset-x-6 top-0 h-px pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${a.stroke}, transparent)`,
+          boxShadow: `0 0 12px ${a.stroke}`,
+        }}
+      />
+
       <div className="flex items-start justify-between relative">
         <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-white/50 flex items-center gap-1.5">
           <span className="w-1 h-1 rounded-full" style={{ background: a.stroke, boxShadow: `0 0 6px ${a.glow}` }} />
