@@ -49,6 +49,11 @@ const App = () => (
             <Route path="/admin/clients/:clientId/playbook" element={<AuthGuard requireAdmin><PlaybookBuilder /></AuthGuard>} />
             <Route path="/admin/clients/:clientId/playbook-view" element={<AuthGuard requireAdmin><AdminPlaybookView /></AuthGuard>} />
 
+            {/* Mock / Demo */}
+            <Route path="/mock" element={<MockClientDashboard />} />
+            <Route path="/mock/ads" element={<MockAdsDashboard />} />
+            <Route path="/mock/performance" element={<MockPerformanceDashboard />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
