@@ -9,27 +9,21 @@ import { OverviewChart } from "@/components/dashboard/OverviewChart";
 import { DateRangePicker } from "@/components/dashboard/DateRangePicker";
 import { AdMetric } from "@/data/mockAds";
 import { useMetaAds } from "@/hooks/useMetaAds";
-import { supabase } from "@/integrations/supabase/client";
+import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
 import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const MetaAdsDashboard = () => {
   const navigate = useNavigate();
   const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
-  const [brandName, setBrandName] = useState<string>("");
+  const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 13),
     to: new Date(),
   });
 
-  useEffect(() => {
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase.from("clients").select("brand_name").eq("user_id", user.id).maybeSingle();
-      if (data) setBrandName(data.brand_name);
-    })();
-  }, []);
+
+
 
   const since = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : undefined;
   const until = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : undefined;
