@@ -104,6 +104,7 @@ export function generateMockAds(): AdMetric[] {
       hookRate: videoViews > 0 ? Math.round((threeSecViews / videoViews) * 10000) / 100 : 0,
       holdRate: threeSecViews > 0 ? Math.round((completedViews / threeSecViews) * 10000) / 100 : 0,
       thumbnail: "",
+      videoUrl: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
       dailyData: daily,
     } as AdMetric;
   });
