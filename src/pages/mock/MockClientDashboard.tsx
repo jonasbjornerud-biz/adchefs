@@ -1,11 +1,50 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, BarChart3, TrendingUp, ArrowUpRight, FileSpreadsheet, Zap } from 'lucide-react';
 import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
+import { WtdStats } from '@/components/dashboard/WtdStats';
+import { getWeekToDateRange, formatCurrency, formatNumber } from '@/lib/weekToDate';
+import { generateMockAds, generateMockPerformanceData } from '@/data/mockDemoData';
 
 const BRAND = 'MOCK';
 
 export default function MockClientDashboard() {
   const navigate = useNavigate();
+
+  const wtd = useMemo(() => getWeekToDateRange(), []);
+
+  // Editor Performance WTD: count videos delivered in last N days from mock data
+  const performanceStats = useMemo(() => {
+    const data = generateMockPerformanceData();
+    // Mock data isn't tied to real dates — simulate by sampling N days proportionally
+    const daysFraction = wtd.daysCount / 28; // ~4 weeks of mock data
+    const totalVideos = data.eod.reduce((s, r) => s + Number(r['Videos Delivered'] || 0), 0);
+    const wtdVideos = Math.round(totalVideos * daysFraction * 0.25);
+    const activeEditors = new Set(data.eod.map((r) => r.Name)).size;
+    return [
+      { label: 'Videos delivered', value: formatNumber(wtdVideos) },
+      { label: 'Active editors', value: String(activeEditors) },
+    ];
+  }, [wtd.daysCount]);
+
+  // KPI Dashboard WTD: sum spend & avg ROAS over last N days from mock daily data
+  const adsStats = useMemo(() => {
+    const ads = generateMockAds();
+    let spend = 0;
+    let revenue = 0;
+    ads.forEach((ad) => {
+      const recent = (ad as any).dailyData?.slice(-wtd.daysCount) ?? [];
+      recent.forEach((d: any) => {
+        spend += d.spend || 0;
+        revenue += d.revenue || 0;
+      });
+    });
+    const roas = spend > 0 ? revenue / spend : 0;
+    return [
+      { label: 'Ad spend', value: formatCurrency(spend) },
+      { label: 'ROAS', value: `${roas.toFixed(2)}x` },
+    ];
+  }, [wtd.daysCount]);
 
   const cards = [
     {
@@ -17,6 +56,7 @@ export default function MockClientDashboard() {
       statusLabel: 'Sheet API connected',
       statusIcon: FileSpreadsheet,
       cta: 'Open Performance',
+      stats: performanceStats,
     },
     {
       title: 'KPI Dashboard',
@@ -27,6 +67,7 @@ export default function MockClientDashboard() {
       statusLabel: 'Meta API connected',
       statusIcon: Zap,
       cta: 'Open Dashboard',
+      stats: adsStats,
     },
   ];
 
@@ -127,9 +168,11 @@ export default function MockClientDashboard() {
                   </div>
 
                   <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">{card.title}</h3>
-                  <p className="text-sm text-white/45 leading-relaxed mb-6 flex-1">{card.description}</p>
+                  <p className="text-sm text-white/45 leading-relaxed">{card.description}</p>
 
-                  <div className="flex items-center justify-between pt-5 border-t border-white/[0.05]">
+                  <WtdStats rangeLabel={wtd.label} stats={card.stats} accent={card.accent} />
+
+                  <div className="flex items-center justify-between pt-5 border-t border-white/[0.05] mt-auto">
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-medium tracking-wide" style={{ background: `${accent}12`, border: `1px solid ${accent}30`, color: accent }}>
                       <span className="relative flex w-1.5 h-1.5">
                         <span className="absolute inset-0 rounded-full animate-ping" style={{ background: accent, opacity: 0.6 }} />
