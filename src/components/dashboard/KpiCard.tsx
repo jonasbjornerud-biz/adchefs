@@ -8,10 +8,16 @@ interface KpiCardProps {
   delay?: number;
 }
 
+function responsiveSize(value: string): string {
+  if (value.length > 8) return "text-2xl";
+  if (value.length > 6) return "text-3xl";
+  return "text-4xl";
+}
+
 export function KpiCard({ label, value, icon, trend, delay = 0 }: KpiCardProps) {
   return (
     <div
-      className="group bg-[#111118] rounded-2xl p-6 flex flex-col gap-3 transition-all duration-200 cursor-default animate-card-enter"
+      className="group bg-[#111118] rounded-2xl p-6 flex flex-col gap-3 transition-all duration-200 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0"
       style={{
         boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)',
         animationDelay: `${delay}ms`,
@@ -29,10 +35,10 @@ export function KpiCard({ label, value, icon, trend, delay = 0 }: KpiCardProps) 
         </span>
         <span className="text-white/30">{icon}</span>
       </div>
-      <div className="flex items-end gap-3">
-        <span className="font-black text-4xl text-white leading-none">{value}</span>
+      <div className="flex flex-col gap-1">
+        <span className={`font-black text-white leading-none whitespace-nowrap ${responsiveSize(value)}`}>{value}</span>
         {trend && (
-          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+          <span className={`inline-flex items-center self-start rounded-full px-2 py-0.5 text-xs font-medium ${
             trend.positive
               ? "bg-emerald-500/10 text-emerald-400"
               : "bg-red-500/10 text-red-400"
