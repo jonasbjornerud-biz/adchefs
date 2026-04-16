@@ -101,10 +101,10 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
             <feGaussianBlur stdDeviation="1.5" />
           </filter>
         </defs>
-        <path className="horizon-arc-fill" d="M -50 260 Q 600 -20 1250 260 Z" fill="url(#horizon-fill)" />
+        <path className="horizon-arc-fill" d="M -50 260 Q 600 100 1250 260 Z" fill="url(#horizon-fill)" />
         <path
           className="horizon-arc-line"
-          d="M -50 260 Q 600 -10 1250 260"
+          d="M -50 260 Q 600 110 1250 260"
           fill="none"
           stroke="url(#horizon-arc)"
           strokeWidth="2.5"
@@ -112,7 +112,7 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
         />
         <path
           className="horizon-arc-line"
-          d="M -50 260 Q 600 -10 1250 260"
+          d="M -50 260 Q 600 110 1250 260"
           fill="none"
           stroke="url(#horizon-arc)"
           strokeWidth="1"
