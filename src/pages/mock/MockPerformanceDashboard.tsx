@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { RefreshCw, FileBarChart, TrendingUp, ArrowLeft, CheckCircle2, Users } from 'lucide-react';
 import { KpiCard } from '@/components/dashboard/KpiCard';
+import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 import { generateMockPerformanceData, MockPerformanceData } from '@/data/mockDemoData';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
