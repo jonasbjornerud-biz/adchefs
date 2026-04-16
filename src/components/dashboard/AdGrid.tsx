@@ -1,6 +1,6 @@
 import { AdMetric } from "@/data/mockAds";
 import { useState } from "react";
-import { Play, Eye, MousePointerClick, DollarSign, TrendingUp, ArrowUpDown } from "lucide-react";
+import { Play, Eye, MousePointerClick, DollarSign, TrendingUp, ArrowUpDown, ExternalLink } from "lucide-react";
 
 interface AdGridProps {
   ads: AdMetric[];
@@ -113,13 +113,19 @@ export function AdGrid({ ads, onSelect }: AdGridProps) {
                 </div>
               )}
 
-              {/* Play overlay for image-only ads */}
-              {!ad.videoUrl && (
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* Play overlay — for non-video ads, link to Ads Manager */}
+              {!ad.videoUrl && ad.adManagerUrl && (
+                <a
+                  href={ad.adManagerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
                   <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center border border-white/20">
-                    <Play className="w-5 h-5 text-white fill-white" />
+                    <ExternalLink className="w-5 h-5 text-white" />
                   </div>
-                </div>
+                </a>
               )}
 
               {/* Status pill */}
