@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { subDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { KpiCard } from "@/components/dashboard/KpiCard";
-import { AdTable } from "@/components/dashboard/AdTable";
+import { AdGrid } from "@/components/dashboard/AdGrid";
 import { AdDetailPanel } from "@/components/dashboard/AdDetailPanel";
 import { OverviewChart } from "@/components/dashboard/OverviewChart";
 import { DateRangePicker } from "@/components/dashboard/DateRangePicker";
