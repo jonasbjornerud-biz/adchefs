@@ -17,6 +17,7 @@ export interface AdMetric {
   hookRate: number;
   holdRate: number;
   thumbnail: string;
+  videoUrl?: string;
   dailyData: { date: string; spend: number; conversions: number; clicks: number; impressions: number; revenue: number }[];
 }
 
