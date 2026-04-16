@@ -53,6 +53,22 @@ const campaigns = [
   "Testing – New Creatives",
 ];
 
+// Sample video URLs for demo (public domain / sample videos)
+const SAMPLE_VIDEOS = [
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+];
+
 export function generateMockAds(): AdMetric[] {
   const dailyBudget = 120000 / 30; // $4000/day total
   const adCount = 12;
@@ -88,6 +104,7 @@ export function generateMockAds(): AdMetric[] {
       hookRate: videoViews > 0 ? Math.round((threeSecViews / videoViews) * 10000) / 100 : 0,
       holdRate: threeSecViews > 0 ? Math.round((completedViews / threeSecViews) * 10000) / 100 : 0,
       thumbnail: "",
+      videoUrl: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
       dailyData: daily,
     } as AdMetric;
   });
