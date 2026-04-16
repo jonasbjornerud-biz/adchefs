@@ -405,9 +405,9 @@
   .hero-dotgrid {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
-    background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1.5px);
+    background-image: radial-gradient(rgba(139, 92, 246, 0.20) 1px, transparent 1.5px);
     background-size: 24px 24px;
     background-position: 0 0;
   }
@@ -415,28 +415,26 @@
   .hero-spotlight {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
-    background-image: radial-gradient(rgba(139, 92, 246, 0.5) 1px, transparent 1.5px);
+    background-image: radial-gradient(rgba(139, 92, 246, 0.55) 1px, transparent 1.5px);
     background-size: 24px 24px;
     background-position: 0 0;
-    -webkit-mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-            mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
     animation: spotlight-drift 20s ease-in-out infinite;
-    will-change: mask-position, -webkit-mask-position;
+    will-change: -webkit-mask-image, mask-image;
   }
 
   @keyframes spotlight-drift {
-    0%   { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    25%  { -webkit-mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    50%  { -webkit-mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    75%  { -webkit-mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    100% { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    0%   { -webkit-mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    25%  { -webkit-mask-image: radial-gradient(circle 280px at 78% 22%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 78% 22%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    50%  { -webkit-mask-image: radial-gradient(circle 280px at 82% 78%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 82% 78%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    75%  { -webkit-mask-image: radial-gradient(circle 280px at 22% 72%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 22% 72%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    100% { -webkit-mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
   }
 
   /* ── CTA clean glow + shimmer sweep ── */
