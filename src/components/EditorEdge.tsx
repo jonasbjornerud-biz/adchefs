@@ -1,84 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, GraduationCap } from "lucide-react";
+import { ArrowRight, Sparkles, Brain, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ACCENT = "#a855f7";
-
-// Moneywise's actual Lottie animations (publicly hosted)
-const LOTTIE = {
-  smarterTracking:
-    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3dce38346f6ce873258_smarter%20tracking.json",
-};
-
-// ────────────────────────────────────────────────────────────────────────────
-// Lottie loader — recolors to brand purple AND rewrites text layers
-// ────────────────────────────────────────────────────────────────────────────
-function transformLottie(data: any, textMap?: Record<string, string>): any {
-  const palette: [number, number, number][] = [
-    [0.486, 0.227, 0.929],
-    [0.659, 0.333, 0.969],
-    [0.753, 0.518, 0.988],
-    [0.914, 0.835, 1.0],
-  ];
-  let idx = 0;
-  const pickColor = () => palette[idx++ % palette.length];
-
-  const visit = (node: any): void => {
-    if (!node || typeof node !== "object") return;
-    if (node.ty === "fl" || node.ty === "st") {
-      if (node.c && Array.isArray(node.c.k)) {
-        const k = node.c.k;
-        if (typeof k[0] === "number") {
-          const [r, g, b] = pickColor();
-          node.c.k = [r, g, b, k[3] ?? 1];
-        }
-      }
-    }
-    if (node.ty === "gf" || node.ty === "gs") {
-      if (node.g && Array.isArray(node.g.k?.k)) {
-        const stops = node.g.k.k;
-        for (let i = 0; i + 3 < stops.length; i += 4) {
-          const [r, g, b] = pickColor();
-          stops[i + 1] = r;
-          stops[i + 2] = g;
-          stops[i + 3] = b;
-        }
-      }
-    }
-    if (node.ty === 5 && node.t?.d?.k) {
-      for (const k of node.t.d.k) {
-        const cur = k?.s?.t;
-        if (typeof cur === "string" && textMap && textMap[cur] !== undefined) {
-          k.s.t = textMap[cur];
-        }
-      }
-    }
-    for (const key of Object.keys(node)) {
-      const v = node[key];
-      if (Array.isArray(v)) v.forEach(visit);
-      else if (typeof v === "object") visit(v);
-    }
-  };
-  const cloned = JSON.parse(JSON.stringify(data));
-  visit(cloned);
-  return cloned;
-}
-
-function useLottieJson(url: string, textMap?: Record<string, string>) {
-  const [raw, setRaw] = useState<any | null>(null);
-  useEffect(() => {
-    let alive = true;
-    fetch(url)
-      .then((r) => r.json())
-      .then((j) => { if (alive) setRaw(j); })
-      .catch(() => {});
-    return () => { alive = false; };
-  }, [url]);
-  const mapKey = textMap ? JSON.stringify(textMap) : "";
-  return useMemo(() => (raw ? transformLottie(raw, textMap) : null), [raw, mapKey]);
-}
 
 // ────────────────────────────────────────────────────────────────────────────
 // Card shell
@@ -110,6 +35,7 @@ function FeatureCard({
           "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
     >
+      {/* Top edge highlight */}
       <div
         className="absolute inset-x-8 top-0 h-px pointer-events-none"
         style={{
@@ -117,6 +43,7 @@ function FeatureCard({
             "linear-gradient(90deg, transparent, rgba(168,85,247,0.55), transparent)",
         }}
       />
+      {/* Horizon glow */}
       <div
         className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon"
         style={{
@@ -135,59 +62,433 @@ function FeatureCard({
         </p>
       </div>
 
-      <div className="relative h-[260px]">{visual}</div>
+      <div className="relative h-[280px] overflow-hidden">
+        {visual}
+        {/* Purple-tinted grain overlay (per visual) */}
+        <div className="absolute inset-0 pointer-events-none mw-grain-purple" />
+      </div>
     </div>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Visual: Lottie wrapper
-// ────────────────────────────────────────────────────────────────────────────
-function LottieVisual({
-  url,
-  textMap,
-}: {
-  url: string;
-  textMap?: Record<string, string>;
-}) {
-  const data = useLottieJson(url, textMap);
-  const ref = useRef<LottieRefCurrentProps>(null);
-  if (!data) {
-    return <div className="absolute inset-0 mw-skeleton" />;
-  }
-  return (
-    <div className="absolute inset-0 flex items-end justify-center">
-      <Lottie
-        lottieRef={ref}
-        animationData={data}
-        loop
-        autoplay
-        rendererSettings={{ preserveAspectRatio: "xMidYMax slice" }}
-        style={{ width: "100%", height: "100%" }}
-      />
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual: KPI Dashboard graph (CTR, Hook, Hold, ROAS, CPA)
-// ────────────────────────────────────────────────────────────────────────────
-const KPI_DEFS = [
-  { key: "ctr",  label: "CTR",  unit: "%",  color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number] },
-  { key: "hook", label: "Hook", unit: "%",  color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number] },
-  { key: "hold", label: "Hold", unit: "%",  color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number] },
-  { key: "roas", label: "ROAS", unit: "x",  color: "#d8b4fe", base: 3.4,  amp: 0.3, range: [1.8, 5.2] as [number, number] },
-  { key: "cpa",  label: "CPA",  unit: "€",  color: "#7c3aed", base: 22,   amp: 2,   range: [12, 38]   as [number, number] },
+// ════════════════════════════════════════════════════════════════════════════
+// VISUAL 1: Trained on your KPIs — Neural network "Editor Brain"
+// ════════════════════════════════════════════════════════════════════════════
+const BRAIN_NODES = [
+  { id: "hook",  label: "Hook",      x: 12, y: 22, value: "42%" },
+  { id: "hold",  label: "Hold",      x: 12, y: 50, value: "31%" },
+  { id: "ctr",   label: "CTR",       x: 12, y: 78, value: "3.4%" },
+  { id: "roas",  label: "ROAS",      x: 88, y: 22, value: "4.2x" },
+  { id: "cpa",   label: "CPA",       x: 88, y: 50, value: "€19" },
+  { id: "thumb", label: "Thumbstop", x: 88, y: 78, value: "58%" },
 ];
 
-const POINTS = 36;
-const TICK_MS = 900;
+function EditorBrainVisual() {
+  const W = 400, H = 280;
+  const center = { x: W / 2, y: H / 2 - 6 };
 
-function smoothStep(prev: number, target: number, k = 0.35) {
+  return (
+    <div className="absolute inset-0">
+      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="brainGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.55)" />
+            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+          </radialGradient>
+          <linearGradient id="brainCore" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#c084fc" />
+            <stop offset="100%" stopColor="#7c3aed" />
+          </linearGradient>
+          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
+
+        {/* Ambient glow */}
+        <ellipse cx={center.x} cy={center.y} rx="160" ry="100" fill="url(#brainGlow)" />
+
+        {/* Connection lines from each node to brain */}
+        {BRAIN_NODES.map((n, i) => {
+          const x = (n.x / 100) * W;
+          const y = (n.y / 100) * H;
+          // curved path via control point
+          const cx = (x + center.x) / 2;
+          const cy = (y + center.y) / 2 + (i % 2 ? 18 : -18);
+          const d = `M ${x},${y} Q ${cx},${cy} ${center.x},${center.y}`;
+          return (
+            <g key={n.id}>
+              <path d={d} fill="none" stroke="rgba(168,85,247,0.18)" strokeWidth="1" />
+              {/* Pulse traveling along path */}
+              <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
+                <animateMotion dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" path={d} />
+                <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" />
+              </circle>
+              {/* Secondary slower pulse for depth */}
+              <circle r="1.4" fill="#fff" opacity="0.7">
+                <animateMotion dur={`${3.4 + i * 0.22}s`} begin={`${i * 0.4}s`} repeatCount="indefinite" path={d} />
+              </circle>
+            </g>
+          );
+        })}
+
+        {/* Center hexagonal brain */}
+        <g style={{ transformOrigin: `${center.x}px ${center.y}px` }} className="mw-breath">
+          {/* Outer hex */}
+          <polygon
+            points={hexPoints(center.x, center.y, 44)}
+            fill="none"
+            stroke="rgba(168,85,247,0.45)"
+            strokeWidth="1"
+            style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
+          />
+          {/* Inner filled hex */}
+          <polygon
+            points={hexPoints(center.x, center.y, 32)}
+            fill="url(#brainCore)"
+            opacity="0.95"
+            style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.8))" }}
+          />
+          {/* Inner accents */}
+          <polygon
+            points={hexPoints(center.x, center.y, 18)}
+            fill="none"
+            stroke="rgba(255,255,255,0.5)"
+            strokeWidth="1"
+          />
+        </g>
+
+        {/* Pulse ring */}
+        <polygon
+          points={hexPoints(center.x, center.y, 32)}
+          fill="none"
+          stroke="rgba(168,85,247,0.6)"
+          strokeWidth="1.5"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            additive="sum"
+            values="1;1.8"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+          <animate attributeName="opacity" values="0.7;0" dur="2.6s" repeatCount="indefinite" />
+        </polygon>
+      </svg>
+
+      {/* Center brain icon overlay */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ marginTop: -6 }}>
+        <Brain className="w-7 h-7 text-white" style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))" }} />
+      </div>
+
+      {/* KPI nodes */}
+      {BRAIN_NODES.map((n, i) => (
+        <div
+          key={n.id}
+          className="absolute"
+          style={{
+            left: `${n.x}%`,
+            top: `${n.y}%`,
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <div
+            className="mw-node-pulse flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md"
+            style={{
+              background: "rgba(20,16,32,0.85)",
+              border: "1px solid rgba(168,85,247,0.45)",
+              boxShadow: "0 0 14px rgba(168,85,247,0.35)",
+              animationDelay: `${i * 0.25}s`,
+            }}
+          >
+            <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
+            <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function hexPoints(cx: number, cy: number, r: number): string {
+  const pts: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    const a = (Math.PI / 3) * i - Math.PI / 2;
+    pts.push(`${(cx + r * Math.cos(a)).toFixed(2)},${(cy + r * Math.sin(a)).toFixed(2)}`);
+  }
+  return pts.join(" ");
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// VISUAL 2: Editor Delivery Tracker — animated stacked bars
+// Delivered vs approved videos per editor per week (6-10/week)
+// ════════════════════════════════════════════════════════════════════════════
+const DELIVERY_EDITORS = [
+  { name: "Liam",  color: "#a855f7" },
+  { name: "Sofia", color: "#c084fc" },
+  { name: "Noah",  color: "#7c3aed" },
+  { name: "Iris",  color: "#d8b4fe" },
+];
+
+const DELIVERY_WEEKS = 6;
+
+function EditorDeliveryTrackerVisual() {
+  const [activeEditor, setActiveEditor] = useState(0);
+  const [animKey, setAnimKey] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setActiveEditor((x) => (x + 1) % DELIVERY_EDITORS.length);
+      setAnimKey((k) => k + 1);
+    }, 2800);
+    return () => clearInterval(t);
+  }, []);
+
+  const data = useMemo(() => {
+    const out: Record<string, { delivered: number; approved: number }[]> = {};
+    DELIVERY_EDITORS.forEach((e) => {
+      let seed = e.name.charCodeAt(0) * 11 + e.name.charCodeAt(1) * 3;
+      const rand = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      const arr = [];
+      for (let i = 0; i < DELIVERY_WEEKS; i++) {
+        const delivered = 6 + Math.floor(rand() * 5);
+        const approved = Math.max(4, delivered - Math.floor(rand() * 3));
+        arr.push({ delivered, approved: Math.min(approved, delivered) });
+      }
+      out[e.name] = arr;
+    });
+    return out;
+  }, []);
+
+  const W = 400, H = 280;
+  const PAD_X = 28, PAD_TOP = 44, PAD_BOTTOM = 56;
+  const innerW = W - PAD_X * 2;
+  const innerH = H - PAD_TOP - PAD_BOTTOM;
+  const groupW = innerW / DELIVERY_WEEKS;
+  const barW = (groupW - 8) / 2;
+  const maxVal = 12;
+
+  const activeName = DELIVERY_EDITORS[activeEditor].name;
+  const activeColor = DELIVERY_EDITORS[activeEditor].color;
+  const activeData = data[activeName];
+  const totalDelivered = activeData.reduce((s, d) => s + d.delivered, 0);
+  const totalApproved = activeData.reduce((s, d) => s + d.approved, 0);
+  const approvalRate = Math.round((totalApproved / totalDelivered) * 100);
+
+  return (
+    <div className="absolute inset-0 px-3 pt-2">
+      {/* Top header */}
+      <div className="absolute left-5 top-3 right-5 flex items-center justify-between z-10">
+        <div className="flex items-center gap-2">
+          <div
+            className="w-2 h-2 rounded-full mw-blink"
+            style={{ background: activeColor, boxShadow: `0 0 8px ${activeColor}` }}
+          />
+          <div className="text-[11px] uppercase tracking-wider font-semibold text-white">
+            {activeName}
+          </div>
+          <div className="text-[10px] font-medium text-white/40">· last 6 weeks</div>
+        </div>
+        <div className="flex items-baseline gap-1">
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Approval</span>
+          <span
+            key={`rate-${animKey}`}
+            className="text-[14px] font-bold tabular-nums mw-fade-in"
+            style={{ color: activeColor, textShadow: `0 0 12px ${activeColor}99` }}
+          >
+            {approvalRate}%
+          </span>
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id={`delGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={activeColor} stopOpacity="0.45" />
+            <stop offset="100%" stopColor={activeColor} stopOpacity="0.08" />
+          </linearGradient>
+          <linearGradient id={`appGrad-${activeEditor}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={activeColor} stopOpacity="1" />
+            <stop offset="100%" stopColor={activeColor} stopOpacity="0.55" />
+          </linearGradient>
+        </defs>
+
+        {/* Y-axis gridlines with labels */}
+        {[0, 4, 8, 12].map((v) => {
+          const y = PAD_TOP + innerH - (v / maxVal) * innerH;
+          return (
+            <g key={v}>
+              <line
+                x1={PAD_X}
+                x2={W - PAD_X}
+                y1={y}
+                y2={y}
+                stroke="rgba(255,255,255,0.06)"
+                strokeWidth="1"
+                strokeDasharray={v === 0 ? "0" : "2 4"}
+              />
+              <text
+                x={PAD_X - 6}
+                y={y + 3}
+                textAnchor="end"
+                fontSize="8"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="600"
+                fill="rgba(255,255,255,0.30)"
+              >
+                {v}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Bars per week */}
+        {activeData.map((d, i) => {
+          const gx = PAD_X + i * groupW + 4;
+          const dH = (d.delivered / maxVal) * innerH;
+          const aH = (d.approved / maxVal) * innerH;
+          const dY = PAD_TOP + innerH - dH;
+          const aY = PAD_TOP + innerH - aH;
+          return (
+            <g key={`${animKey}-${i}`}>
+              {/* Delivered bar (back) */}
+              <rect
+                x={gx}
+                y={dY}
+                width={barW}
+                height={dH}
+                rx="3"
+                fill={`url(#delGrad-${activeEditor})`}
+                stroke={activeColor}
+                strokeOpacity="0.35"
+                strokeWidth="1"
+                style={{
+                  transformOrigin: `${gx + barW / 2}px ${PAD_TOP + innerH}px`,
+                  animation: `mw-bar-grow 0.9s cubic-bezier(.22,.9,.3,1) ${i * 0.06}s both`,
+                  filter: `drop-shadow(0 0 6px ${activeColor}55)`,
+                }}
+              />
+              {/* Approved bar (front) */}
+              <rect
+                x={gx + barW + 4}
+                y={aY}
+                width={barW}
+                height={aH}
+                rx="3"
+                fill={`url(#appGrad-${activeEditor})`}
+                style={{
+                  transformOrigin: `${gx + barW + 4 + barW / 2}px ${PAD_TOP + innerH}px`,
+                  animation: `mw-bar-grow 0.9s cubic-bezier(.22,.9,.3,1) ${i * 0.06 + 0.12}s both`,
+                  filter: `drop-shadow(0 0 8px ${activeColor})`,
+                }}
+              />
+              {/* Approved value label */}
+              <text
+                x={gx + barW + 4 + barW / 2}
+                y={aY - 4}
+                textAnchor="middle"
+                fontSize="9"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="700"
+                fill="#fff"
+                style={{
+                  opacity: 0,
+                  animation: `mw-fade-in 0.6s ease ${i * 0.06 + 0.4}s forwards`,
+                }}
+              >
+                {d.approved}
+              </text>
+              {/* Week label */}
+              <text
+                x={gx + barW + 2}
+                y={H - PAD_BOTTOM + 14}
+                textAnchor="middle"
+                fontSize="9"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="600"
+                fill="rgba(255,255,255,0.40)"
+              >
+                W{i + 1}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Scanning beam */}
+        <rect
+          x={PAD_X}
+          y={PAD_TOP}
+          width="3"
+          height={innerH}
+          fill={activeColor}
+          opacity="0.18"
+          style={{
+            filter: `blur(4px)`,
+            animation: `mw-scan ${DELIVERY_WEEKS * 0.45}s linear infinite`,
+          }}
+        />
+      </svg>
+
+      {/* Editor pills + legend */}
+      <div className="absolute left-4 right-4 bottom-3 flex items-center justify-between gap-2">
+        <div className="flex gap-1.5">
+          {DELIVERY_EDITORS.map((e, i) => (
+            <button
+              key={e.name}
+              onClick={() => { setActiveEditor(i); setAnimKey((k) => k + 1); }}
+              className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-2 py-1 rounded-full"
+              style={{
+                color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
+                background: i === activeEditor ? `${e.color}25` : "rgba(255,255,255,0.03)",
+                border: i === activeEditor ? `1px solid ${e.color}66` : "1px solid rgba(255,255,255,0.06)",
+                boxShadow: i === activeEditor ? `0 0 12px -2px ${e.color}` : "none",
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: e.color, boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none" }}
+              />
+              {e.name}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}40`, border: `1px solid ${activeColor}55` }} />
+            Delivered
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm" style={{ background: activeColor }} />
+            Approved
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// VISUAL 3: KPI Dashboard — multi-line area chart with scanning cursor
+// ════════════════════════════════════════════════════════════════════════════
+const KPI_DEFS = [
+  { key: "ctr",  label: "CTR",  unit: "%",  color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number], area: false },
+  { key: "hook", label: "Hook", unit: "%",  color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number], area: false },
+  { key: "hold", label: "Hold", unit: "%",  color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number], area: true  },
+  { key: "roas", label: "ROAS", unit: "x",  color: "#d8b4fe", base: 3.4,  amp: 0.3, range: [1.8, 5.2] as [number, number], area: false },
+  { key: "cpa",  label: "CPA",  unit: "€",  color: "#7c3aed", base: 22,   amp: 2,   range: [12, 38]   as [number, number], area: false },
+];
+
+const POINTS = 48;
+const TICK_MS = 850;
+
+function smoothStep(prev: number, target: number, k = 0.4) {
   return prev + (target - prev) * k;
 }
 
-function KpiDashboardGraphVisual() {
+function KpiDashboardVisual() {
   const [series, setSeries] = useState<Record<string, number[]>>(() => {
     const init: Record<string, number[]> = {};
     KPI_DEFS.forEach((m) => {
@@ -202,7 +503,6 @@ function KpiDashboardGraphVisual() {
     });
     return init;
   });
-
   const [latest, setLatest] = useState<Record<string, number>>(() => {
     const o: Record<string, number> = {};
     KPI_DEFS.forEach((m) => (o[m.key] = m.base));
@@ -216,14 +516,13 @@ function KpiDashboardGraphVisual() {
         const newLatest: Record<string, number> = {};
         KPI_DEFS.forEach((m) => {
           const arr = prev[m.key];
-          const lastNorm = arr[arr.length - 1];
+          const last = arr[arr.length - 1];
           const baseNorm = (m.base - m.range[0]) / (m.range[1] - m.range[0]);
-          const drift = (baseNorm - lastNorm) * 0.08;
-          const target = lastNorm + drift + (Math.random() - 0.5) * 0.18;
+          const drift = (baseNorm - last) * 0.08;
+          const target = last + drift + (Math.random() - 0.5) * 0.18;
           const clamped = Math.max(0.04, Math.min(0.96, target));
-          const smoothed = smoothStep(lastNorm, clamped, 0.6);
-          const newArr = [...arr.slice(1), smoothed];
-          next[m.key] = newArr;
+          const smoothed = smoothStep(last, clamped, 0.6);
+          next[m.key] = [...arr.slice(1), smoothed];
           newLatest[m.key] = m.range[0] + smoothed * (m.range[1] - m.range[0]);
         });
         setLatest(newLatest);
@@ -233,14 +532,15 @@ function KpiDashboardGraphVisual() {
     return () => clearInterval(t);
   }, []);
 
-  const W = 400, H = 200, PAD_X = 18, PAD_Y = 22;
-  const innerW = W - PAD_X * 2;
-  const innerH = H - PAD_Y * 2;
+  const W = 800, H = 280;
+  const PAD_L = 30, PAD_R = 26, PAD_T = 44, PAD_B = 64;
+  const innerW = W - PAD_L - PAD_R;
+  const innerH = H - PAD_T - PAD_B;
 
-  function buildPath(values: number[]): string {
+  function buildLine(values: number[]): string {
     const pts = values.map((v, i) => {
-      const x = PAD_X + (i / (POINTS - 1)) * innerW;
-      const y = PAD_Y + (1 - v) * innerH;
+      const x = PAD_L + (i / (POINTS - 1)) * innerW;
+      const y = PAD_T + (1 - v) * innerH;
       return [x, y] as [number, number];
     });
     let d = `M ${pts[0][0]},${pts[0][1]}`;
@@ -248,10 +548,19 @@ function KpiDashboardGraphVisual() {
       const [x1, y1] = pts[i - 1];
       const [x2, y2] = pts[i];
       const cx = (x1 + x2) / 2;
-      d += ` Q ${x1},${y1} ${cx},${(y1 + y2) / 2}`;
+      const cy = (y1 + y2) / 2;
+      d += ` Q ${x1},${y1} ${cx},${cy}`;
     }
     d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
     return d;
+  }
+
+  function buildArea(values: number[]): string {
+    const line = buildLine(values);
+    const xR = PAD_L + innerW;
+    const xL = PAD_L;
+    const yB = PAD_T + innerH;
+    return `${line} L ${xR},${yB} L ${xL},${yB} Z`;
   }
 
   function fmt(v: number, m: typeof KPI_DEFS[number]) {
@@ -262,54 +571,158 @@ function KpiDashboardGraphVisual() {
   }
 
   return (
-    <div className="absolute inset-0 px-2 pt-1">
+    <div className="absolute inset-0">
+      {/* Top header */}
+      <div className="absolute left-6 top-3 right-6 flex items-center justify-between z-10">
+        <div className="flex items-center gap-2">
+          <Activity className="w-3.5 h-3.5 text-white/70" />
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-white/80">
+            Live performance feed
+          </span>
+        </div>
+        <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider"
+          style={{ color: ACCENT }}>
+          <span className="relative flex w-1.5 h-1.5">
+            <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
+            <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]"
+              style={{ boxShadow: "0 0 8px #a855f7" }} />
+          </span>
+          Streaming
+        </div>
+      </div>
+
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
-        {[0.25, 0.5, 0.75].map((p, i) => (
-          <line
-            key={i}
-            x1={PAD_X}
-            x2={W - PAD_X}
-            y1={PAD_Y + p * innerH}
-            y2={PAD_Y + p * innerH}
-            stroke="rgba(255,255,255,0.05)"
-            strokeWidth="1"
+        <defs>
+          {KPI_DEFS.map((m) => (
+            <linearGradient key={m.key} id={`kpi-area-${m.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={m.color} stopOpacity="0.35" />
+              <stop offset="100%" stopColor={m.color} stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {/* Horizontal grid */}
+        {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
+          const y = PAD_T + p * innerH;
+          return (
+            <line
+              key={i}
+              x1={PAD_L}
+              x2={W - PAD_R}
+              y1={y}
+              y2={y}
+              stroke="rgba(255,255,255,0.05)"
+              strokeWidth="1"
+              strokeDasharray={p === 1 ? "0" : "2 5"}
+            />
+          );
+        })}
+
+        {/* Vertical "time" gridlines */}
+        {[0.2, 0.4, 0.6, 0.8].map((p, i) => {
+          const x = PAD_L + p * innerW;
+          return (
+            <line
+              key={i}
+              x1={x}
+              x2={x}
+              y1={PAD_T}
+              y2={PAD_T + innerH}
+              stroke="rgba(255,255,255,0.03)"
+              strokeWidth="1"
+            />
+          );
+        })}
+
+        {/* Filled area under "Hold" line for emphasis */}
+        {KPI_DEFS.filter((m) => m.area).map((m) => (
+          <path
+            key={`area-${m.key}`}
+            d={buildArea(series[m.key])}
+            fill={`url(#kpi-area-${m.key})`}
+            style={{ transition: "d 0.85s linear" }}
           />
         ))}
 
+        {/* Lines */}
         {KPI_DEFS.map((m) => (
           <path
             key={m.key}
-            d={buildPath(series[m.key])}
+            d={buildLine(series[m.key])}
             fill="none"
             stroke={m.color}
-            strokeWidth={m.key === "roas" ? 2.4 : 1.7}
+            strokeWidth={m.area ? 2.4 : 1.7}
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
               filter: `drop-shadow(0 0 6px ${m.color}aa)`,
-              transition: "d 0.9s linear",
+              transition: "d 0.85s linear",
               opacity: m.key === "cpa" ? 0.85 : 1,
             }}
           />
         ))}
 
+        {/* Leading dots */}
         {KPI_DEFS.map((m) => {
           const v = series[m.key][POINTS - 1];
-          const x = PAD_X + innerW;
-          const y = PAD_Y + (1 - v) * innerH;
+          const x = PAD_L + innerW;
+          const y = PAD_T + (1 - v) * innerH;
           return (
-            <g key={m.key} style={{ transition: "transform 0.9s linear" }}>
-              <circle cx={x} cy={y} r="4" fill={m.color} opacity="0.25" />
-              <circle cx={x} cy={y} r="2.2" fill="#fff"
+            <g key={`dot-${m.key}`} style={{ transition: "transform 0.85s linear" }}>
+              <circle cx={x} cy={y} r="6" fill={m.color} opacity="0.18" />
+              <circle cx={x} cy={y} r="3" fill={m.color} opacity="0.4" />
+              <circle cx={x} cy={y} r="2" fill="#fff"
                 style={{ filter: `drop-shadow(0 0 6px ${m.color})` }} />
             </g>
           );
         })}
+
+        {/* Scanning vertical beam */}
+        <rect
+          x={PAD_L}
+          y={PAD_T}
+          width="2"
+          height={innerH}
+          fill="#a855f7"
+          opacity="0.35"
+          style={{
+            filter: "blur(3px)",
+            animation: "mw-scan-kpi 6s linear infinite",
+          }}
+        />
+
+        {/* Axis labels (time) */}
+        {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
+          const x = PAD_L + (i / 4) * innerW;
+          return (
+            <text
+              key={label}
+              x={x}
+              y={H - PAD_B + 16}
+              textAnchor="middle"
+              fontSize="9"
+              fontFamily="ui-sans-serif, system-ui, sans-serif"
+              fontWeight="600"
+              fill="rgba(255,255,255,0.30)"
+            >
+              {label}
+            </text>
+          );
+        })}
       </svg>
 
-      <div className="absolute left-3 right-3 bottom-3 grid grid-cols-5 gap-1.5">
+      {/* KPI legend / live values */}
+      <div className="absolute left-6 right-6 bottom-3 grid grid-cols-5 gap-2">
         {KPI_DEFS.map((m) => (
-          <div key={m.key} className="flex flex-col">
+          <div
+            key={m.key}
+            className="flex flex-col gap-0.5 px-2.5 py-1.5 rounded-lg"
+            style={{
+              background: "rgba(20,16,32,0.55)",
+              border: `1px solid ${m.color}25`,
+              backdropFilter: "blur(8px)",
+            }}
+          >
             <div className="flex items-center gap-1 text-[8px] uppercase tracking-wider font-semibold text-white/45">
               <span
                 className="w-1.5 h-1.5 rounded-full"
@@ -317,350 +730,21 @@ function KpiDashboardGraphVisual() {
               />
               {m.label}
             </div>
-            <div className="text-[12px] font-semibold text-white tabular-nums leading-tight mt-0.5">
-              {m.unit === "€" && <span className="text-white/40 text-[9px] mr-0.5">€</span>}
+            <div className="text-[13px] font-bold text-white tabular-nums leading-tight">
+              {m.unit === "€" && <span className="text-white/40 text-[10px] mr-0.5">€</span>}
               {fmt(latest[m.key], m)}
-              {m.unit !== "€" && <span className="text-white/40 text-[9px] ml-0.5">{m.unit}</span>}
+              {m.unit !== "€" && <span className="text-white/40 text-[10px] ml-0.5">{m.unit}</span>}
             </div>
           </div>
         ))}
       </div>
-
-      <div className="absolute right-3 top-2 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wider text-[#a855f7]">
-        <span className="relative flex w-1.5 h-1.5">
-          <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
-          <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]"
-            style={{ boxShadow: "0 0 8px #a855f7" }} />
-        </span>
-        Live
-      </div>
     </div>
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Visual: Editor Delivery Tracker — delivered vs approved per editor per week
-// ────────────────────────────────────────────────────────────────────────────
-const DELIVERY_EDITORS = [
-  { name: "Liam",  color: "#a855f7" },
-  { name: "Sofia", color: "#c084fc" },
-  { name: "Noah",  color: "#7c3aed" },
-  { name: "Iris",  color: "#e9d5ff" },
-];
-
-const DELIVERY_WEEKS = 6;
-
-function EditorDeliveryTrendVisual() {
-  const [activeEditor, setActiveEditor] = useState(0);
-
-  // cycle highlighted editor every 2.4s
-  useEffect(() => {
-    const t = setInterval(() => {
-      setActiveEditor((x) => (x + 1) % DELIVERY_EDITORS.length);
-    }, 2400);
-    return () => clearInterval(t);
-  }, []);
-
-  // seeded delivered + approved per editor per week (delivered 6-10, approved <= delivered)
-  const data = useMemo(() => {
-    const out: Record<string, { delivered: number; approved: number }[]> = {};
-    DELIVERY_EDITORS.forEach((e) => {
-      let seed = e.name.charCodeAt(0) * 7 + e.name.charCodeAt(1);
-      const rand = () => {
-        seed = (seed * 9301 + 49297) % 233280;
-        return seed / 233280;
-      };
-      const arr = [];
-      for (let i = 0; i < DELIVERY_WEEKS; i++) {
-        const delivered = 6 + Math.floor(rand() * 5); // 6-10
-        const approved = Math.max(4, delivered - Math.floor(rand() * 3)); // approved within 0-2 less
-        arr.push({ delivered, approved: Math.min(approved, delivered) });
-      }
-      out[e.name] = arr;
-    });
-    return out;
-  }, []);
-
-  const W = 400, H = 200;
-  const PAD_X = 24, PAD_TOP = 32, PAD_BOTTOM = 36;
-  const innerW = W - PAD_X * 2;
-  const innerH = H - PAD_TOP - PAD_BOTTOM;
-  const groupW = innerW / DELIVERY_WEEKS;
-  const barW = (groupW - 6) / 2;
-  const maxVal = 12;
-
-  const activeName = DELIVERY_EDITORS[activeEditor].name;
-  const activeColor = DELIVERY_EDITORS[activeEditor].color;
-  const activeData = data[activeName];
-  const totalDelivered = activeData.reduce((s, d) => s + d.delivered, 0);
-  const totalApproved = activeData.reduce((s, d) => s + d.approved, 0);
-  const approvalRate = Math.round((totalApproved / totalDelivered) * 100);
-
-  return (
-    <div className="absolute inset-0 px-2 pt-1">
-      {/* Top: editor pills */}
-      <div className="absolute left-4 top-2 right-4 flex items-center justify-between z-10">
-        <div className="text-[10px] uppercase tracking-wider font-semibold text-white/55">
-          {activeName} · last 6 weeks
-        </div>
-        <div className="text-[10px] font-semibold text-white tabular-nums">
-          <span className="text-white/45 mr-1">Approved</span>
-          {totalApproved}/{totalDelivered}
-          <span className="ml-1.5 text-[#a855f7]">{approvalRate}%</span>
-        </div>
-      </div>
-
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="deliveredGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={activeColor} stopOpacity="0.55" />
-            <stop offset="100%" stopColor={activeColor} stopOpacity="0.15" />
-          </linearGradient>
-          <linearGradient id="approvedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={activeColor} stopOpacity="1" />
-            <stop offset="100%" stopColor={activeColor} stopOpacity="0.6" />
-          </linearGradient>
-        </defs>
-
-        {[0.25, 0.5, 0.75].map((p, i) => (
-          <line
-            key={i}
-            x1={PAD_X}
-            x2={W - PAD_X}
-            y1={PAD_TOP + p * innerH}
-            y2={PAD_TOP + p * innerH}
-            stroke="rgba(255,255,255,0.05)"
-            strokeWidth="1"
-          />
-        ))}
-
-        {activeData.map((d, i) => {
-          const gx = PAD_X + i * groupW + 3;
-          const dH = (d.delivered / maxVal) * innerH;
-          const aH = (d.approved / maxVal) * innerH;
-          const dY = PAD_TOP + innerH - dH;
-          const aY = PAD_TOP + innerH - aH;
-          return (
-            <g key={i} style={{ transition: "all 0.6s cubic-bezier(.4,0,.2,1)" }}>
-              {/* delivered bar */}
-              <rect
-                x={gx}
-                y={dY}
-                width={barW}
-                height={dH}
-                rx="2"
-                fill="url(#deliveredGrad)"
-                stroke={activeColor}
-                strokeOpacity="0.4"
-                strokeWidth="1"
-                style={{
-                  transition: "all 0.6s cubic-bezier(.4,0,.2,1)",
-                  filter: `drop-shadow(0 0 4px ${activeColor}55)`,
-                }}
-              />
-              {/* approved bar */}
-              <rect
-                x={gx + barW + 4}
-                y={aY}
-                width={barW}
-                height={aH}
-                rx="2"
-                fill="url(#approvedGrad)"
-                style={{
-                  transition: "all 0.6s cubic-bezier(.4,0,.2,1)",
-                  filter: `drop-shadow(0 0 6px ${activeColor})`,
-                }}
-              />
-              {/* week label */}
-              <text
-                x={gx + barW + 2}
-                y={H - PAD_BOTTOM + 14}
-                textAnchor="middle"
-                fontSize="8"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="600"
-                fill="rgba(255,255,255,0.45)"
-              >
-                W{i + 1}
-              </text>
-              {/* approved value on top */}
-              <text
-                x={gx + barW + 4 + barW / 2}
-                y={aY - 3}
-                textAnchor="middle"
-                fontSize="8"
-                fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="700"
-                fill="#fff"
-                style={{ transition: "y 0.6s cubic-bezier(.4,0,.2,1)" }}
-              >
-                {d.approved}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* Editor pill row */}
-      <div className="absolute left-3 right-3 bottom-2 flex items-center justify-between gap-1.5">
-        <div className="flex gap-1.5">
-          {DELIVERY_EDITORS.map((e, i) => (
-            <button
-              key={e.name}
-              onClick={() => setActiveEditor(i)}
-              className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-1.5 py-0.5 rounded-full"
-              style={{
-                color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
-                background: i === activeEditor ? `${e.color}25` : "transparent",
-                border: i === activeEditor ? `1px solid ${e.color}55` : "1px solid transparent",
-              }}
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: e.color,
-                  boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none",
-                }}
-              />
-              {e.name}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}55`, border: `1px solid ${activeColor}55` }} />
-            Delivered
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-sm" style={{ background: activeColor }} />
-            Approved
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual: Trained on your KPIs — bullseye / target-lock concept
-// ────────────────────────────────────────────────────────────────────────────
-
-
-function LearningVisual() {
-  // Bullseye / target lock concept: editor scope locks onto winning KPIs
-  const KPIS = [
-    { label: "Hook Rate",  value: "42%",  },
-    { label: "Hold Rate",  value: "31%",  },
-    { label: "ROAS",       value: "4.2x", },
-    { label: "CTR",        value: "3.4%", },
-    { label: "Thumbstop",  value: "58%",  },
-  ];
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setActive((x) => (x + 1) % KPIS.length);
-    }, 1600);
-    return () => clearInterval(t);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <svg viewBox="0 0 400 260" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <radialGradient id="learnGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
-            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
-          </radialGradient>
-        </defs>
-        <ellipse cx="200" cy="130" rx="140" ry="80" fill="url(#learnGlow)" />
-
-        {/* Concentric target rings */}
-        {[80, 60, 40, 22].map((r, i) => (
-          <circle
-            key={i}
-            cx="200"
-            cy="130"
-            r={r}
-            fill="none"
-            stroke="rgba(168,85,247,0.30)"
-            strokeWidth={i === 3 ? 1.5 : 1}
-            strokeDasharray={i % 2 === 0 ? "3 4" : "0"}
-            style={{
-              transformOrigin: "200px 130px",
-              animation: `mw-ring-rotate ${10 + i * 4}s linear infinite ${i % 2 ? "reverse" : ""}`,
-            }}
-          />
-        ))}
-
-        {/* Crosshair */}
-        <line x1="200" y1="50" x2="200" y2="210" stroke="rgba(168,85,247,0.25)" strokeWidth="1" strokeDasharray="2 4" />
-        <line x1="120" y1="130" x2="280" y2="130" stroke="rgba(168,85,247,0.25)" strokeWidth="1" strokeDasharray="2 4" />
-
-        {/* Center bullseye */}
-        <circle cx="200" cy="130" r="10" fill="#a855f7" style={{ filter: "drop-shadow(0 0 10px #a855f7)" }}>
-          <animate attributeName="r" values="8;11;8" dur="1.6s" repeatCount="indefinite" />
-        </circle>
-        <circle cx="200" cy="130" r="4" fill="#fff" />
-
-        {/* Pulse ring */}
-        <circle cx="200" cy="130" r="0" fill="none" stroke="rgba(168,85,247,0.55)" strokeWidth="1.2">
-          <animate attributeName="r" values="14;90" dur="2.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.7;0" dur="2.4s" repeatCount="indefinite" />
-        </circle>
-      </svg>
-
-      {/* KPI chips arranged in a circle around the target */}
-      {KPIS.map((k, i) => {
-        const angle = (i / KPIS.length) * Math.PI * 2 - Math.PI / 2;
-        const x = 50 + Math.cos(angle) * 32;
-        const y = 50 + Math.sin(angle) * 28;
-        const isActive = i === active;
-        return (
-          <div
-            key={k.label}
-            className="absolute transition-all duration-500"
-            style={{
-              left: `${x}%`,
-              top: `${y}%`,
-              transform: `translate(-50%, -50%) scale(${isActive ? 1.08 : 1})`,
-            }}
-          >
-            <div
-              className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-lg backdrop-blur-md transition-all duration-500"
-              style={{
-                background: isActive ? "rgba(168,85,247,0.22)" : "rgba(20,16,32,0.7)",
-                border: `1px solid ${isActive ? "rgba(168,85,247,0.7)" : "rgba(168,85,247,0.25)"}`,
-                boxShadow: isActive ? "0 0 18px rgba(168,85,247,0.55)" : "none",
-              }}
-            >
-              <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55">{k.label}</span>
-              <span className="text-[12px] font-bold text-white tabular-nums leading-none">{k.value}</span>
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Bottom badge */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium text-white/85"
-        style={{
-          background: "rgba(168,85,247,0.12)",
-          border: "1px solid rgba(168,85,247,0.30)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <GraduationCap className="w-3 h-3" style={{ color: ACCENT }} />
-        Locked onto your winning KPIs
-      </div>
-    </div>
-  );
-}
-
-
-
-// ────────────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
 // Section
-// ────────────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
 const EditorEdge = () => {
   return (
     <section
@@ -709,7 +793,6 @@ const EditorEdge = () => {
             to printing money.
           </p>
 
-          {/* FREE / part of offer banner */}
           <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
             style={{
               background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
@@ -722,19 +805,19 @@ const EditorEdge = () => {
           </div>
         </div>
 
-        {/* Top row: 2 cards side by side */}
+        {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <FeatureCard
             delay={0}
             title="Trained on your KPIs"
             description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
-            visual={<LearningVisual />}
+            visual={<EditorBrainVisual />}
           />
           <FeatureCard
             delay={0.1}
             title="Editor delivery tracker"
             description="Delivered vs approved videos per editor, week by week. See exactly who is shipping and who is shipping work that lands."
-            visual={<EditorDeliveryTrendVisual />}
+            visual={<EditorDeliveryTrackerVisual />}
           />
         </div>
 
@@ -744,7 +827,7 @@ const EditorEdge = () => {
             delay={0.2}
             title="KPI Dashboard"
             description="CTR, hook rate, hold rate, ROAS and CPA. Streaming live across every editor on your account, in one shared view."
-            visual={<KpiDashboardGraphVisual />}
+            visual={<KpiDashboardVisual />}
           />
         </div>
 
@@ -790,9 +873,7 @@ const EditorEdge = () => {
           animation: mw-card-in 1s cubic-bezier(.2,.7,.2,1) forwards;
           transition: transform .5s cubic-bezier(.2,.7,.2,1), border-color .5s ease, box-shadow .5s ease;
         }
-        @keyframes mw-card-in {
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes mw-card-in { to { opacity: 1; transform: translateY(0); } }
         .mw-card:hover {
           transform: translateY(-4px);
           border-color: rgba(168,85,247,0.30) !important;
@@ -802,13 +883,10 @@ const EditorEdge = () => {
             0 30px 80px -20px rgba(168,85,247,0.25),
             0 0 60px -10px rgba(168,85,247,0.18) !important;
         }
-
-        .mw-horizon {
-          opacity: 0.55;
-          transition: opacity 0.8s ease;
-        }
+        .mw-horizon { opacity: 0.55; transition: opacity 0.8s ease; }
         .mw-card:hover .mw-horizon { opacity: 0.95; }
 
+        /* Section grain */
         .mw-grain-bg {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
           background-size: 220px 220px;
@@ -816,59 +894,61 @@ const EditorEdge = () => {
           opacity: 0.05;
         }
 
-        .mw-skeleton {
-          background:
-            linear-gradient(90deg, transparent, rgba(168,85,247,0.06), transparent);
-          background-size: 200% 100%;
-          animation: mw-shimmer 1.6s infinite;
-        }
-        @keyframes mw-shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
+        /* Per-visual purple-tinted grain */
+        .mw-grain-purple {
+          background-image:
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.66  0 0 0 0 0.33  0 0 0 0 0.97  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
+          background-size: 180px 180px;
+          mix-blend-mode: soft-light;
+          opacity: 0.35;
         }
 
-        @keyframes mw-rise {
-          0%   { transform: translateY(0) scale(0.95); opacity: 0; }
-          10%  { opacity: 0.9; }
-          70%  { opacity: 0.9; }
-          100% { transform: translateY(-260px) scale(0.85); opacity: 0; }
-        }
-        .mw-rise {
-          animation-name: mw-rise;
-          animation-iteration-count: infinite;
-          animation-timing-function: cubic-bezier(.4,0,.2,1);
-        }
-
-        @keyframes mw-pulse-soft {
-          0%, 100% { transform: scale(1); opacity: 0.85; }
-          50%      { transform: scale(1.12); opacity: 1; }
-        }
-        .mw-pulse-soft { animation: mw-pulse-soft 3.6s ease-in-out infinite; }
-
-        @keyframes mw-progress {
-          0%   { width: 0%; }
-          90%  { width: 100%; }
-          100% { width: 100%; }
-        }
-        .mw-progress {
-          animation: mw-progress 4s cubic-bezier(.4,0,.2,1) infinite;
-        }
-
-        @keyframes mw-variant-float {
-          0%, 100% { transform: translateY(0); }
-          50%      { transform: translateY(-4px); }
-        }
-        .mw-variant-float { animation: mw-variant-float 3.2s ease-in-out infinite; }
-
-        @keyframes mw-winner-breath {
+        /* Animations */
+        @keyframes mw-breath {
           0%, 100% { transform: scale(1); }
-          50%      { transform: scale(1.04); }
+          50%      { transform: scale(1.06); }
         }
-        .mw-winner-breath { animation: mw-winner-breath 3.4s ease-in-out infinite; }
+        .mw-breath { animation: mw-breath 3.4s ease-in-out infinite; }
+
+        @keyframes mw-node-pulse {
+          0%, 100% { box-shadow: 0 0 14px rgba(168,85,247,0.35); }
+          50%      { box-shadow: 0 0 22px rgba(168,85,247,0.7); }
+        }
+        .mw-node-pulse { animation: mw-node-pulse 2.4s ease-in-out infinite; }
+
+        @keyframes mw-blink {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%      { opacity: 0.5; transform: scale(0.85); }
+        }
+        .mw-blink { animation: mw-blink 1.4s ease-in-out infinite; }
+
+        @keyframes mw-bar-grow {
+          from { transform: scaleY(0); }
+          to   { transform: scaleY(1); }
+        }
+
+        @keyframes mw-fade-in {
+          from { opacity: 0; transform: translateY(4px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .mw-fade-in { animation: mw-fade-in 0.5s ease forwards; }
+
+        @keyframes mw-scan {
+          0%   { transform: translateX(0); opacity: 0; }
+          10%  { opacity: 0.7; }
+          90%  { opacity: 0.7; }
+          100% { transform: translateX(340px); opacity: 0; }
+        }
+
+        @keyframes mw-scan-kpi {
+          0%   { transform: translateX(0); opacity: 0; }
+          10%  { opacity: 0.5; }
+          90%  { opacity: 0.5; }
+          100% { transform: translateX(740px); opacity: 0; }
+        }
 
         @media (prefers-reduced-motion: reduce) {
-          .mw-card, .mw-skeleton, .mw-rise, .mw-pulse-soft, .mw-progress,
-          .mw-variant-float, .mw-winner-breath {
+          .mw-card, .mw-breath, .mw-node-pulse, .mw-blink, .mw-fade-in {
             animation: none !important;
           }
         }
