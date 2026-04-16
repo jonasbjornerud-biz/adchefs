@@ -470,21 +470,141 @@ function EditorDeliveryTrackerVisual() {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 3: KPI Dashboard — multi-line area chart with scanning cursor
+// VISUAL 3: KPI Dashboard — command center (featured ROAS + mini KPI grid)
 // ════════════════════════════════════════════════════════════════════════════
 const KPI_DEFS = [
-  { key: "ctr",  label: "CTR",  unit: "%",  color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number], area: false },
-  { key: "hook", label: "Hook", unit: "%",  color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number], area: false },
-  { key: "hold", label: "Hold", unit: "%",  color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number], area: true  },
-  { key: "roas", label: "ROAS", unit: "x",  color: "#d8b4fe", base: 3.4,  amp: 0.3, range: [1.8, 5.2] as [number, number], area: false },
-  { key: "cpa",  label: "CPA",  unit: "€",  color: "#7c3aed", base: 22,   amp: 2,   range: [12, 38]   as [number, number], area: false },
+  { key: "roas", label: "ROAS", unit: "x", color: "#c084fc", base: 3.4, amp: 0.28, range: [1.8, 5.2] as [number, number] },
+  { key: "cpa",  label: "CPA",  unit: "€", color: "#a855f7", base: 22,  amp: 1.6,  range: [12, 38]   as [number, number] },
+  { key: "ctr",  label: "CTR",  unit: "%", color: "#d8b4fe", base: 3.2, amp: 0.32, range: [1.5, 5.5] as [number, number] },
+  { key: "hook", label: "Hook", unit: "%", color: "#e9d5ff", base: 38,  amp: 3.5,  range: [25, 55]   as [number, number] },
+  { key: "hold", label: "Hold", unit: "%", color: "#7c3aed", base: 26,  amp: 2.6,  range: [15, 38]   as [number, number] },
 ];
 
-const POINTS = 48;
+const POINTS = 56;
 const TICK_MS = 850;
 
 function smoothStep(prev: number, target: number, k = 0.4) {
   return prev + (target - prev) * k;
+}
+
+function fmtKpi(v: number, key: string) {
+  if (key === "roas") return v.toFixed(2);
+  if (key === "cpa") return v.toFixed(0);
+  if (key === "ctr") return v.toFixed(2);
+  return v.toFixed(1);
+}
+
+// Build a smooth quadratic path from normalized values (0..1) inside a box
+function buildSparkPath(values: number[], w: number, h: number, padX = 2, padY = 4): string {
+  const innerW = w - padX * 2;
+  const innerH = h - padY * 2;
+  const pts = values.map((v, i) => {
+    const x = padX + (i / (values.length - 1)) * innerW;
+    const y = padY + (1 - v) * innerH;
+    return [x, y] as [number, number];
+  });
+  let d = `M ${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [x1, y1] = pts[i - 1];
+    const [x2, y2] = pts[i];
+    const cx = (x1 + x2) / 2;
+    const cy = (y1 + y2) / 2;
+    d += ` Q ${x1.toFixed(2)},${y1.toFixed(2)} ${cx.toFixed(2)},${cy.toFixed(2)}`;
+  }
+  d += ` L ${pts[pts.length - 1][0].toFixed(2)},${pts[pts.length - 1][1].toFixed(2)}`;
+  return d;
+}
+
+function buildSparkArea(values: number[], w: number, h: number, padX = 2, padY = 4): string {
+  const line = buildSparkPath(values, w, h, padX, padY);
+  return `${line} L ${(w - padX).toFixed(2)},${(h - padY).toFixed(2)} L ${padX.toFixed(2)},${(h - padY).toFixed(2)} Z`;
+}
+
+// ── Sub-component: a single mini KPI tile with sparkline + value + delta
+function MiniKpiTile({
+  def,
+  values,
+  latest,
+  prev,
+}: {
+  def: typeof KPI_DEFS[number];
+  values: number[];
+  latest: number;
+  prev: number;
+}) {
+  const w = 220, h = 64;
+  // For CPA, "down is good" (green); for everything else, "up is good"
+  const delta = latest - prev;
+  const goodDirection = def.key === "cpa" ? delta < 0 : delta > 0;
+  const deltaPct = prev !== 0 ? (delta / prev) * 100 : 0;
+  const arrow = delta > 0 ? "▲" : delta < 0 ? "▼" : "·";
+  const deltaColor = goodDirection ? "#a3e635" : "rgba(255,255,255,0.45)";
+
+  return (
+    <div
+      className="relative rounded-xl overflow-hidden"
+      style={{
+        background: "rgba(20,16,32,0.6)",
+        border: `1px solid ${def.color}22`,
+        backdropFilter: "blur(8px)",
+        boxShadow: `inset 0 0 24px ${def.color}10`,
+      }}
+    >
+      {/* Background sparkline */}
+      <svg viewBox={`0 0 ${w} ${h}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id={`mini-${def.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={def.color} stopOpacity="0.45" />
+            <stop offset="100%" stopColor={def.color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d={buildSparkArea(values, w, h, 2, 6)}
+          fill={`url(#mini-${def.key})`}
+          style={{ transition: "d 0.85s linear" }}
+        />
+        <path
+          d={buildSparkPath(values, w, h, 2, 6)}
+          fill="none"
+          stroke={def.color}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter: `drop-shadow(0 0 4px ${def.color}cc)`,
+            transition: "d 0.85s linear",
+          }}
+        />
+      </svg>
+
+      <div className="relative p-2.5 flex items-start justify-between h-full">
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: def.color, boxShadow: `0 0 6px ${def.color}` }}
+            />
+            {def.label}
+          </div>
+          <div className="text-[16px] font-bold text-white tabular-nums leading-none mt-0.5">
+            {def.unit === "€" && <span className="text-white/45 text-[10px] mr-0.5">€</span>}
+            {fmtKpi(latest, def.key)}
+            {def.unit !== "€" && <span className="text-white/45 text-[10px] ml-0.5">{def.unit}</span>}
+          </div>
+        </div>
+        <div
+          className="text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
+          style={{
+            color: deltaColor,
+            background: goodDirection ? "rgba(163,230,53,0.10)" : "rgba(255,255,255,0.04)",
+            border: `1px solid ${goodDirection ? "rgba(163,230,53,0.25)" : "rgba(255,255,255,0.06)"}`,
+          }}
+        >
+          {arrow} {Math.abs(deltaPct).toFixed(1)}%
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function KpiDashboardVisual() {
@@ -507,15 +627,22 @@ function KpiDashboardVisual() {
     KPI_DEFS.forEach((m) => (o[m.key] = m.base));
     return o;
   });
+  const [prev, setPrev] = useState<Record<string, number>>(() => {
+    const o: Record<string, number> = {};
+    KPI_DEFS.forEach((m) => (o[m.key] = m.base));
+    return o;
+  });
 
   useEffect(() => {
     const t = setInterval(() => {
-      setSeries((prev) => {
+      setSeries((curr) => {
         const next: Record<string, number[]> = {};
         const newLatest: Record<string, number> = {};
+        const newPrev: Record<string, number> = {};
         KPI_DEFS.forEach((m) => {
-          const arr = prev[m.key];
+          const arr = curr[m.key];
           const last = arr[arr.length - 1];
+          const before = arr[arr.length - 2] ?? last;
           const baseNorm = (m.base - m.range[0]) / (m.range[1] - m.range[0]);
           const drift = (baseNorm - last) * 0.08;
           const target = last + drift + (Math.random() - 0.5) * 0.18;
@@ -523,61 +650,65 @@ function KpiDashboardVisual() {
           const smoothed = smoothStep(last, clamped, 0.6);
           next[m.key] = [...arr.slice(1), smoothed];
           newLatest[m.key] = m.range[0] + smoothed * (m.range[1] - m.range[0]);
+          newPrev[m.key] = m.range[0] + before * (m.range[1] - m.range[0]);
         });
         setLatest(newLatest);
+        setPrev(newPrev);
         return next;
       });
     }, TICK_MS);
     return () => clearInterval(t);
   }, []);
 
-  const W = 800, H = 280;
-  const PAD_L = 30, PAD_R = 26, PAD_T = 44, PAD_B = 64;
-  const innerW = W - PAD_L - PAD_R;
-  const innerH = H - PAD_T - PAD_B;
+  const roas = KPI_DEFS[0];
+  const others = KPI_DEFS.slice(1);
 
-  function buildLine(values: number[]): string {
+  // Featured ROAS chart geometry
+  const FW = 460, FH = 200;
+  const PAD_L = 36, PAD_R = 18, PAD_T = 14, PAD_B = 22;
+  const innerW = FW - PAD_L - PAD_R;
+  const innerH = FH - PAD_T - PAD_B;
+
+  const roasValues = series[roas.key];
+  const roasLatest = latest[roas.key];
+  const roasMin = roas.range[0], roasMax = roas.range[1];
+
+  function buildFeaturedLine(values: number[]): string {
     const pts = values.map((v, i) => {
-      const x = PAD_L + (i / (POINTS - 1)) * innerW;
+      const x = PAD_L + (i / (values.length - 1)) * innerW;
       const y = PAD_T + (1 - v) * innerH;
       return [x, y] as [number, number];
     });
-    let d = `M ${pts[0][0]},${pts[0][1]}`;
+    let d = `M ${pts[0][0].toFixed(2)},${pts[0][1].toFixed(2)}`;
     for (let i = 1; i < pts.length; i++) {
       const [x1, y1] = pts[i - 1];
       const [x2, y2] = pts[i];
       const cx = (x1 + x2) / 2;
       const cy = (y1 + y2) / 2;
-      d += ` Q ${x1},${y1} ${cx},${cy}`;
+      d += ` Q ${x1.toFixed(2)},${y1.toFixed(2)} ${cx.toFixed(2)},${cy.toFixed(2)}`;
     }
-    d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
+    d += ` L ${pts[pts.length - 1][0].toFixed(2)},${pts[pts.length - 1][1].toFixed(2)}`;
     return d;
   }
-
-  function buildArea(values: number[]): string {
-    const line = buildLine(values);
-    const xR = PAD_L + innerW;
-    const xL = PAD_L;
-    const yB = PAD_T + innerH;
-    return `${line} L ${xR},${yB} L ${xL},${yB} Z`;
+  function buildFeaturedArea(values: number[]): string {
+    return `${buildFeaturedLine(values)} L ${PAD_L + innerW},${PAD_T + innerH} L ${PAD_L},${PAD_T + innerH} Z`;
   }
 
-  function fmt(v: number, m: typeof KPI_DEFS[number]) {
-    if (m.key === "roas") return v.toFixed(2);
-    if (m.key === "cpa") return v.toFixed(0);
-    if (m.key === "ctr") return v.toFixed(2);
-    return v.toFixed(1);
-  }
+  // Latest dot position
+  const lastNorm = roasValues[roasValues.length - 1];
+  const dotX = PAD_L + innerW;
+  const dotY = PAD_T + (1 - lastNorm) * innerH;
 
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0 px-5 pt-2 pb-3 flex flex-col">
       {/* Top header */}
-      <div className="absolute left-6 top-3 right-6 flex items-center justify-between z-10">
+      <div className="flex items-center justify-between mb-2 z-10">
         <div className="flex items-center gap-2">
           <Activity className="w-3.5 h-3.5 text-white/70" />
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-white/80">
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-white/85">
             Live performance feed
           </span>
+          <span className="text-[10px] text-white/35">· last 24h</span>
         </div>
         <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider"
           style={{ color: ACCENT }}>
@@ -590,216 +721,176 @@ function KpiDashboardVisual() {
         </div>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
-        <defs>
-          {KPI_DEFS.map((m) => (
-            <linearGradient key={m.key} id={`kpi-area-${m.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={m.color} stopOpacity="0.35" />
-              <stop offset="100%" stopColor={m.color} stopOpacity="0" />
-            </linearGradient>
-          ))}
-        </defs>
-
-        {/* Horizontal grid */}
-        {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
-          const y = PAD_T + p * innerH;
-          return (
-            <line
-              key={i}
-              x1={PAD_L}
-              x2={W - PAD_R}
-              y1={y}
-              y2={y}
-              stroke="rgba(255,255,255,0.05)"
-              strokeWidth="1"
-              strokeDasharray={p === 1 ? "0" : "2 5"}
-            />
-          );
-        })}
-
-        {/* Vertical "time" gridlines */}
-        {[0.2, 0.4, 0.6, 0.8].map((p, i) => {
-          const x = PAD_L + p * innerW;
-          return (
-            <line
-              key={i}
-              x1={x}
-              x2={x}
-              y1={PAD_T}
-              y2={PAD_T + innerH}
-              stroke="rgba(255,255,255,0.03)"
-              strokeWidth="1"
-            />
-          );
-        })}
-
-        {/* Filled area under "Hold" line for emphasis */}
-        {KPI_DEFS.filter((m) => m.area).map((m) => (
-          <path
-            key={`area-${m.key}`}
-            d={buildArea(series[m.key])}
-            fill={`url(#kpi-area-${m.key})`}
-            style={{ transition: "d 0.85s linear" }}
-          />
-        ))}
-
-        {/* Lines */}
-        {KPI_DEFS.map((m) => (
-          <path
-            key={m.key}
-            d={buildLine(series[m.key])}
-            fill="none"
-            stroke={m.color}
-            strokeWidth={m.area ? 2.4 : 1.7}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              filter: `drop-shadow(0 0 6px ${m.color}aa)`,
-              transition: "d 0.85s linear",
-              opacity: m.key === "cpa" ? 0.85 : 1,
-            }}
-          />
-        ))}
-
-        {/* Leading dots */}
-        {KPI_DEFS.map((m) => {
-          const v = series[m.key][POINTS - 1];
-          const x = PAD_L + innerW;
-          const y = PAD_T + (1 - v) * innerH;
-          return (
-            <g key={`dot-${m.key}`} style={{ transition: "transform 0.85s linear" }}>
-              <circle cx={x} cy={y} r="6" fill={m.color} opacity="0.18" />
-              <circle cx={x} cy={y} r="3" fill={m.color} opacity="0.4" />
-              <circle cx={x} cy={y} r="2" fill="#fff"
-                style={{ filter: `drop-shadow(0 0 6px ${m.color})` }} />
-            </g>
-          );
-        })}
-
-        {/* Scanning vertical beam */}
-        <rect
-          x={PAD_L}
-          y={PAD_T}
-          width="2"
-          height={innerH}
-          fill="#a855f7"
-          opacity="0.35"
+      {/* Main grid: featured (left) + 2x2 mini tiles (right) */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-3 min-h-0">
+        {/* Featured ROAS panel */}
+        <div
+          className="relative rounded-2xl overflow-hidden"
           style={{
-            filter: "blur(3px)",
-            animation: "mw-scan-kpi 6s linear infinite",
+            background: "linear-gradient(180deg, rgba(28,20,46,0.7) 0%, rgba(14,10,26,0.7) 100%)",
+            border: "1px solid rgba(168,85,247,0.22)",
+            boxShadow: "inset 0 0 40px rgba(168,85,247,0.08)",
           }}
-        />
-
-        {/* Axis labels (time) */}
-        {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
-          const x = PAD_L + (i / 4) * innerW;
-          return (
-            <text
-              key={label}
-              x={x}
-              y={H - PAD_B + 16}
-              textAnchor="middle"
-              fontSize="9"
-              fontFamily="ui-sans-serif, system-ui, sans-serif"
-              fontWeight="600"
-              fill="rgba(255,255,255,0.30)"
-            >
-              {label}
-            </text>
-          );
-        })}
-      </svg>
-
-      {/* KPI legend / live values */}
-      <div className="absolute left-6 right-6 bottom-3 grid grid-cols-5 gap-2">
-        {KPI_DEFS.map((m) => (
-          <div
-            key={m.key}
-            className="flex flex-col gap-0.5 px-2.5 py-1.5 rounded-lg"
-            style={{
-              background: "rgba(20,16,32,0.55)",
-              border: `1px solid ${m.color}25`,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            <div className="flex items-center gap-1 text-[8px] uppercase tracking-wider font-semibold text-white/45">
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: m.color, boxShadow: `0 0 6px ${m.color}` }}
-              />
-              {m.label}
+        >
+          {/* Header inside featured */}
+          <div className="absolute left-3 top-2.5 right-3 flex items-end justify-between z-10">
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: roas.color, boxShadow: `0 0 6px ${roas.color}` }} />
+                {roas.label} · account avg
+              </div>
+              <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
+                {fmtKpi(roasLatest, roas.key)}<span className="text-white/45 text-[14px] ml-0.5">x</span>
+              </div>
             </div>
-            <div className="text-[13px] font-bold text-white tabular-nums leading-tight">
-              {m.unit === "€" && <span className="text-white/40 text-[10px] mr-0.5">€</span>}
-              {fmt(latest[m.key], m)}
-              {m.unit !== "€" && <span className="text-white/40 text-[10px] ml-0.5">{m.unit}</span>}
+            <div className="flex flex-col items-end gap-0.5">
+              <span className="text-[9px] uppercase tracking-wider font-semibold text-white/40">7d range</span>
+              <span className="text-[10px] font-semibold text-white/70 tabular-nums">
+                {roasMin.toFixed(1)}x – {roasMax.toFixed(1)}x
+              </span>
             </div>
           </div>
-        ))}
+
+          <svg viewBox={`0 0 ${FW} ${FH}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="featRoasArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor={roas.color} stopOpacity="0.45" />
+                <stop offset="100%" stopColor={roas.color} stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="featRoasLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#a855f7" />
+                <stop offset="100%" stopColor="#e9d5ff" />
+              </linearGradient>
+            </defs>
+
+            {/* Y grid */}
+            {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
+              const y = PAD_T + p * innerH;
+              const v = roasMin + (1 - p) * (roasMax - roasMin);
+              return (
+                <g key={i}>
+                  <line
+                    x1={PAD_L}
+                    x2={FW - PAD_R}
+                    y1={y}
+                    y2={y}
+                    stroke="rgba(255,255,255,0.05)"
+                    strokeWidth="1"
+                    strokeDasharray={p === 1 ? "0" : "2 5"}
+                  />
+                  <text
+                    x={PAD_L - 6}
+                    y={y + 3}
+                    textAnchor="end"
+                    fontSize="8"
+                    fontFamily="ui-sans-serif, system-ui, sans-serif"
+                    fontWeight="600"
+                    fill="rgba(255,255,255,0.30)"
+                  >
+                    {v.toFixed(1)}x
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Vertical micro grid */}
+            {[0.2, 0.4, 0.6, 0.8].map((p, i) => {
+              const x = PAD_L + p * innerW;
+              return (
+                <line
+                  key={i}
+                  x1={x}
+                  x2={x}
+                  y1={PAD_T}
+                  y2={PAD_T + innerH}
+                  stroke="rgba(255,255,255,0.03)"
+                  strokeWidth="1"
+                />
+              );
+            })}
+
+            {/* Area */}
+            <path
+              d={buildFeaturedArea(roasValues)}
+              fill="url(#featRoasArea)"
+              style={{ transition: "d 0.85s linear" }}
+            />
+            {/* Line */}
+            <path
+              d={buildFeaturedLine(roasValues)}
+              fill="none"
+              stroke="url(#featRoasLine)"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                filter: `drop-shadow(0 0 8px ${roas.color}cc)`,
+                transition: "d 0.85s linear",
+              }}
+            />
+
+            {/* Leading dot with pulse */}
+            <g style={{ transition: "transform 0.85s linear" }}>
+              <circle cx={dotX} cy={dotY} r="10" fill={roas.color} opacity="0.18">
+                <animate attributeName="r" values="6;14;6" dur="2.4s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.25;0;0.25" dur="2.4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx={dotX} cy={dotY} r="4" fill={roas.color} opacity="0.5" />
+              <circle cx={dotX} cy={dotY} r="2.4" fill="#fff"
+                style={{ filter: `drop-shadow(0 0 6px ${roas.color})` }} />
+            </g>
+
+            {/* Scanning beam */}
+            <rect
+              x={PAD_L}
+              y={PAD_T}
+              width="2"
+              height={innerH}
+              fill="#a855f7"
+              opacity="0.35"
+              style={{
+                filter: "blur(3px)",
+                animation: "mw-scan-feat 6s linear infinite",
+              }}
+            />
+
+            {/* Time labels */}
+            {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
+              const x = PAD_L + (i / 4) * innerW;
+              return (
+                <text
+                  key={label}
+                  x={x}
+                  y={FH - 6}
+                  textAnchor="middle"
+                  fontSize="8"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif"
+                  fontWeight="600"
+                  fill="rgba(255,255,255,0.30)"
+                >
+                  {label}
+                </text>
+              );
+            })}
+          </svg>
+        </div>
+
+        {/* Mini tile grid */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {others.map((m) => (
+            <MiniKpiTile
+              key={m.key}
+              def={m}
+              values={series[m.key]}
+              latest={latest[m.key]}
+              prev={prev[m.key]}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
-
-// ════════════════════════════════════════════════════════════════════════════
-// Section
-// ════════════════════════════════════════════════════════════════════════════
-const EditorEdge = () => {
-  return (
-    <section
-      className="relative py-28 overflow-hidden"
-      style={{ background: "#09090f" }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
-        }}
-      />
-      <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
-            style={{
-              background: "rgba(168,85,247,0.12)",
-              border: "1px solid rgba(168,85,247,0.30)",
-              boxShadow: "0 0 24px -6px rgba(168,85,247,0.5)",
-            }}
-          >
-            <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
-            What sets us apart
-          </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-            Editors who understand{" "}
-            <span
-              style={{
-                background:
-                  "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              why ads work
-            </span>
-          </h2>
-          <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
-            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
-          </p>
-
-          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
-            style={{
-              background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
-              border: "1px solid rgba(168,85,247,0.45)",
-              boxShadow: "0 0 28px -4px rgba(168,85,247,0.55)",
-            }}
-          >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
-            <span>Included free with every brand. You only pay per video.</span>
-          </div>
-        </div>
 
         {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
