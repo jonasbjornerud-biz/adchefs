@@ -1,17 +1,40 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Papa from 'papaparse';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
-import { LogOut, BarChart3, TrendingUp, ArrowUpRight, CheckCircle2, FileSpreadsheet, Zap } from 'lucide-react';
+import { LogOut, BarChart3, TrendingUp, ArrowUpRight, FileSpreadsheet, Zap } from 'lucide-react';
 import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
+import { WtdStats } from '@/components/dashboard/WtdStats';
+import { getWeekToDateRange, formatCurrency, formatNumber } from '@/lib/weekToDate';
 
 const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+interface WtdState {
+  loading: boolean;
+  perfStats: { label: string; value: string }[];
+  adsStats: { label: string; value: string }[];
+}
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
+  const wtd = getWeekToDateRange();
+  const [wtdData, setWtdData] = useState<WtdState>({
+    loading: true,
+    perfStats: [
+      { label: 'Videos delivered', value: '—' },
+      { label: 'Active editors', value: '—' },
+    ],
+    adsStats: [
+      { label: 'Ad spend', value: '—' },
+      { label: 'ROAS', value: '—' },
+    ],
+  });
 
   useEffect(() => {
     (async () => {
@@ -21,8 +44,66 @@ export default function ClientDashboard() {
       if (!clientData) { setLoading(false); return; }
       setClient(clientData as Client);
       setLoading(false);
+      loadWtd(clientData as Client);
     })();
   }, []);
+
+  async function loadWtd(c: Client) {
+    const currentMonth = MONTHS[new Date().getMonth()];
+    const sinceStr = wtd.start.toISOString().split('T')[0];
+    const untilStr = wtd.end.toISOString().split('T')[0];
+
+    const perfPromise = (async () => {
+      if (!c.spreadsheet_id) {
+        return [
+          { label: 'Videos delivered', value: '—' },
+          { label: 'Active editors', value: '—' },
+        ];
+      }
+      try {
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/${c.spreadsheet_id}/gviz/tq?tqx=out:csv&sheet=EOD-Report`);
+        const text = await res.text();
+        const rows = Papa.parse<Record<string, string>>(text, { header: true, skipEmptyLines: true }).data;
+        const monthRows = rows.filter((r) => r.Month?.toLowerCase() === currentMonth.toLowerCase());
+        const delivered = monthRows.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
+        const editors = new Set(monthRows.map((r) => r.Name).filter(Boolean)).size;
+        return [
+          { label: `Videos this ${currentMonth.slice(0, 3)}.`, value: formatNumber(delivered) },
+          { label: 'Active editors', value: String(editors) },
+        ];
+      } catch {
+        return [
+          { label: 'Videos delivered', value: '—' },
+          { label: 'Active editors', value: '—' },
+        ];
+      }
+    })();
+
+    const adsPromise = (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('meta-ads', {
+          body: { since: sinceStr, until: untilStr },
+        });
+        if (error || data?.error) throw new Error('ads');
+        const ads = (data?.ads || []) as Array<{ spend?: number; revenue?: number }>;
+        const spend = ads.reduce((s, a) => s + (a.spend || 0), 0);
+        const revenue = ads.reduce((s, a) => s + (a.revenue || 0), 0);
+        const roas = spend > 0 ? revenue / spend : 0;
+        return [
+          { label: 'Ad spend', value: formatCurrency(spend) },
+          { label: 'ROAS', value: roas > 0 ? `${roas.toFixed(2)}x` : '—' },
+        ];
+      } catch {
+        return [
+          { label: 'Ad spend', value: '—' },
+          { label: 'ROAS', value: '—' },
+        ];
+      }
+    })();
+
+    const [perfStats, adsStats] = await Promise.all([perfPromise, adsPromise]);
+    setWtdData({ loading: false, perfStats, adsStats });
+  }
 
   if (loading) {
     return (
@@ -48,6 +129,8 @@ export default function ClientDashboard() {
       statusLabel: 'Sheet API connected',
       statusIcon: FileSpreadsheet,
       cta: 'Open Performance',
+      stats: wtdData.perfStats,
+      rangeLabel: MONTHS[new Date().getMonth()].slice(0, 3) + ' MTD',
     },
     {
       title: 'KPI Dashboard',
@@ -59,6 +142,8 @@ export default function ClientDashboard() {
       statusLabel: 'Meta API connected',
       statusIcon: Zap,
       cta: 'Open Dashboard',
+      stats: wtdData.adsStats,
+      rangeLabel: wtd.label,
     },
   ];
 
