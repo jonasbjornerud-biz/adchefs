@@ -33,14 +33,14 @@ const Hero = () => {
       {/* Grain on top */}
       <div className="hero-grain" />
 
-      <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
+      <div className="container mx-auto px-6 relative z-10 text-center max-w-6xl">
         <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
           <span className="text-xs tracking-wide text-muted-foreground">
             Built for e-com brands. Pay per video.
           </span>
         </div>
 
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[10rem] xl:text-[12rem] font-extrabold leading-[1.02] tracking-tight mb-6 text-foreground">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[14rem] xl:text-[16rem] font-extrabold leading-[0.95] tracking-tight mb-6 text-foreground">
           Your <span className="hero-accent-word">dedicated</span> video editor
           <br />
           without the <span className="hero-accent-word">additional cost</span>
