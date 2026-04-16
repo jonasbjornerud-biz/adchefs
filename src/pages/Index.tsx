@@ -20,12 +20,8 @@ const Index = () => {
         {/* What Sets Us Apart — dark section, directly under hero */}
         <EditorEdge />
 
-        {/* How It Works — white/clean background */}
-        <div className="section-band section-band-white">
-          <div className="content-container">
-            <HowItWorks />
-          </div>
-        </div>
+        {/* How It Works — dark, in-house experience */}
+        <HowItWorks />
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">
