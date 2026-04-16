@@ -29,25 +29,23 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
           0%, 100% { stroke-opacity: 0.85; }
           50%      { stroke-opacity: 1;    }
         }
-        /* Slow wave — undulate the arc horizontally like a drifting ripple */
-        @keyframes horizonWave {
-          0%   { d: path("M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260"); }
-          25%  { d: path("M -50 260 C 150 110, 350 70, 600 105 S 1050 90, 1250 260"); }
-          50%  { d: path("M -50 260 C 150 70, 350 120, 600 80 S 1050 110, 1250 260"); }
-          75%  { d: path("M -50 260 C 150 100, 350 80, 600 110 S 1050 70, 1250 260"); }
-          100% { d: path("M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260"); }
+        /* Slow warp — morph the arc's apex height + slight horizontal sway */
+        @keyframes horizonWarp {
+          0%, 100% { d: path("M -50 260 Q 600 -10 1250 260"); }
+          25%      { d: path("M -50 260 Q 540  10 1250 260"); }
+          50%      { d: path("M -50 260 Q 660 -25 1250 260"); }
+          75%      { d: path("M -50 260 Q 580   0 1250 260"); }
         }
-        @keyframes horizonWaveFill {
-          0%   { d: path("M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260 Z"); }
-          25%  { d: path("M -50 260 C 150 110, 350 70, 600 105 S 1050 90, 1250 260 Z"); }
-          50%  { d: path("M -50 260 C 150 70, 350 120, 600 80 S 1050 110, 1250 260 Z"); }
-          75%  { d: path("M -50 260 C 150 100, 350 80, 600 110 S 1050 70, 1250 260 Z"); }
-          100% { d: path("M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260 Z"); }
+        @keyframes horizonWarpFill {
+          0%, 100% { d: path("M -50 260 Q 600 -20 1250 260 Z"); }
+          25%      { d: path("M -50 260 Q 540   0 1250 260 Z"); }
+          50%      { d: path("M -50 260 Q 660 -35 1250 260 Z"); }
+          75%      { d: path("M -50 260 Q 580 -10 1250 260 Z"); }
         }
         .horizon-halo  { animation: horizonBreathe 7s ease-in-out infinite; }
         .horizon-inner { animation: horizonBreatheInner 5s ease-in-out infinite; }
-        .horizon-arc-line { animation: horizonArcPulse 5s ease-in-out infinite, horizonWave 22s ease-in-out infinite; }
-        .horizon-arc-fill { animation: horizonWaveFill 22s ease-in-out infinite; }
+        .horizon-arc-line { animation: horizonArcPulse 5s ease-in-out infinite, horizonWarp 18s ease-in-out infinite; }
+        .horizon-arc-fill { animation: horizonWarpFill 18s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) {
           .horizon-halo, .horizon-inner, .horizon-arc-line, .horizon-arc-fill { animation: none; }
         }
@@ -103,10 +101,10 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
             <feGaussianBlur stdDeviation="1.5" />
           </filter>
         </defs>
-        <path className="horizon-arc-fill" d="M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260 Z" fill="url(#horizon-fill)" />
+        <path className="horizon-arc-fill" d="M -50 260 Q 600 -20 1250 260 Z" fill="url(#horizon-fill)" />
         <path
           className="horizon-arc-line"
-          d="M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260"
+          d="M -50 260 Q 600 -10 1250 260"
           fill="none"
           stroke="url(#horizon-arc)"
           strokeWidth="2.5"
@@ -114,7 +112,7 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
         />
         <path
           className="horizon-arc-line"
-          d="M -50 260 C 150 80, 350 120, 600 90 S 1050 60, 1250 260"
+          d="M -50 260 Q 600 -10 1250 260"
           fill="none"
           stroke="url(#horizon-arc)"
           strokeWidth="1"
