@@ -7,8 +7,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer,
 } from 'recharts';
-import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock } from 'lucide-react';
+import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { KpiCard } from '@/components/dashboard/KpiCard';
 
 interface EodRow { Month: string; Week: string; Date: string; Name: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
 interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved Month': string; [k: string]: string; }
@@ -64,11 +65,11 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
   );
 }
 
-function PremiumCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <div
       className={`bg-[#111118] rounded-2xl transition-all duration-200 ${className}`}
-      style={{ boxShadow: CARD_SHADOW, ...style }}
+      style={{ boxShadow: CARD_SHADOW }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
     >
@@ -184,7 +185,8 @@ export default function PerformanceDashboard() {
     const delivered = filteredEod.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
     const uniqueDays = new Set(filteredEod.map(r => r.Date)).size;
     const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
-    return { delivered, approved: approvedCount, avg };
+    const activeEditors = new Set(filteredEod.map(r => r.Name).filter(Boolean)).size;
+    return { delivered, approved: approvedCount, avg, activeEditors };
   }, [filteredEod, approvedCount]);
 
   const dailyByWeek = useMemo(() => {
@@ -231,15 +233,37 @@ export default function PerformanceDashboard() {
       .map(([week, total]) => ({ week: `Wk ${week}`, total }));
   }, [data, editor]);
 
+  // Editor breakdown table
+  const editorBreakdown = useMemo(() => {
+    if (!data) return [];
+    const monthFiltered = data.eod.filter(r => r.Month?.toLowerCase() === month.toLowerCase());
+    const map: Record<string, { delivered: number; days: Set<string> }> = {};
+    monthFiltered.forEach(r => {
+      const name = r.Name;
+      if (!name) return;
+      if (!map[name]) map[name] = { delivered: 0, days: new Set() };
+      map[name].delivered += parseInt(r['Videos Delivered']) || 0;
+      if (r.Date) map[name].days.add(r.Date);
+    });
+    return Object.entries(map)
+      .map(([name, stats]) => ({
+        name,
+        delivered: stats.delivered,
+        activeDays: stats.days.size,
+        avg: stats.days.size > 0 ? (stats.delivered / stats.days.size).toFixed(1) : '—',
+      }))
+      .sort((a, b) => b.delivered - a.delivered);
+  }, [data, month]);
+
   const noData = filteredEod.length === 0 && !loading;
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#09090f]">
         <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
-        <div className="max-w-6xl mx-auto px-6 py-8 space-y-6 relative z-10">
-          <div className="flex gap-4">
-            {[...Array(3)].map((_, i) => <div key={i} className="h-28 rounded-2xl flex-1 bg-[#111118] animate-pulse" />)}
+        <div className="max-w-[1200px] mx-auto px-5 md:px-8 py-8 space-y-6 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => <div key={i} className="h-[100px] rounded-2xl bg-[#111118] animate-pulse" />)}
           </div>
           <div className="h-72 rounded-2xl bg-[#111118] animate-pulse" />
         </div>
@@ -274,8 +298,8 @@ export default function PerformanceDashboard() {
       }} />
 
       {/* Header */}
-      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
+        <div className="max-w-[1200px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-all duration-200 cursor-pointer">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
@@ -291,22 +315,28 @@ export default function PerformanceDashboard() {
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] text-white/40 hover:text-white/70 transition-all duration-200 cursor-pointer bg-[#111118] border border-white/[0.06]"
-              style={{ boxShadow: CARD_SHADOW }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
+              className="h-9 px-4 rounded-lg text-sm font-medium text-white flex items-center gap-2 transition-all duration-200 cursor-pointer"
+              style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(168,85,247,0.4)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
             >
-              <RefreshCw className="w-3 h-3" /> Sync
+              <RefreshCw className="w-3.5 h-3.5" /> Sync
             </button>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-6xl mx-auto px-6 py-8 space-y-6">
-        {/* Filters */}
-        <div className="flex gap-3">
-          <DarkSelect value={editor} onChange={setEditor} options={data?.editors || []} placeholder="Editor" />
-          <DarkSelect value={month} onChange={setMonth} options={data?.months || []} placeholder="Month" />
+      <main className="max-w-[1200px] mx-auto px-5 md:px-8 py-8 space-y-7 relative z-10">
+        {/* Title + Filters */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Editor Performance</h1>
+            <p className="text-sm text-white/40 mt-1">{month} · {editor}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <DarkSelect value={editor} onChange={setEditor} options={data?.editors || []} />
+            <DarkSelect value={month} onChange={setMonth} options={data?.months || []} />
+          </div>
         </div>
 
         {noData ? (
@@ -319,20 +349,11 @@ export default function PerformanceDashboard() {
         ) : (
           <>
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#a855f7' },
-                { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#34d399' },
-                { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg, color: '#06b6d4' },
-              ].map((kpi, i) => (
-                <PremiumCard key={i} className="p-6">
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <span className="text-white/30"><kpi.icon className="w-3.5 h-3.5" /></span>
-                  </div>
-                  <p className="text-4xl font-black text-white">{kpi.value}</p>
-                  <p className="text-xs uppercase tracking-widest text-white/30 mt-1 font-medium">{kpi.label}</p>
-                </PremiumCard>
-              ))}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+              <KpiCard label="Delivered" value={`${kpis.delivered}`} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} />
+              <KpiCard label="Approved" value={`${kpis.approved}`} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} />
+              <KpiCard label="Avg/Day" value={`${kpis.avg}`} icon={<TrendingUp className="w-3.5 h-3.5" />} delay={200} />
+              <KpiCard label="Active Editors" value={`${kpis.activeEditors}`} icon={<Users className="w-3.5 h-3.5" />} delay={300} />
             </div>
 
             {/* Charts row */}
@@ -340,7 +361,7 @@ export default function PerformanceDashboard() {
               {/* Daily by Week */}
               <PremiumCard className="p-6">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Daily Deliveries by Week</h4>
-                <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Grouped by weekday</p>
+                <p className="text-xs uppercase tracking-widest text-white/40 mb-4 font-medium">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
@@ -360,7 +381,7 @@ export default function PerformanceDashboard() {
               {/* Weekly Output */}
               <PremiumCard className="p-6">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Weekly Output</h4>
-                <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Total videos per week (all time)</p>
+                <p className="text-xs uppercase tracking-widest text-white/40 mb-4 font-medium">Total videos per week (all time)</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -386,68 +407,119 @@ export default function PerformanceDashboard() {
             {/* Monthly Approved Videos */}
             <PremiumCard className="p-6">
               <h4 className="text-sm font-semibold text-white mb-0.5">Monthly Approved Videos</h4>
-              <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Approved videos per month (all time overview)</p>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyApproved}>
-                    <defs>
-                      <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
-                        <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                    <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                    <Tooltip content={<ChartTooltip />} />
-                    <Bar dataKey="count" fill="url(#approvedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <p className="text-xs uppercase tracking-widest text-white/40 mb-4 font-medium">Approved videos per month (all time overview)</p>
+              {monthlyApproved.length === 0 ? (
+                <div className="flex items-center justify-center h-64">
+                  <p className="text-white/30 text-sm">No approval data available</p>
+                </div>
+              ) : (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyApproved}>
+                      <defs>
+                        <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
+                          <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                      <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <Tooltip content={<ChartTooltip />} />
+                      <Bar dataKey="count" fill="url(#approvedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </PremiumCard>
+
+            {/* Editor Breakdown Table */}
+            {editorBreakdown.length > 0 && (
+              <div>
+                <h2 className="text-xs uppercase tracking-widest text-white/40 font-medium mb-4">Editor Breakdown</h2>
+                <PremiumCard className="overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+                          <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Editor</th>
+                          <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Delivered</th>
+                          <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Active Days</th>
+                          <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Avg/Day</th>
+                          <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Output</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {editorBreakdown.map((ed) => {
+                          const maxDelivered = Math.max(...editorBreakdown.map(e => e.delivered), 1);
+                          const pct = (ed.delivered / maxDelivered) * 100;
+                          return (
+                            <tr key={ed.name} className="border-b border-white/[0.03] hover:bg-white/[0.03] transition-all duration-200">
+                              <td className="px-4 py-5 text-white font-medium">{ed.name}</td>
+                              <td className="px-4 py-5 font-black text-white">{ed.delivered}</td>
+                              <td className="px-4 py-5 text-white/60">{ed.activeDays}</td>
+                              <td className="px-4 py-5 text-white/60">{ed.avg}</td>
+                              <td className="px-4 py-5 min-w-[160px]">
+                                <div className="flex items-center gap-2">
+                                  <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                    <div className="h-full rounded-full transition-all duration-300" style={{ width: `${pct}%`, background: '#a855f7' }} />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </PremiumCard>
+              </div>
+            )}
 
             {/* Approved Videos Table */}
             {filteredPayment.length > 0 && (
-              <PremiumCard className="overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/[0.06]">
-                  <h4 className="text-sm font-semibold text-white">Approved Videos</h4>
-                  <p className="text-xs uppercase tracking-widest text-white/40 mt-0.5">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
-                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Brief Name</th>
-                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Approval Date</th>
-                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Month</th>
-                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredPayment.map((row, i) => (
-                        <tr key={i} className="hover:bg-white/[0.03] transition-all duration-200 border-b border-white/[0.03]">
-                          <td className="py-5 px-6 text-white/60">{row.brief}</td>
-                          <td className="py-5 px-6 text-white/40">{row.date || '—'}</td>
-                          <td className="py-5 px-6 text-white/40">{row.month}</td>
-                          <td className="py-5 px-6">
-                            {row.approved ? (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                Approved
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                                Pending
-                              </span>
-                            )}
-                          </td>
+              <div>
+                <h2 className="text-xs uppercase tracking-widest text-white/40 font-medium mb-4">Approved Videos</h2>
+                <PremiumCard className="overflow-hidden">
+                  <div className="px-6 py-4 border-b border-white/[0.06]">
+                    <p className="text-xs text-white/40">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+                          <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Brief Name</th>
+                          <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Approval Date</th>
+                          <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Month</th>
+                          <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </PremiumCard>
+                      </thead>
+                      <tbody>
+                        {filteredPayment.map((row, i) => (
+                          <tr key={i} className="hover:bg-white/[0.03] transition-all duration-200 border-b border-white/[0.03]">
+                            <td className="py-5 px-6 text-white/60">{row.brief}</td>
+                            <td className="py-5 px-6 text-white/40">{row.date || '—'}</td>
+                            <td className="py-5 px-6 text-white/40">{row.month}</td>
+                            <td className="py-5 px-6">
+                              {row.approved ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                  Approved
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                  Pending
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </PremiumCard>
+              </div>
             )}
           </>
         )}
