@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
 import { LogOut, BarChart3, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
+import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 
 const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
