@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Client, ClientWithStats } from '@/types/playbook';
 import { ProgressBar } from '@/components/playbook/ProgressBar';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, TrendingUp, AlertCircle, LogOut } from 'lucide-react';
+import { Plus, Users, TrendingUp, AlertCircle, LogOut, Sparkles, ExternalLink } from 'lucide-react';
 import { logout } from '@/lib/auth';
 
 export default function AdminDashboard() {
@@ -66,6 +66,10 @@ export default function AdminDashboard() {
             <p className="text-sm text-muted-foreground">Manage clients & training playbooks</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate('/mock')}>
+              <Sparkles className="w-4 h-4 mr-1 text-purple-500" /> MOCK Demo
+              <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
+            </Button>
             <Button variant="outline" size="sm" onClick={() => { logout(); navigate('/login'); }}>
               <LogOut className="w-4 h-4 mr-1" /> Logout
             </Button>
