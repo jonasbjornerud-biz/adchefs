@@ -111,16 +111,45 @@ Deno.serve(async (req) => {
       adMap.get(adId)!.dailyRows.push(row);
     }
 
-    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status&limit=100&access_token=${accessToken}`;
+    // Fetch ad statuses and creative info (thumbnail + video)
+    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,creative{thumbnail_url,video_id}&limit=500&access_token=${accessToken}`;
     let statusMap: Record<string, string> = {};
+    let thumbnailMap: Record<string, string> = {};
+    let videoIdMap: Record<string, string> = {};
     try {
       const adsData = await fetchAllPages(adsUrl);
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
+        if (ad.creative?.thumbnail_url) thumbnailMap[ad.id] = ad.creative.thumbnail_url;
+        if (ad.creative?.video_id) videoIdMap[ad.id] = ad.creative.video_id;
       }
     } catch (e) {
-      console.log('Could not fetch ad statuses:', e.message);
+      console.log('Could not fetch ad creatives:', e.message);
+    }
+
+    // Fetch video source URLs for ads that have videos
+    let videoUrlMap: Record<string, string> = {};
+    const uniqueVideoIds = [...new Set(Object.values(videoIdMap))];
+    if (uniqueVideoIds.length > 0) {
+      console.log(`Fetching source URLs for ${uniqueVideoIds.length} videos`);
+      const videoPromises = uniqueVideoIds.map(async (videoId) => {
+        try {
+          const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source&access_token=${accessToken}`);
+          const json = await res.json();
+          if (json.source) return { id: videoId, source: json.source };
+        } catch (_e) { /* skip */ }
+        return null;
+      });
+      const videoResults = await Promise.all(videoPromises);
+      const videoSourceMap: Record<string, string> = {};
+      for (const r of videoResults) {
+        if (r) videoSourceMap[r.id] = r.source;
+      }
+      // Map ad IDs to video source URLs
+      for (const [adId, videoId] of Object.entries(videoIdMap)) {
+        if (videoSourceMap[videoId]) videoUrlMap[adId] = videoSourceMap[videoId];
+      }
     }
 
     const adMetrics = Array.from(adMap.entries()).map(([adId, info]) => {
