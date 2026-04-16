@@ -5,7 +5,7 @@ import EditorEdge from "@/components/EditorEdge";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
-import ParallaxSection from "@/components/ParallaxSection";
+import ScrollCrossfade from "@/components/ScrollCrossfade";
 
 const Index = () => {
   return (
@@ -18,33 +18,17 @@ const Index = () => {
         <Navigation />
         <Hero />
 
-        {/* How It Works — in-house experience (now first) */}
-        <ParallaxSection speed={0.18}>
-          <HowItWorks />
-        </ParallaxSection>
-
-        {/* Seamless transition band between dark sections */}
-        <div
-          className="relative h-24 -my-12 pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background:
-              "linear-gradient(180deg, #09090f 0%, #0c0a18 50%, #09090f 100%)",
-          }}
-        >
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse 60% 100% at 50% 50%, rgba(168,85,247,0.18) 0%, transparent 70%)",
-            }}
-          />
-        </div>
-
-        {/* What Sets Us Apart — now second, parallax in opposite direction */}
-        <ParallaxSection speed={-0.18}>
-          <EditorEdge />
-        </ParallaxSection>
+        {/*
+          Cinematic scroll-driven cross-fade between the two dark sections.
+          - "How it works" fades out + drifts up + scales down slightly
+          - "What sets us apart" fades in + drifts up into place + scales to 1
+          - Both layers overlap during the transition for a layered depth feel.
+        */}
+        <ScrollCrossfade
+          overlap={0.7}
+          outgoing={<HowItWorks />}
+          incoming={<EditorEdge />}
+        />
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">
