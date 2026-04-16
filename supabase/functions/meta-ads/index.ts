@@ -137,10 +137,15 @@ Deno.serve(async (req) => {
       console.log(`Fetching details for ${uniqueCreativeIds.length} creatives`);
       const creativePromises = uniqueCreativeIds.map(async (creativeId) => {
         try {
-          const res = await fetch(`${META_BASE_URL}/${creativeId}?fields=video_id,picture,thumbnail_url&access_token=${accessToken}`);
+          const url = `${META_BASE_URL}/${creativeId}?fields=video_id,picture,thumbnail_url&access_token=${accessToken}`;
+          const res = await fetch(url);
           const json = await res.json();
+          if (json.error) {
+            console.log(`Creative ${creativeId} error:`, json.error.message?.slice(0, 200));
+            return null;
+          }
           return { id: creativeId, video_id: json.video_id || '', picture: json.picture || '', thumbnail_url: json.thumbnail_url || '' };
-        } catch (_e) { return null; }
+        } catch (e) { console.log(`Creative ${creativeId} fetch failed:`, e.message); return null; }
       });
       const creativeResults = await Promise.all(creativePromises);
       const creativeDetailsMap: Record<string, { video_id: string; picture: string; thumbnail_url: string }> = {};
