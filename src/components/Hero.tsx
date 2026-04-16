@@ -41,9 +41,9 @@ const Hero = () => {
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
-          Your <span className="hero-accent-word">dedicated</span> video editor,{" "}
-          <br className="hidden sm:block" />
-          without the <span className="hero-accent-word">in-house cost</span>.
+          Your <span className="hero-accent-word">dedicated</span> video editor
+          <br />
+          without the <span className="hero-accent-word">additional cost</span>
         </h1>
 
         <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
