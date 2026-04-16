@@ -380,7 +380,7 @@ function MentoringVisual() {
         </div>
       </div>
 
-      {/* Right: quality gauge */}
+      {/* Right: completion gauge */}
       <div
         className="w-[120px] rounded-xl flex flex-col items-center justify-center relative overflow-hidden"
         style={{
@@ -388,41 +388,43 @@ function MentoringVisual() {
           border: "1px solid rgba(168,85,247,0.25)",
         }}
       >
-        <svg viewBox="0 0 100 100" className="w-[88px] h-[88px]">
-          <defs>
-            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#c084fc" />
-              <stop offset="100%" stopColor="#7c3aed" />
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-          <circle
-            cx="50" cy="50" r="40"
-            fill="none"
-            stroke="url(#gaugeGrad)"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray="251"
-            strokeDashoffset={251 - (251 * 0.78)}
-            transform="rotate(-90 50 50)"
-            style={{ filter: "drop-shadow(0 0 6px rgba(168,85,247,0.6))" }}
-          >
-            <animate
-              attributeName="stroke-dashoffset"
-              values={`${251 - (251 * 0.74)};${251 - (251 * 0.82)};${251 - (251 * 0.74)}`}
-              dur="3.6s"
-              repeatCount="indefinite"
-            />
-          </circle>
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 22 }}>
-          <span className="text-[22px] font-extrabold text-white leading-none tabular-nums"
-            style={{ textShadow: "0 0 12px rgba(168,85,247,0.7)" }}>
-            78<span className="text-[14px] font-bold text-white/70">%</span>
-          </span>
-          <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 mt-1">
-            Completion
-          </span>
+        <div className="relative w-[88px] h-[88px] mb-3">
+          <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#c084fc" />
+                <stop offset="100%" stopColor="#7c3aed" />
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+            <circle
+              cx="50" cy="50" r="40"
+              fill="none"
+              stroke="url(#gaugeGrad)"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="251"
+              strokeDashoffset={251 - (251 * 0.78)}
+              transform="rotate(-90 50 50)"
+              style={{ filter: "drop-shadow(0 0 6px rgba(168,85,247,0.6))" }}
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                values={`${251 - (251 * 0.74)};${251 - (251 * 0.82)};${251 - (251 * 0.74)}`}
+                dur="3.6s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-[22px] font-extrabold text-white leading-none tabular-nums"
+              style={{ textShadow: "0 0 12px rgba(168,85,247,0.7)" }}>
+              78<span className="text-[14px] font-bold text-white/70">%</span>
+            </span>
+            <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 mt-1 leading-none">
+              Complete
+            </span>
+          </div>
         </div>
 
         <div
