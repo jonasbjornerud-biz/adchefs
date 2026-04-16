@@ -289,11 +289,12 @@
   }
 
   .marquee-track {
-    animation: marquee 40s linear infinite;
+    animation: marquee 60s linear infinite;
     width: max-content;
+    will-change: transform;
   }
 
-  .marquee-track:hover {
+  .marquee-wrapper:hover .marquee-track {
     animation-play-state: paused;
   }
 
@@ -312,96 +313,89 @@
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 150px 150px;
-    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: 0.04;
     mix-blend-mode: overlay;
   }
 
   .dark .hero-grain {
-    opacity: 0.06;
+    opacity: 0.04;
   }
 
-  /* ── Hero animated orbs ── */
+  /* ── Hero animated aurora orbs ── */
   .hero-orb {
     position: absolute;
     border-radius: 50%;
     will-change: transform;
+    filter: blur(110px);
+    opacity: 0.7;
   }
 
   .hero-orb-1 {
-    width: 600px;
-    height: 600px;
-    top: -5%;
-    left: 5%;
-    background: hsl(var(--accent) / 0.18);
-    filter: blur(80px);
-    animation: orb-float-1 12s ease-in-out infinite;
+    width: 620px;
+    height: 620px;
+    top: -8%;
+    left: 4%;
+    background: radial-gradient(circle, #8b5cf6 0%, rgba(139,92,246,0) 70%);
+    animation: orb-float-1 25s ease-in-out infinite;
   }
 
   .hero-orb-2 {
-    width: 500px;
-    height: 500px;
-    top: 20%;
-    right: 0%;
-    background: hsl(270 80% 60% / 0.14);
-    filter: blur(90px);
-    animation: orb-float-2 16s ease-in-out infinite;
+    width: 540px;
+    height: 540px;
+    top: 18%;
+    right: -4%;
+    background: radial-gradient(circle, #c4b5fd 0%, rgba(196,181,253,0) 70%);
+    animation: orb-float-2 35s ease-in-out infinite;
   }
 
   .hero-orb-3 {
-    width: 450px;
-    height: 450px;
-    bottom: 5%;
-    left: 30%;
-    background: hsl(240 70% 65% / 0.10);
-    filter: blur(70px);
-    animation: orb-float-3 20s ease-in-out infinite;
+    width: 480px;
+    height: 480px;
+    bottom: 0%;
+    left: 38%;
+    background: radial-gradient(circle, #f5f3ff 0%, rgba(245,243,255,0) 70%);
+    animation: orb-float-3 45s ease-in-out infinite;
+    opacity: 0.55;
   }
 
-  .hero-orb-4 {
-    width: 350px;
-    height: 350px;
-    top: 40%;
-    left: 50%;
-    background: hsl(290 70% 55% / 0.10);
-    filter: blur(100px);
-    animation: orb-float-4 14s ease-in-out infinite;
-  }
-
-  .dark .hero-orb-1 { background: hsl(var(--accent) / 0.25); }
-  .dark .hero-orb-2 { background: hsl(270 80% 50% / 0.20); }
-  .dark .hero-orb-3 { background: hsl(240 60% 50% / 0.15); }
-  .dark .hero-orb-4 { background: hsl(290 70% 55% / 0.15); }
+  /* Light mode: soften the bright pink-white orb */
+  .hero-orb-3 { opacity: 0.45; }
+  .dark .hero-orb-1 { opacity: 0.65; }
+  .dark .hero-orb-2 { opacity: 0.55; }
+  .dark .hero-orb-3 { opacity: 0.35; }
 
   @keyframes orb-float-1 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(80px, -50px) scale(1.15); }
-    50% { transform: translate(40px, 30px) scale(0.9); }
-    75% { transform: translate(-40px, -20px) scale(1.05); }
+    25%      { transform: translate(120px, 80px) scale(1.1); }
+    50%      { transform: translate(60px, 160px) scale(0.95); }
+    75%      { transform: translate(-80px, 60px) scale(1.05); }
   }
 
   @keyframes orb-float-2 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(-70px, 60px) scale(1.1); }
-    50% { transform: translate(50px, -30px) scale(0.85); }
-    75% { transform: translate(-20px, -50px) scale(1.08); }
+    25%      { transform: translate(-100px, 90px) scale(1.08); }
+    50%      { transform: translate(-160px, -40px) scale(0.92); }
+    75%      { transform: translate(-40px, -100px) scale(1.06); }
   }
 
   @keyframes orb-float-3 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -60px) scale(1.2); }
-    66% { transform: translate(-40px, 20px) scale(0.9); }
-  }
-
-  @keyframes orb-float-4 {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-60px, 40px) scale(1.15); }
+    33%      { transform: translate(80px, -120px) scale(1.15); }
+    66%      { transform: translate(-100px, -60px) scale(0.9); }
   }
 
   @keyframes grid-drift {
     from { transform: translateY(0); }
     to { transform: translateY(60px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .marquee-track {
+      animation: none !important;
+    }
   }
 
   /* ── Feature card (voxr-style) ── */

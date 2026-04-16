@@ -26,7 +26,6 @@ const Hero = () => {
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
-        <div className="hero-orb hero-orb-4" />
         {/* Animated grid lines */}
         <svg className="absolute inset-0 w-full h-full opacity-[0.04] dark:opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
           <defs>
