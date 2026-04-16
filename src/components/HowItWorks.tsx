@@ -551,10 +551,6 @@ function MentoringVisual({ active, mx, my }: { active: boolean; mx: MotionValue<
   const mid = useParallax(mx, my, 10, 7);
   const fg = useParallax(mx, my, 16, 12);
 
-  // Internal X/Y rotation that tracks cursor in addition to card tilt — emphasized panning
-  const rotX = useSpring(useTransform(my, [0, 1], [4, -4]), { stiffness: 120, damping: 20 });
-  const rotY = useSpring(useTransform(mx, [0, 1], [-5, 5]), { stiffness: 120, damping: 20 });
-
   const lightX = useTransform(mx, [0, 1], ["30%", "70%"]);
   const lightY = useTransform(my, [0, 1], ["30%", "70%"]);
 
@@ -564,11 +560,7 @@ function MentoringVisual({ active, mx, my }: { active: boolean; mx: MotionValue<
   return (
     <motion.div
       className="absolute inset-0 px-4 pt-3 pb-3 flex gap-3"
-      style={{
-        rotateX: reduce ? 0 : rotX,
-        rotateY: reduce ? 0 : rotY,
-        transformStyle: "preserve-3d",
-      }}
+      style={{ transformStyle: "preserve-3d" }}
     >
       {/* Independent ambient highlight */}
       <motion.div
