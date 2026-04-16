@@ -332,129 +332,194 @@ function MetaIntegrationVisual() {
 // ────────────────────────────────────────────────────────────────────────────
 // Visual #4 — Live Metric Tracking by Editor (custom dynamic leaderboard)
 // ────────────────────────────────────────────────────────────────────────────
-interface EditorRow {
-  name: string;
-  initials: string;
-  ctr: number;
-  hook: number;
-  hold: number;
+// ────────────────────────────────────────────────────────────────────────────
+// Visual #5 — Live Editor Metrics Graph (multi-line, continuously streaming)
+// CTR · Hook Rate · Hold Rate · Thumbstop — all four metrics evolving in real time
+// ────────────────────────────────────────────────────────────────────────────
+const METRIC_DEFS = [
+  { key: "ctr",   label: "CTR",       color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number] },
+  { key: "hook",  label: "Hook Rate", color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number] },
+  { key: "hold",  label: "Hold Rate", color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number] },
+  { key: "stop",  label: "Thumbstop", color: "#7c3aed", base: 18,   amp: 2.5, range: [8, 28]    as [number, number] },
+];
+
+const POINTS = 36;     // points across the chart
+const TICK_MS = 900;   // how often a new sample arrives
+
+function smoothStep(prev: number, target: number, k = 0.35) {
+  return prev + (target - prev) * k;
 }
 
-function EditorMetricsVisual() {
-  const baseEditors: EditorRow[] = [
-    { name: "Marcus L.", initials: "ML", ctr: 3.8, hook: 42, hold: 28 },
-    { name: "Priya S.",  initials: "PS", ctr: 4.2, hook: 38, hold: 31 },
-    { name: "Jake R.",   initials: "JR", ctr: 2.9, hook: 35, hold: 22 },
-    { name: "Amina K.",  initials: "AK", ctr: 3.5, hook: 40, hold: 26 },
-  ];
+function EditorMetricsGraphVisual() {
+  // Each metric: an array of normalised values (0–1) sized POINTS
+  const [series, setSeries] = useState<Record<string, number[]>>(() => {
+    const init: Record<string, number[]> = {};
+    METRIC_DEFS.forEach((m) => {
+      const arr: number[] = [];
+      let v = m.base;
+      for (let i = 0; i < POINTS; i++) {
+        v += (Math.random() - 0.5) * m.amp;
+        v = Math.max(m.range[0], Math.min(m.range[1], v));
+        arr.push((v - m.range[0]) / (m.range[1] - m.range[0]));
+      }
+      init[m.key] = arr;
+    });
+    return init;
+  });
 
-  const [editors, setEditors] = useState(baseEditors);
+  const [latest, setLatest] = useState<Record<string, number>>(() => {
+    const o: Record<string, number> = {};
+    METRIC_DEFS.forEach((m) => (o[m.key] = m.base));
+    return o;
+  });
 
-  // Subtly tick the metrics every 1.6s — feels live
   useEffect(() => {
     const t = setInterval(() => {
-      setEditors((prev) =>
-        prev.map((e) => ({
-          ...e,
-          ctr: Math.max(2, Math.min(5.5, e.ctr + (Math.random() - 0.5) * 0.18)),
-          hook: Math.max(28, Math.min(52, e.hook + (Math.random() - 0.5) * 1.4)),
-          hold: Math.max(18, Math.min(38, e.hold + (Math.random() - 0.5) * 1.0)),
-        }))
-      );
-    }, 1600);
+      setSeries((prev) => {
+        const next: Record<string, number[]> = {};
+        const newLatest: Record<string, number> = {};
+        METRIC_DEFS.forEach((m) => {
+          const arr = prev[m.key];
+          const lastNorm = arr[arr.length - 1];
+          // bias slightly toward base to keep things bounded
+          const baseNorm = (m.base - m.range[0]) / (m.range[1] - m.range[0]);
+          const drift = (baseNorm - lastNorm) * 0.08;
+          const target = lastNorm + drift + (Math.random() - 0.5) * 0.18;
+          const clamped = Math.max(0.04, Math.min(0.96, target));
+          const smoothed = smoothStep(lastNorm, clamped, 0.6);
+          const newArr = [...arr.slice(1), smoothed];
+          next[m.key] = newArr;
+          newLatest[m.key] = m.range[0] + smoothed * (m.range[1] - m.range[0]);
+        });
+        setLatest(newLatest);
+        return next;
+      });
+    }, TICK_MS);
     return () => clearInterval(t);
   }, []);
 
+  // Build a smooth (catmull-rom-ish) path
+  const W = 400;
+  const H = 200;
+  const PAD_X = 18;
+  const PAD_Y = 22;
+  const innerW = W - PAD_X * 2;
+  const innerH = H - PAD_Y * 2;
+
+  function buildPath(values: number[], close = false): string {
+    const pts = values.map((v, i) => {
+      const x = PAD_X + (i / (POINTS - 1)) * innerW;
+      const y = PAD_Y + (1 - v) * innerH;
+      return [x, y] as [number, number];
+    });
+    let d = `M ${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = pts[i - 1];
+      const [x2, y2] = pts[i];
+      const cx = (x1 + x2) / 2;
+      d += ` Q ${x1},${y1} ${cx},${(y1 + y2) / 2}`;
+    }
+    d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
+    if (close) {
+      d += ` L ${PAD_X + innerW},${PAD_Y + innerH} L ${PAD_X},${PAD_Y + innerH} Z`;
+    }
+    return d;
+  }
+
   return (
-    <div className="absolute inset-0 px-5 pt-1 pb-5 flex flex-col gap-1.5 overflow-hidden">
-      {/* Column headers */}
-      <div className="grid grid-cols-[28px_1fr_46px_46px_46px] gap-2 px-2 text-[9px] uppercase tracking-wider text-white/35 font-semibold">
-        <span></span>
-        <span>Editor</span>
-        <span className="text-right">CTR</span>
-        <span className="text-right">Hook</span>
-        <span className="text-right">Hold</span>
+    <div className="absolute inset-0 px-2 pt-1">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+        <defs>
+          {METRIC_DEFS.map((m) => (
+            <linearGradient key={m.key} id={`grad-${m.key}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={m.color} stopOpacity="0.32" />
+              <stop offset="100%" stopColor={m.color} stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {/* horizontal grid lines */}
+        {[0.25, 0.5, 0.75].map((p, i) => (
+          <line
+            key={i}
+            x1={PAD_X}
+            x2={W - PAD_X}
+            y1={PAD_Y + p * innerH}
+            y2={PAD_Y + p * innerH}
+            stroke="rgba(255,255,255,0.05)"
+            strokeWidth="1"
+          />
+        ))}
+
+        {/* fills (lightest metric only — keeps it readable) */}
+        <path
+          d={buildPath(series.hook, true)}
+          fill={`url(#grad-hook)`}
+          style={{ transition: "d 0.9s linear" }}
+        />
+
+        {/* lines */}
+        {METRIC_DEFS.map((m) => (
+          <path
+            key={m.key}
+            d={buildPath(series[m.key])}
+            fill="none"
+            stroke={m.color}
+            strokeWidth={m.key === "ctr" ? 2.4 : 1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: `drop-shadow(0 0 6px ${m.color}aa)`,
+              transition: "d 0.9s linear",
+              opacity: m.key === "stop" ? 0.85 : 1,
+            }}
+          />
+        ))}
+
+        {/* leading dots on rightmost point */}
+        {METRIC_DEFS.map((m) => {
+          const v = series[m.key][POINTS - 1];
+          const x = PAD_X + innerW;
+          const y = PAD_Y + (1 - v) * innerH;
+          return (
+            <g key={m.key} style={{ transition: "transform 0.9s linear" }}>
+              <circle cx={x} cy={y} r="4" fill={m.color} opacity="0.25" />
+              <circle cx={x} cy={y} r="2.2" fill="#fff"
+                style={{ filter: `drop-shadow(0 0 6px ${m.color})` }} />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Legend with live values */}
+      <div className="absolute left-4 right-4 bottom-3 grid grid-cols-4 gap-2">
+        {METRIC_DEFS.map((m) => (
+          <div key={m.key} className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-semibold text-white/45">
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ background: m.color, boxShadow: `0 0 6px ${m.color}` }}
+              />
+              {m.label}
+            </div>
+            <div className="text-[13px] font-semibold text-white tabular-nums leading-tight mt-0.5">
+              {m.key === "ctr" ? latest[m.key].toFixed(2) : latest[m.key].toFixed(1)}
+              <span className="text-white/40 text-[10px] ml-0.5">%</span>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {editors.map((e, i) => {
-        const max = Math.max(...editors.map((x) => x.hook));
-        const widthPct = (e.hook / max) * 100;
-        return (
-          <div
-            key={e.name}
-            className="relative grid grid-cols-[28px_1fr_46px_46px_46px] items-center gap-2 px-2 py-2 rounded-lg overflow-hidden"
-            style={{
-              background: "rgba(255,255,255,0.025)",
-              border: "1px solid rgba(255,255,255,0.05)",
-            }}
-          >
-            {/* Animated bar fill behind row */}
-            <div
-              className="absolute inset-y-0 left-0 pointer-events-none"
-              style={{
-                width: `${widthPct}%`,
-                background:
-                  "linear-gradient(90deg, rgba(168,85,247,0.18), rgba(168,85,247,0.04) 80%, transparent)",
-                transition: "width 1.4s cubic-bezier(.2,.7,.2,1)",
-              }}
-            />
-
-            <div
-              className="relative w-6 h-6 rounded-md flex items-center justify-center text-[9px] font-bold text-white"
-              style={{
-                background: "linear-gradient(135deg, #a855f7, #7c3aed)",
-                boxShadow: "0 0 12px -2px rgba(168,85,247,0.6)",
-              }}
-            >
-              {e.initials}
-            </div>
-            <span className="relative text-[12px] text-white/85 font-medium truncate">
-              {e.name}
-            </span>
-            <MetricCell value={`${e.ctr.toFixed(1)}%`} accent />
-            <MetricCell value={`${e.hook.toFixed(0)}%`} />
-            <MetricCell value={`${e.hold.toFixed(0)}%`} />
-          </div>
-        );
-      })}
-
       {/* Live indicator */}
-      <div className="absolute right-5 top-2 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wider text-[#a855f7]">
+      <div className="absolute right-3 top-2 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wider text-[#a855f7]">
         <span className="relative flex w-1.5 h-1.5">
           <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
-          <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: "0 0 8px #a855f7" }} />
+          <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]"
+            style={{ boxShadow: "0 0 8px #a855f7" }} />
         </span>
         Live
       </div>
     </div>
-  );
-}
-
-function MetricCell({ value, accent }: { value: string; accent?: boolean }) {
-  // animate the numeric change with a tiny vertical slide
-  const [display, setDisplay] = useState(value);
-  const [phase, setPhase] = useState(0);
-  useEffect(() => {
-    if (value === display) return;
-    setPhase(1);
-    const t = setTimeout(() => {
-      setDisplay(value);
-      setPhase(0);
-    }, 180);
-    return () => clearTimeout(t);
-  }, [value, display]);
-
-  return (
-    <span
-      className="relative text-right text-[12px] font-semibold tabular-nums transition-all duration-200"
-      style={{
-        color: accent ? "#e9d5ff" : "rgba(255,255,255,0.85)",
-        transform: phase ? "translateY(-3px)" : "translateY(0)",
-        opacity: phase ? 0 : 1,
-      }}
-    >
-      {display}
-    </span>
   );
 }
 
