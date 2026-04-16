@@ -892,6 +892,66 @@ function KpiDashboardVisual() {
   );
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// Section
+// ════════════════════════════════════════════════════════════════════════════
+const EditorEdge = () => {
+  return (
+    <section
+      className="relative py-28 overflow-hidden"
+      style={{ background: "#09090f" }}
+    >
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
+        }}
+      />
+      <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
+            style={{
+              background: "rgba(168,85,247,0.12)",
+              border: "1px solid rgba(168,85,247,0.30)",
+              boxShadow: "0 0 24px -6px rgba(168,85,247,0.5)",
+            }}
+          >
+            <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
+            What sets us apart
+          </div>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
+            Editors who understand{" "}
+            <span
+              style={{
+                background:
+                  "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              why ads work
+            </span>
+          </h2>
+          <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
+            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
+          </p>
+
+          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
+            style={{
+              background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
+              border: "1px solid rgba(168,85,247,0.45)",
+              boxShadow: "0 0 28px -4px rgba(168,85,247,0.55)",
+            }}
+          >
+            <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
+            <span>Included free with every brand. You only pay per video.</span>
+          </div>
+        </div>
+
         {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <FeatureCard
