@@ -117,11 +117,14 @@ Deno.serve(async (req) => {
     let adCreativeMap: Record<string, string> = {}; // ad_id -> creative_id
     try {
       const adsData = await fetchAllPages(adsUrl);
+      console.log(`Got ${adsData.length} ads. Sample keys:`, adsData.length > 0 ? JSON.stringify(Object.keys(adsData[0])) : 'none');
+      if (adsData.length > 0) console.log('Sample creative field:', JSON.stringify(adsData[0].creative || 'missing'));
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
         if (ad.creative?.id) adCreativeMap[ad.id] = ad.creative.id;
       }
+      console.log(`Mapped ${Object.keys(adCreativeMap).length} ad->creative pairs`);
     } catch (e) {
       console.log('Could not fetch ads:', e.message);
     }
