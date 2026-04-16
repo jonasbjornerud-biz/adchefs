@@ -31,25 +31,6 @@ async function fetchAllPages(url: string): Promise<any[]> {
   return allData;
 }
 
-// Extract video_id from object_story_spec, checking multiple nested paths
-function extractVideoId(spec: any): string {
-  if (!spec) return '';
-  return spec.video_data?.video_id
-    || spec.link_data?.video_id
-    || spec.template_data?.video_id
-    || '';
-}
-
-// Extract image URL from object_story_spec
-function extractImageUrl(spec: any): string {
-  if (!spec) return '';
-  return spec.video_data?.image_url
-    || spec.video_data?.call_to_action?.value?.link
-    || spec.link_data?.picture
-    || spec.link_data?.image_hash
-    || '';
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -90,7 +71,6 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
     const accountId = adAccountId.startsWith('act_') ? adAccountId : `act_${adAccountId}`;
-    const rawAccountId = accountId.replace('act_', '');
 
     const { data: cached } = await supabase
       .from('meta_ads_cache')
@@ -107,121 +87,42 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch insights
     const insightFields = 'ad_id,ad_name,campaign_name,spend,impressions,clicks,actions,action_values,video_play_actions,video_p25_watched_actions,video_30_sec_watched_actions';
     const timeRange = JSON.stringify({ since, until });
     const insightsUrl = `${META_BASE_URL}/${accountId}/insights?level=ad&fields=${insightFields}&time_range=${encodeURIComponent(timeRange)}&time_increment=1&limit=500&access_token=${accessToken}`;
 
-    console.log('Fetching insights, date range:', since, 'to', until);
+    console.log('Fetching account-level insights, date range:', since, 'to', until);
     const allInsights = await fetchAllPages(insightsUrl);
     console.log(`Got ${allInsights.length} insight rows`);
 
-    const adMap = new Map<string, { name: string; campaignName: string; dailyRows: any[] }>();
+    const adMap = new Map<string, {
+      name: string; campaignName: string; dailyRows: any[];
+    }>();
+
     for (const row of allInsights) {
       const adId = row.ad_id;
       if (!adMap.has(adId)) {
-        adMap.set(adId, { name: row.ad_name || 'Unknown Ad', campaignName: row.campaign_name || 'Unknown Campaign', dailyRows: [] });
+        adMap.set(adId, {
+          name: row.ad_name || 'Unknown Ad',
+          campaignName: row.campaign_name || 'Unknown Campaign',
+          dailyRows: [],
+        });
       }
       adMap.get(adId)!.dailyRows.push(row);
     }
 
-    // Fetch ads with status + creative details via object_story_spec
-    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,creative{id,object_story_spec,thumbnail_url,image_url}&limit=500&access_token=${accessToken}`;
+    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status&limit=100&access_token=${accessToken}`;
     let statusMap: Record<string, string> = {};
-    let thumbnailMap: Record<string, string> = {};
-    let videoIdMap: Record<string, string> = {};
-
     try {
       const adsData = await fetchAllPages(adsUrl);
-      console.log(`Got ${adsData.length} ads`);
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
-
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
-        const creative = ad.creative;
-        if (!creative) continue;
-
-        // Extract video_id from object_story_spec
-        const videoId = extractVideoId(creative.object_story_spec);
-        if (videoId) videoIdMap[ad.id] = videoId;
-
-        // Extract thumbnail: prefer image_url, then thumbnail_url, then from spec
-        const imgUrl = creative.image_url || creative.thumbnail_url || extractImageUrl(creative.object_story_spec) || '';
-        if (imgUrl) thumbnailMap[ad.id] = imgUrl;
       }
-      console.log(`Found ${Object.keys(videoIdMap).length} video IDs from object_story_spec, ${Object.keys(thumbnailMap).length} thumbnails`);
     } catch (e) {
-      console.log('Could not fetch ads:', e.message);
+      console.log('Could not fetch ad statuses:', e.message);
     }
 
-    // If we still have no video IDs, try fetching advideos from the account
-    if (Object.keys(videoIdMap).length === 0) {
-      console.log('No video IDs from creatives, trying advideos endpoint...');
-      try {
-        const videosUrl = `${META_BASE_URL}/${accountId}/advideos?fields=id,title,source,picture&limit=500&access_token=${accessToken}`;
-        const adVideos = await fetchAllPages(videosUrl);
-        console.log(`Got ${adVideos.length} account-level videos`);
-        // We can't directly map these to ads, but log for debugging
-        if (adVideos.length > 0) {
-          console.log('Sample video:', JSON.stringify({ id: adVideos[0].id, hasSource: !!adVideos[0].source, title: adVideos[0].title?.slice(0, 50) }));
-        }
-      } catch (e) {
-        console.log('advideos fetch failed:', e.message);
-      }
-    }
-
-    // Fetch playable video source URLs for found video IDs
-    let videoUrlMap: Record<string, string> = {};
-    let hdThumbnailMap: Record<string, string> = {};
-    const uniqueVideoIds = [...new Set(Object.values(videoIdMap))];
-    if (uniqueVideoIds.length > 0) {
-      console.log(`Fetching source for ${uniqueVideoIds.length} videos`);
-      const videoPromises = uniqueVideoIds.map(async (videoId) => {
-        try {
-          const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source,picture&access_token=${accessToken}`);
-          const json = await res.json();
-          if (json.error) { console.log(`Video ${videoId} error:`, json.error.message?.slice(0, 80)); return null; }
-          return { id: videoId, source: json.source || '', picture: json.picture || '' };
-        } catch (_e) { return null; }
-      });
-      const videoResults = await Promise.all(videoPromises);
-      const videoSourceMap: Record<string, { source: string; picture: string }> = {};
-      for (const r of videoResults) {
-        if (r) videoSourceMap[r.id] = { source: r.source, picture: r.picture };
-      }
-      for (const [adId, videoId] of Object.entries(videoIdMap)) {
-        const v = videoSourceMap[videoId];
-        if (v?.source) videoUrlMap[adId] = v.source;
-        if (v?.picture) hdThumbnailMap[adId] = v.picture;
-      }
-      console.log(`Got ${Object.keys(videoUrlMap).length} playable video URLs`);
-    }
-
-    // Fetch ad preview URLs (batch, parallel)
-    const adIdsWithInsights = Array.from(adMap.keys());
-    let previewUrlMap: Record<string, string> = {};
-    if (adIdsWithInsights.length > 0) {
-      console.log(`Fetching preview URLs for ${adIdsWithInsights.length} ads`);
-      const previewPromises = adIdsWithInsights.map(async (adId) => {
-        try {
-          const res = await fetch(`${META_BASE_URL}/${adId}/previews?ad_format=DESKTOP_FEED_STANDARD&access_token=${accessToken}`);
-          const json = await res.json();
-          if (json.data?.[0]?.body) {
-            const body = json.data[0].body;
-            const match = body.match(/href="(https:\/\/www\.facebook\.com\/ads\/archive\/render_ad\/[^"]+)"/);
-            if (match) return { adId, url: match[1].replace(/&amp;/g, '&') };
-          }
-          return null;
-        } catch (_e) { return null; }
-      });
-      const results = await Promise.all(previewPromises);
-      for (const r of results) {
-        if (r) previewUrlMap[r.adId] = r.url;
-      }
-      console.log(`Got ${Object.keys(previewUrlMap).length} preview URLs`);
-    }
-
-    // Build ad metrics
     const adMetrics = Array.from(adMap.entries()).map(([adId, info]) => {
       let totalSpend = 0, totalImpressions = 0, totalClicks = 0, totalConversions = 0, totalRevenue = 0;
       let totalVideoPlays = 0, totalP25Views = 0, total30sViews = 0;
@@ -252,16 +153,12 @@ Deno.serve(async (req) => {
         return {
           date: day.date_start,
           spend: Math.round(spend * 100) / 100,
-          impressions, clicks,
+          impressions,
+          clicks,
           conversions: Math.round(conversions),
           revenue: Math.round(revenue * 100) / 100,
         };
       });
-
-      // Fallback: Ads Manager URL for when video source isn't available
-      const adManagerUrl = `https://adsmanager.facebook.com/adsmanager/manage/ads?act=${rawAccountId}&selected_ad_ids=${adId}`;
-      // Preview URL from Ad Preview API, fallback to Ad Library
-      const viewAdUrl = previewUrlMap[adId] || `https://www.facebook.com/ads/library/?id=${adId}`;
 
       return {
         id: adId,
@@ -281,16 +178,17 @@ Deno.serve(async (req) => {
         roas: totalSpend > 0 ? Math.round((totalRevenue / totalSpend) * 100) / 100 : 0,
         hookRate: totalVideoPlays > 0 ? Math.round((totalP25Views / totalVideoPlays) * 10000) / 100 : 0,
         holdRate: totalP25Views > 0 ? Math.round((total30sViews / totalP25Views) * 10000) / 100 : 0,
-        thumbnail: hdThumbnailMap[adId] || thumbnailMap[adId] || '',
-        videoUrl: videoUrlMap[adId] || '',
-        adManagerUrl,
-        viewAdUrl,
+        thumbnail: '',
         dailyData,
       };
     });
 
     await supabase.from('meta_ads_cache').upsert({
-      account_id: accountId, since, until, data: adMetrics, fetched_at: new Date().toISOString(),
+      account_id: accountId,
+      since,
+      until,
+      data: adMetrics,
+      fetched_at: new Date().toISOString(),
     }, { onConflict: 'account_id,since,until' });
 
     console.log(`Returning ${adMetrics.length} ad metrics`);

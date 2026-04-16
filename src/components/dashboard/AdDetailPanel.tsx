@@ -1,5 +1,5 @@
 import { AdMetric } from "@/data/mockAds";
-import { X, TrendingUp, MousePointerClick, DollarSign, Eye, Play, ExternalLink } from "lucide-react";
+import { X, TrendingUp, MousePointerClick, DollarSign, Eye, Play } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 interface AdDetailPanelProps {
@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} style={{ backdropFilter: 'none' }} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-2xl bg-[#09090f] border-l border-white/[0.06] overflow-y-auto animate-[slide-in-right_300ms_ease-out]">
         <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-[#09090f] border-b border-white/[0.06]">
           <div>
@@ -50,36 +50,6 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Video Player */}
-          {ad.videoUrl && (
-            <div className="rounded-2xl overflow-hidden bg-black" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.5)' }}>
-              <video
-                src={ad.videoUrl}
-                controls
-                playsInline
-                autoPlay
-                muted
-                className="w-full max-h-[400px] object-contain bg-black"
-              />
-            </div>
-          )}
-
-          {!ad.videoUrl && ad.thumbnail && (
-            <div className="rounded-2xl overflow-hidden bg-[#0a0a12] aspect-video flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset' }}>
-              <img src={ad.thumbnail} alt={ad.name} className="w-full h-full object-cover" />
-            </div>
-          )}
-
-          {!ad.videoUrl && !ad.thumbnail && (
-            <div className="rounded-2xl overflow-hidden bg-[#0a0a12] aspect-video flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset' }}>
-              <div className="flex flex-col items-center gap-2">
-                <Play className="w-10 h-10 text-white/10" />
-                <span className="text-xs text-white/20">No video available</span>
-              </div>
-            </div>
-          )}
-
-          {/* Metrics Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <MetricBox label="CTR" value={`${ad.ctr}%`} icon={<MousePointerClick className="w-4 h-4" />} />
             <MetricBox label="CPA" value={`$${ad.cpa}`} icon={<DollarSign className="w-4 h-4" />} />
@@ -89,17 +59,16 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
             <MetricBox label="Spend" value={`$${ad.spend.toLocaleString()}`} icon={<DollarSign className="w-4 h-4" />} />
           </div>
 
-          {/* Spend vs Revenue chart */}
           <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
             <h3 className="text-sm font-semibold text-white mb-4">Spend vs Revenue (14 days)</h3>
             <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={ad.dailyData}>
                 <defs>
-                  <linearGradient id="detailSpendGrad" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="spendGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#a855f7" stopOpacity={0.25} />
                     <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient id="detailRevGrad" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#34d399" stopOpacity={0.25} />
                     <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
                   </linearGradient>
@@ -108,19 +77,18 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
                 <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
                 <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="spend" stroke="#a855f7" strokeWidth={2} fill="url(#detailSpendGrad)" name="Spend" dot={false} activeDot={{ fill: "#a855f7", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
-                <Area type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={2} fill="url(#detailRevGrad)" name="Revenue" dot={false} activeDot={{ fill: "#34d399", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="spend" stroke="#a855f7" strokeWidth={2} fill="url(#spendGrad)" name="Spend" dot={false} activeDot={{ fill: "#a855f7", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={2} fill="url(#revGrad)" name="Revenue" dot={false} activeDot={{ fill: "#34d399", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Daily Clicks */}
           <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
             <h3 className="text-sm font-semibold text-white mb-4">Daily Clicks</h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={ad.dailyData}>
                 <defs>
-                  <linearGradient id="detailBarGrad" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#a855f7" />
                     <stop offset="100%" stopColor="#7c3aed" />
                   </linearGradient>
@@ -129,12 +97,11 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
                 <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
                 <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="clicks" fill="url(#detailBarGrad)" radius={[4, 4, 0, 0]} name="Clicks" />
+                <Bar dataKey="clicks" fill="url(#barGrad)" radius={[4, 4, 0, 0]} name="Clicks" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Detailed Stats */}
           <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
             <h3 className="text-sm font-semibold text-white mb-4">Detailed Stats</h3>
             <div className="space-y-3">

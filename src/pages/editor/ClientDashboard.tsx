@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
-import { LogOut, BarChart3, TrendingUp, Sparkles } from 'lucide-react';
-import { GlassCard } from '@/components/dash/GlassCard';
+import { LogOut, BarChart3, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
+
+const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -24,10 +25,10 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="dash-bg flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 relative z-10">
-          <div className="w-7 h-7 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--dash-accent)', borderTopColor: 'transparent' }} />
-          <span className="text-xs dash-font-body" style={{ color: 'var(--dash-text-tertiary)' }}>Loading…</span>
+      <div className="min-h-screen flex items-center justify-center bg-[#09090f]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[#a855f7] border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm text-white/30">Loading…</span>
         </div>
       </div>
     );
@@ -37,147 +38,144 @@ export default function ClientDashboard() {
 
   const cards = [
     {
-      title: 'KPI Dashboard',
-      description: 'Real-time Meta Ads performance — spend, ROAS, CTR, CPA, and revenue trends.',
-      icon: TrendingUp,
-      route: '/ads',
-      enabled: true,
-      stats: [
-        { label: 'Live Sync', value: 'Meta API' },
-        { label: 'Updated', value: 'On demand' },
-      ],
-    },
-    {
       title: 'Editor Performance',
-      description: 'Track deliveries, editor output, approval rates, and weekly trends across the team.',
+      description: 'Track deliveries, editor output, approval rates, and weekly trends across your team.',
       icon: BarChart3,
       route: '/performance',
+      accent: '#a855f7',
       enabled: !!client.spreadsheet_id,
-      stats: [
-        { label: 'Source', value: 'Google Sheets' },
-        { label: 'Refresh', value: '12h cache' },
-      ],
+    },
+    {
+      title: 'KPI Dashboard',
+      description: 'Monitor ad spend, ROAS, CTR, CPA, and revenue with real-time Meta Ads data.',
+      icon: TrendingUp,
+      route: '/ads',
+      accent: '#34d399',
+      enabled: true,
     },
   ];
 
   return (
-    <div className="dash-bg">
+    <div className="min-h-screen bg-[#09090f] relative overflow-hidden">
+      {/* Purple glow — top center */}
+      <div className="fixed inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 100%)',
+      }} />
+      {/* Secondary subtle glow */}
+      <div className="fixed inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 40% at 30% 80%, rgba(52,211,153,0.04) 0%, transparent 100%)',
+      }} />
+
       {/* Header */}
-      <header
-        className="relative z-10 border-b backdrop-blur-xl"
-        style={{ background: 'rgba(10,10,15,0.85)', borderColor: 'var(--dash-border-subtle)' }}
-      >
-        <div className="max-w-[1280px] mx-auto px-6 md:px-8 h-14 flex items-center justify-between">
+      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: 'linear-gradient(135deg, #A855F7, #6D28D9)', boxShadow: '0 0 16px rgba(168,85,247,0.3)' }}
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold"
+              style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}
             >
-              {client.brand_name.charAt(0).toUpperCase()}
+              {client.brand_name.charAt(0)}
             </div>
-            <span className="text-sm font-semibold dash-font-body" style={{ color: 'var(--dash-text-primary)' }}>
-              {client.brand_name}
-            </span>
+            <span className="text-sm font-medium text-white">{client.brand_name}</span>
           </div>
           <button
             onClick={() => { logout(); navigate('/login'); }}
-            className="flex items-center gap-1.5 text-[11px] transition-colors duration-200 cursor-pointer hover:text-white"
-            style={{ color: 'var(--dash-text-tertiary)' }}
+            className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white transition-all duration-200 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign out
           </button>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-8 pt-14 pb-16">
-        {/* Welcome — left aligned */}
-        <div className="mb-12 max-w-2xl">
-          <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider mb-5"
-            style={{
-              background: 'var(--dash-accent-subtle)',
-              color: 'var(--dash-accent-glow)',
-              border: '1px solid rgba(168,85,247,0.2)',
-            }}
-          >
-            <Sparkles className="w-3 h-3" /> Client Portal
-          </span>
-          <h1 className="dash-font-display" style={{ fontSize: 'clamp(40px, 5vw, 56px)', color: 'var(--dash-text-primary)' }}>
-            Welcome back,{' '}
-            <span className="dash-text-gradient" style={{ filter: 'drop-shadow(0 0 24px rgba(168,85,247,0.4))' }}>
-              {client.brand_name}
-            </span>
+      {/* Main content */}
+      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16">
+        {/* Welcome */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium text-white/40 mb-6" style={{
+            background: 'rgba(168,85,247,0.08)',
+            boxShadow: '0 0 0 1px rgba(168,85,247,0.15) inset',
+          }}>
+            <Sparkles className="w-3 h-3 text-[#a855f7]" /> Client Portal
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+            <span className="text-white">Welcome back,</span>
+            <br />
+            <span style={{
+              background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 20px rgba(168,85,247,0.5))',
+            }}>{client.brand_name}</span>
           </h1>
-          <p className="text-sm mt-3 dash-font-body" style={{ color: 'var(--dash-text-secondary)' }}>
-            Choose a dashboard to dive into your performance data.
+          <p className="text-white/30 text-base mt-4 max-w-md mx-auto">
+            Select a dashboard to view your performance data and insights.
           </p>
         </div>
 
-        {/* Cards — split 50/50 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {cards.map((card, i) => {
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {cards.map((card) => {
             const Icon = card.icon;
             if (!card.enabled) {
               return (
-                <GlassCard key={card.title} hover={false} delay={i * 80} className="p-6 opacity-50">
-                  <div
-                    className="w-12 h-12 rounded-lg flex items-center justify-center mb-5"
-                    style={{ background: 'var(--dash-accent-subtle)' }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color: 'var(--dash-accent-glow)' }} />
+                <div
+                  key={card.title}
+                  className="bg-[#111118] rounded-2xl p-8 opacity-40"
+                  style={{ boxShadow: CARD_SHADOW }}
+                >
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{
+                    background: `${card.accent}10`,
+                    boxShadow: `0 0 0 1px ${card.accent}20 inset`,
+                  }}>
+                    <Icon className="w-5 h-5" style={{ color: card.accent }} />
                   </div>
-                  <h3 className="dash-font-display font-bold text-xl mb-1" style={{ color: 'var(--dash-text-secondary)' }}>
-                    {card.title}
-                  </h3>
-                  <p className="text-xs dash-font-body" style={{ color: 'var(--dash-text-tertiary)' }}>
-                    Not yet configured
-                  </p>
-                </GlassCard>
+                  <h3 className="text-lg font-semibold text-white/50 mb-2">{card.title}</h3>
+                  <p className="text-xs text-white/20 leading-relaxed">Not yet configured</p>
+                </div>
               );
             }
             return (
               <button
                 key={card.title}
                 onClick={() => navigate(card.route)}
-                className="text-left group cursor-pointer"
-                style={{ all: 'unset', cursor: 'pointer' }}
+                className="group text-left cursor-pointer bg-[#111118] rounded-2xl p-8 transition-all duration-300 relative overflow-hidden"
+                style={{ boxShadow: CARD_SHADOW }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.boxShadow = `0 0 0 1px ${card.accent}30 inset, 0 0 40px ${card.accent}15, 0 4px 24px rgba(0,0,0,0.4)`;
+                  el.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.boxShadow = CARD_SHADOW;
+                  el.style.transform = 'translateY(0)';
+                }}
               >
-                <GlassCard delay={i * 80} className="p-6 h-full flex flex-col">
-                  <div className="flex items-start justify-between mb-5">
-                    <div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{ background: 'var(--dash-accent-subtle)' }}
-                    >
-                      <Icon className="w-5 h-5" style={{ color: 'var(--dash-accent-glow)' }} />
+                {/* Hover glow overlay */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{
+                  background: `radial-gradient(ellipse at 30% 20%, ${card.accent}08, transparent 70%)`,
+                }} />
+
+                <div className="relative">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300" style={{
+                      background: `${card.accent}10`,
+                      boxShadow: `0 0 0 1px ${card.accent}20 inset`,
+                    }}>
+                      <Icon className="w-5 h-5" style={{ color: card.accent }} />
                     </div>
-                  </div>
-                  <h3 className="dash-font-display font-bold text-xl mb-2" style={{ color: 'var(--dash-text-primary)' }}>
-                    {card.title}
-                  </h3>
-                  <p className="text-sm dash-font-body mb-6 flex-1" style={{ color: 'var(--dash-text-secondary)' }}>
-                    {card.description}
-                  </p>
-
-                  {/* Stats row */}
-                  <div className="grid grid-cols-2 gap-3 pt-4 border-t" style={{ borderColor: 'var(--dash-border-subtle)' }}>
-                    {card.stats.map((s) => (
-                      <div key={s.label}>
-                        <p className="dash-font-label mb-1">{s.label}</p>
-                        <p className="dash-font-mono text-sm" style={{ color: 'var(--dash-text-primary)' }}>{s.value}</p>
-                      </div>
-                    ))}
+                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-white/40 group-hover:translate-x-1 transition-all duration-300" />
                   </div>
 
-                  <div className="mt-5 flex justify-end">
-                    <span
-                      className="text-xs font-semibold transition-transform duration-200 group-hover:translate-x-1"
-                      style={{ color: 'var(--dash-accent-glow)' }}
-                    >
+                  <h3 className="text-xl font-semibold text-white mb-2">{card.title}</h3>
+                  <p className="text-sm text-white/30 leading-relaxed mb-8">{card.description}</p>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold transition-all duration-300 group-hover:translate-x-1" style={{ color: card.accent }}>
                       Open Dashboard →
                     </span>
                   </div>
-                </GlassCard>
+                </div>
               </button>
             );
           })}

@@ -59,6 +59,12 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: clientError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
 
+      await supabase.from("stages").insert([
+        { client_id: clientData.id, title: "SOP Modules", stage_number: 1, sort_order: 1 },
+        { client_id: clientData.id, title: "Gear Up", stage_number: 2, sort_order: 2 },
+        { client_id: clientData.id, title: "Learn More", stage_number: 3, sort_order: 3 },
+      ]);
+
       return new Response(JSON.stringify({ client_id: clientData.id }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
