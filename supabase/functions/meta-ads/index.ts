@@ -210,7 +210,7 @@ Deno.serve(async (req) => {
         roas: totalSpend > 0 ? Math.round((totalRevenue / totalSpend) * 100) / 100 : 0,
         hookRate: totalVideoPlays > 0 ? Math.round((totalP25Views / totalVideoPlays) * 10000) / 100 : 0,
         holdRate: totalP25Views > 0 ? Math.round((total30sViews / totalP25Views) * 10000) / 100 : 0,
-        thumbnail: thumbnailMap[adId] || '',
+        thumbnail: hdThumbnailMap[adId] || thumbnailMap[adId] || '',
         videoUrl: videoUrlMap[adId] || '',
         dailyData,
       };
