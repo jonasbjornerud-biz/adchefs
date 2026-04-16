@@ -414,13 +414,13 @@ function MentoringVisual() {
             strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray="251"
-            strokeDashoffset={251 - (251 * 0.92)}
+            strokeDashoffset={251 - (251 * 0.78)}
             transform="rotate(-90 50 50)"
             style={{ filter: "drop-shadow(0 0 6px rgba(168,85,247,0.6))" }}
           >
             <animate
               attributeName="stroke-dashoffset"
-              values={`${251 - (251 * 0.85)};${251 - (251 * 0.96)};${251 - (251 * 0.85)}`}
+              values={`${251 - (251 * 0.74)};${251 - (251 * 0.82)};${251 - (251 * 0.74)}`}
               dur="3.6s"
               repeatCount="indefinite"
             />
