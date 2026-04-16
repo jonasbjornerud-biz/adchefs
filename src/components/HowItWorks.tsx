@@ -474,9 +474,7 @@ function PlacementVisual() {
 
   return (
     <div className="absolute inset-0">
-      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="teamGlow" cx="50%" cy="55%" r="50%">
+      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
             <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
             <stop offset="100%" stopColor="rgba(168,85,247,0)" />
           </radialGradient>
