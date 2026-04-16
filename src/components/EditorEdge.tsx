@@ -1094,6 +1094,13 @@ const EditorEdge = () => {
           100% { transform: translateX(740px); opacity: 0; }
         }
 
+        @keyframes mw-scan-feat {
+          0%   { transform: translateX(0); opacity: 0; }
+          10%  { opacity: 0.45; }
+          90%  { opacity: 0.45; }
+          100% { transform: translateX(420px); opacity: 0; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .mw-card, .mw-breath, .mw-node-pulse, .mw-blink, .mw-fade-in {
             animation: none !important;
