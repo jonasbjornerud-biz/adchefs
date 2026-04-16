@@ -37,6 +37,14 @@ const Hero = () => {
         </svg>
       </div>
 
+      {/* Shooting star light trails */}
+      <div className="shooting-stars" aria-hidden="true">
+        <span className="shooting-star s-white  ss-1" />
+        <span className="shooting-star s-purple ss-2" />
+        <span className="shooting-star s-white  ss-3" />
+        <span className="shooting-star s-purple ss-4" />
+      </div>
+
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
         <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
           <span className="text-xs tracking-wide text-muted-foreground">
