@@ -154,9 +154,6 @@ Deno.serve(async (req) => {
       }
       console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
     }
-    } catch (e) {
-      console.log('Could not fetch ad creatives:', e.message);
-    }
 
     // Fetch playable video source URLs
     let videoUrlMap: Record<string, string> = {};
