@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { LogOut, BarChart3, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
+import { LogOut, BarChart3, TrendingUp, ArrowUpRight, FileSpreadsheet, Zap } from 'lucide-react';
 import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 
-const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
 const BRAND = 'MOCK';
 
 export default function MockClientDashboard() {
@@ -15,6 +14,9 @@ export default function MockClientDashboard() {
       icon: BarChart3,
       route: '/mock/performance',
       accent: '#a855f7',
+      statusLabel: 'Sheet API connected',
+      statusIcon: FileSpreadsheet,
+      cta: 'Open Performance',
     },
     {
       title: 'KPI Dashboard',
@@ -22,6 +24,9 @@ export default function MockClientDashboard() {
       icon: TrendingUp,
       route: '/mock/ads',
       accent: '#34d399',
+      statusLabel: 'Meta API connected',
+      statusIcon: Zap,
+      cta: 'Open Dashboard',
     },
   ];
 
