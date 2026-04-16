@@ -5,7 +5,6 @@ import EditorEdge from "@/components/EditorEdge";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
-import ParallaxSection from "@/components/ParallaxSection";
 
 const Index = () => {
   return (
@@ -17,16 +16,8 @@ const Index = () => {
       <div className="min-h-screen relative z-10">
         <Navigation />
         <Hero />
-
-        {/* How It Works — in-house experience (now first) */}
-        <ParallaxSection speed={0.18}>
-          <HowItWorks />
-        </ParallaxSection>
-
-        {/* What Sets Us Apart — now second, parallax in opposite direction */}
-        <ParallaxSection speed={-0.18}>
-          <EditorEdge />
-        </ParallaxSection>
+        <HowItWorks />
+        <EditorEdge />
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">
