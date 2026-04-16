@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { RefreshCw, FileBarChart, TrendingUp, ArrowLeft, CheckCircle2, Users } from 'lucide-react';
 import { KpiCard } from '@/components/dashboard/KpiCard';
+import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 import { generateMockPerformanceData, MockPerformanceData } from '@/data/mockDemoData';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -152,32 +153,54 @@ export default function MockPerformanceDashboard() {
   }, [data, month]);
 
   return (
-    <div className="min-h-screen bg-[#09090f]">
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
+    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+      {/* Top ambient glow */}
+      <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)',
+      }} />
+      {/* Bottom horizon glow */}
+      <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.22) 0%, rgba(124,58,237,0.08) 35%, transparent 70%)',
+      }} />
+      {/* Grid texture */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+      }} />
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
-        <div className="max-w-[1200px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(6,6,12,0.6)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+        <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/mock')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-all duration-200 cursor-pointer">
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            <button onClick={() => navigate('/mock')} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/[0.06] transition-all duration-200 cursor-pointer border border-white/[0.06]">
+              <ArrowLeft className="w-4 h-4 text-white/50" />
             </button>
-            <div className="h-4 w-px bg-white/10" />
-            <span className="text-sm font-medium text-white">Editor Performance</span>
-            <span className="text-[10px] text-white/20 ml-2">Demo Data</span>
+            <span className="text-base font-semibold text-white tracking-tight">Editor Performance</span>
+            <span className="text-sm text-white/30 hidden sm:inline">Demo Dashboard</span>
           </div>
         </div>
       </header>
 
-      <main className="max-w-[1200px] mx-auto px-5 md:px-8 py-8 space-y-7 relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Editor Performance</h1>
-            <p className="text-sm text-white/40 mt-1">{month} · {editor}</p>
+      {/* Hero band with horizon arc */}
+      <div className="relative">
+        <HorizonGlow height={300} />
+        <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-12 pb-6 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
+            background: 'rgba(168,85,247,0.12)',
+            border: '1px solid rgba(168,85,247,0.30)',
+            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+          }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            Live Demo Mode
           </div>
-          <div className="flex items-center gap-2">
-            <DarkSelect value={editor} onChange={setEditor} options={data.editors} />
-            <DarkSelect value={month} onChange={setMonth} options={data.months} />
-          </div>
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">Editor Performance</h1>
+          <p className="text-sm text-white/50 mt-3">{month} · {editor}</p>
+        </div>
+      </div>
+
+      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-10 space-y-7 relative z-10">
+        <div className="flex justify-end items-center gap-2">
+          <DarkSelect value={editor} onChange={setEditor} options={data.editors} />
+          <DarkSelect value={month} onChange={setMonth} options={data.months} />
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">

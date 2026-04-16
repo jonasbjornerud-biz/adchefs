@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { LogOut, BarChart3, TrendingUp, ChevronRight, Sparkles } from 'lucide-react';
+import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 
 const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
 const BRAND = 'MOCK';
@@ -25,11 +26,22 @@ export default function MockClientDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#09090f] relative overflow-hidden">
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 100%)' }} />
-      <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 40% at 30% 80%, rgba(52,211,153,0.04) 0%, transparent 100%)' }} />
+    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+      {/* Top ambient glow */}
+      <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)',
+      }} />
+      {/* Bottom horizon glow */}
+      <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.22) 0%, rgba(124,58,237,0.08) 35%, transparent 70%)',
+      }} />
+      {/* Grid texture */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+        backgroundSize: '48px 48px',
+      }} />
 
-      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
+      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(6,6,12,0.6)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
@@ -43,17 +55,27 @@ export default function MockClientDashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium text-white/40 mb-6" style={{ background: 'rgba(168,85,247,0.08)', boxShadow: '0 0 0 1px rgba(168,85,247,0.15) inset' }}>
-            <Sparkles className="w-3 h-3 text-[#a855f7]" /> Demo Portal
+      {/* Hero band with horizon arc */}
+      <div className="relative">
+        <HorizonGlow height={300} />
+        <div className="max-w-5xl mx-auto px-6 pt-12 pb-6 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
+            background: 'rgba(168,85,247,0.12)',
+            border: '1px solid rgba(168,85,247,0.30)',
+            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+          }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            Demo Portal
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-            <span className="text-white">Welcome back,</span><br />
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight">
+            <span className="text-white">Welcome back, </span>
             <span style={{ background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(168,85,247,0.5))' }}>{BRAND}</span>
           </h1>
-          <p className="text-white/30 text-base mt-4 max-w-md mx-auto">Select a dashboard to view your performance data and insights.</p>
+          <p className="text-sm text-white/50 mt-3">Select a dashboard to view your performance data and insights.</p>
         </div>
+      </div>
+
+      <main className="relative z-10 max-w-5xl mx-auto px-6 pb-16 pt-4">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {cards.map((card) => {
