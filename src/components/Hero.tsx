@@ -56,7 +56,7 @@ const Hero = () => {
           Pay per video. No retainers.
         </div>
 
-        <div className="cta-conic-glow inline-block">
+        <div className="cta-glow inline-block">
           <Button
             size="lg"
             variant="cta"
