@@ -61,7 +61,7 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 bg-[#111118] border-white/10 backdrop-blur-xl"
+        className="w-auto p-0 bg-[#111118] border-white/10 backdrop-blur-xl dark"
         align="start"
       >
         <div className="flex">
