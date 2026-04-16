@@ -81,23 +81,29 @@ function StepCard({
   const inView = useInView(cardRef, { once: true, margin: "-15% 0% -15% 0%" });
   const [settled, setSettled] = useState(false);
 
+  // Auto-driven sweep position (replaces cursor input). Visuals consume mx/my
+  // for layered drift; the CinematicCamera adds the strong rotational sweep.
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.5);
-  const rx = useSpring(useTransform(my, [0, 1], [3, -3]), { stiffness: 200, damping: 22 });
-  const ry = useSpring(useTransform(mx, [0, 1], [-3, 3]), { stiffness: 200, damping: 22 });
-  const glowX = useTransform(mx, [0, 1], ["0%", "100%"]);
-  const glowY = useTransform(my, [0, 1], ["0%", "100%"]);
 
-  function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (reduce) return;
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width);
-    my.set((e.clientY - rect.top) / rect.height);
-  }
-  function onLeave() {
-    mx.set(0.5);
-    my.set(0.5);
-  }
+  useEffect(() => {
+    if (reduce || !settled) return;
+    let raf = 0;
+    const start = performance.now();
+    const periodX = 14000;
+    const periodY = 18000;
+    const offset = (delay || 0) * 1000;
+    const tick = (now: number) => {
+      const t = now - start + offset;
+      const sx = 0.5 + 0.5 * Math.sin((t / periodX) * Math.PI * 2);
+      const sy = 0.5 + 0.5 * Math.sin((t / periodY) * Math.PI * 2 + Math.PI / 3);
+      mx.set(sx);
+      my.set(sy);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduce, settled, delay, mx, my]);
 
   const initial =
     variant === "left"
@@ -109,8 +115,6 @@ function StepCard({
   return (
     <motion.div
       ref={cardRef}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
       initial={initial}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : initial}
       transition={{ ...SPRING_SOFT, delay }}
@@ -118,10 +122,6 @@ function StepCard({
         if (!settled) setSettled(true);
       }}
       style={{
-        rotateX: reduce ? 0 : rx,
-        rotateY: reduce ? 0 : ry,
-        transformPerspective: 1200,
-        transformStyle: "preserve-3d",
         background: "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
         border: "1px solid rgba(255,255,255,0.06)",
         backdropFilter: "blur(20px)",
@@ -129,28 +129,8 @@ function StepCard({
         boxShadow:
           "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
-      whileHover={
-        reduce
-          ? undefined
-          : {
-              y: -4,
-              boxShadow:
-                "0 1px 0 rgba(255,255,255,0.10) inset, 0 0 0 1px rgba(168,85,247,0.20) inset, 0 30px 80px -20px rgba(168,85,247,0.30), 0 0 60px -10px rgba(168,85,247,0.20)",
-            }
-      }
-      className="hiw-card group relative overflow-hidden rounded-3xl"
+      className="hiw-card relative overflow-hidden rounded-3xl"
     >
-      {/* Cursor-follow glow */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: useTransform(
-            [glowX, glowY] as never,
-            ([x, y]: any) =>
-              `radial-gradient(460px circle at ${x} ${y}, rgba(168,85,247,0.20), transparent 60%)`,
-          ),
-        }}
-      />
       <div
         className="absolute inset-x-8 top-0 h-px pointer-events-none"
         style={{
@@ -170,12 +150,14 @@ function StepCard({
         }}
       />
 
-      {/* Visual region with its own perspective */}
+      {/* Visual region — fixed bounds. Inner camera sweeps the scene cinematically. */}
       <div
         className="relative h-[260px] overflow-hidden"
-        style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+        style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
       >
-        {visual({ active: settled, mx, my })}
+        <CinematicCamera active={settled} delay={delay}>
+          {visual({ active: settled, mx, my })}
+        </CinematicCamera>
         <div className="absolute inset-0 pointer-events-none hiw-grain-purple" />
       </div>
 
@@ -207,6 +189,58 @@ function StepCard({
         </h3>
         <p className="text-sm text-white/50 leading-relaxed">{description}</p>
       </div>
+    </motion.div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// CinematicCamera — self-running 3D sweep over an oversized inner scene.
+// Card stays fixed; only the inner visual physically pans/rotates.
+// ────────────────────────────────────────────────────────────────────────────
+function CinematicCamera({
+  children,
+  active,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  delay?: number;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className="absolute inset-0"
+      style={{
+        transformStyle: "preserve-3d",
+        transformOrigin: "50% 50%",
+        willChange: "transform",
+      }}
+      initial={{ rotateY: -28, rotateX: 6, x: -36, y: -8, scale: 1.18 }}
+      animate={
+        reduce || !active
+          ? { rotateY: 0, rotateX: 0, x: 0, y: 0, scale: 1.18 }
+          : {
+              rotateY: [-28, -8, 18, 32, 18, -8, -28],
+              rotateX: [6, -2, -7, 2, 7, 2, 6],
+              x: [-36, -10, 20, 40, 20, -10, -36],
+              y: [-8, 4, 10, -2, -10, 4, -8],
+              scale: 1.18,
+            }
+      }
+      transition={
+        reduce || !active
+          ? { duration: 1.2, ease: "easeOut", delay }
+          : {
+              duration: 22,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop",
+              times: [0, 0.18, 0.36, 0.5, 0.64, 0.82, 1],
+              delay: delay + 0.2,
+            }
+      }
+    >
+      {children}
     </motion.div>
   );
 }
@@ -517,10 +551,6 @@ function MentoringVisual({ active, mx, my }: { active: boolean; mx: MotionValue<
   const mid = useParallax(mx, my, 10, 7);
   const fg = useParallax(mx, my, 16, 12);
 
-  // Internal X/Y rotation that tracks cursor in addition to card tilt — emphasized panning
-  const rotX = useSpring(useTransform(my, [0, 1], [4, -4]), { stiffness: 120, damping: 20 });
-  const rotY = useSpring(useTransform(mx, [0, 1], [-5, 5]), { stiffness: 120, damping: 20 });
-
   const lightX = useTransform(mx, [0, 1], ["30%", "70%"]);
   const lightY = useTransform(my, [0, 1], ["30%", "70%"]);
 
@@ -530,11 +560,7 @@ function MentoringVisual({ active, mx, my }: { active: boolean; mx: MotionValue<
   return (
     <motion.div
       className="absolute inset-0 px-4 pt-3 pb-3 flex gap-3"
-      style={{
-        rotateX: reduce ? 0 : rotX,
-        rotateY: reduce ? 0 : rotY,
-        transformStyle: "preserve-3d",
-      }}
+      style={{ transformStyle: "preserve-3d" }}
     >
       {/* Independent ambient highlight */}
       <motion.div
