@@ -128,27 +128,30 @@ Deno.serve(async (req) => {
       console.log('Could not fetch ad creatives:', e.message);
     }
 
-    // Fetch video source URLs for ads that have videos
+    // Fetch video source URLs + high-res thumbnails for ads that have videos
     let videoUrlMap: Record<string, string> = {};
+    let hdThumbnailMap: Record<string, string> = {};
     const uniqueVideoIds = [...new Set(Object.values(videoIdMap))];
     if (uniqueVideoIds.length > 0) {
       console.log(`Fetching source URLs for ${uniqueVideoIds.length} videos`);
       const videoPromises = uniqueVideoIds.map(async (videoId) => {
         try {
-          const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source&access_token=${accessToken}`);
+          const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source,picture&access_token=${accessToken}`);
           const json = await res.json();
-          if (json.source) return { id: videoId, source: json.source };
+          return { id: videoId, source: json.source || '', picture: json.picture || '' };
         } catch (_e) { /* skip */ }
         return null;
       });
       const videoResults = await Promise.all(videoPromises);
-      const videoSourceMap: Record<string, string> = {};
+      const videoSourceMap: Record<string, { source: string; picture: string }> = {};
       for (const r of videoResults) {
-        if (r) videoSourceMap[r.id] = r.source;
+        if (r) videoSourceMap[r.id] = { source: r.source, picture: r.picture };
       }
-      // Map ad IDs to video source URLs
+      // Map ad IDs to video source URLs and HD thumbnails
       for (const [adId, videoId] of Object.entries(videoIdMap)) {
-        if (videoSourceMap[videoId]) videoUrlMap[adId] = videoSourceMap[videoId];
+        const v = videoSourceMap[videoId];
+        if (v?.source) videoUrlMap[adId] = v.source;
+        if (v?.picture) hdThumbnailMap[adId] = v.picture;
       }
     }
 
