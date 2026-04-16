@@ -41,11 +41,12 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
         <Button
           variant="outline"
           className={cn(
-            "justify-start text-left font-normal border-purple bg-card-surface hover:bg-stat-box text-secondary-readable h-9 px-3 text-sm",
-            !dateRange && "text-muted-readable"
+            "justify-start text-left font-normal h-9 px-3 text-sm cursor-pointer transition-all duration-200",
+            "bg-[#111118] border-white/10 text-white/60 hover:bg-white/[0.04] hover:text-white/80",
+            !dateRange && "text-white/30"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 text-[#8B5CF6]" />
+          <CalendarIcon className="mr-2 h-4 w-4 text-[#a855f7]" />
           {dateRange?.from ? (
             dateRange.to ? (
               <>
@@ -60,17 +61,17 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 bg-elevated-surface border-purple backdrop-blur-xl"
+        className="w-auto p-0 bg-[#111118] border-white/10 backdrop-blur-xl"
         align="start"
       >
         <div className="flex">
-          <div className="border-r border-purple p-3 space-y-1 min-w-[140px]">
-            <p className="text-xs font-medium text-muted-readable uppercase tracking-wider mb-2">Presets</p>
+          <div className="border-r border-white/[0.06] p-3 space-y-1 min-w-[140px]">
+            <p className="text-xs font-medium text-white/30 uppercase tracking-wider mb-2">Presets</p>
             {presets.map((preset) => (
               <button
                 key={preset.days}
                 onClick={() => handlePreset(preset.days)}
-                className="block w-full text-left text-sm px-2 py-1.5 rounded-md text-secondary-readable hover:text-primary-readable hover:bg-[rgba(139,92,246,0.08)] transition-colors"
+                className="block w-full text-left text-sm px-2 py-1.5 rounded-md text-white/60 hover:text-white hover:bg-[#a855f7]/10 transition-all duration-200 cursor-pointer"
               >
                 {preset.label}
               </button>

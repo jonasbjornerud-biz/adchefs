@@ -16,11 +16,10 @@ interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; 
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#8B5CF6', '#06b6d4', '#f59e0b', '#10B981', '#ec4899', '#3b82f6', '#ef4444', '#a78bfa'];
+const COLORS = ['#a855f7', '#06b6d4', '#fbbf24', '#34d399', '#ec4899', '#3b82f6', '#f87171', '#c084fc'];
 
-const GLOW = '0 0 20px rgba(139, 92, 246, 0.08), 0 0 40px rgba(139, 92, 246, 0.04)';
-const GLOW_HOVER = '0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.08)';
-const CARD_STYLE: React.CSSProperties = { background: '#111113', border: '1px solid rgba(255,255,255,0.06)', boxShadow: GLOW };
+const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
+const CARD_SHADOW_HOVER = '0 0 0 1px rgba(168,85,247,0.2) inset, 0 0 0 1px rgba(99,102,241,0.1) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
 function parseCSV<T>(text: string): T[] {
   return Papa.parse<T>(text, { header: true, skipEmptyLines: true }).data;
@@ -32,13 +31,13 @@ function getCurrentMonth(): string {
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg px-3 py-2 text-xs shadow-xl" style={{ background: '#1a1a1f', border: '1px solid rgba(139,92,246,0.3)', boxShadow: GLOW }}>
-      <p className="text-white/50 mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</p>
+    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+      <p className="text-white/30 mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-white/70">{p.name}:</span>
-          <span className="text-white font-medium" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{p.value}</span>
+          <span className="text-white/50">{p.name}:</span>
+          <span className="text-white font-black">{p.value}</span>
         </div>
       ))}
     </div>
@@ -51,12 +50,12 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/80 cursor-pointer transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: GLOW }}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
-        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
+        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/60 cursor-pointer transition-all duration-200 focus:outline-none bg-[#111118] border border-white/[0.06]"
+        style={{ boxShadow: CARD_SHADOW }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
       >
-        {options.map(o => <option key={o} value={o} className="bg-[#111] text-white">{o}</option>)}
+        {options.map(o => <option key={o} value={o} className="bg-[#111118] text-white">{o}</option>)}
       </select>
       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -65,13 +64,13 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
   );
 }
 
-function GlowCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+function PremiumCard({ children, className = '', style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
   return (
     <div
-      className={`rounded-xl transition-all duration-200 ${className}`}
-      style={{ ...CARD_STYLE, ...style }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
+      className={`bg-[#111118] rounded-2xl transition-all duration-200 ${className}`}
+      style={{ boxShadow: CARD_SHADOW, ...style }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
     >
       {children}
     </div>
@@ -120,14 +119,11 @@ export default function PerformanceDashboard() {
       const [eodText, payText, helpText] = await Promise.all([eodRes.text(), payRes.text(), helpRes.text()]);
       const eod = parseCSV<EodRow>(eodText);
       const payment = parseCSV<PaymentRow>(payText);
-      // Raw payment for column-based approval counting (rows from index 4 onward = row 5+ in sheet)
       const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
 
-      // Editors: column A only (skip row 1 header), then prepend "(All Editors)"
       const editorsA = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
       const editors = ['(All Editors)', ...new Set(editorsA)];
-
       const months = helpers.map(r => r[1]).filter(Boolean).filter(m => m !== 'undefined');
 
       const cached: CachedData = { eod, payment, paymentRaw, editors, months, lastSynced: Date.now() };
@@ -136,7 +132,6 @@ export default function PerformanceDashboard() {
     } catch (err: any) { setError(err.message || 'Unknown error'); } finally { setLoading(false); }
   }, []);
 
-  // EOD filtered by editor + month
   const filteredEod = useMemo(() => {
     if (!data) return [];
     return data.eod.filter(r => {
@@ -146,18 +141,16 @@ export default function PerformanceDashboard() {
     });
   }, [data, editor, month]);
 
-  // Approval count: count non-empty column C (index 2) from row 5+ (index 4+) where column D matches month
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
-    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim()); // skip header, require Brief Name
+    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
     return rows.filter(r => {
-      const hasDate = r[2]?.trim(); // column C
-      const approvedMonth = r[3]?.trim(); // column D
+      const hasDate = r[2]?.trim();
+      const approvedMonth = r[3]?.trim();
       return hasDate && approvedMonth?.toLowerCase() === month.toLowerCase();
     }).length;
   }, [data, month]);
 
-  // Payment table rows filtered by month
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
     const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
@@ -172,7 +165,6 @@ export default function PerformanceDashboard() {
       .filter(r => r.brief);
   }, [data, month]);
 
-  // Monthly approved overview (all months, for the "Monthly Approved Videos" chart)
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
     const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
@@ -181,9 +173,7 @@ export default function PerformanceDashboard() {
     rows.forEach(r => {
       const hasDate = r[2]?.trim();
       const m = r[3]?.trim();
-      if (hasDate && m) {
-        map[m] = (map[m] || 0) + 1;
-      }
+      if (hasDate && m) map[m] = (map[m] || 0) + 1;
     });
     return Object.entries(map)
       .sort(([a], [b]) => monthOrder.indexOf(a) - monthOrder.indexOf(b))
@@ -228,7 +218,6 @@ export default function PerformanceDashboard() {
     return [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b)).map(w => `Wk ${w}`);
   }, [filteredEod]);
 
-  // Weekly Output — ALL weeks across entire dataset for selected editor (not filtered by month)
   const weeklyOutputAll = useMemo(() => {
     if (!data) return [];
     const editorFiltered = data.eod.filter(r => editor === '(All Editors)' || r.Name === editor);
@@ -244,16 +233,15 @@ export default function PerformanceDashboard() {
 
   const noData = filteredEod.length === 0 && !loading;
 
-  const shimmerSkeleton = "relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/[0.03] before:to-transparent before:animate-[shimmer_2s_infinite]";
-
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ background: '#09090B' }}>
-        <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+      <div className="min-h-screen bg-[#09090f]">
+        <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
+        <div className="max-w-6xl mx-auto px-6 py-8 space-y-6 relative z-10">
           <div className="flex gap-4">
-            {[...Array(3)].map((_, i) => <div key={i} className={`h-28 rounded-xl flex-1 ${shimmerSkeleton}`} style={{ background: '#111113' }} />)}
+            {[...Array(3)].map((_, i) => <div key={i} className="h-28 rounded-2xl flex-1 bg-[#111118] animate-pulse" />)}
           </div>
-          <div className={`h-72 rounded-xl ${shimmerSkeleton}`} style={{ background: '#111113' }} />
+          <div className="h-72 rounded-2xl bg-[#111118] animate-pulse" />
         </div>
       </div>
     );
@@ -261,15 +249,16 @@ export default function PerformanceDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#09090B' }}>
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center" style={{ boxShadow: GLOW }}>
+      <div className="min-h-screen flex items-center justify-center bg-[#09090f]">
+        <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
+        <div className="flex flex-col items-center gap-4 relative z-10">
+          <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(248,113,113,0.2) inset' }}>
             <AlertCircle className="w-6 h-6 text-red-400" />
           </div>
-          <p className="text-sm text-white/50">Failed to load performance data</p>
-          <p className="text-xs text-white/20" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{error}</p>
+          <p className="text-sm text-white/40">Failed to load performance data</p>
+          <p className="text-xs text-white/20">{error}</p>
           <Button variant="outline" size="sm" onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-            className="rounded-lg text-xs bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white">
+            className="rounded-lg text-xs bg-[#111118] border-white/[0.06] text-white/60 hover:bg-white/[0.04] hover:text-white cursor-pointer">
             <RefreshCw className="w-3 h-3 mr-1.5" /> Retry
           </Button>
         </div>
@@ -278,17 +267,17 @@ export default function PerformanceDashboard() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#09090B' }}>
+    <div className="min-h-screen bg-[#09090f]">
+      {/* Purple glow */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)',
-        backgroundSize: '24px 24px',
+        background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)',
       }} />
 
       {/* Header */}
-      <header className="relative z-10 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors">
+            <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-all duration-200 cursor-pointer">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <div className="h-4 w-px bg-white/10" />
@@ -296,16 +285,16 @@ export default function PerformanceDashboard() {
           </div>
           <div className="flex items-center gap-3">
             {data && (
-              <span className="text-[10px] text-white/20" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              <span className="text-[10px] text-white/20">
                 Synced {new Date(data.lastSynced).toLocaleString()}
               </span>
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] text-white/40 hover:text-white/70 transition-all duration-200"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', boxShadow: GLOW }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW_HOVER; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = GLOW; }}
+              className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] text-white/40 hover:text-white/70 transition-all duration-200 cursor-pointer bg-[#111118] border border-white/[0.06]"
+              style={{ boxShadow: CARD_SHADOW }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
             >
               <RefreshCw className="w-3 h-3" /> Sync
             </button>
@@ -321,45 +310,43 @@ export default function PerformanceDashboard() {
         </div>
 
         {noData ? (
-          <GlowCard className="flex flex-col items-center justify-center py-20 gap-3 rounded-2xl">
+          <PremiumCard className="flex flex-col items-center justify-center py-20 gap-3">
             <FileBarChart className="w-10 h-10 text-white/10" />
             <p className="text-sm text-white/30">
               No data yet for <span className="text-white/60 font-medium">{editor}</span> in <span className="text-white/60 font-medium">{month}</span>
             </p>
-          </GlowCard>
+          </PremiumCard>
         ) : (
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#8B5CF6' },
-                { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#10B981' },
+                { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#a855f7' },
+                { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#34d399' },
                 { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg, color: '#06b6d4' },
               ].map((kpi, i) => (
-                <GlowCard key={i} className="p-5 hover:scale-[1.01]">
+                <PremiumCard key={i} className="p-6">
                   <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${kpi.color}15`, border: `1px solid ${kpi.color}25`, boxShadow: GLOW }}>
-                      <kpi.icon className="w-4 h-4" style={{ color: kpi.color }} />
-                    </div>
+                    <span className="text-white/30"><kpi.icon className="w-3.5 h-3.5" /></span>
                   </div>
-                  <p className="text-3xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{kpi.value}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 mt-1">{kpi.label}</p>
-                </GlowCard>
+                  <p className="text-4xl font-black text-white">{kpi.value}</p>
+                  <p className="text-xs uppercase tracking-widest text-white/30 mt-1 font-medium">{kpi.label}</p>
+                </PremiumCard>
               ))}
             </div>
 
             {/* Charts row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Daily by Week */}
-              <GlowCard className="p-5">
+              <PremiumCard className="p-6">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Daily Deliveries by Week</h4>
-                <p className="text-[10px] text-white/30 mb-4">Grouped by weekday</p>
+                <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="day" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                      <XAxis dataKey="day" tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
                       <Legend wrapperStyle={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }} />
                       {weekKeys.map((wk, i) => (
@@ -368,88 +355,90 @@ export default function PerformanceDashboard() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-              </GlowCard>
+              </PremiumCard>
 
-              {/* Weekly Output — all weeks, editor-filtered, NOT month-filtered */}
-              <GlowCard className="p-5">
+              {/* Weekly Output */}
+              <PremiumCard className="p-6">
                 <h4 className="text-sm font-semibold text-white mb-0.5">Weekly Output</h4>
-                <p className="text-[10px] text-white/30 mb-4">Total videos per week (all time)</p>
+                <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Total videos per week (all time)</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={weeklyOutputAll}>
                         <defs>
                           <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.9} />
-                            <stop offset="100%" stopColor="#6366F1" stopOpacity={0.6} />
+                            <stop offset="0%" stopColor="#a855f7" stopOpacity={0.9} />
+                            <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.6} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                        <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
-                        <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
+                        <YAxis tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
                         <Bar dataKey="total" fill="url(#barGradDark)" radius={[3, 3, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
-              </GlowCard>
+              </PremiumCard>
             </div>
 
-            {/* Monthly Approved Videos — full overview, not filtered by month */}
-            <GlowCard className="p-5">
+            {/* Monthly Approved Videos */}
+            <PremiumCard className="p-6">
               <h4 className="text-sm font-semibold text-white mb-0.5">Monthly Approved Videos</h4>
-              <p className="text-[10px] text-white/30 mb-4">Approved videos per month (all time overview)</p>
+              <p className="text-xs uppercase tracking-widest text-white/40 mb-4">Approved videos per month (all time overview)</p>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyApproved}>
                     <defs>
                       <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10B981" stopOpacity={0.9} />
+                        <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
                         <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: 'rgba(255,255,255,0.30)', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip content={<ChartTooltip />} />
                     <Bar dataKey="count" fill="url(#approvedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </GlowCard>
+            </PremiumCard>
 
-            {/* Payment Status Table */}
+            {/* Approved Videos Table */}
             {filteredPayment.length > 0 && (
-              <GlowCard className="overflow-hidden">
-                <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+              <PremiumCard className="overflow-hidden">
+                <div className="px-6 py-4 border-b border-white/[0.06]">
                   <h4 className="text-sm font-semibold text-white">Approved Videos</h4>
-                  <p className="text-[10px] text-white/30 mt-0.5">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
+                  <p className="text-xs uppercase tracking-widest text-white/40 mt-0.5">{filteredPayment.filter(r => r.approved).length} approved in {month}</p>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
                     <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <th className="text-left py-3 px-5 text-white/30 font-medium uppercase tracking-wider text-[10px]">Brief Name</th>
-                        <th className="text-left py-3 px-5 text-white/30 font-medium uppercase tracking-wider text-[10px]">Approval Date</th>
-                        <th className="text-left py-3 px-5 text-white/30 font-medium uppercase tracking-wider text-[10px]">Month</th>
-                        <th className="text-left py-3 px-5 text-white/30 font-medium uppercase tracking-wider text-[10px]">Status</th>
+                      <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Brief Name</th>
+                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Approval Date</th>
+                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Month</th>
+                        <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Status</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredPayment.map((row, i) => (
-                        <tr key={i} className="hover:bg-white/[0.02] transition-colors" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                          <td className="py-2.5 px-5 text-white/70">{row.brief}</td>
-                          <td className="py-2.5 px-5 text-white/50" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{row.date || '—'}</td>
-                          <td className="py-2.5 px-5 text-white/50">{row.month}</td>
-                          <td className="py-2.5 px-5">
+                        <tr key={i} className="hover:bg-white/[0.03] transition-all duration-200 border-b border-white/[0.03]">
+                          <td className="py-5 px-6 text-white/60">{row.brief}</td>
+                          <td className="py-5 px-6 text-white/40">{row.date || '—'}</td>
+                          <td className="py-5 px-6 text-white/40">{row.month}</td>
+                          <td className="py-5 px-6">
                             {row.approved ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                <CheckCircle2 className="w-3 h-3" /> Approved
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                Approved
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                <Clock className="w-3 h-3" /> Pending
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                Pending
                               </span>
                             )}
                           </td>
@@ -458,7 +447,7 @@ export default function PerformanceDashboard() {
                     </tbody>
                   </table>
                 </div>
-              </GlowCard>
+              </PremiumCard>
             )}
           </>
         )}
