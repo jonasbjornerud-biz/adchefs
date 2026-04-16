@@ -7,30 +7,6 @@ import { logout } from '@/lib/auth';
 import { BarChart3, ChevronRight, LogOut, Lock, TrendingUp } from 'lucide-react';
 import Papa from 'papaparse';
 
-/* ── Shine animation keyframes (injected once) ── */
-const shineStyleId = 'dashboard-shine-style';
-if (typeof document !== 'undefined' && !document.getElementById(shineStyleId)) {
-  const style = document.createElement('style');
-  style.id = shineStyleId;
-  style.textContent = `
-    @keyframes progress-shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(200%); }
-    }
-    .progress-shine::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-      animation: progress-shine 3s ease-in-out infinite;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
 /* ── Mini sparkline from weekly data ── */
 function MiniSparkBars({ data }: { data: number[] }) {
   const max = Math.max(...data, 1);
@@ -45,9 +21,9 @@ function MiniSparkBars({ data }: { data: number[] }) {
             minHeight: v > 0 ? 6 : 3,
             minWidth: 6,
             background: v > 0
-              ? 'linear-gradient(180deg, #8B5CF6, #6366F1)'
-              : 'rgba(139,92,246,0.08)',
-            boxShadow: v > 0 ? '0 0 8px rgba(139,92,246,0.3)' : 'none',
+              ? 'linear-gradient(180deg, #a855f7, #7c3aed)'
+              : 'rgba(168,85,247,0.06)',
+            boxShadow: v > 0 ? '0 0 8px rgba(168,85,247,0.3)' : 'none',
           }}
         />
       ))}
@@ -58,29 +34,8 @@ function MiniSparkBars({ data }: { data: number[] }) {
 const CACHE_KEY_PREFIX = 'adchefs_perf_';
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 
-/* ── Card wrapper styles ── */
-const cardBase: React.CSSProperties = {
-  background: 'rgba(17, 17, 22, 0.7)',
-  backdropFilter: 'blur(20px)',
-  border: '1px solid rgba(139, 92, 246, 0.12)',
-  borderRadius: 16,
-  padding: 32,
-  boxShadow: '0 0 30px rgba(139,92,246,0.07), 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
-  transition: 'all 300ms ease',
-};
-const cardHover: Partial<CSSStyleDeclaration> = {
-  borderColor: 'rgba(139, 92, 246, 0.25)',
-  boxShadow: '0 0 40px rgba(139,92,246,0.12), 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
-  transform: 'scale(1.005)',
-};
-
-const statBoxStyle: React.CSSProperties = {
-  background: 'rgba(139, 92, 246, 0.06)',
-  border: '1px solid rgba(139, 92, 246, 0.1)',
-  borderRadius: 12,
-  padding: '16px 20px',
-  boxShadow: 'inset 0 0 20px rgba(139,92,246,0.05)',
-};
+const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
+const CARD_SHADOW_HOVER = '0 0 0 1px rgba(168,85,247,0.2) inset, 0 0 0 1px rgba(99,102,241,0.1) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -167,23 +122,12 @@ export default function ClientDashboard() {
     setPerfStats({ delivered, approved, avg, weeklyData });
   }
 
-  const applyHover = (e: React.MouseEvent) => {
-    const el = e.currentTarget as HTMLElement;
-    Object.assign(el.style, cardHover);
-  };
-  const removeHover = (e: React.MouseEvent) => {
-    const el = e.currentTarget as HTMLElement;
-    el.style.borderColor = 'rgba(139, 92, 246, 0.12)';
-    el.style.boxShadow = '0 0 30px rgba(139,92,246,0.07), 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)';
-    el.style.transform = 'scale(1)';
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#06060A' }}>
+      <div className="min-h-screen flex items-center justify-center bg-[#09090f]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading…</span>
+          <div className="w-8 h-8 border-2 border-[#a855f7] border-t-transparent rounded-full animate-spin" />
+          <span className="text-sm text-white/30">Loading…</span>
         </div>
       </div>
     );
@@ -191,58 +135,34 @@ export default function ClientDashboard() {
 
   if (!client) return null;
 
-  const totalModules = stages.reduce((sum, s) => sum + s.modules.length, 0);
-  const completedModules = stages.reduce((sum, s) => sum + s.modules.filter(m => isModuleCompleted(m.id, completions)).length, 0);
-  const pct = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
-  const stageCount = stages.length;
-  const stagesComplete = stages.filter(s => s.modules.length > 0 && s.modules.every(m => isModuleCompleted(m.id, completions))).length;
-
   return (
-    <div className="min-h-screen relative" style={{ background: '#06060A' }}>
-      {/* Layered background */}
+    <div className="min-h-screen bg-[#09090f] relative">
+      {/* Purple glow */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)',
-        backgroundSize: '20px 20px',
-      }} />
-      <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 50% 30%, rgba(139,92,246,0.06) 0%, transparent 60%)',
-      }} />
-      <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 80% 80%, rgba(99,102,241,0.04) 0%, transparent 50%)',
+        background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)',
       }} />
 
       {/* Top bar */}
-      <header className="relative z-10" style={{
-        background: 'rgba(9,9,11,0.8)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-      }}>
+      <header className="relative z-10 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold"
               style={{
-                background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
-                boxShadow: '0 0 16px rgba(139,92,246,0.3)',
-                border: '2px solid transparent',
-                backgroundClip: 'padding-box',
-                outline: '2px solid rgba(139,92,246,0.3)',
-                outlineOffset: -2,
+                background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                boxShadow: '0 0 16px rgba(168,85,247,0.3)',
               }}
             >
               {client.brand_name.charAt(0)}
             </div>
             <div>
               <span className="text-sm font-medium text-white">{client.brand_name}</span>
-              <span className="text-[10px] ml-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Client Portal</span>
+              <span className="text-[10px] ml-2 text-white/30">Client Portal</span>
             </div>
           </div>
           <button
             onClick={() => { logout(); navigate('/login'); }}
-            className="flex items-center gap-1.5 text-[11px] transition-colors"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,1)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+            className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white transition-all duration-200 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign out
           </button>
@@ -252,20 +172,14 @@ export default function ClientDashboard() {
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-10">
         {/* Greeting */}
         <div>
-          <p className="text-lg font-normal" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-lg font-normal text-white/40">
             Welcome back,
           </p>
-          <h1
-            className="text-3xl font-bold mt-1"
-            style={{
-              background: 'linear-gradient(135deg, #8B5CF6, #a78bfa, #c4b5fd)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            {client.brand_name}
+          <h1 className="text-3xl font-bold mt-1">
+            <span className="text-white">Welcome back, </span>
+            <span style={{ color: '#a855f7' }}>{client.brand_name}</span>
           </h1>
-          <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Here's your portal overview</p>
+          <p className="text-sm mt-2 text-white/30">Here's your portal overview</p>
         </div>
 
         {/* Cards grid */}
@@ -274,27 +188,18 @@ export default function ClientDashboard() {
           {client.spreadsheet_id ? (
             <button
               onClick={() => navigate('/performance')}
-              className="group text-left cursor-pointer w-full"
-              style={cardBase}
-              onMouseEnter={applyHover}
-              onMouseLeave={removeHover}
+              className="group text-left cursor-pointer w-full bg-[#111118] rounded-2xl p-8 transition-all duration-200"
+              style={{ boxShadow: CARD_SHADOW }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
             >
               <div className="flex items-start justify-between mb-6">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1))',
-                    border: '1px solid rgba(139,92,246,0.2)',
-                    boxShadow: '0 0 20px rgba(139,92,246,0.1)',
-                  }}
-                >
-                  <BarChart3 className="w-5 h-5" style={{ color: '#8B5CF6' }} />
-                </div>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" style={{ color: 'rgba(255,255,255,0.2)' }} />
+                <span className="text-white/30"><BarChart3 className="w-3.5 h-3.5" /></span>
+                <ChevronRight className="w-4 h-4 text-white/20 group-hover:translate-x-1 transition-transform duration-200" />
               </div>
 
               <h3 className="text-base font-semibold text-white mb-1">Editor Performance</h3>
-              <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.3)' }}>Delivery tracking, output metrics, and status</p>
+              <p className="text-xs text-white/30 mb-6">Delivery tracking, output metrics, and status</p>
 
               {perfStats ? (
                 <>
@@ -304,9 +209,9 @@ export default function ClientDashboard() {
                       { val: perfStats.approved, label: 'APPROVED' },
                       { val: perfStats.avg, label: 'AVG/DAY' },
                     ].map((s, i) => (
-                      <div key={i} className="text-center" style={statBoxStyle}>
-                        <p className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
-                        <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
+                      <div key={i} className="text-center rounded-xl p-3" style={{ background: 'rgba(168,85,247,0.06)', boxShadow: '0 0 0 1px rgba(255,255,255,0.04) inset' }}>
+                        <p className="text-2xl font-black text-white">{s.val}</p>
+                        <p className="text-[9px] uppercase tracking-widest mt-1 text-white/40">{s.label}</p>
                       </div>
                     ))}
                   </div>
@@ -314,41 +219,27 @@ export default function ClientDashboard() {
                 </>
               ) : (
                 <div className="flex items-center gap-2 py-8 justify-center">
-                  <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading metrics…</span>
+                  <div className="w-4 h-4 border-2 border-[#a855f7] border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs text-white/30">Loading metrics…</span>
                 </div>
               )}
 
               <div className="mt-6 flex items-center gap-1">
-                <span
-                  className="text-sm font-semibold group-hover:translate-x-1 transition-all duration-300"
-                  style={{ color: '#8B5CF6' }}
-                >
+                <span className="text-sm font-semibold text-[#a855f7] group-hover:translate-x-1 transition-all duration-200">
                   View Performance →
                 </span>
               </div>
             </button>
           ) : (
-            <div style={{ ...cardBase, opacity: 0.6 }} className="relative overflow-hidden">
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.01), transparent)' }} />
-              <div className="relative">
-                <div className="flex items-start justify-between mb-6">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center"
-                    style={{
-                      background: 'rgba(139,92,246,0.04)',
-                      border: '1px solid rgba(139,92,246,0.08)',
-                    }}
-                  >
-                    <Lock className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.2)' }} />
-                  </div>
-                </div>
-                <h3 className="text-base font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>Editor Performance</h3>
-                <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.2)' }}>Performance tracking not yet configured</p>
-                <div className="flex items-center gap-2 py-10 justify-center">
-                  <Lock className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.1)' }} />
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.15)' }}>Coming soon</span>
-                </div>
+            <div className="relative overflow-hidden bg-[#111118] rounded-2xl p-8 opacity-60" style={{ boxShadow: CARD_SHADOW }}>
+              <div className="flex items-start justify-between mb-6">
+                <Lock className="w-3.5 h-3.5 text-white/20" />
+              </div>
+              <h3 className="text-base font-semibold text-white/40">Editor Performance</h3>
+              <p className="text-xs text-white/20 mb-6">Performance tracking not yet configured</p>
+              <div className="flex items-center gap-2 py-10 justify-center">
+                <Lock className="w-5 h-5 text-white/10" />
+                <span className="text-xs text-white/15">Coming soon</span>
               </div>
             </div>
           )}
@@ -356,27 +247,18 @@ export default function ClientDashboard() {
           {/* Meta Ads card */}
           <button
             onClick={() => navigate('/ads')}
-            className="group text-left cursor-pointer w-full"
-            style={cardBase}
-            onMouseEnter={applyHover}
-            onMouseLeave={removeHover}
+            className="group text-left cursor-pointer w-full bg-[#111118] rounded-2xl p-8 transition-all duration-200"
+            style={{ boxShadow: CARD_SHADOW }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
           >
             <div className="flex items-start justify-between mb-6">
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1))',
-                  border: '1px solid rgba(139,92,246,0.2)',
-                  boxShadow: '0 0 20px rgba(139,92,246,0.1)',
-                }}
-              >
-                <TrendingUp className="w-5 h-5" style={{ color: '#8B5CF6' }} />
-              </div>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" style={{ color: 'rgba(255,255,255,0.2)' }} />
+              <span className="text-white/30"><TrendingUp className="w-3.5 h-3.5" /></span>
+              <ChevronRight className="w-4 h-4 text-white/20 group-hover:translate-x-1 transition-transform duration-200" />
             </div>
 
             <h3 className="text-base font-semibold text-white mb-1">Meta Ads</h3>
-            <p className="text-xs mb-6" style={{ color: 'rgba(255,255,255,0.3)' }}>Ad performance, ROAS, CTR, and spend analytics</p>
+            <p className="text-xs text-white/30 mb-6">Ad performance, ROAS, CTR, and spend analytics</p>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
@@ -384,18 +266,15 @@ export default function ClientDashboard() {
                 { val: '—', label: 'ROAS' },
                 { val: '—', label: 'CPA' },
               ].map((s, i) => (
-                <div key={i} className="text-center" style={statBoxStyle}>
-                  <p className="text-2xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
-                  <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
+                <div key={i} className="text-center rounded-xl p-3" style={{ background: 'rgba(168,85,247,0.06)', boxShadow: '0 0 0 1px rgba(255,255,255,0.04) inset' }}>
+                  <p className="text-2xl font-black text-white">{s.val}</p>
+                  <p className="text-[9px] uppercase tracking-widest mt-1 text-white/40">{s.label}</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-6 flex items-center gap-1">
-              <span
-                className="text-sm font-semibold group-hover:translate-x-1 transition-all duration-300"
-                style={{ color: '#8B5CF6' }}
-              >
+              <span className="text-sm font-semibold text-[#a855f7] group-hover:translate-x-1 transition-all duration-200">
                 View Ad Performance →
               </span>
             </div>
