@@ -54,9 +54,9 @@ const Hero = () => {
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
           We cook up{" "}
-          <span className="text-accent">ads</span> that{" "}
+          <span className="hero-accent-word">ads</span> that{" "}
           <br className="hidden sm:block" />
-          <span className="text-accent">scale</span> your brand
+          <span className="hero-accent-word">scale</span> your brand
         </h1>
 
         <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
@@ -69,17 +69,19 @@ const Hero = () => {
           Pay per video. No retainers.
         </div>
 
-        <Button
-          size="lg"
-          variant="cta"
-          onClick={() => scrollToSection("booking")}
-          className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
-        >
-          <span className="relative z-10 flex items-center">
-            Book a Call
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </span>
-        </Button>
+        <div className="cta-conic-glow inline-block">
+          <Button
+            size="lg"
+            variant="cta"
+            onClick={() => scrollToSection("booking")}
+            className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+          >
+            <span className="relative z-10 flex items-center">
+              Book a Call
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </Button>
+        </div>
       </div>
 
       {/* Marquee */}
