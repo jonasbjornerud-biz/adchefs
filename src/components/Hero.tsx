@@ -37,6 +37,14 @@ const Hero = () => {
         </svg>
       </div>
 
+      {/* Shooting star light trails */}
+      <div className="shooting-stars" aria-hidden="true">
+        <span className="shooting-star s-white  ss-1" />
+        <span className="shooting-star s-purple ss-2" />
+        <span className="shooting-star s-white  ss-3" />
+        <span className="shooting-star s-purple ss-4" />
+      </div>
+
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
         <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
           <span className="text-xs tracking-wide text-muted-foreground">
@@ -46,9 +54,9 @@ const Hero = () => {
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
           We cook up{" "}
-          <span className="text-accent">ads</span> that{" "}
+          <span className="hero-accent-word">ads</span> that{" "}
           <br className="hidden sm:block" />
-          <span className="text-accent">scale</span> your brand
+          <span className="hero-accent-word">scale</span> your brand
         </h1>
 
         <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
@@ -61,17 +69,19 @@ const Hero = () => {
           Pay per video. No retainers.
         </div>
 
-        <Button
-          size="lg"
-          variant="cta"
-          onClick={() => scrollToSection("booking")}
-          className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
-        >
-          <span className="relative z-10 flex items-center">
-            Book a Call
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </span>
-        </Button>
+        <div className="cta-conic-glow inline-block">
+          <Button
+            size="lg"
+            variant="cta"
+            onClick={() => scrollToSection("booking")}
+            className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+          >
+            <span className="relative z-10 flex items-center">
+              Book a Call
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </Button>
+        </div>
       </div>
 
       {/* Marquee */}
