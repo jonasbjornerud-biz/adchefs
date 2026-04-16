@@ -97,12 +97,13 @@ export function AdGrid({ ads, onSelect }: AdGridProps) {
               {ad.videoUrl ? (
                 <video
                   src={ad.videoUrl}
+                  poster={ad.thumbnail || undefined}
                   muted
                   playsInline
-                  preload="metadata"
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  onMouseEnter={e => { (e.target as HTMLVideoElement).play().catch(() => {}); }}
-                  onMouseLeave={e => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0; }}
+                  preload="none"
+                  controls
+                  className="w-full h-full object-cover"
+                  onClick={(e) => e.stopPropagation()}
                 />
               ) : ad.thumbnail ? (
                 <img src={ad.thumbnail} alt={ad.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
@@ -112,12 +113,14 @@ export function AdGrid({ ads, onSelect }: AdGridProps) {
                 </div>
               )}
 
-              {/* Play overlay */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center border border-white/20">
-                  <Play className="w-5 h-5 text-white fill-white" />
+              {/* Play overlay for image-only ads */}
+              {!ad.videoUrl && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center border border-white/20">
+                    <Play className="w-5 h-5 text-white fill-white" />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Status pill */}
               <div className="absolute top-2.5 left-2.5">

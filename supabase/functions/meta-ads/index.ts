@@ -111,24 +111,60 @@ Deno.serve(async (req) => {
       adMap.get(adId)!.dailyRows.push(row);
     }
 
-    // Fetch ad statuses and creative info (thumbnail + video)
-    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,creative{thumbnail_url,video_id}&limit=500&access_token=${accessToken}`;
+    // Step 1: Fetch ads with creative IDs
+    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,creative{id}&limit=500&access_token=${accessToken}`;
     let statusMap: Record<string, string> = {};
-    let thumbnailMap: Record<string, string> = {};
-    let videoIdMap: Record<string, string> = {};
+    let adCreativeMap: Record<string, string> = {}; // ad_id -> creative_id
     try {
       const adsData = await fetchAllPages(adsUrl);
+      console.log(`Got ${adsData.length} ads. Sample keys:`, adsData.length > 0 ? JSON.stringify(Object.keys(adsData[0])) : 'none');
+      if (adsData.length > 0) console.log('Sample creative field:', JSON.stringify(adsData[0].creative || 'missing'));
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
-        if (ad.creative?.thumbnail_url) thumbnailMap[ad.id] = ad.creative.thumbnail_url;
-        if (ad.creative?.video_id) videoIdMap[ad.id] = ad.creative.video_id;
+        if (ad.creative?.id) adCreativeMap[ad.id] = ad.creative.id;
       }
+      console.log(`Mapped ${Object.keys(adCreativeMap).length} ad->creative pairs`);
     } catch (e) {
-      console.log('Could not fetch ad creatives:', e.message);
+      console.log('Could not fetch ads:', e.message);
     }
 
-    // Fetch video source URLs + high-res thumbnails for ads that have videos
+    // Step 2: Batch-fetch creative details (video_id + picture) for each unique creative
+    let thumbnailMap: Record<string, string> = {};
+    let videoIdMap: Record<string, string> = {};
+    const uniqueCreativeIds = [...new Set(Object.values(adCreativeMap))];
+    if (uniqueCreativeIds.length > 0) {
+      console.log(`Fetching details for ${uniqueCreativeIds.length} creatives`);
+      const creativePromises = uniqueCreativeIds.map(async (creativeId) => {
+        try {
+          const url = `${META_BASE_URL}/${creativeId}?fields=video_id,image_url,thumbnail_url,object_story_spec&access_token=${accessToken}`;
+          const res = await fetch(url);
+          const json = await res.json();
+          if (json.error) {
+            console.log(`Creative ${creativeId} error:`, json.error.message?.slice(0, 100));
+            return null;
+          }
+          const videoId = json.video_id || json.object_story_spec?.video_data?.video_id || '';
+          const imageUrl = json.image_url || json.thumbnail_url || json.object_story_spec?.video_data?.image_url || '';
+          return { id: creativeId, video_id: videoId, image_url: imageUrl };
+        } catch (e) { console.log(`Creative ${creativeId} fetch failed:`, e.message); return null; }
+      });
+      const creativeResults = await Promise.all(creativePromises);
+      const creativeDetailsMap: Record<string, { video_id: string; image_url: string }> = {};
+      for (const r of creativeResults) {
+        if (r) creativeDetailsMap[r.id] = { video_id: r.video_id, image_url: r.image_url };
+      }
+      // Map back to ad IDs
+      for (const [adId, creativeId] of Object.entries(adCreativeMap)) {
+        const c = creativeDetailsMap[creativeId];
+        if (!c) continue;
+        if (c.image_url) thumbnailMap[adId] = c.image_url;
+        if (c.video_id) videoIdMap[adId] = c.video_id;
+      }
+      console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
+    }
+
+    // Fetch playable video source URLs
     let videoUrlMap: Record<string, string> = {};
     let hdThumbnailMap: Record<string, string> = {};
     const uniqueVideoIds = [...new Set(Object.values(videoIdMap))];
@@ -139,20 +175,19 @@ Deno.serve(async (req) => {
           const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source,picture&access_token=${accessToken}`);
           const json = await res.json();
           return { id: videoId, source: json.source || '', picture: json.picture || '' };
-        } catch (_e) { /* skip */ }
-        return null;
+        } catch (_e) { return null; }
       });
       const videoResults = await Promise.all(videoPromises);
       const videoSourceMap: Record<string, { source: string; picture: string }> = {};
       for (const r of videoResults) {
         if (r) videoSourceMap[r.id] = { source: r.source, picture: r.picture };
       }
-      // Map ad IDs to video source URLs and HD thumbnails
       for (const [adId, videoId] of Object.entries(videoIdMap)) {
         const v = videoSourceMap[videoId];
         if (v?.source) videoUrlMap[adId] = v.source;
         if (v?.picture) hdThumbnailMap[adId] = v.picture;
       }
+      console.log(`Got ${Object.keys(videoUrlMap).length} playable video URLs`);
     }
 
     const adMetrics = Array.from(adMap.entries()).map(([adId, info]) => {
