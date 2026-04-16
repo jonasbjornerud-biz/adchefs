@@ -75,25 +75,30 @@ function FeatureCard({
   const inView = useInView(cardRef, { once: true, margin: "-15% 0% -15% 0%" });
   const [settled, setSettled] = useState(false);
 
-  // Cursor coords normalized 0..1, default centered (0.5)
+  // Auto-driven "camera" position 0..1 — replaces cursor input.
+  // Visuals still receive mx/my; they now sweep on a slow looping path.
   const mx = useMotionValue(0.5);
   const my = useMotionValue(0.5);
-  // Card-level subtle tilt (very small)
-  const rx = useSpring(useTransform(my, [0, 1], [3, -3]), { stiffness: 200, damping: 22 });
-  const ry = useSpring(useTransform(mx, [0, 1], [-3, 3]), { stiffness: 200, damping: 22 });
-  const glowX = useTransform(mx, [0, 1], ["0%", "100%"]);
-  const glowY = useTransform(my, [0, 1], ["0%", "100%"]);
 
-  function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (reduce) return;
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width);
-    my.set((e.clientY - rect.top) / rect.height);
-  }
-  function onLeave() {
-    mx.set(0.5);
-    my.set(0.5);
-  }
+  useEffect(() => {
+    if (reduce || !settled) return;
+    let raf = 0;
+    const start = performance.now();
+    const periodX = 14000; // 14s horizontal cycle
+    const periodY = 18000; // 18s vertical cycle (offset rhythm)
+    const offset = (delay || 0) * 1000;
+    const tick = (now: number) => {
+      const t = now - start + offset;
+      // Smooth sinusoidal sweep across full 0..1 range
+      const sx = 0.5 + 0.5 * Math.sin((t / periodX) * Math.PI * 2);
+      const sy = 0.5 + 0.5 * Math.sin((t / periodY) * Math.PI * 2 + Math.PI / 3);
+      mx.set(sx);
+      my.set(sy);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduce, settled, delay, mx, my]);
 
   const initial =
     variant === "left"
@@ -105,8 +110,6 @@ function FeatureCard({
   return (
     <motion.div
       ref={cardRef}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
       initial={initial}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : initial}
       transition={{ ...SPRING_SOFT, delay }}
@@ -114,10 +117,6 @@ function FeatureCard({
         if (!settled) setSettled(true);
       }}
       style={{
-        rotateX: reduce ? 0 : rx,
-        rotateY: reduce ? 0 : ry,
-        transformPerspective: 1200,
-        transformStyle: "preserve-3d",
         background: "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
         border: "1px solid rgba(255,255,255,0.06)",
         backdropFilter: "blur(20px)",
@@ -125,29 +124,8 @@ function FeatureCard({
         boxShadow:
           "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
-      whileHover={
-        reduce
-          ? undefined
-          : {
-              y: -4,
-              boxShadow:
-                "0 1px 0 rgba(255,255,255,0.10) inset, 0 0 0 1px rgba(168,85,247,0.20) inset, 0 30px 80px -20px rgba(168,85,247,0.30), 0 0 60px -10px rgba(168,85,247,0.20)",
-            }
-      }
-      className={`mw-card group relative overflow-hidden rounded-3xl ${className}`}
+      className={`mw-card relative overflow-hidden rounded-3xl ${className}`}
     >
-      {/* Cursor-follow glow (independent highlight — moves opposite to layers, gives lighting illusion) */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: useTransform(
-            [glowX, glowY] as never,
-            ([x, y]: any) =>
-              `radial-gradient(460px circle at ${x} ${y}, rgba(168,85,247,0.20), transparent 60%)`,
-          ),
-        }}
-      />
-
       {/* Top edge highlight */}
       <div
         className="absolute inset-x-8 top-0 h-px pointer-events-none"
@@ -178,18 +156,71 @@ function FeatureCard({
         </p>
       </div>
 
-      {/* Visual region — its own perspective context for child layer transforms */}
+      {/* Visual region — fixed bounds. Inner camera wrapper sweeps the scene. */}
       <div
         className="relative h-[280px] overflow-hidden"
-        style={{
-          perspective: "1000px",
-          transformStyle: "preserve-3d",
-        }}
+        style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
       >
-        {visual({ active: settled, mx, my })}
+        <CinematicCamera active={settled} delay={delay}>
+          {visual({ active: settled, mx, my })}
+        </CinematicCamera>
         {/* Purple-tinted grain overlay (per visual) */}
         <div className="absolute inset-0 pointer-events-none mw-grain-purple" />
       </div>
+    </motion.div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// CinematicCamera — self-running 3D sweep over an oversized inner scene.
+// The card stays still; only the inner visual physically pans/rotates.
+// ────────────────────────────────────────────────────────────────────────────
+function CinematicCamera({
+  children,
+  active,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  delay?: number;
+}) {
+  const reduce = useReducedMotion();
+  // Oversized inner stage so rotation/pan never reveals card edges.
+  // Scale up + center offset; rotation pivots from the geometric center.
+  return (
+    <motion.div
+      className="absolute inset-0"
+      style={{
+        transformStyle: "preserve-3d",
+        transformOrigin: "50% 50%",
+        willChange: "transform",
+      }}
+      initial={{ rotateY: -28, rotateX: 6, x: -40, y: -8, scale: 1.18 }}
+      animate={
+        reduce || !active
+          ? { rotateY: 0, rotateX: 0, x: 0, y: 0, scale: 1.18 }
+          : {
+              rotateY: [-28, -8, 18, 32, 18, -8, -28],
+              rotateX: [6, -2, -7, 2, 7, 2, 6],
+              x: [-40, -10, 22, 44, 22, -10, -40],
+              y: [-8, 4, 10, -2, -10, 4, -8],
+              scale: 1.18,
+            }
+      }
+      transition={
+        reduce || !active
+          ? { duration: 1.2, ease: "easeOut", delay }
+          : {
+              duration: 22,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop",
+              times: [0, 0.18, 0.36, 0.5, 0.64, 0.82, 1],
+              delay: delay + 0.2,
+            }
+      }
+    >
+      {children}
     </motion.div>
   );
 }
