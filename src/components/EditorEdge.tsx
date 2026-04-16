@@ -1237,32 +1237,31 @@ const EditorEdge = () => {
               <motion.span
                 key={`h-${i}`}
                 className="inline-block mr-[0.25em]"
-                initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-                animate={headerInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                initial={{ opacity: 0, y: 18 }}
+                animate={headerInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...SPRING_SOFT, delay: 0.25 + i * 0.08 }}
               >
                 {w}
               </motion.span>
             ))}
-            <span
-              style={{
-                background: "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              {headlineAccent.map((w, i) => (
-                <motion.span
-                  key={`ha-${i}`}
-                  className="inline-block mr-[0.25em]"
-                  initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-                  animate={headerInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-                  transition={{ ...SPRING_SOFT, delay: 0.55 + i * 0.08 }}
-                >
-                  {w}
-                </motion.span>
-              ))}
-            </span>
+            {headlineAccent.map((w, i) => (
+              <motion.span
+                key={`ha-${i}`}
+                className="inline-block mr-[0.25em]"
+                style={{
+                  backgroundImage: "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                }}
+                initial={{ opacity: 0, y: 18 }}
+                animate={headerInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ ...SPRING_SOFT, delay: 0.55 + i * 0.08 }}
+              >
+                {w}
+              </motion.span>
+            ))}
           </h2>
 
           <motion.p
