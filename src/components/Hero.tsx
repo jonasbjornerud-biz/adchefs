@@ -21,28 +21,15 @@ const Hero = () => {
     <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
       <div className="hero-grain" />
 
+      {/* Dotted grid + drifting spotlight */}
+      <div className="hero-dotgrid" aria-hidden="true" />
+      <div className="hero-spotlight" aria-hidden="true" />
+
       {/* Animated mesh gradient background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
-        {/* Animated grid lines */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04] dark:opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-accent" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#hero-grid)" className="animate-[grid-drift_20s_linear_infinite]" />
-        </svg>
-      </div>
-
-      {/* Shooting star light trails */}
-      <div className="shooting-stars" aria-hidden="true">
-        <span className="shooting-star s-white  ss-1" />
-        <span className="shooting-star s-purple ss-2" />
-        <span className="shooting-star s-white  ss-3" />
-        <span className="shooting-star s-purple ss-4" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
@@ -69,7 +56,7 @@ const Hero = () => {
           Pay per video. No retainers.
         </div>
 
-        <div className="cta-conic-glow inline-block">
+        <div className="cta-glow inline-block">
           <Button
             size="lg"
             variant="cta"
