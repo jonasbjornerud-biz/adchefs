@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { subDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -10,18 +10,15 @@ import { DateRangePicker } from "@/components/dashboard/DateRangePicker";
 import { AdMetric } from "@/data/mockAds";
 import { useMetaAds } from "@/hooks/useMetaAds";
 import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
-import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const MetaAdsDashboard = () => {
   const navigate = useNavigate();
   const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
-  const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 13),
     to: new Date(),
   });
-
 
 
 
