@@ -111,8 +111,8 @@ Deno.serve(async (req) => {
       adMap.get(adId)!.dailyRows.push(row);
     }
 
-    // Fetch ad statuses and creative info (thumbnail + video)
-    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,creative{thumbnail_url,video_id}&limit=500&access_token=${accessToken}`;
+    // Fetch ad statuses + creatives (using adcreatives edge for reliable video_id + picture)
+    const adsUrl = `${META_BASE_URL}/${accountId}/ads?fields=id,status,adcreatives.limit(1){picture,video_id,thumbnail_url}&limit=500&access_token=${accessToken}`;
     let statusMap: Record<string, string> = {};
     let thumbnailMap: Record<string, string> = {};
     let videoIdMap: Record<string, string> = {};
@@ -121,14 +121,20 @@ Deno.serve(async (req) => {
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
-        if (ad.creative?.thumbnail_url) thumbnailMap[ad.id] = ad.creative.thumbnail_url;
-        if (ad.creative?.video_id) videoIdMap[ad.id] = ad.creative.video_id;
+        const creative = ad.adcreatives?.data?.[0];
+        if (creative) {
+          // Use 'picture' (highest res) over 'thumbnail_url' (low res)
+          if (creative.picture) thumbnailMap[ad.id] = creative.picture;
+          else if (creative.thumbnail_url) thumbnailMap[ad.id] = creative.thumbnail_url;
+          if (creative.video_id) videoIdMap[ad.id] = creative.video_id;
+        }
       }
+      console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
     } catch (e) {
       console.log('Could not fetch ad creatives:', e.message);
     }
 
-    // Fetch video source URLs + high-res thumbnails for ads that have videos
+    // Fetch playable video source URLs
     let videoUrlMap: Record<string, string> = {};
     let hdThumbnailMap: Record<string, string> = {};
     const uniqueVideoIds = [...new Set(Object.values(videoIdMap))];
@@ -139,20 +145,19 @@ Deno.serve(async (req) => {
           const res = await fetch(`${META_BASE_URL}/${videoId}?fields=source,picture&access_token=${accessToken}`);
           const json = await res.json();
           return { id: videoId, source: json.source || '', picture: json.picture || '' };
-        } catch (_e) { /* skip */ }
-        return null;
+        } catch (_e) { return null; }
       });
       const videoResults = await Promise.all(videoPromises);
       const videoSourceMap: Record<string, { source: string; picture: string }> = {};
       for (const r of videoResults) {
         if (r) videoSourceMap[r.id] = { source: r.source, picture: r.picture };
       }
-      // Map ad IDs to video source URLs and HD thumbnails
       for (const [adId, videoId] of Object.entries(videoIdMap)) {
         const v = videoSourceMap[videoId];
         if (v?.source) videoUrlMap[adId] = v.source;
         if (v?.picture) hdThumbnailMap[adId] = v.picture;
       }
+      console.log(`Got ${Object.keys(videoUrlMap).length} playable video URLs`);
     }
 
     const adMetrics = Array.from(adMap.entries()).map(([adId, info]) => {
