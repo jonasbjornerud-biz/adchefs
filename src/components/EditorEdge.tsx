@@ -708,51 +708,43 @@ const EditorEdge = () => {
             make a winner, and why. That&apos;s how cuts go from nice
             to printing money.
           </p>
+
+          {/* FREE / part of offer banner */}
+          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
+            style={{
+              background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
+              border: "1px solid rgba(168,85,247,0.45)",
+              boxShadow: "0 0 28px -4px rgba(168,85,247,0.55)",
+            }}
+          >
+            <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
+            <span>Included free with every brand. You only pay per video.</span>
+          </div>
         </div>
 
-        {/* 3 + 2 grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+        {/* Top row: 2 cards side by side */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <FeatureCard
             delay={0}
-            title="KPI Dashboard"
-            description="CTR, hook rate, hold rate, ROAS and CPA. Streaming live across every editor on your account."
-            visual={<KpiDashboardGraphVisual />}
-          />
-          <FeatureCard
-            delay={0.1}
             title="Trained on your KPIs"
             description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
             visual={<LearningVisual />}
           />
           <FeatureCard
-            delay={0.2}
-            title="Iteration engine"
-            description="Winners get cloned, varied and tested at speed. New angles, new hooks, new patterns. Every week your top ad gets sharper."
-            visual={<IterationEngineVisual />}
+            delay={0.1}
+            title="Editor delivery tracker"
+            description="Delivered vs approved videos per editor, week by week. See exactly who is shipping and who is shipping work that lands."
+            visual={<EditorDeliveryTrendVisual />}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
+        {/* Bottom row: KPI Dashboard full width */}
+        <div className="grid grid-cols-1 gap-5 mb-16">
           <FeatureCard
-            delay={0.3}
-            title="Editor delivery tracker"
-            description="Trendlines per editor across 12 weeks. Average weekly delivery, CTR, CPA and ROAS, all side by side. See who is actually moving the needle."
-            visual={<EditorDeliveryTrendVisual />}
-          />
-          <FeatureCard
-            delay={0.4}
-            title="Smarter creative tracking"
-            description="Spend, ROAS and creative performance synced live from Meta Ads. Every angle, hook and edit, scored and ranked automatically."
-            visual={
-              <LottieVisual
-                url={LOTTIE.smarterTracking}
-                textMap={{
-                  "Smarter Tracking": "Smarter Tracking",
-                  "Automate expense and income records in real time.":
-                    "Spend, ROAS and creative performance, live.",
-                }}
-              />
-            }
+            delay={0.2}
+            title="KPI Dashboard"
+            description="CTR, hook rate, hold rate, ROAS and CPA. Streaming live across every editor on your account, in one shared view."
+            visual={<KpiDashboardGraphVisual />}
           />
         </div>
 
