@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import Papa from 'papaparse';
@@ -80,6 +80,8 @@ function PremiumCard({ children, className = '' }: { children: React.ReactNode; 
 
 export default function PerformanceDashboard() {
   const navigate = useNavigate();
+  const { clientId: adminClientId } = useParams<{ clientId?: string }>();
+  const isAdminView = !!adminClientId;
   const [client, setClient] = useState<Client | null>(null);
   const [data, setData] = useState<CachedData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -87,15 +89,24 @@ export default function PerformanceDashboard() {
   const [editor, setEditor] = useState('(All Editors)');
   const [month, setMonth] = useState(getCurrentMonth());
 
-  useEffect(() => { loadClient(); }, []);
+  useEffect(() => { loadClient(); }, [adminClientId]);
 
   async function loadClient() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate('/login'); return; }
-    const { data: clientData } = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
-    if (!clientData || !(clientData as any).spreadsheet_id) { navigate('/dashboard'); return; }
+
+    let clientData: any = null;
+    if (isAdminView) {
+      const res = await supabase.from('clients').select('*').eq('id', adminClientId!).maybeSingle();
+      clientData = res.data;
+      if (!clientData?.spreadsheet_id) { navigate(`/admin/clients/${adminClientId}`); return; }
+    } else {
+      const res = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
+      clientData = res.data;
+      if (!clientData || !clientData.spreadsheet_id) { navigate('/dashboard'); return; }
+    }
     setClient(clientData as Client);
-    fetchData((clientData as any).spreadsheet_id);
+    fetchData(clientData.spreadsheet_id);
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
@@ -301,11 +312,16 @@ export default function PerformanceDashboard() {
       <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(9,9,15,0.85)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-[1200px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/dashboard')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-all duration-200 cursor-pointer">
+            <button onClick={() => navigate(isAdminView ? `/admin/clients/${adminClientId}` : '/dashboard')} className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-all duration-200 cursor-pointer">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
             <div className="h-4 w-px bg-white/10" />
             <span className="text-sm font-medium text-white">Editor Performance</span>
+            {isAdminView && client && (
+              <span className="text-[10px] text-[#a855f7] uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#a855f7]/10">
+                Admin · {client.brand_name}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {data && (

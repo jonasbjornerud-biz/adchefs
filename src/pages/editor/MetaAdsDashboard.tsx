@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { subDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { KpiCard } from "@/components/dashboard/KpiCard";
@@ -14,11 +15,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const MetaAdsDashboard = () => {
   const navigate = useNavigate();
+  const { clientId: adminClientId } = useParams<{ clientId?: string }>();
+  const isAdminView = !!adminClientId;
   const [selectedAd, setSelectedAd] = useState<AdMetric | null>(null);
+  const [adminBrandName, setAdminBrandName] = useState<string>('');
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 13),
     to: new Date(),
   });
+
+  useEffect(() => {
+    if (isAdminView && adminClientId) {
+      supabase.from('clients').select('brand_name').eq('id', adminClientId).maybeSingle()
+        .then(({ data }) => setAdminBrandName(data?.brand_name || ''));
+    }
+  }, [isAdminView, adminClientId]);
 
 
 
@@ -43,13 +54,18 @@ const MetaAdsDashboard = () => {
         <div className="max-w-[1200px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(isAdminView ? `/admin/clients/${adminClientId}` : '/dashboard')}
               className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/[0.04] transition-all duration-200 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4 text-white/30" />
             </button>
             <span className="text-base font-semibold text-white">Meta Ads</span>
             <span className="text-sm text-white/30 hidden sm:inline">Dashboard</span>
+            {isAdminView && (
+              <span className="text-[10px] text-[#a855f7] uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#a855f7]/10">
+                Admin{adminBrandName ? ` · ${adminBrandName}` : ''}
+              </span>
+            )}
           </div>
         </div>
       </header>

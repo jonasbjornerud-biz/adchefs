@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Client, ClientWithStats } from '@/types/playbook';
-import { ProgressBar } from '@/components/playbook/ProgressBar';
+import { Client } from '@/types/playbook';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, TrendingUp, AlertCircle, LogOut } from 'lucide-react';
+import { Plus, Users, CheckCircle2, AlertCircle, LogOut } from 'lucide-react';
 import { logout } from '@/lib/auth';
+
+interface ClientWithStatus extends Client {
+  hasSheet: boolean;
+}
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [clients, setClients] = useState<ClientWithStats[]>([]);
+  const [clients, setClients] = useState<ClientWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,46 +27,26 @@ export default function AdminDashboard() {
       .eq('is_admin', false)
       .order('created_at', { ascending: false });
 
-    if (!clientsData) { setLoading(false); return; }
-
-    const enriched: ClientWithStats[] = await Promise.all(
-      clientsData.map(async (c: Client) => {
-        const { count: totalModules } = await supabase
-          .from('modules')
-          .select('*', { count: 'exact', head: true })
-          .eq('client_id', c.id);
-        const { count: completedModules } = await supabase
-          .from('module_completions')
-          .select('*', { count: 'exact', head: true })
-          .eq('client_id', c.id)
-          .eq('completed', true);
-        const total = totalModules || 0;
-        const completed = completedModules || 0;
-        return {
-          ...c,
-          totalModules: total,
-          completedModules: completed,
-          completionPercentage: total > 0 ? Math.round((completed / total) * 100) : 0,
-        };
-      })
-    );
+    const enriched: ClientWithStatus[] = (clientsData || []).map((c: Client) => ({
+      ...c,
+      hasSheet: !!c.spreadsheet_id,
+    }));
 
     setClients(enriched);
     setLoading(false);
   }
 
-  const avgCompletion = clients.length > 0
-    ? Math.round(clients.reduce((sum, c) => sum + c.completionPercentage, 0) / clients.length)
-    : 0;
-  const zeroProgress = clients.filter(c => c.completionPercentage === 0).length;
+  const totalClients = clients.length;
+  const connectedSheets = clients.filter(c => c.hasSheet).length;
+  const missingSheets = totalClients - connectedSheets;
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Playbook Admin</h1>
-            <p className="text-sm text-muted-foreground">Manage clients & training playbooks</p>
+            <h1 className="text-xl font-semibold text-foreground">Admin</h1>
+            <p className="text-sm text-muted-foreground">Manage client portals</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => { logout(); navigate('/login'); }}>
@@ -81,21 +64,21 @@ export default function AdminDashboard() {
               <Users className="w-5 h-5 text-sky-500" />
               <span className="text-sm text-muted-foreground">Total Clients</span>
             </div>
-            <p className="text-3xl font-bold font-mono text-foreground">{clients.length}</p>
+            <p className="text-3xl font-bold font-mono text-foreground">{totalClients}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-3 mb-1">
-              <TrendingUp className="w-5 h-5 text-emerald-500" />
-              <span className="text-sm text-muted-foreground">Avg. Completion</span>
+              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+              <span className="text-sm text-muted-foreground">Sheets Connected</span>
             </div>
-            <p className="text-3xl font-bold font-mono text-foreground">{avgCompletion}%</p>
+            <p className="text-3xl font-bold font-mono text-foreground">{connectedSheets}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-3 mb-1">
               <AlertCircle className="w-5 h-5 text-amber-500" />
-              <span className="text-sm text-muted-foreground">0% Progress</span>
+              <span className="text-sm text-muted-foreground">Missing Sheets</span>
             </div>
-            <p className="text-3xl font-bold font-mono text-foreground">{zeroProgress}</p>
+            <p className="text-3xl font-bold font-mono text-foreground">{missingSheets}</p>
           </div>
         </div>
 
@@ -129,8 +112,16 @@ export default function AdminDashboard() {
                     <p className="font-medium text-sm text-foreground">{client.brand_name}</p>
                     <p className="text-xs text-muted-foreground font-mono">@{client.username}</p>
                   </div>
-                  <div className="w-48 hidden sm:block">
-                    <ProgressBar completed={client.completedModules} total={client.totalModules} />
+                  <div className="hidden sm:flex items-center gap-2">
+                    {client.hasSheet ? (
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">
+                        ✓ Sheet
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
+                        No Sheet
+                      </span>
+                    )}
                   </div>
                 </button>
               ))}
