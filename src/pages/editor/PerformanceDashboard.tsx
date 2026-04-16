@@ -8,6 +8,7 @@ import {
   Legend, ResponsiveContainer,
 } from 'recharts';
 import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
+import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 import { Button } from '@/components/ui/button';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 
