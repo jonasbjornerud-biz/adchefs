@@ -75,12 +75,11 @@ function FeatureCard({
 // VISUAL 1: Trained on your KPIs — Neural network "Editor Brain"
 // ════════════════════════════════════════════════════════════════════════════
 const BRAIN_NODES = [
-  { id: "hook",  label: "Hook",      x: 12, y: 22, value: "42%" },
-  { id: "hold",  label: "Hold",      x: 12, y: 50, value: "31%" },
-  { id: "ctr",   label: "CTR",       x: 12, y: 78, value: "3.4%" },
-  { id: "roas",  label: "ROAS",      x: 88, y: 22, value: "4.2x" },
-  { id: "cpa",   label: "CPA",       x: 88, y: 50, value: "€19" },
-  { id: "thumb", label: "Thumbstop", x: 88, y: 78, value: "58%" },
+  { id: "roas", label: "ROAS", x: 12, y: 24, value: "4.2x" },
+  { id: "cpa",  label: "CPA",  x: 12, y: 76, value: "€19"  },
+  { id: "hook", label: "Hook", x: 88, y: 18, value: "42%"  },
+  { id: "hold", label: "Hold", x: 88, y: 50, value: "31%"  },
+  { id: "ctr",  label: "CTR",  x: 88, y: 82, value: "3.4%" },
 ];
 
 function EditorBrainVisual() {
