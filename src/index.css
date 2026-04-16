@@ -394,121 +394,72 @@
   @media (prefers-reduced-motion: reduce) {
     .hero-orb,
     .marquee-track,
-    .shooting-star,
-    .cta-conic-glow::before,
-    .cta-conic-glow::after {
+    .hero-spotlight,
+    .cta-glow,
+    .cta-glow::before {
       animation: none !important;
     }
-    .shooting-star { display: none !important; }
   }
 
-  /* ── Shooting stars / light trails ── */
-  .shooting-stars {
+  /* ── Hero dot grid + spotlight ── */
+  .hero-dotgrid {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
-    overflow: hidden;
+    background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1.5px);
+    background-size: 24px 24px;
+    background-position: 0 0;
   }
 
-  .shooting-star {
+  .hero-spotlight {
     position: absolute;
-    left: -260px;
-    width: 220px;
-    height: 1.5px;
-    border-radius: 999px;
-    transform: rotate(-15deg);
-    opacity: 0;
-    will-change: transform, opacity;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(139, 92, 246, 0.5) 1px, transparent 1.5px);
+    background-size: 24px 24px;
+    background-position: 0 0;
+    -webkit-mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+            mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+    animation: spotlight-drift 20s ease-in-out infinite;
+    will-change: mask-position, -webkit-mask-position;
   }
 
-  .shooting-star.s-white {
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+  @keyframes spotlight-drift {
+    0%   { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    25%  { -webkit-mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+                   mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    50%  { -webkit-mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+                   mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    75%  { -webkit-mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+                   mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    100% { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
+                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
   }
 
-  .shooting-star.s-purple {
-    background: linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.75) 50%, transparent 100%);
-    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.55));
-  }
-
-  .shooting-star.ss-1 { top: 18%; animation: shoot-1 9s linear infinite; }
-  .shooting-star.ss-2 { top: 42%; animation: shoot-2 11s linear infinite; }
-  .shooting-star.ss-3 { top: 64%; animation: shoot-3 8s linear infinite; }
-  .shooting-star.ss-4 { top: 30%; animation: shoot-4 12s linear infinite; }
-
-  @keyframes shoot-1 {
-    0%   { transform: translate(0, 0) rotate(-15deg); opacity: 0; }
-    2%   { opacity: 1; }
-    16%  { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-    100% { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-  }
-  @keyframes shoot-2 {
-    0%, 30% { transform: translate(0, 0) rotate(-15deg); opacity: 0; }
-    33%     { opacity: 1; }
-    47%     { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-    100%    { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-  }
-  @keyframes shoot-3 {
-    0%, 55% { transform: translate(0, 0) rotate(-15deg); opacity: 0; }
-    58%     { opacity: 1; }
-    73%     { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-    100%    { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-  }
-  @keyframes shoot-4 {
-    0%, 78% { transform: translate(0, 0) rotate(-15deg); opacity: 0; }
-    81%     { opacity: 1; }
-    95%     { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-    100%    { transform: translate(140vw, 38vh) rotate(-15deg); opacity: 0; }
-  }
-
-  /* ── CTA conic glow wrapper ── */
-  .cta-conic-glow {
+  /* ── CTA clean glow + shimmer sweep ── */
+  .cta-glow {
     position: relative;
     display: inline-block;
     border-radius: 16px;
-    padding: 2px;
-    isolation: isolate;
-  }
-
-  .cta-conic-glow::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 2px;
-    background: conic-gradient(from 0deg, #8b5cf6, #c4b5fd, #a78bfa, #e9d5ff, #8b5cf6);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    animation: conic-spin 4s linear infinite;
-    z-index: -1;
-  }
-
-  .cta-conic-glow::after {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 20px;
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.45);
-    animation: cta-pulse 2.5s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -2;
+    box-shadow:
+      0 0 30px rgba(139, 92, 246, 0.35),
+      0 0 60px rgba(139, 92, 246, 0.20);
+    animation: cta-glow-pulse 3s ease-in-out infinite;
     transition: box-shadow 0.3s ease;
   }
 
-  .cta-conic-glow:hover::after {
-    box-shadow: 0 0 64px rgba(139, 92, 246, 0.7);
+  .cta-glow:hover {
+    box-shadow:
+      0 0 40px rgba(139, 92, 246, 0.55),
+      0 0 80px rgba(139, 92, 246, 0.35);
   }
 
-  @keyframes conic-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes cta-pulse {
-    0%, 100% { opacity: 0.55; }
-    50%      { opacity: 0.95; }
+  @keyframes cta-glow-pulse {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
   }
 
   /* ── Hero accent gradient words ── */
