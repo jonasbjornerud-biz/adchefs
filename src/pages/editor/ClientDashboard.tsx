@@ -26,7 +26,7 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#09090f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#06060c]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[#a855f7] border-t-transparent rounded-full animate-spin" />
           <span className="text-sm text-white/30">Loading…</span>
