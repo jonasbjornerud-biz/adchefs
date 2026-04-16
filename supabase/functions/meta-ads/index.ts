@@ -119,15 +119,21 @@ Deno.serve(async (req) => {
     try {
       const adsData = await fetchAllPages(adsUrl);
       const sMap: Record<string, string> = { ACTIVE: 'active', PAUSED: 'paused', ARCHIVED: 'ended', DELETED: 'ended' };
+      // Debug: log first ad's creative structure
+      if (adsData.length > 0) {
+        const first = adsData[0];
+        console.log('Sample ad creative structure:', JSON.stringify(first.adcreatives?.data?.[0] || 'none').slice(0, 500));
+      }
       for (const ad of adsData) {
         statusMap[ad.id] = sMap[ad.status] || 'paused';
         const creative = ad.adcreatives?.data?.[0];
         if (creative) {
           if (creative.picture) thumbnailMap[ad.id] = creative.picture;
           else if (creative.thumbnail_url) thumbnailMap[ad.id] = creative.thumbnail_url;
-          // Extract video_id from object_story_spec
-          const videoId = creative.object_story_spec?.video_data?.video_id;
-          if (videoId) videoIdMap[ad.id] = videoId;
+          // Try multiple paths for video_id
+          const videoId = creative.object_story_spec?.video_data?.video_id
+            || creative.video_id;
+          if (videoId) videoIdMap[ad.id] = String(videoId);
         }
       }
       console.log(`Found ${Object.keys(videoIdMap).length} video ads, ${Object.keys(thumbnailMap).length} thumbnails`);
