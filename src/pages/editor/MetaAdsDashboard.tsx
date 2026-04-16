@@ -67,15 +67,7 @@ const MetaAdsDashboard = () => {
         {/* Title + Date Picker + Fetch */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold">
-              <span className="text-white">Welcome back, </span>
-              <span style={{
-                background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                filter: 'drop-shadow(0 0 12px rgba(168,85,247,0.4))',
-              }}>{brandName || 'Client'}</span>
-            </h1>
+            <h1 className="text-3xl font-bold text-white">KPI Dashboard</h1>
             <p className="text-sm text-white/40 mt-1">
               {dateLabel} · All campaigns
               {isLoading ? (
