@@ -311,7 +311,7 @@
   .hero-grain {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 4;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 180px 180px;
@@ -323,67 +323,67 @@
     opacity: 0.04;
   }
 
-  /* ── Hero animated aurora orbs ── */
+  /* ── Hero animated aurora orbs (subtle, accent on top of dot grid) ── */
   .hero-orb {
     position: absolute;
     border-radius: 50%;
     will-change: transform;
-    filter: blur(110px);
-    opacity: 0.7;
+    filter: blur(120px);
+    mix-blend-mode: multiply;
+  }
+
+  .dark .hero-orb {
+    mix-blend-mode: screen;
   }
 
   .hero-orb-1 {
-    width: 620px;
-    height: 620px;
-    top: -8%;
+    width: 400px;
+    height: 400px;
+    top: 4%;
     left: 4%;
     background: radial-gradient(circle, #8b5cf6 0%, rgba(139,92,246,0) 70%);
     animation: orb-float-1 25s ease-in-out infinite;
+    opacity: 0.30;
   }
 
   .hero-orb-2 {
-    width: 540px;
-    height: 540px;
-    top: 18%;
-    right: -4%;
+    width: 400px;
+    height: 400px;
+    top: 6%;
+    right: 4%;
     background: radial-gradient(circle, #c4b5fd 0%, rgba(196,181,253,0) 70%);
     animation: orb-float-2 35s ease-in-out infinite;
+    opacity: 0.28;
   }
 
   .hero-orb-3 {
-    width: 480px;
-    height: 480px;
-    bottom: 0%;
-    left: 38%;
-    background: radial-gradient(circle, #f5f3ff 0%, rgba(245,243,255,0) 70%);
+    width: 500px;
+    height: 500px;
+    bottom: -8%;
+    left: 50%;
+    margin-left: -250px;
+    background: radial-gradient(circle, #f5d5ff 0%, rgba(245,213,255,0) 70%);
     animation: orb-float-3 45s ease-in-out infinite;
-    opacity: 0.55;
+    opacity: 0.25;
   }
 
-  /* Light mode: soften the bright pink-white orb */
-  .hero-orb-3 { opacity: 0.45; }
-  .dark .hero-orb-1 { opacity: 0.65; }
-  .dark .hero-orb-2 { opacity: 0.55; }
-  .dark .hero-orb-3 { opacity: 0.35; }
+  .dark .hero-orb-1 { opacity: 0.40; }
+  .dark .hero-orb-2 { opacity: 0.30; }
+  .dark .hero-orb-3 { opacity: 0.22; }
 
   @keyframes orb-float-1 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    25%      { transform: translate(120px, 80px) scale(1.1); }
-    50%      { transform: translate(60px, 160px) scale(0.95); }
-    75%      { transform: translate(-80px, 60px) scale(1.05); }
+    50%      { transform: translate(40px, 30px) scale(1.05); }
   }
 
   @keyframes orb-float-2 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    25%      { transform: translate(-100px, 90px) scale(1.08); }
-    50%      { transform: translate(-160px, -40px) scale(0.92); }
-    75%      { transform: translate(-40px, -100px) scale(1.06); }
+    50%      { transform: translate(-50px, 40px) scale(1.06); }
   }
 
   @keyframes orb-float-3 {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    33%      { transform: translate(80px, -120px) scale(1.15); }
-    66%      { transform: translate(-100px, -60px) scale(0.9); }
+    50%      { transform: translate(30px, -40px) scale(1.08); }
   }
 
   @keyframes grid-drift {
@@ -405,9 +405,9 @@
   .hero-dotgrid {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
-    background-image: radial-gradient(rgba(139, 92, 246, 0.15) 1px, transparent 1.5px);
+    background-image: radial-gradient(rgba(139, 92, 246, 0.20) 1px, transparent 1.5px);
     background-size: 24px 24px;
     background-position: 0 0;
   }
@@ -415,28 +415,26 @@
   .hero-spotlight {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
-    background-image: radial-gradient(rgba(139, 92, 246, 0.5) 1px, transparent 1.5px);
+    background-image: radial-gradient(rgba(139, 92, 246, 0.55) 1px, transparent 1.5px);
     background-size: 24px 24px;
     background-position: 0 0;
-    -webkit-mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-            mask-image: radial-gradient(circle 250px at var(--sx, 30%) var(--sy, 40%), #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
     animation: spotlight-drift 20s ease-in-out infinite;
-    will-change: mask-position, -webkit-mask-position;
+    will-change: -webkit-mask-image, mask-image;
   }
 
   @keyframes spotlight-drift {
-    0%   { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    25%  { -webkit-mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 75% 25%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    50%  { -webkit-mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 80% 75%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    75%  { -webkit-mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 25% 70%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
-    100% { -webkit-mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%);
-                   mask-image: radial-gradient(circle 250px at 20% 30%, #000 0%, rgba(0,0,0,0.6) 40%, transparent 75%); }
+    0%   { -webkit-mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    25%  { -webkit-mask-image: radial-gradient(circle 280px at 78% 22%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 78% 22%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    50%  { -webkit-mask-image: radial-gradient(circle 280px at 82% 78%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 82% 78%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    75%  { -webkit-mask-image: radial-gradient(circle 280px at 22% 72%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 22% 72%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
+    100% { -webkit-mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
+                   mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
   }
 
   /* ── CTA clean glow + shimmer sweep ── */
@@ -462,13 +460,9 @@
     50%      { opacity: 1; }
   }
 
-  /* ── Hero accent gradient words ── */
+  /* ── Hero accent words: solid brand purple (matches CTA) ── */
   .hero-accent-word {
-    background: linear-gradient(135deg, #a855f7, #c084fc, #d8b4fe);
-    -webkit-background-clip: text;
-            background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    color: hsl(var(--accent));
   }
 
   /* ── Feature card (voxr-style) ── */
