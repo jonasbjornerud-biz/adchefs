@@ -261,7 +261,7 @@ function HiringVisual() {
           <text x={W / 2} y="29" textAnchor="middle"
             fontSize="10" fontFamily="ui-sans-serif, system-ui, sans-serif"
             fontWeight="700" fill="rgba(255,255,255,0.85)" letterSpacing="0.5">
-            AI HIRING FUNNEL
+            HIRING FUNNEL
           </text>
         </g>
       </svg>
@@ -446,9 +446,9 @@ function MentoringVisual() {
 // VISUAL 3: Placed in your team — editor slots into your existing team
 // ════════════════════════════════════════════════════════════════════════════
 const TEAM_MEMBERS = [
-  { initials: "AM", role: "Marketing", color: "#c084fc" },
-  { initials: "JR", role: "Brand",     color: "#a855f7" },
-  { initials: "SK", role: "Founder",   color: "#d8b4fe" },
+  { initials: "MKT",   role: "Marketing", color: "#c084fc" },
+  { initials: "BRAND", role: "Brand",     color: "#a855f7" },
+  { initials: "YOU",   role: "Founder",   color: "#d8b4fe" },
 ];
 
 function PlacementVisual() {
@@ -507,7 +507,8 @@ function PlacementVisual() {
                 stroke={m.color} strokeWidth="1.5"
                 style={{ filter: `drop-shadow(0 0 8px ${m.color}55)` }} />
               <text x={cx} y={cy + 4} textAnchor="middle"
-                fontSize="11" fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontSize={m.initials.length > 3 ? "8" : "10"}
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="800" fill="#fff">
                 {m.initials}
               </text>
@@ -554,9 +555,9 @@ function PlacementVisual() {
           <circle cx="290" cy="120" r="24" fill="url(#newEditorGrad)"
             style={{ filter: "drop-shadow(0 0 14px rgba(168,85,247,0.8))" }} />
           <text x="290" y="124" textAnchor="middle"
-            fontSize="11" fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontSize="9" fontFamily="ui-sans-serif, system-ui, sans-serif"
             fontWeight="800" fill="#fff">
-            ED
+            EDITOR
           </text>
           <text x="290" y="158" textAnchor="middle"
             fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif"
@@ -632,36 +633,36 @@ const HowItWorks = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              in-house
-            </span>{" "}
-            experience
+              in-house editor
+            </span>
+            , handled for you.
           </h2>
           <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
-            Your editor is yours alone. Not shared, not rotating, not freelancing on the side. We hire, train and place them inside your team like a contractor or employee. They learn your brand, sit in your channels, and grow with you. The only difference is we handle the recruiting, the mentoring and the ongoing performance management for you.
+            Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team, like a contractor you never had to recruit. They learn your brand, sit in your Slack, and grow with your account. I handle the recruiting, the mentoring, and the performance management, so you don't have to.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <StepCard
             stepNumber="01"
-            title="AI-Powered Hiring"
-            description="We screen 200+ video editors every week with our own AI-driven evaluation. Only the top 1% make it to the interview stage. You get the best of the best, matched to your brand."
+            title="Vetted through a real funnel"
+            description="I screen hundreds of editors every month through a structured evaluation: skills tests, brand-voice trials, paid trial tasks. Only editors who pass every stage work with brands. No matching based on a portfolio. Every editor proves they can ship before they ever touch your account."
             icon={Brain}
             visual={<HiringVisual />}
             delay={0}
           />
           <StepCard
             stepNumber="02"
-            title="Editor Mentoring System"
-            description="Every editor goes through our masterclass. Hook engineering, hold curves, brand voice, performance review. They keep training while they work for you, so quality only goes up."
+            title="Trained on what actually wins"
+            description="Every editor goes through my direct response masterclass: hook engineering, hold-curve retention, brand voice, sound design. They keep training while they work for you, so quality compounds over time instead of plateauing."
             icon={GraduationCap}
             visual={<MentoringVisual />}
             delay={0.1}
           />
           <StepCard
             stepNumber="03"
-            title="Placed in your team"
-            description="Your editor gets dropped into your Slack, your Notion, your workflow. Dedicated to your brand only, like an in-house hire. We stay in the background managing performance and growth."
+            title="Embedded in your workflow"
+            description="Your editor gets added to your Slack, your Notion, your brand folder, and works only on your account. You treat them like an in-house hire. I stay in the background, managing performance, quality, and any issues before they become your problem."
             icon={UsersRound}
             visual={<PlacementVisual />}
             delay={0.2}

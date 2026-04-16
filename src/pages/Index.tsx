@@ -1,7 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
+import WhyAdChefs from "@/components/WhyAdChefs";
 import HowItWorks from "@/components/HowItWorks";
 import EditorEdge from "@/components/EditorEdge";
+import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
@@ -16,8 +18,16 @@ const Index = () => {
       <div className="min-h-screen relative z-10">
         <Navigation />
         <Hero />
+        <WhyAdChefs />
         <HowItWorks />
         <EditorEdge />
+
+        {/* Pricing — light background (matches hero) */}
+        <div className="section-band section-band-white">
+          <div className="content-container">
+            <Pricing />
+          </div>
+        </div>
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">

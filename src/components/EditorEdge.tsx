@@ -921,7 +921,7 @@ const EditorEdge = () => {
             }}
           >
             <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
-            What sets us apart
+            What sets AdChefs apart
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
             Editors who understand{" "}
@@ -935,9 +935,10 @@ const EditorEdge = () => {
             >
               why ads work
             </span>
+            .
           </h2>
           <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
-            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
+            Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, delivery, all in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions are driven by data, not guesses.
           </p>
 
           <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
@@ -948,7 +949,7 @@ const EditorEdge = () => {
             }}
           >
             <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
-            <span>Included free with every brand. You only pay per video.</span>
+            <span>Included free. You only pay per video.</span>
           </div>
         </div>
 
@@ -957,13 +958,13 @@ const EditorEdge = () => {
           <FeatureCard
             delay={0}
             title="Trained on your KPIs"
-            description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
+            description="Your editor studies your hook rates, hold curves, CPA and ROAS every week. They learn what your winners share, then engineer more of them. Creative informed by data, not taste."
             visual={<EditorBrainVisual />}
           />
           <FeatureCard
             delay={0.1}
-            title="Editor delivery tracker"
-            description="Delivered vs approved videos per editor, week by week. See exactly who is shipping and who is shipping work that lands."
+            title="Delivery you can track"
+            description="See exactly how many videos were delivered and approved per editor, week by week. No more chasing status updates or wondering what's in the pipeline."
             visual={<EditorDeliveryTrackerVisual />}
           />
         </div>
@@ -972,8 +973,8 @@ const EditorEdge = () => {
         <div className="grid grid-cols-1 gap-5 mb-16">
           <FeatureCard
             delay={0.2}
-            title="KPI Dashboard"
-            description="ROAS front and centre, with CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving."
+            title="Live KPI Dashboard"
+            description="ROAS front and centre. CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving."
             visual={<KpiDashboardVisual />}
           />
         </div>
@@ -1008,7 +1009,7 @@ const EditorEdge = () => {
             </Button>
           </div>
           <p className="mt-3 text-xs text-white/45 max-w-md mx-auto">
-            This is a sample dashboard with mock data. The real version is fully tailored to your brand, your editors and your campaigns.
+            Sample dashboard with mock data. Your real version is fully tailored to your account.
           </p>
         </div>
       </div>
