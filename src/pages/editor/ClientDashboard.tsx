@@ -45,6 +45,9 @@ export default function ClientDashboard() {
       route: '/performance',
       accent: '#a855f7',
       enabled: !!client.spreadsheet_id,
+      statusLabel: 'Sheet API connected',
+      statusIcon: FileSpreadsheet,
+      cta: 'Open Performance',
     },
     {
       title: 'KPI Dashboard',
@@ -53,6 +56,9 @@ export default function ClientDashboard() {
       route: '/ads',
       accent: '#34d399',
       enabled: true,
+      statusLabel: 'Meta API connected',
+      statusIcon: Zap,
+      cta: 'Open Dashboard',
     },
   ];
 
