@@ -294,12 +294,10 @@ function HiringVisual() {
 // VISUAL 2: Editor Mentoring System — modules completing on a course card
 // ════════════════════════════════════════════════════════════════════════════
 const MENTOR_MODULES = [
-  { label: "Hook engineering",  unlocked: true,  progress: 100 },
-  { label: "Hold curve craft",  unlocked: true,  progress: 100 },
-  { label: "Pacing & rhythm",   unlocked: true,  progress: 78  },
-  { label: "Brand voice",       unlocked: true,  progress: 42  },
-  { label: "Sound design",      unlocked: false, progress: 0   },
-  { label: "Performance review", unlocked: false, progress: 0   },
+  { label: "Hook engineering", unlocked: true,  progress: 100 },
+  { label: "Hold curve craft", unlocked: true,  progress: 100 },
+  { label: "Brand voice",      unlocked: true,  progress: 78  },
+  { label: "Sound design",     unlocked: false, progress: 0   },
 ];
 
 function MentoringVisual() {
