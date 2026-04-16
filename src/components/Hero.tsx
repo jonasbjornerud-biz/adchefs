@@ -36,25 +36,23 @@ const Hero = () => {
       <div className="container mx-auto px-6 relative z-10 text-center max-w-3xl">
         <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
           <span className="text-xs tracking-wide text-muted-foreground">
-            AI automations × expert video editors
+            Built for e-com brands. Pay per video.
           </span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
-          We cook up{" "}
-          <span className="hero-accent-word">ads</span> that{" "}
+          Your <span className="hero-accent-word">dedicated</span> video editor,{" "}
           <br className="hidden sm:block" />
-          <span className="hero-accent-word">scale</span> your brand
+          without the <span className="hero-accent-word">in-house cost</span>.
         </h1>
 
         <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
-          Creative strategy, <span className="text-accent">AI insights</span>, and elite editors
-          working together to deliver videos that drive consistent growth.
+          I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
         </p>
 
-        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/50 mb-10">
-          <Check className="w-3.5 h-3.5 text-accent/50" />
-          Pay per video. No retainers.
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 mb-10">
+          <Check className="w-3.5 h-3.5 text-accent/60" />
+          From €100/video. Cancel anytime.
         </div>
 
         <div className="cta-glow inline-block">
@@ -74,10 +72,14 @@ const Hero = () => {
 
       {/* Marquee */}
       <div className="relative w-screen left-1/2 -translate-x-1/2 mt-20 mb-8 marquee-wrapper">
+        <p className="text-center text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
+          Recent work
+        </p>
+
         {/* Edge fade masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
-        
+        <div className="absolute left-0 top-[44px] bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
+        <div className="absolute right-0 top-[44px] bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
+
         <div className="marquee-track flex gap-5">
           {doubled.map((src, i) => (
             <div

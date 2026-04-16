@@ -6,19 +6,33 @@ const CalendlyBooking = () => {
           <div className="space-y-6">
             <p className="text-xs uppercase tracking-[0.2em] text-accent font-medium">Get started</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              Ready to scale your creative system?
+              Ready to scale your creative?
             </h2>
-            <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
-              <p>We only work with 2 new e-commerce brands each month, ready to streamline creative operations and scale with precision.</p>
-              <p className="font-medium text-foreground">Book a call only if you:</p>
-              <ol className="space-y-2 list-decimal list-inside">
-                <li>Have a monthly ad spend of at least €5,000</li>
-                <li>Want to increase creative output efficiently</li>
-                <li>Value data-driven creative strategy powered by AI insights and elite video editors</li>
-              </ol>
-              <p className="font-medium text-foreground pt-2">This isn't a sales pitch.</p>
+            <div className="space-y-5 text-sm text-muted-foreground leading-relaxed">
               <p>
-                It's a strategy session to assess fit and, if aligned, outline a tailored plan to expand your ad volume and maximize ROI.
+                I onboard a limited number of new brands each month to protect editor quality and attention. Book a call if you want to see if we're a fit.
+              </p>
+
+              <div>
+                <p className="font-semibold text-foreground mb-2">Book a call if:</p>
+                <ul className="space-y-2 list-disc list-outside ml-5">
+                  <li>You're an e-commerce brand spending at least €5,000/month on paid ads</li>
+                  <li>You want to ship more video creative without hiring in-house</li>
+                  <li>You value real performance data over vanity deliverables</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-semibold text-foreground mb-2">What happens on the call:</p>
+                <ul className="space-y-2 list-disc list-outside ml-5">
+                  <li>I ask about your current creative, offer, and performance</li>
+                  <li>I show you how AdChefs would plug into your workflow</li>
+                  <li>If it's a fit, we scope a trial. If not, I point you toward a better option</li>
+                </ul>
+              </div>
+
+              <p className="italic text-foreground/70 pt-1">
+                No sales pressure. Worst case, you leave the call with sharper feedback on your current creative.
               </p>
             </div>
           </div>
