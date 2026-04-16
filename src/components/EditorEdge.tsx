@@ -558,78 +558,110 @@ const LEARN_CHIPS = [
 ];
 
 function LearningVisual() {
+  // Bullseye / target lock concept: editor scope locks onto winning KPIs
+  const KPIS = [
+    { label: "Hook Rate",  value: "42%",  },
+    { label: "Hold Rate",  value: "31%",  },
+    { label: "ROAS",       value: "4.2x", },
+    { label: "CTR",        value: "3.4%", },
+    { label: "Thumbstop",  value: "58%",  },
+  ];
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setActive((x) => (x + 1) % KPIS.length);
+    }, 1600);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Rising chips */}
-      <div className="absolute inset-0">
-        {LEARN_CHIPS.map((c, i) => (
-          <div
-            key={c}
-            className="absolute mw-rise text-[10px] font-medium px-2 py-1 rounded-full text-white/85 whitespace-nowrap"
+      <svg viewBox="0 0 400 260" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="learnGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
+            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="200" cy="130" rx="140" ry="80" fill="url(#learnGlow)" />
+
+        {/* Concentric target rings */}
+        {[80, 60, 40, 22].map((r, i) => (
+          <circle
+            key={i}
+            cx="200"
+            cy="130"
+            r={r}
+            fill="none"
+            stroke="rgba(168,85,247,0.30)"
+            strokeWidth={i === 3 ? 1.5 : 1}
+            strokeDasharray={i % 2 === 0 ? "3 4" : "0"}
             style={{
-              left: `${8 + (i * 12) % 80}%`,
-              bottom: "-30px",
-              background: "rgba(168,85,247,0.10)",
-              border: "1px solid rgba(168,85,247,0.30)",
-              backdropFilter: "blur(6px)",
-              animationDelay: `${(i * 0.7) % 5.5}s`,
-              animationDuration: `${6 + (i % 3)}s`,
+              transformOrigin: "200px 130px",
+              animation: `mw-ring-rotate ${10 + i * 4}s linear infinite ${i % 2 ? "reverse" : ""}`,
             }}
-          >
-            {c}
-          </div>
+          />
         ))}
-      </div>
 
-      {/* Central brain / target node */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative">
+        {/* Crosshair */}
+        <line x1="200" y1="50" x2="200" y2="210" stroke="rgba(168,85,247,0.25)" strokeWidth="1" strokeDasharray="2 4" />
+        <line x1="120" y1="130" x2="280" y2="130" stroke="rgba(168,85,247,0.25)" strokeWidth="1" strokeDasharray="2 4" />
+
+        {/* Center bullseye */}
+        <circle cx="200" cy="130" r="10" fill="#a855f7" style={{ filter: "drop-shadow(0 0 10px #a855f7)" }}>
+          <animate attributeName="r" values="8;11;8" dur="1.6s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="200" cy="130" r="4" fill="#fff" />
+
+        {/* Pulse ring */}
+        <circle cx="200" cy="130" r="0" fill="none" stroke="rgba(168,85,247,0.55)" strokeWidth="1.2">
+          <animate attributeName="r" values="14;90" dur="2.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.7;0" dur="2.4s" repeatCount="indefinite" />
+        </circle>
+      </svg>
+
+      {/* KPI chips arranged in a circle around the target */}
+      {KPIS.map((k, i) => {
+        const angle = (i / KPIS.length) * Math.PI * 2 - Math.PI / 2;
+        const x = 50 + Math.cos(angle) * 32;
+        const y = 50 + Math.sin(angle) * 28;
+        const isActive = i === active;
+        return (
           <div
-            className="absolute inset-0 rounded-full mw-pulse-soft"
+            key={k.label}
+            className="absolute transition-all duration-500"
             style={{
-              width: 110,
-              height: 110,
-              left: -55,
-              top: -55,
-              background:
-                "radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(168,85,247,0.10) 50%, transparent 75%)",
-              filter: "blur(8px)",
-            }}
-          />
-          <div
-            className="relative flex items-center justify-center rounded-2xl"
-            style={{
-              width: 76,
-              height: 76,
-              background:
-                "linear-gradient(135deg, rgba(168,85,247,0.25), rgba(124,58,237,0.10))",
-              border: "1px solid rgba(168,85,247,0.45)",
-              boxShadow:
-                "0 0 30px rgba(168,85,247,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
-              backdropFilter: "blur(10px)",
+              left: `${x}%`,
+              top: `${y}%`,
+              transform: `translate(-50%, -50%) scale(${isActive ? 1.08 : 1})`,
             }}
           >
-            <GraduationCap className="w-8 h-8 text-white" />
+            <div
+              className="flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-lg backdrop-blur-md transition-all duration-500"
+              style={{
+                background: isActive ? "rgba(168,85,247,0.22)" : "rgba(20,16,32,0.7)",
+                border: `1px solid ${isActive ? "rgba(168,85,247,0.7)" : "rgba(168,85,247,0.25)"}`,
+                boxShadow: isActive ? "0 0 18px rgba(168,85,247,0.55)" : "none",
+              }}
+            >
+              <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55">{k.label}</span>
+              <span className="text-[12px] font-bold text-white tabular-nums leading-none">{k.value}</span>
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      })}
 
-      {/* Bottom progress bar that fills + resets */}
-      <div className="absolute left-6 right-6 bottom-4">
-        <div className="flex items-center justify-between text-[9px] uppercase tracking-wider font-semibold text-white/45 mb-1.5">
-          <span>Training in progress</span>
-          <span className="text-[#a855f7]">Live</span>
-        </div>
-        <div className="h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
-          <div
-            className="h-full mw-progress"
-            style={{
-              background:
-                "linear-gradient(90deg, #7c3aed, #a855f7, #c084fc)",
-              boxShadow: "0 0 8px #a855f7",
-            }}
-          />
-        </div>
+      {/* Bottom badge */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium text-white/85"
+        style={{
+          background: "rgba(168,85,247,0.12)",
+          border: "1px solid rgba(168,85,247,0.30)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <GraduationCap className="w-3 h-3" style={{ color: ACCENT }} />
+        Locked onto your winning KPIs
       </div>
     </div>
   );
