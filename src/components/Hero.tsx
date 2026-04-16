@@ -40,14 +40,14 @@ const Hero = () => {
           </span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-extrabold leading-[1.06] tracking-tight mb-6 text-foreground">
           Your <span className="hero-accent-word">dedicated</span> video editor
           <br />
           without the <span className="hero-accent-word">additional cost</span>
         </h1>
 
         <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
-          I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
+          I match e-commerce brands with video editors who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
         </p>
 
         <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 mb-10">
