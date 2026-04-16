@@ -589,7 +589,16 @@ const EditorEdge = () => {
             delay={0}
             title="KPI Dashboard"
             description="Real-time spend, ROAS and creative performance — synced live from Meta Ads."
-            visual={<LottieVisual url={LOTTIE.smarterTracking} />}
+            visual={
+              <LottieVisual
+                url={LOTTIE.smarterTracking}
+                textMap={{
+                  "Smarter Tracking": "KPI Dashboard",
+                  "Automate expense and income records in real time.":
+                    "Spend, ROAS & creative performance — live.",
+                }}
+              />
+            }
           />
           <FeatureCard
             delay={0.1}
@@ -608,15 +617,15 @@ const EditorEdge = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
           <FeatureCard
             delay={0.3}
-            title="Cash Flow Snapshot"
-            description="Monthly spend vs revenue, surfaced at a glance with the same back-end every client logs into."
+            title="Editor Delivery Tracker"
+            description="Every video logged, every approval timestamped — full visibility on output across your editor roster."
             visual={<LottieVisual url={LOTTIE.cashflow} />}
           />
           <FeatureCard
             delay={0.4}
             title="Live editor metrics"
-            description="Track average CTR, hook rate and hold rate per editor — see exactly who&apos;s driving the curve."
-            visual={<EditorMetricsVisual />}
+            description="CTR, hook rate, hold rate and thumbstop — streaming live across every editor on your account."
+            visual={<EditorMetricsGraphVisual />}
           />
         </div>
 
