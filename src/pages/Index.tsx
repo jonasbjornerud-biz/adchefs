@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
+import EditorEdge from "@/components/EditorEdge";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
@@ -22,6 +23,9 @@ const Index = () => {
             <HowItWorks />
           </div>
         </div>
+
+        {/* What Sets Us Apart — dark section */}
+        <EditorEdge />
 
         {/* Booking — accent/purple tinted background */}
         <div className="section-band section-band-accent">
