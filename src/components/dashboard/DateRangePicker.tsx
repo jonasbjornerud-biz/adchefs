@@ -86,6 +86,20 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
             numberOfMonths={2}
             className={cn("p-3 pointer-events-auto")}
             disabled={(date) => date > new Date()}
+            classNames={{
+              caption_label: "text-sm font-medium text-white",
+              nav_button: "h-7 w-7 bg-transparent p-0 text-white/70 hover:text-white hover:bg-white/[0.06] rounded-md inline-flex items-center justify-center transition-colors",
+              head_cell: "text-white/40 rounded-md w-9 font-normal text-[0.7rem] uppercase tracking-wider",
+              day: "h-9 w-9 p-0 font-normal text-white/85 hover:bg-[#a855f7]/15 hover:text-white rounded-md inline-flex items-center justify-center transition-colors aria-selected:opacity-100 cursor-pointer",
+              day_selected: "bg-[#a855f7] text-white hover:bg-[#a855f7] hover:text-white focus:bg-[#a855f7] focus:text-white",
+              day_today: "bg-white/[0.08] text-white ring-1 ring-[#a855f7]/40",
+              day_outside: "text-white/25 aria-selected:text-white/40",
+              day_disabled: "text-white/20 opacity-50 cursor-not-allowed",
+              day_range_middle: "aria-selected:bg-[#a855f7]/20 aria-selected:text-white rounded-none",
+              day_range_start: "aria-selected:bg-[#a855f7] aria-selected:text-white rounded-l-md",
+              day_range_end: "aria-selected:bg-[#a855f7] aria-selected:text-white rounded-r-md",
+              cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
+            }}
           />
         </div>
       </PopoverContent>
