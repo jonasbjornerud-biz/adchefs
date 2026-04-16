@@ -66,7 +66,7 @@ const MockAdsDashboard = () => {
 
         <div>
           <h2 className="text-xs uppercase tracking-widest text-white/40 font-medium mb-4">Individual Ads</h2>
-          <AdTable ads={ads} onSelect={setSelectedAd} />
+          <AdGrid ads={ads} onSelect={setSelectedAd} />
         </div>
       </main>
 
