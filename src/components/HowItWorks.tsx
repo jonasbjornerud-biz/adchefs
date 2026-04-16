@@ -294,12 +294,10 @@ function HiringVisual() {
 // VISUAL 2: Editor Mentoring System — modules completing on a course card
 // ════════════════════════════════════════════════════════════════════════════
 const MENTOR_MODULES = [
-  { label: "Hook engineering",  unlocked: true,  progress: 100 },
-  { label: "Hold curve craft",  unlocked: true,  progress: 100 },
-  { label: "Pacing & rhythm",   unlocked: true,  progress: 78  },
-  { label: "Brand voice",       unlocked: true,  progress: 42  },
-  { label: "Sound design",      unlocked: false, progress: 0   },
-  { label: "Performance review", unlocked: false, progress: 0   },
+  { label: "Hook engineering", unlocked: true,  progress: 100 },
+  { label: "Hold curve craft", unlocked: true,  progress: 100 },
+  { label: "Brand voice",      unlocked: true,  progress: 78  },
+  { label: "Sound design",     unlocked: false, progress: 0   },
 ];
 
 function MentoringVisual() {
@@ -476,7 +474,7 @@ function PlacementVisual() {
 
   return (
     <div className="absolute inset-0">
-      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice">
+      <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
         <defs>
           <radialGradient id="teamGlow" cx="50%" cy="55%" r="50%">
             <stop offset="0%" stopColor="rgba(168,85,247,0.45)" />
