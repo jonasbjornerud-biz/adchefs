@@ -29,18 +29,18 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
           0%, 100% { stroke-opacity: 0.85; }
           50%      { stroke-opacity: 1;    }
         }
-        /* Slow warp — morph the arc's apex height + slight horizontal sway */
+        /* Slow warp — morph the arc's apex height + slight horizontal sway. Apex stays low to avoid overlapping title. */
         @keyframes horizonWarp {
-          0%, 100% { d: path("M -50 260 Q 600 -10 1250 260"); }
-          25%      { d: path("M -50 260 Q 540  10 1250 260"); }
-          50%      { d: path("M -50 260 Q 660 -25 1250 260"); }
-          75%      { d: path("M -50 260 Q 580   0 1250 260"); }
+          0%, 100% { d: path("M -50 260 Q 600 110 1250 260"); }
+          25%      { d: path("M -50 260 Q 540 130 1250 260"); }
+          50%      { d: path("M -50 260 Q 660  95 1250 260"); }
+          75%      { d: path("M -50 260 Q 580 120 1250 260"); }
         }
         @keyframes horizonWarpFill {
-          0%, 100% { d: path("M -50 260 Q 600 -20 1250 260 Z"); }
-          25%      { d: path("M -50 260 Q 540   0 1250 260 Z"); }
-          50%      { d: path("M -50 260 Q 660 -35 1250 260 Z"); }
-          75%      { d: path("M -50 260 Q 580 -10 1250 260 Z"); }
+          0%, 100% { d: path("M -50 260 Q 600 100 1250 260 Z"); }
+          25%      { d: path("M -50 260 Q 540 120 1250 260 Z"); }
+          50%      { d: path("M -50 260 Q 660  85 1250 260 Z"); }
+          75%      { d: path("M -50 260 Q 580 110 1250 260 Z"); }
         }
         .horizon-halo  { animation: horizonBreathe 7s ease-in-out infinite; }
         .horizon-inner { animation: horizonBreatheInner 5s ease-in-out infinite; }
