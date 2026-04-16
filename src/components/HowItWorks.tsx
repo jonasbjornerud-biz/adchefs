@@ -426,13 +426,13 @@ function MentoringVisual() {
             />
           </circle>
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingBottom: 22 }}>
           <span className="text-[22px] font-extrabold text-white leading-none tabular-nums"
             style={{ textShadow: "0 0 12px rgba(168,85,247,0.7)" }}>
-            A+
+            78<span className="text-[14px] font-bold text-white/70">%</span>
           </span>
           <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 mt-1">
-            Quality score
+            Completion
           </span>
         </div>
 
