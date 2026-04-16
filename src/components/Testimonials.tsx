@@ -1,62 +1,43 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
-
 const testimonials = [
   {
-    quote: "AdChefs transformed our content strategy. We went from struggling to produce 5 videos a month to confidently delivering 50+ high-quality ads. The ROI has been incredible.",
-    author: "Sarah Chen",
-    role: "CMO, Urban Threads",
-    rating: 5,
+    name: "Sarah M.",
+    brand: "Glow Skincare",
+    quote: "Our editor understood our brand from day one. The turnaround is insane and every video feels like it was made in-house.",
   },
   {
-    quote: "The combination of AI efficiency and human creativity is unmatched. Our team finally has the bandwidth to focus on strategy while AdChefs handles the execution.",
-    author: "Michael Rodriguez",
-    role: "Growth Director, PureGlow Beauty",
-    rating: 5,
+    name: "James K.",
+    brand: "Peak Athletics",
+    quote: "We went from guessing on creative to having an editor who actually understands what CTR means. Night and day difference.",
   },
   {
-    quote: "Game-changer for our brand. Production quality rivals our in-house work, but at a fraction of the time and cost. The editor team truly understands our vision.",
-    author: "Emily Foster",
-    role: "VP Marketing, TechNest Home",
-    rating: 5,
+    name: "Lina R.",
+    brand: "Casa Home",
+    quote: "The performance dashboard alone is worth it. We can see exactly which videos are working and why. Plus, the free replacement guarantee removes all risk.",
   },
 ];
 
 const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-24 bg-background/50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-slide-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Trusted by Leading Brands</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            See what our clients say about working with AdChefs
-          </p>
-        </div>
-        
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {testimonials.map((testimonial, index) => (
-            <Card 
-              key={index}
-              className="bg-card/50 backdrop-blur-sm border border-border/50 hover:shadow-xl hover:shadow-accent/10 transition-all animate-slide-up"
-              style={{ animationDelay: `${index * 0.15}s` }}
+    <section className="py-24 bg-white">
+      <div className="container mx-auto px-6 max-w-5xl">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-16 text-center">
+          What clients say
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((t) => (
+            <div
+              key={t.name}
+              className="border border-border rounded-2xl p-6 bg-secondary/30 transition-all duration-200 hover:border-foreground/10 hover:shadow-sm"
             >
-              <CardContent className="p-8">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-accent text-accent" />
-                  ))}
-                </div>
-                
-                <p className="text-foreground leading-relaxed mb-6 text-lg">
-                  "{testimonial.quote}"
-                </p>
-                
-                <div>
-                  <div className="font-bold">{testimonial.author}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                </div>
-              </CardContent>
-            </Card>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 italic">
+                "{t.quote}"
+              </p>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.brand}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
