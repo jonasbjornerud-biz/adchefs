@@ -65,14 +65,19 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
 
   return (
     <div
-      className="bg-[#111118] rounded-2xl overflow-hidden animate-card-enter"
+      className="relative rounded-2xl overflow-hidden animate-card-enter"
       style={{
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)',
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px -20px rgba(0,0,0,0.6)',
         animationDelay: "400ms",
       }}
     >
+      <div className="absolute inset-x-0 top-0 h-px pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.4), transparent)' }} />
       {/* Search bar */}
-      <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2">
+      <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2 relative">
         <div className="relative flex-1 max-w-md">
           <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
