@@ -339,195 +339,203 @@ function KpiDashboardGraphVisual() {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual: Editor Delivery Tracker — trendlines per editor (delivery, CTR, CPA, ROAS)
+// Visual: Editor Delivery Tracker — delivered vs approved per editor per week
 // ────────────────────────────────────────────────────────────────────────────
-const EDITORS = [
-  { name: "Liam",   color: "#a855f7", deliveryBase: 11, ctrBase: 3.4, cpaBase: 19, roasBase: 3.8 },
-  { name: "Sofia",  color: "#c084fc", deliveryBase: 10, ctrBase: 3.1, cpaBase: 22, roasBase: 3.4 },
-  { name: "Noah",   color: "#7c3aed", deliveryBase: 9,  ctrBase: 2.8, cpaBase: 26, roasBase: 2.9 },
-  { name: "Iris",   color: "#e9d5ff", deliveryBase: 12, ctrBase: 3.7, cpaBase: 17, roasBase: 4.2 },
+const DELIVERY_EDITORS = [
+  { name: "Liam",  color: "#a855f7" },
+  { name: "Sofia", color: "#c084fc" },
+  { name: "Noah",  color: "#7c3aed" },
+  { name: "Iris",  color: "#e9d5ff" },
 ];
 
-const WEEKS = 12;
+const DELIVERY_WEEKS = 6;
 
 function EditorDeliveryTrendVisual() {
-  const [metric, setMetric] = useState<"delivery" | "ctr" | "cpa" | "roas">("delivery");
-  const [tick, setTick] = useState(0);
+  const [activeEditor, setActiveEditor] = useState(0);
 
-  // cycle metric every 3.2s
+  // cycle highlighted editor every 2.4s
   useEffect(() => {
-    const order: typeof metric[] = ["delivery", "ctr", "roas", "cpa"];
     const t = setInterval(() => {
-      setTick((x) => x + 1);
-    }, 3200);
+      setActiveEditor((x) => (x + 1) % DELIVERY_EDITORS.length);
+    }, 2400);
     return () => clearInterval(t);
   }, []);
-  useEffect(() => {
-    const order: ("delivery" | "ctr" | "cpa" | "roas")[] = ["delivery", "ctr", "roas", "cpa"];
-    setMetric(order[tick % order.length]);
-  }, [tick]);
 
-  // generate stable series per editor per metric
-  const series = useMemo(() => {
-    const out: Record<string, Record<string, number[]>> = {};
-    EDITORS.forEach((e) => {
-      const ctxBase = {
-        delivery: e.deliveryBase,
-        ctr: e.ctrBase,
-        cpa: e.cpaBase,
-        roas: e.roasBase,
+  // seeded delivered + approved per editor per week (delivered 6-10, approved <= delivered)
+  const data = useMemo(() => {
+    const out: Record<string, { delivered: number; approved: number }[]> = {};
+    DELIVERY_EDITORS.forEach((e) => {
+      let seed = e.name.charCodeAt(0) * 7 + e.name.charCodeAt(1);
+      const rand = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
       };
-      const amps = { delivery: 1.4, ctr: 0.3, cpa: 2.5, roas: 0.35 };
-      const m: Record<string, number[]> = {};
-      (Object.keys(ctxBase) as (keyof typeof ctxBase)[]).forEach((k) => {
-        let v = ctxBase[k];
-        const arr: number[] = [];
-        // seeded-ish randomness per editor+metric
-        let seed = e.name.charCodeAt(0) + k.charCodeAt(0);
-        const rand = () => {
-          seed = (seed * 9301 + 49297) % 233280;
-          return seed / 233280;
-        };
-        for (let i = 0; i < WEEKS; i++) {
-          v += (rand() - 0.5) * amps[k] * 1.6;
-          arr.push(v);
-        }
-        m[k] = arr;
-      });
-      out[e.name] = m;
+      const arr = [];
+      for (let i = 0; i < DELIVERY_WEEKS; i++) {
+        const delivered = 6 + Math.floor(rand() * 5); // 6-10
+        const approved = Math.max(4, delivered - Math.floor(rand() * 3)); // approved within 0-2 less
+        arr.push({ delivered, approved: Math.min(approved, delivered) });
+      }
+      out[e.name] = arr;
     });
     return out;
   }, []);
 
-  const W = 400, H = 200, PAD_X = 22, PAD_Y = 24;
+  const W = 400, H = 200;
+  const PAD_X = 24, PAD_TOP = 32, PAD_BOTTOM = 36;
   const innerW = W - PAD_X * 2;
-  const innerH = H - PAD_Y * 2;
+  const innerH = H - PAD_TOP - PAD_BOTTOM;
+  const groupW = innerW / DELIVERY_WEEKS;
+  const barW = (groupW - 6) / 2;
+  const maxVal = 12;
 
-  // domain for current metric
-  const allValues = EDITORS.flatMap((e) => series[e.name][metric]);
-  const min = Math.min(...allValues);
-  const max = Math.max(...allValues);
-  const span = max - min || 1;
-
-  function buildPath(values: number[]) {
-    const pts = values.map((v, i) => {
-      const x = PAD_X + (i / (WEEKS - 1)) * innerW;
-      const norm = (v - min) / span;
-      const y = PAD_Y + (1 - norm) * innerH;
-      return [x, y] as [number, number];
-    });
-    let d = `M ${pts[0][0]},${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [x1, y1] = pts[i - 1];
-      const [x2, y2] = pts[i];
-      const cx = (x1 + x2) / 2;
-      d += ` Q ${x1},${y1} ${cx},${(y1 + y2) / 2}`;
-    }
-    d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
-    return d;
-  }
-
-  function fmt(v: number) {
-    if (metric === "delivery") return `${v.toFixed(0)}`;
-    if (metric === "roas") return `${v.toFixed(2)}x`;
-    if (metric === "ctr") return `${v.toFixed(2)}%`;
-    return `€${v.toFixed(0)}`;
-  }
-
-  const metricLabel = {
-    delivery: "Avg weekly delivery",
-    ctr: "Avg CTR",
-    cpa: "Avg CPA",
-    roas: "Avg ROAS",
-  }[metric];
+  const activeName = DELIVERY_EDITORS[activeEditor].name;
+  const activeColor = DELIVERY_EDITORS[activeEditor].color;
+  const activeData = data[activeName];
+  const totalDelivered = activeData.reduce((s, d) => s + d.delivered, 0);
+  const totalApproved = activeData.reduce((s, d) => s + d.approved, 0);
+  const approvalRate = Math.round((totalApproved / totalDelivered) * 100);
 
   return (
     <div className="absolute inset-0 px-2 pt-1">
-      {/* Top bar: metric label + cycling pill */}
+      {/* Top: editor pills */}
       <div className="absolute left-4 top-2 right-4 flex items-center justify-between z-10">
         <div className="text-[10px] uppercase tracking-wider font-semibold text-white/55">
-          {metricLabel}
+          {activeName} · last 6 weeks
         </div>
-        <div className="flex gap-1">
-          {(["delivery", "ctr", "roas", "cpa"] as const).map((k) => (
-            <span
-              key={k}
-              className="h-1 rounded-full transition-all duration-500"
-              style={{
-                width: k === metric ? 14 : 6,
-                background: k === metric ? "#a855f7" : "rgba(255,255,255,0.18)",
-                boxShadow: k === metric ? "0 0 8px #a855f7" : "none",
-              }}
-            />
-          ))}
+        <div className="text-[10px] font-semibold text-white tabular-nums">
+          <span className="text-white/45 mr-1">Approved</span>
+          {totalApproved}/{totalDelivered}
+          <span className="ml-1.5 text-[#a855f7]">{approvalRate}%</span>
         </div>
       </div>
 
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="deliveredGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={activeColor} stopOpacity="0.55" />
+            <stop offset="100%" stopColor={activeColor} stopOpacity="0.15" />
+          </linearGradient>
+          <linearGradient id="approvedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={activeColor} stopOpacity="1" />
+            <stop offset="100%" stopColor={activeColor} stopOpacity="0.6" />
+          </linearGradient>
+        </defs>
+
         {[0.25, 0.5, 0.75].map((p, i) => (
           <line
             key={i}
             x1={PAD_X}
             x2={W - PAD_X}
-            y1={PAD_Y + p * innerH}
-            y2={PAD_Y + p * innerH}
+            y1={PAD_TOP + p * innerH}
+            y2={PAD_TOP + p * innerH}
             stroke="rgba(255,255,255,0.05)"
             strokeWidth="1"
           />
         ))}
 
-        {EDITORS.map((e) => (
-          <path
-            key={e.name}
-            d={buildPath(series[e.name][metric])}
-            fill="none"
-            stroke={e.color}
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              filter: `drop-shadow(0 0 6px ${e.color}aa)`,
-              transition: "d 0.8s cubic-bezier(.4,0,.2,1)",
-            }}
-          />
-        ))}
-
-        {EDITORS.map((e) => {
-          const arr = series[e.name][metric];
-          const v = arr[arr.length - 1];
-          const norm = (v - min) / span;
-          const x = PAD_X + innerW;
-          const y = PAD_Y + (1 - norm) * innerH;
+        {activeData.map((d, i) => {
+          const gx = PAD_X + i * groupW + 3;
+          const dH = (d.delivered / maxVal) * innerH;
+          const aH = (d.approved / maxVal) * innerH;
+          const dY = PAD_TOP + innerH - dH;
+          const aY = PAD_TOP + innerH - aH;
           return (
-            <g key={e.name} style={{ transition: "transform 0.8s ease" }}>
-              <circle cx={x} cy={y} r="4" fill={e.color} opacity="0.25" />
-              <circle cx={x} cy={y} r="2.4" fill="#fff"
-                style={{ filter: `drop-shadow(0 0 6px ${e.color})` }} />
+            <g key={i} style={{ transition: "all 0.6s cubic-bezier(.4,0,.2,1)" }}>
+              {/* delivered bar */}
+              <rect
+                x={gx}
+                y={dY}
+                width={barW}
+                height={dH}
+                rx="2"
+                fill="url(#deliveredGrad)"
+                stroke={activeColor}
+                strokeOpacity="0.4"
+                strokeWidth="1"
+                style={{
+                  transition: "all 0.6s cubic-bezier(.4,0,.2,1)",
+                  filter: `drop-shadow(0 0 4px ${activeColor}55)`,
+                }}
+              />
+              {/* approved bar */}
+              <rect
+                x={gx + barW + 4}
+                y={aY}
+                width={barW}
+                height={aH}
+                rx="2"
+                fill="url(#approvedGrad)"
+                style={{
+                  transition: "all 0.6s cubic-bezier(.4,0,.2,1)",
+                  filter: `drop-shadow(0 0 6px ${activeColor})`,
+                }}
+              />
+              {/* week label */}
+              <text
+                x={gx + barW + 2}
+                y={H - PAD_BOTTOM + 14}
+                textAnchor="middle"
+                fontSize="8"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="600"
+                fill="rgba(255,255,255,0.45)"
+              >
+                W{i + 1}
+              </text>
+              {/* approved value on top */}
+              <text
+                x={gx + barW + 4 + barW / 2}
+                y={aY - 3}
+                textAnchor="middle"
+                fontSize="8"
+                fontFamily="ui-sans-serif, system-ui, sans-serif"
+                fontWeight="700"
+                fill="#fff"
+                style={{ transition: "y 0.6s cubic-bezier(.4,0,.2,1)" }}
+              >
+                {d.approved}
+              </text>
             </g>
           );
         })}
       </svg>
 
-      {/* Legend with editor names + current value */}
-      <div className="absolute left-3 right-3 bottom-3 grid grid-cols-4 gap-1.5">
-        {EDITORS.map((e) => {
-          const arr = series[e.name][metric];
-          const v = arr[arr.length - 1];
-          return (
-            <div key={e.name} className="flex flex-col">
-              <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: e.color, boxShadow: `0 0 6px ${e.color}` }}
-                />
-                {e.name}
-              </div>
-              <div className="text-[12px] font-semibold text-white tabular-nums leading-tight mt-0.5">
-                {fmt(v)}
-              </div>
-            </div>
-          );
-        })}
+      {/* Editor pill row */}
+      <div className="absolute left-3 right-3 bottom-2 flex items-center justify-between gap-1.5">
+        <div className="flex gap-1.5">
+          {DELIVERY_EDITORS.map((e, i) => (
+            <button
+              key={e.name}
+              onClick={() => setActiveEditor(i)}
+              className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-1.5 py-0.5 rounded-full"
+              style={{
+                color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
+                background: i === activeEditor ? `${e.color}25` : "transparent",
+                border: i === activeEditor ? `1px solid ${e.color}55` : "1px solid transparent",
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: e.color,
+                  boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none",
+                }}
+              />
+              {e.name}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}55`, border: `1px solid ${activeColor}55` }} />
+            Delivered
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-sm" style={{ background: activeColor }} />
+            Approved
+          </span>
+        </div>
       </div>
     </div>
   );
