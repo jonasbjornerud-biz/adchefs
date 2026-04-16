@@ -87,10 +87,10 @@ const MetaAdsDashboard = () => {
         </div>
       </header>
 
-      {/* Hero band with horizon arc */}
+      {/* Hero band with horizon arc — KPI cards sit visually on top of the glow */}
       <div className="relative">
-        <HorizonGlow height={320} />
-        <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-16 pb-20 relative z-10 text-center">
+        <HorizonGlow height={300} />
+        <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-12 pb-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
             background: 'rgba(168,85,247,0.12)',
             border: '1px solid rgba(168,85,247,0.30)',
