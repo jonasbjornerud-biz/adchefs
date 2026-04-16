@@ -1,34 +1,21 @@
-const footerLinks = [
-  { label: "How It Works", id: "how-it-works" },
-  { label: "Pricing", id: "pricing" },
-  { label: "FAQ", id: "faq" },
-];
-
 const Footer = () => {
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <footer className="border-t border-border py-10 bg-white">
+    <footer className="border-t border-border/30 py-8">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
-          <span className="text-lg font-bold text-foreground">AdChefs</span>
-          <div className="flex gap-6">
-            {footerLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollToSection(link.id)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                {link.label}
-              </button>
-            ))}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+          <div>
+            <h3 className="text-lg font-bold text-foreground">AdChefs</h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              AI-powered video production for modern e-commerce brands.
+            </p>
+          </div>
+          <div className="flex gap-6 text-xs text-muted-foreground">
+            <span className="hover:text-foreground cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-foreground cursor-pointer transition-colors">Terms of Service</span>
           </div>
         </div>
-        <div className="border-t border-border mt-6 pt-6 text-center text-xs text-muted-foreground">
-          © 2025 AdChefs / Bjørnerud Media. All rights reserved.
+        <div className="border-t border-border/20 pt-4 text-center text-xs text-muted-foreground">
+          <p>© 2024 AdChefs. All rights reserved.</p>
         </div>
       </div>
     </footer>
