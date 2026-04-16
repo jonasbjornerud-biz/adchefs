@@ -82,29 +82,66 @@ export default function MockClientDashboard() {
 
       <main className="relative z-10 max-w-5xl mx-auto px-6 pb-16 pt-4">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {cards.map((card) => {
             const Icon = card.icon;
+            const StatusIcon = card.statusIcon;
+            const accent = card.accent;
             return (
               <button
                 key={card.title}
                 onClick={() => navigate(card.route)}
-                className="group text-left cursor-pointer bg-[#111118] rounded-2xl p-8 transition-all duration-300 relative overflow-hidden"
-                style={{ boxShadow: CARD_SHADOW }}
-                onMouseEnter={e => { const el = e.currentTarget; el.style.boxShadow = `0 0 0 1px ${card.accent}30 inset, 0 0 40px ${card.accent}15, 0 4px 24px rgba(0,0,0,0.4)`; el.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { const el = e.currentTarget; el.style.boxShadow = CARD_SHADOW; el.style.transform = 'translateY(0)'; }}
+                className="group text-left cursor-pointer relative overflow-hidden rounded-3xl p-7 transition-all duration-500"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)',
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = 'translateY(-3px)';
+                  el.style.boxShadow = `0 1px 0 rgba(255,255,255,0.12) inset, 0 0 0 1px ${accent}40 inset, 0 30px 80px -20px ${accent}30, 0 0 60px -10px ${accent}25`;
+                  el.style.borderColor = `${accent}55`;
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = 'translateY(0)';
+                  el.style.boxShadow = '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)';
+                  el.style.borderColor = 'rgba(255,255,255,0.06)';
+                }}
               >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(ellipse at 30% 20%, ${card.accent}08, transparent 70%)` }} />
-                <div className="relative">
+                <div className="absolute inset-x-6 top-0 h-px pointer-events-none" style={{ background: `linear-gradient(90deg, transparent, ${accent}80, transparent)`, opacity: 0.5 }} />
+                <div className="absolute -top-20 -left-20 w-64 h-64 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ background: `radial-gradient(circle, ${accent}25 0%, transparent 60%)`, filter: 'blur(30px)' }} />
+                <div className="absolute inset-x-0 -bottom-32 h-48 opacity-30 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 100% at 50% 100%, ${accent}50 0%, transparent 70%)`, filter: 'blur(20px)' }} />
+
+                <div className="relative flex flex-col h-full min-h-[260px]">
                   <div className="flex items-start justify-between mb-6">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300" style={{ background: `${card.accent}10`, boxShadow: `0 0 0 1px ${card.accent}20 inset` }}>
-                      <Icon className="w-5 h-5" style={{ color: card.accent }} />
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105" style={{ background: `linear-gradient(135deg, ${accent}25, ${accent}08)`, boxShadow: `0 0 0 1px ${accent}30 inset, 0 8px 20px -8px ${accent}40` }}>
+                      <Icon className="w-5 h-5" style={{ color: accent }} />
                     </div>
-                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-white/40 group-hover:translate-x-1 transition-all duration-300" />
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <ArrowUpRight className="w-4 h-4 text-white/40 group-hover:text-white transition-colors duration-300" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">{card.title}</h3>
-                  <p className="text-sm text-white/30 leading-relaxed mb-8">{card.description}</p>
-                  <span className="text-sm font-semibold transition-all duration-300 group-hover:translate-x-1" style={{ color: card.accent }}>Open Dashboard →</span>
+
+                  <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">{card.title}</h3>
+                  <p className="text-sm text-white/45 leading-relaxed mb-6 flex-1">{card.description}</p>
+
+                  <div className="flex items-center justify-between pt-5 border-t border-white/[0.05]">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-medium tracking-wide" style={{ background: `${accent}12`, border: `1px solid ${accent}30`, color: accent }}>
+                      <span className="relative flex w-1.5 h-1.5">
+                        <span className="absolute inset-0 rounded-full animate-ping" style={{ background: accent, opacity: 0.6 }} />
+                        <span className="relative w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
+                      </span>
+                      <StatusIcon className="w-3 h-3" />
+                      {card.statusLabel}
+                    </div>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-1 group-hover:translate-x-0" style={{ color: accent }}>
+                      {card.cta} →
+                    </span>
+                  </div>
                 </div>
               </button>
             );
