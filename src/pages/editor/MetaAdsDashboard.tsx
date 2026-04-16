@@ -99,7 +99,7 @@ const MetaAdsDashboard = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
             {isLoading ? 'Loading…' : isLive ? 'Live data' : 'No data'}
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">KPI Dashboard</h1>
+          <h1 className="text-5xl md:text-6xl font-black tracking-tight kpi-shimmer-title">KPI Dashboard</h1>
           <p className="text-sm text-white/50 mt-3">
             {dateLabel} · All campaigns
             {isLoading ? (
