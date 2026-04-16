@@ -1,31 +1,115 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Brain, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+  AnimatePresence,
+} from "framer-motion";
 
 const ACCENT = "#a855f7";
 
+// Spring presets
+const SPRING_SOFT = { type: "spring" as const, stiffness: 90, damping: 18, mass: 0.9 };
+const SPRING_TIGHT = { type: "spring" as const, stiffness: 220, damping: 22, mass: 0.6 };
+const SPRING_OVERSHOOT = { type: "spring" as const, stiffness: 260, damping: 14, mass: 0.7 };
+
+// Hook: count-up driven by framer's animate (manual interpolation)
+function useCountUp(target: number, active: boolean, duration = 1.1, decimals = 0) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const start = performance.now();
+    const from = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / (duration * 1000));
+      // easeOutCubic
+      const eased = 1 - Math.pow(1 - t, 3);
+      setVal(from + (target - from) * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, active, duration]);
+  return Number(val.toFixed(decimals));
+}
+
 // ────────────────────────────────────────────────────────────────────────────
-// Card shell
+// Card shell with parallax tilt on hover + sequenced entry
 // ────────────────────────────────────────────────────────────────────────────
 function FeatureCard({
   title,
   description,
   visual,
+  variant = "left",
   delay = 0,
   className = "",
+  onSettled,
 }: {
   title: string;
   description: string;
-  visual: React.ReactNode;
+  visual: (settled: boolean) => React.ReactNode;
+  variant?: "left" | "right" | "bottom";
   delay?: number;
   className?: string;
+  onSettled?: () => void;
 }) {
+  const reduce = useReducedMotion();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(cardRef, { once: true, margin: "-15% 0% -15% 0%" });
+  const [settled, setSettled] = useState(false);
+
+  // Tilt
+  const mx = useMotionValue(0.5);
+  const my = useMotionValue(0.5);
+  const rx = useSpring(useTransform(my, [0, 1], [4, -4]), { stiffness: 200, damping: 20 });
+  const ry = useSpring(useTransform(mx, [0, 1], [-4, 4]), { stiffness: 200, damping: 20 });
+  const glowX = useTransform(mx, [0, 1], ["0%", "100%"]);
+  const glowY = useTransform(my, [0, 1], ["0%", "100%"]);
+
+  function onMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (reduce) return;
+    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+    mx.set((e.clientX - rect.left) / rect.width);
+    my.set((e.clientY - rect.top) / rect.height);
+  }
+  function onLeave() {
+    mx.set(0.5);
+    my.set(0.5);
+  }
+
+  const initial =
+    variant === "left"
+      ? { opacity: 0, x: -36, y: 8, scale: 0.96 }
+      : variant === "right"
+      ? { opacity: 0, x: 36, y: 8, scale: 0.96 }
+      : { opacity: 0, y: 36, scale: 0.96 };
+
   return (
-    <div
-      className={`mw-card group relative overflow-hidden rounded-3xl ${className}`}
+    <motion.div
+      ref={cardRef}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      initial={initial}
+      animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : initial}
+      transition={{ ...SPRING_SOFT, delay }}
+      onAnimationComplete={() => {
+        if (!settled) {
+          setSettled(true);
+          onSettled?.();
+        }
+      }}
       style={{
-        animationDelay: `${delay}s`,
+        rotateX: reduce ? 0 : rx,
+        rotateY: reduce ? 0 : ry,
+        transformPerspective: 1200,
+        transformStyle: "preserve-3d",
         background:
           "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
         border: "1px solid rgba(255,255,255,0.06)",
@@ -34,7 +118,29 @@ function FeatureCard({
         boxShadow:
           "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
+      whileHover={
+        reduce
+          ? undefined
+          : {
+              y: -4,
+              boxShadow:
+                "0 1px 0 rgba(255,255,255,0.10) inset, 0 0 0 1px rgba(168,85,247,0.20) inset, 0 30px 80px -20px rgba(168,85,247,0.30), 0 0 60px -10px rgba(168,85,247,0.20)",
+            }
+      }
+      className={`mw-card group relative overflow-hidden rounded-3xl ${className}`}
     >
+      {/* Cursor-follow glow */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: useTransform(
+            [glowX, glowY] as never,
+            ([x, y]: any) =>
+              `radial-gradient(420px circle at ${x} ${y}, rgba(168,85,247,0.18), transparent 60%)`
+          ),
+        }}
+      />
+
       {/* Top edge highlight */}
       <div
         className="absolute inset-x-8 top-0 h-px pointer-events-none"
@@ -44,8 +150,11 @@ function FeatureCard({
         }}
       />
       {/* Horizon glow */}
-      <div
-        className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon"
+      <motion.div
+        className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 0.55 } : { opacity: 0 }}
+        transition={{ duration: 1.2, delay: delay + 0.2 }}
         style={{
           background:
             "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.40) 0%, rgba(168,85,247,0.10) 35%, transparent 70%)",
@@ -63,11 +172,11 @@ function FeatureCard({
       </div>
 
       <div className="relative h-[280px] overflow-hidden">
-        {visual}
+        {visual(settled)}
         {/* Purple-tinted grain overlay (per visual) */}
         <div className="absolute inset-0 pointer-events-none mw-grain-purple" />
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -82,9 +191,11 @@ const BRAIN_NODES = [
   { id: "ctr",  label: "CTR",  x: 88, y: 82, value: "3.4%" },
 ];
 
-function EditorBrainVisual() {
+function EditorBrainVisual({ active }: { active: boolean }) {
+  const reduce = useReducedMotion();
   const W = 400, H = 280;
   const center = { x: W / 2, y: H / 2 - 6 };
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <div className="absolute inset-0">
@@ -98,113 +209,174 @@ function EditorBrainVisual() {
             <stop offset="0%" stopColor="#c084fc" />
             <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
-          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" />
-          </filter>
         </defs>
 
-        {/* Ambient glow */}
-        <ellipse cx={center.x} cy={center.y} rx="160" ry="100" fill="url(#brainGlow)" />
+        {/* Ambient glow — fade in */}
+        <motion.ellipse
+          cx={center.x}
+          cy={center.y}
+          rx="160"
+          ry="100"
+          fill="url(#brainGlow)"
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={active ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
+          style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+        />
 
-        {/* Connection lines from each node to brain */}
+        {/* Connection lines DRAW outward from center */}
         {BRAIN_NODES.map((n, i) => {
           const x = (n.x / 100) * W;
           const y = (n.y / 100) * H;
-          // curved path via control point
           const cx = (x + center.x) / 2;
           const cy = (y + center.y) / 2 + (i % 2 ? 18 : -18);
-          const d = `M ${x},${y} Q ${cx},${cy} ${center.x},${center.y}`;
+          const d = `M ${center.x},${center.y} Q ${cx},${cy} ${x},${y}`;
+          const isHover = hovered === n.id;
+          const dim = hovered && !isHover;
           return (
             <g key={n.id}>
-              <path d={d} fill="none" stroke="rgba(168,85,247,0.18)" strokeWidth="1" />
-              {/* Pulse traveling along path */}
-              <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
-                <animateMotion dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" path={d} />
-                <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" />
-              </circle>
-              {/* Secondary slower pulse for depth */}
-              <circle r="1.4" fill="#fff" opacity="0.7">
-                <animateMotion dur={`${3.4 + i * 0.22}s`} begin={`${i * 0.4}s`} repeatCount="indefinite" path={d} />
-              </circle>
+              <motion.path
+                d={d}
+                fill="none"
+                stroke={isHover ? "rgba(232,213,255,0.85)" : "rgba(168,85,247,0.22)"}
+                strokeWidth={isHover ? 1.4 : 1}
+                style={{ opacity: dim ? 0.25 : 1, transition: "stroke 0.3s, stroke-width 0.3s, opacity 0.3s" }}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={active ? { pathLength: 1, opacity: dim ? 0.25 : 1 } : { pathLength: 0, opacity: 0 }}
+                transition={{ duration: 0.9, delay: 0.15 + i * 0.12, ease: [0.22, 0.9, 0.3, 1] }}
+              />
+              {/* Particles travel along line — start after line draws */}
+              {active && !reduce && (
+                <>
+                  <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
+                    <animateMotion dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" path={d} />
+                    <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} begin={`${1.0 + i * 0.12}s`} repeatCount="indefinite" />
+                  </circle>
+                  <circle r="1.4" fill="#fff" opacity="0.7">
+                    <animateMotion dur={`${3.4 + i * 0.22}s`} begin={`${1.3 + i * 0.12}s`} repeatCount="indefinite" path={d} />
+                  </circle>
+                </>
+              )}
             </g>
           );
         })}
 
-        {/* Center hexagonal brain */}
-        <g style={{ transformOrigin: `${center.x}px ${center.y}px` }} className="mw-breath">
-          {/* Outer hex */}
-          <polygon
-            points={hexPoints(center.x, center.y, 44)}
-            fill="none"
-            stroke="rgba(168,85,247,0.45)"
-            strokeWidth="1"
-            style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
-          />
-          {/* Inner filled hex */}
+        {/* Center hex — soft pulse */}
+        <motion.g
+          style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={active ? { scale: [0, 1.08, 1], opacity: 1 } : { scale: 0, opacity: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 0.9, 0.3, 1] }}
+        >
+          <motion.g
+            animate={reduce ? undefined : { scale: [1, 1.04, 1] }}
+            transition={{ duration: 3.4, ease: "easeInOut", repeat: Infinity }}
+            style={{ transformOrigin: `${center.x}px ${center.y}px` }}
+          >
+            <polygon
+              points={hexPoints(center.x, center.y, 44)}
+              fill="none"
+              stroke="rgba(168,85,247,0.45)"
+              strokeWidth="1"
+              style={{ filter: "drop-shadow(0 0 12px rgba(168,85,247,0.6))" }}
+            />
+            <polygon
+              points={hexPoints(center.x, center.y, 32)}
+              fill="url(#brainCore)"
+              opacity="0.95"
+              style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.8))" }}
+            />
+            <polygon
+              points={hexPoints(center.x, center.y, 18)}
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              strokeWidth="1"
+            />
+          </motion.g>
+        </motion.g>
+
+        {/* Pulse ring (only after settle) */}
+        {active && !reduce && (
           <polygon
             points={hexPoints(center.x, center.y, 32)}
-            fill="url(#brainCore)"
-            opacity="0.95"
-            style={{ filter: "drop-shadow(0 0 18px rgba(168,85,247,0.8))" }}
-          />
-          {/* Inner accents */}
-          <polygon
-            points={hexPoints(center.x, center.y, 18)}
             fill="none"
-            stroke="rgba(255,255,255,0.5)"
-            strokeWidth="1"
-          />
-        </g>
-
-        {/* Pulse ring */}
-        <polygon
-          points={hexPoints(center.x, center.y, 32)}
-          fill="none"
-          stroke="rgba(168,85,247,0.6)"
-          strokeWidth="1.5"
-        >
-          <animateTransform
-            attributeName="transform"
-            type="scale"
-            additive="sum"
-            values="1;1.8"
-            dur="2.6s"
-            repeatCount="indefinite"
-          />
-          <animate attributeName="opacity" values="0.7;0" dur="2.6s" repeatCount="indefinite" />
-        </polygon>
+            stroke="rgba(168,85,247,0.6)"
+            strokeWidth="1.5"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="scale"
+              additive="sum"
+              values="1;1.8"
+              dur="2.6s"
+              begin="0.8s"
+              repeatCount="indefinite"
+            />
+            <animate attributeName="opacity" values="0.7;0" dur="2.6s" begin="0.8s" repeatCount="indefinite" />
+          </polygon>
+        )}
       </svg>
 
-      {/* Center brain icon overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ marginTop: -6 }}>
+      {/* Center brain icon */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ marginTop: -6 }}
+        initial={{ opacity: 0, scale: 0.6 }}
+        animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+        transition={{ ...SPRING_OVERSHOOT, delay: 0.25 }}
+      >
         <Brain className="w-7 h-7 text-white" style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))" }} />
-      </div>
+      </motion.div>
 
-      {/* KPI nodes */}
-      {BRAIN_NODES.map((n, i) => (
-        <div
-          key={n.id}
-          className="absolute"
-          style={{
-            left: `${n.x}%`,
-            top: `${n.y}%`,
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <div
-            className="mw-node-pulse flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md"
+      {/* KPI bubbles — staggered in, idle float, lift on hover */}
+      {BRAIN_NODES.map((n, i) => {
+        const isHover = hovered === n.id;
+        const dim = hovered && !isHover;
+        return (
+          <motion.div
+            key={n.id}
+            className="absolute"
             style={{
-              background: "rgba(20,16,32,0.85)",
-              border: "1px solid rgba(168,85,247,0.45)",
-              boxShadow: "0 0 14px rgba(168,85,247,0.35)",
-              animationDelay: `${i * 0.25}s`,
+              left: `${n.x}%`,
+              top: `${n.y}%`,
+              transform: "translate(-50%, -50%)",
             }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={
+              active
+                ? {
+                    opacity: dim ? 0.55 : 1,
+                    scale: 1,
+                    y: reduce ? 0 : [0, -3, 0, 3, 0],
+                  }
+                : { opacity: 0, scale: 0.8 }
+            }
+            transition={{
+              opacity: { duration: 0.4, delay: 0.6 + i * 0.12 },
+              scale: { ...SPRING_OVERSHOOT, delay: 0.6 + i * 0.12 },
+              y: { duration: 5 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: 1.2 + i * 0.2 },
+            }}
+            onMouseEnter={() => setHovered(n.id)}
+            onMouseLeave={() => setHovered(null)}
+            whileHover={reduce ? undefined : { y: -4, scale: 1.06 }}
           >
-            <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
-            <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
-          </div>
-        </div>
-      ))}
+            <div
+              className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md cursor-default"
+              style={{
+                background: "rgba(20,16,32,0.85)",
+                border: `1px solid ${isHover ? "rgba(232,213,255,0.7)" : "rgba(168,85,247,0.45)"}`,
+                boxShadow: isHover
+                  ? "0 0 22px rgba(232,213,255,0.55)"
+                  : "0 0 14px rgba(168,85,247,0.35)",
+                transition: "box-shadow 0.3s, border-color 0.3s",
+              }}
+            >
+              <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
+              <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
@@ -219,8 +391,7 @@ function hexPoints(cx: number, cy: number, r: number): string {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 2: Editor Delivery Tracker — animated stacked bars
-// Delivered vs approved videos per editor per week (6-10/week)
+// VISUAL 2: Editor Delivery Tracker — bars grow with stagger + count-up
 // ════════════════════════════════════════════════════════════════════════════
 const DELIVERY_EDITORS = [
   { name: "Liam",  color: "#a855f7" },
@@ -231,17 +402,20 @@ const DELIVERY_EDITORS = [
 
 const DELIVERY_WEEKS = 6;
 
-function EditorDeliveryTrackerVisual() {
+function EditorDeliveryTrackerVisual({ active }: { active: boolean }) {
+  const reduce = useReducedMotion();
   const [activeEditor, setActiveEditor] = useState(0);
   const [animKey, setAnimKey] = useState(0);
+  const [hoverBar, setHoverBar] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!active) return;
     const t = setInterval(() => {
       setActiveEditor((x) => (x + 1) % DELIVERY_EDITORS.length);
       setAnimKey((k) => k + 1);
-    }, 2800);
+    }, 3200);
     return () => clearInterval(t);
-  }, []);
+  }, [active]);
 
   const data = useMemo(() => {
     const out: Record<string, { delivered: number; approved: number }[]> = {};
@@ -277,28 +451,41 @@ function EditorDeliveryTrackerVisual() {
   const totalApproved = activeData.reduce((s, d) => s + d.approved, 0);
   const approvalRate = Math.round((totalApproved / totalDelivered) * 100);
 
+  // Count-up approval %
+  const approvalDisplay = useCountUp(approvalRate, active, 1.0, 0);
+
   return (
     <div className="absolute inset-0 px-3 pt-2">
       {/* Top header */}
       <div className="absolute left-5 top-3 right-5 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
-          <div
-            className="w-2 h-2 rounded-full mw-blink"
+          <motion.div
+            className="w-2 h-2 rounded-full"
             style={{ background: activeColor, boxShadow: `0 0 8px ${activeColor}` }}
+            animate={reduce ? undefined : { opacity: [1, 0.4, 1], scale: [1, 0.85, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
-          <div className="text-[11px] uppercase tracking-wider font-semibold text-white">
-            {activeName}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeName}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="text-[11px] uppercase tracking-wider font-semibold text-white"
+            >
+              {activeName}
+            </motion.div>
+          </AnimatePresence>
           <div className="text-[10px] font-medium text-white/40">· last 6 weeks</div>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Approval</span>
           <span
-            key={`rate-${animKey}`}
-            className="text-[14px] font-bold tabular-nums mw-fade-in"
+            className="text-[14px] font-bold tabular-nums"
             style={{ color: activeColor, textShadow: `0 0 12px ${activeColor}99` }}
           >
-            {approvalRate}%
+            {approvalDisplay}%
           </span>
         </div>
       </div>
@@ -315,11 +502,16 @@ function EditorDeliveryTrackerVisual() {
           </linearGradient>
         </defs>
 
-        {/* Y-axis gridlines with labels */}
-        {[0, 4, 8, 12].map((v) => {
+        {/* Y-axis gridlines */}
+        {[0, 4, 8, 12].map((v, gi) => {
           const y = PAD_TOP + innerH - (v / maxVal) * innerH;
           return (
-            <g key={v}>
+            <motion.g
+              key={v}
+              initial={{ opacity: 0 }}
+              animate={active ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 + gi * 0.04 }}
+            >
               <line
                 x1={PAD_X}
                 x2={W - PAD_X}
@@ -340,21 +532,28 @@ function EditorDeliveryTrackerVisual() {
               >
                 {v}
               </text>
-            </g>
+            </motion.g>
           );
         })}
 
-        {/* Bars per week */}
+        {/* Bars per week — spring overshoot, stagger left → right */}
         {activeData.map((d, i) => {
           const gx = PAD_X + i * groupW + 4;
           const dH = (d.delivered / maxVal) * innerH;
           const aH = (d.approved / maxVal) * innerH;
           const dY = PAD_TOP + innerH - dH;
           const aY = PAD_TOP + innerH - aH;
+          const isHover = hoverBar === i;
+          const hoverScale = isHover ? 1.06 : 1;
           return (
-            <g key={`${animKey}-${i}`}>
-              {/* Delivered bar (back) */}
-              <rect
+            <g
+              key={`${animKey}-${i}`}
+              onMouseEnter={() => setHoverBar(i)}
+              onMouseLeave={() => setHoverBar(null)}
+              style={{ cursor: "pointer" }}
+            >
+              {/* Delivered (back) */}
+              <motion.rect
                 x={gx}
                 y={dY}
                 width={barW}
@@ -364,28 +563,32 @@ function EditorDeliveryTrackerVisual() {
                 stroke={activeColor}
                 strokeOpacity="0.35"
                 strokeWidth="1"
+                initial={{ scaleY: 0, opacity: 0.4 }}
+                animate={active ? { scaleY: hoverScale, opacity: 1 } : { scaleY: 0, opacity: 0.4 }}
+                transition={{ ...SPRING_OVERSHOOT, delay: 0.25 + i * 0.08 }}
                 style={{
                   transformOrigin: `${gx + barW / 2}px ${PAD_TOP + innerH}px`,
-                  animation: `mw-bar-grow 0.9s cubic-bezier(.22,.9,.3,1) ${i * 0.06}s both`,
-                  filter: `drop-shadow(0 0 6px ${activeColor}55)`,
+                  filter: `drop-shadow(0 0 ${isHover ? 12 : 6}px ${activeColor}${isHover ? "aa" : "55"})`,
                 }}
               />
-              {/* Approved bar (front) */}
-              <rect
+              {/* Approved (front) */}
+              <motion.rect
                 x={gx + barW + 4}
                 y={aY}
                 width={barW}
                 height={aH}
                 rx="3"
                 fill={`url(#appGrad-${activeEditor})`}
+                initial={{ scaleY: 0 }}
+                animate={active ? { scaleY: hoverScale } : { scaleY: 0 }}
+                transition={{ ...SPRING_OVERSHOOT, delay: 0.32 + i * 0.08 }}
                 style={{
                   transformOrigin: `${gx + barW + 4 + barW / 2}px ${PAD_TOP + innerH}px`,
-                  animation: `mw-bar-grow 0.9s cubic-bezier(.22,.9,.3,1) ${i * 0.06 + 0.12}s both`,
-                  filter: `drop-shadow(0 0 8px ${activeColor})`,
+                  filter: `drop-shadow(0 0 ${isHover ? 14 : 8}px ${activeColor})`,
                 }}
               />
-              {/* Approved value label */}
-              <text
+              {/* Approved value label — appears AFTER bars */}
+              <motion.text
                 x={gx + barW + 4 + barW / 2}
                 y={aY - 4}
                 textAnchor="middle"
@@ -393,13 +596,12 @@ function EditorDeliveryTrackerVisual() {
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="700"
                 fill="#fff"
-                style={{
-                  opacity: 0,
-                  animation: `mw-fade-in 0.6s ease ${i * 0.06 + 0.4}s forwards`,
-                }}
+                initial={{ opacity: 0, y: aY }}
+                animate={active ? { opacity: 1, y: aY - 4 } : { opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.85 + i * 0.06 }}
               >
                 {d.approved}
-              </text>
+              </motion.text>
               {/* Week label */}
               <text
                 x={gx + barW + 2}
@@ -408,7 +610,8 @@ function EditorDeliveryTrackerVisual() {
                 fontSize="9"
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="600"
-                fill="rgba(255,255,255,0.40)"
+                fill={isHover ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.40)"}
+                style={{ transition: "fill 0.2s" }}
               >
                 W{i + 1}
               </text>
@@ -416,19 +619,28 @@ function EditorDeliveryTrackerVisual() {
           );
         })}
 
-        {/* Scanning beam */}
-        <rect
-          x={PAD_X}
-          y={PAD_TOP}
-          width="3"
-          height={innerH}
-          fill={activeColor}
-          opacity="0.18"
-          style={{
-            filter: `blur(4px)`,
-            animation: `mw-scan ${DELIVERY_WEEKS * 0.45}s linear infinite`,
-          }}
-        />
+        {/* Vertical light sweep — single pass after bars */}
+        {active && !reduce && (
+          <motion.rect
+            key={`sweep-${animKey}`}
+            x={PAD_X}
+            y={PAD_TOP}
+            width="60"
+            height={innerH}
+            fill="url(#sweepGrad)"
+            initial={{ x: PAD_X - 80, opacity: 0 }}
+            animate={{ x: W - PAD_X, opacity: [0, 0.5, 0] }}
+            transition={{ duration: 1.4, delay: 1.0, ease: "easeInOut" }}
+            style={{ mixBlendMode: "screen" }}
+          />
+        )}
+        <defs>
+          <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={activeColor} stopOpacity="0" />
+            <stop offset="50%" stopColor="#fff" stopOpacity="0.45" />
+            <stop offset="100%" stopColor={activeColor} stopOpacity="0" />
+          </linearGradient>
+        </defs>
       </svg>
 
       {/* Editor pills + legend */}
@@ -446,9 +658,11 @@ function EditorDeliveryTrackerVisual() {
                 boxShadow: i === activeEditor ? `0 0 12px -2px ${e.color}` : "none",
               }}
             >
-              <span
+              <motion.span
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ background: e.color, boxShadow: i === activeEditor ? `0 0 6px ${e.color}` : "none" }}
+                animate={i === activeEditor && !reduce ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
               />
               {e.name}
             </button>
@@ -470,7 +684,7 @@ function EditorDeliveryTrackerVisual() {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// VISUAL 3: KPI Dashboard — command center (featured ROAS + mini KPI grid)
+// VISUAL 3: KPI Dashboard — line draws, area fades after, dot travels, count-ups
 // ════════════════════════════════════════════════════════════════════════════
 const KPI_DEFS = [
   { key: "roas", label: "ROAS", unit: "x", color: "#c084fc", base: 3.4, amp: 0.28, range: [1.8, 5.2] as [number, number] },
@@ -494,7 +708,6 @@ function fmtKpi(v: number, key: string) {
   return v.toFixed(1);
 }
 
-// Build a smooth quadratic path from normalized values (0..1) inside a box
 function buildSparkPath(values: number[], w: number, h: number, padX = 2, padY = 4): string {
   const innerW = w - padX * 2;
   const innerH = h - padY * 2;
@@ -520,29 +733,44 @@ function buildSparkArea(values: number[], w: number, h: number, padX = 2, padY =
   return `${line} L ${(w - padX).toFixed(2)},${(h - padY).toFixed(2)} L ${padX.toFixed(2)},${(h - padY).toFixed(2)} Z`;
 }
 
-// ── Sub-component: a single mini KPI tile with sparkline + value + delta
+// Mini KPI tile with count-up + delta + sparkline
 function MiniKpiTile({
   def,
   values,
   latest,
   prev,
+  active,
+  index,
 }: {
   def: typeof KPI_DEFS[number];
   values: number[];
   latest: number;
   prev: number;
+  active: boolean;
+  index: number;
 }) {
   const w = 220, h = 64;
-  // For CPA, "down is good" (green); for everything else, "up is good"
   const delta = latest - prev;
   const goodDirection = def.key === "cpa" ? delta < 0 : delta > 0;
   const deltaPct = prev !== 0 ? (delta / prev) * 100 : 0;
   const arrow = delta > 0 ? "▲" : delta < 0 ? "▼" : "·";
   const deltaColor = goodDirection ? "#a3e635" : "rgba(255,255,255,0.45)";
 
+  // Count-up to current latest (one-shot on first activate)
+  const [hasInit, setHasInit] = useState(false);
+  useEffect(() => {
+    if (active) setHasInit(true);
+  }, [active]);
+  const decimals = def.key === "cpa" ? 0 : def.key === "roas" || def.key === "ctr" ? 2 : 1;
+  const display = useCountUp(latest, active && !hasInit ? false : active, 1.1, decimals);
+  const showDelta = hasInit;
+
   return (
-    <div
+    <motion.div
       className="relative rounded-xl overflow-hidden"
+      initial={{ opacity: 0, y: 12, scale: 0.96 }}
+      animate={active ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 12, scale: 0.96 }}
+      transition={{ ...SPRING_SOFT, delay: 0.55 + index * 0.1 }}
       style={{
         background: "rgba(20,16,32,0.6)",
         border: `1px solid ${def.color}22`,
@@ -550,7 +778,6 @@ function MiniKpiTile({
         boxShadow: `inset 0 0 24px ${def.color}10`,
       }}
     >
-      {/* Background sparkline */}
       <svg viewBox={`0 0 ${w} ${h}`} className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
         <defs>
           <linearGradient id={`mini-${def.key}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -558,18 +785,24 @@ function MiniKpiTile({
             <stop offset="100%" stopColor={def.color} stopOpacity="0" />
           </linearGradient>
         </defs>
-        <path
+        <motion.path
           d={buildSparkArea(values, w, h, 2, 6)}
           fill={`url(#mini-${def.key})`}
+          initial={{ opacity: 0 }}
+          animate={active ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
           style={{ transition: "d 0.85s linear" }}
         />
-        <path
+        <motion.path
           d={buildSparkPath(values, w, h, 2, 6)}
           fill="none"
           stroke={def.color}
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
+          initial={{ pathLength: 0 }}
+          animate={active ? { pathLength: 1 } : { pathLength: 0 }}
+          transition={{ duration: 1.0, delay: 0.8 + index * 0.1, ease: [0.22, 0.9, 0.3, 1] }}
           style={{
             filter: `drop-shadow(0 0 4px ${def.color}cc)`,
             transition: "d 0.85s linear",
@@ -588,26 +821,35 @@ function MiniKpiTile({
           </div>
           <div className="text-[16px] font-bold text-white tabular-nums leading-none mt-0.5">
             {def.unit === "€" && <span className="text-white/45 text-[10px] mr-0.5">€</span>}
-            {fmtKpi(latest, def.key)}
+            {fmtKpi(display, def.key)}
             {def.unit !== "€" && <span className="text-white/45 text-[10px] ml-0.5">{def.unit}</span>}
           </div>
         </div>
-        <div
-          className="text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
-          style={{
-            color: deltaColor,
-            background: goodDirection ? "rgba(163,230,53,0.10)" : "rgba(255,255,255,0.04)",
-            border: `1px solid ${goodDirection ? "rgba(163,230,53,0.25)" : "rgba(255,255,255,0.06)"}`,
-          }}
-        >
-          {arrow} {Math.abs(deltaPct).toFixed(1)}%
-        </div>
+        <AnimatePresence>
+          {showDelta && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, delay: 0.1 }}
+              className="text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
+              style={{
+                color: deltaColor,
+                background: goodDirection ? "rgba(163,230,53,0.10)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${goodDirection ? "rgba(163,230,53,0.25)" : "rgba(255,255,255,0.06)"}`,
+              }}
+            >
+              {arrow} {Math.abs(deltaPct).toFixed(1)}%
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-function KpiDashboardVisual() {
+function KpiDashboardVisual({ active }: { active: boolean }) {
+  const reduce = useReducedMotion();
   const [series, setSeries] = useState<Record<string, number[]>>(() => {
     const init: Record<string, number[]> = {};
     KPI_DEFS.forEach((m) => {
@@ -634,6 +876,7 @@ function KpiDashboardVisual() {
   });
 
   useEffect(() => {
+    if (!active) return;
     const t = setInterval(() => {
       setSeries((curr) => {
         const next: Record<string, number[]> = {};
@@ -658,12 +901,11 @@ function KpiDashboardVisual() {
       });
     }, TICK_MS);
     return () => clearInterval(t);
-  }, []);
+  }, [active]);
 
   const roas = KPI_DEFS[0];
   const others = KPI_DEFS.slice(1);
 
-  // Featured ROAS chart geometry
   const FW = 460, FH = 200;
   const PAD_L = 36, PAD_R = 18, PAD_T = 14, PAD_B = 22;
   const innerW = FW - PAD_L - PAD_R;
@@ -694,15 +936,22 @@ function KpiDashboardVisual() {
     return `${buildFeaturedLine(values)} L ${PAD_L + innerW},${PAD_T + innerH} L ${PAD_L},${PAD_T + innerH} Z`;
   }
 
-  // Latest dot position
   const lastNorm = roasValues[roasValues.length - 1];
   const dotX = PAD_L + innerW;
   const dotY = PAD_T + (1 - lastNorm) * innerH;
 
+  // Count-up for ROAS headline
+  const roasDisplay = useCountUp(roasLatest, active, 1.4, 2);
+
   return (
     <div className="absolute inset-0 px-5 pt-2 pb-3 flex flex-col">
       {/* Top header */}
-      <div className="flex items-center justify-between mb-2 z-10">
+      <motion.div
+        className="flex items-center justify-between mb-2 z-10"
+        initial={{ opacity: 0, y: -6 }}
+        animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -6 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
         <div className="flex items-center gap-2">
           <Activity className="w-3.5 h-3.5 text-white/70" />
           <span className="text-[11px] uppercase tracking-wider font-semibold text-white/85">
@@ -719,13 +968,15 @@ function KpiDashboardVisual() {
           </span>
           Streaming
         </div>
-      </div>
+      </motion.div>
 
-      {/* Main grid: featured (left) + 2x2 mini tiles (right) */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-3 min-h-0">
-        {/* Featured ROAS panel */}
-        <div
+        {/* Featured ROAS */}
+        <motion.div
           className="relative rounded-2xl overflow-hidden"
+          initial={{ opacity: 0, x: -16, scale: 0.97 }}
+          animate={active ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: -16, scale: 0.97 }}
+          transition={{ ...SPRING_SOFT, delay: 0.25 }}
           style={{
             background: "linear-gradient(180deg, rgba(28,20,46,0.7) 0%, rgba(14,10,26,0.7) 100%)",
             border: "1px solid rgba(168,85,247,0.22)",
@@ -740,7 +991,7 @@ function KpiDashboardVisual() {
                 {roas.label} · account avg
               </div>
               <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
-                {fmtKpi(roasLatest, roas.key)}<span className="text-white/45 text-[14px] ml-0.5">x</span>
+                {roasDisplay.toFixed(2)}<span className="text-white/45 text-[14px] ml-0.5">x</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-0.5">
@@ -768,7 +1019,12 @@ function KpiDashboardVisual() {
               const y = PAD_T + p * innerH;
               const v = roasMin + (1 - p) * (roasMax - roasMin);
               return (
-                <g key={i}>
+                <motion.g
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={active ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 + i * 0.04 }}
+                >
                   <line
                     x1={PAD_L}
                     x2={FW - PAD_R}
@@ -789,48 +1045,43 @@ function KpiDashboardVisual() {
                   >
                     {v.toFixed(1)}x
                   </text>
-                </g>
+                </motion.g>
               );
             })}
 
-            {/* Vertical micro grid */}
-            {[0.2, 0.4, 0.6, 0.8].map((p, i) => {
-              const x = PAD_L + p * innerW;
-              return (
-                <line
-                  key={i}
-                  x1={x}
-                  x2={x}
-                  y1={PAD_T}
-                  y2={PAD_T + innerH}
-                  stroke="rgba(255,255,255,0.03)"
-                  strokeWidth="1"
-                />
-              );
-            })}
-
-            {/* Area */}
-            <path
+            {/* Area — fades in AFTER line draws */}
+            <motion.path
               d={buildFeaturedArea(roasValues)}
               fill="url(#featRoasArea)"
+              initial={{ opacity: 0 }}
+              animate={active ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 0.7, delay: 1.7 }}
               style={{ transition: "d 0.85s linear" }}
             />
-            {/* Line */}
-            <path
+            {/* Line — DRAWS left to right */}
+            <motion.path
               d={buildFeaturedLine(roasValues)}
               fill="none"
               stroke="url(#featRoasLine)"
               strokeWidth="2.4"
               strokeLinecap="round"
               strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={active ? { pathLength: 1 } : { pathLength: 0 }}
+              transition={{ duration: 1.5, delay: 0.55, ease: [0.22, 0.9, 0.3, 1] }}
               style={{
                 filter: `drop-shadow(0 0 8px ${roas.color}cc)`,
                 transition: "d 0.85s linear",
               }}
             />
 
-            {/* Leading dot with pulse */}
-            <g style={{ transition: "transform 0.85s linear" }}>
+            {/* Leading dot — appears after line draws */}
+            <motion.g
+              initial={{ opacity: 0, scale: 0.4 }}
+              animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.4 }}
+              transition={{ ...SPRING_OVERSHOOT, delay: 2.0 }}
+              style={{ transition: "transform 0.85s linear", transformOrigin: `${dotX}px ${dotY}px` }}
+            >
               <circle cx={dotX} cy={dotY} r="10" fill={roas.color} opacity="0.18">
                 <animate attributeName="r" values="6;14;6" dur="2.4s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0.25;0;0.25" dur="2.4s" repeatCount="indefinite" />
@@ -838,27 +1089,13 @@ function KpiDashboardVisual() {
               <circle cx={dotX} cy={dotY} r="4" fill={roas.color} opacity="0.5" />
               <circle cx={dotX} cy={dotY} r="2.4" fill="#fff"
                 style={{ filter: `drop-shadow(0 0 6px ${roas.color})` }} />
-            </g>
-
-            {/* Scanning beam */}
-            <rect
-              x={PAD_L}
-              y={PAD_T}
-              width="2"
-              height={innerH}
-              fill="#a855f7"
-              opacity="0.35"
-              style={{
-                filter: "blur(3px)",
-                animation: "mw-scan-feat 6s linear infinite",
-              }}
-            />
+            </motion.g>
 
             {/* Time labels */}
             {["−24h", "−18h", "−12h", "−6h", "now"].map((label, i) => {
               const x = PAD_L + (i / 4) * innerW;
               return (
-                <text
+                <motion.text
                   key={label}
                   x={x}
                   y={FH - 6}
@@ -867,23 +1104,28 @@ function KpiDashboardVisual() {
                   fontFamily="ui-sans-serif, system-ui, sans-serif"
                   fontWeight="600"
                   fill="rgba(255,255,255,0.30)"
+                  initial={{ opacity: 0 }}
+                  animate={active ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.5, delay: 1.9 + i * 0.05 }}
                 >
                   {label}
-                </text>
+                </motion.text>
               );
             })}
           </svg>
-        </div>
+        </motion.div>
 
         {/* Mini tile grid */}
         <div className="grid grid-cols-2 gap-2.5">
-          {others.map((m) => (
+          {others.map((m, idx) => (
             <MiniKpiTile
               key={m.key}
               def={m}
               values={series[m.key]}
               latest={latest[m.key]}
               prev={prev[m.key]}
+              active={active}
+              index={idx}
             />
           ))}
         </div>
@@ -896,23 +1138,62 @@ function KpiDashboardVisual() {
 // Section
 // ════════════════════════════════════════════════════════════════════════════
 const EditorEdge = () => {
+  const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headerInView = useInView(headerRef, { once: true, margin: "-20% 0%" });
+
+  const headline = ["Editors", "who", "understand"];
+  const headlineAccent = ["why", "ads", "work"];
+
   return (
     <section
+      ref={sectionRef}
       className="relative py-28 overflow-hidden"
       style={{ background: "#09090f" }}
     >
-      <div
+      {/* Drifting radial glows behind cards */}
+      <motion.div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
-        }}
-      />
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2.4, ease: "easeOut" }}
+      >
+        <motion.div
+          className="absolute -top-20 left-[10%] w-[520px] h-[520px] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(168,85,247,0.18) 0%, transparent 65%)",
+            filter: "blur(40px)",
+          }}
+          animate={reduce ? undefined : { x: [0, 60, -20, 0], y: [0, 30, -10, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-[40%] right-[5%] w-[480px] h-[480px] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(124,58,237,0.16) 0%, transparent 65%)",
+            filter: "blur(40px)",
+          }}
+          animate={reduce ? undefined : { x: [0, -50, 30, 0], y: [0, -20, 40, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.10) 0%, transparent 70%)",
+          }}
+        />
+      </motion.div>
       <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <div
+        <div ref={headerRef} className="text-center mb-16">
+          {/* Eyebrow chip — scale in with bloom */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={headerInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ ...SPRING_OVERSHOOT, delay: 0.1 }}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
             style={{
               background: "rgba(168,85,247,0.12)",
@@ -922,25 +1203,57 @@ const EditorEdge = () => {
           >
             <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
             What sets us apart
-          </div>
+          </motion.div>
+
+          {/* Staggered headline */}
           <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-            Editors who understand{" "}
+            {headline.map((w, i) => (
+              <motion.span
+                key={`h-${i}`}
+                className="inline-block mr-[0.25em]"
+                initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+                animate={headerInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                transition={{ ...SPRING_SOFT, delay: 0.25 + i * 0.08 }}
+              >
+                {w}
+              </motion.span>
+            ))}
             <span
               style={{
-                background:
-                  "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
+                background: "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
-              why ads work
+              {headlineAccent.map((w, i) => (
+                <motion.span
+                  key={`ha-${i}`}
+                  className="inline-block mr-[0.25em]"
+                  initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+                  animate={headerInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                  transition={{ ...SPRING_SOFT, delay: 0.55 + i * 0.08 }}
+                >
+                  {w}
+                </motion.span>
+              ))}
             </span>
           </h2>
-          <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
-            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
-          </p>
 
-          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.85 }}
+            className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed"
+          >
+            Every brand we work with gets their own private back-end, built and hosted by us, completely free. Your editors see the same numbers you see, in real time. Delivery, approvals, hook rates, ROAS and CPA, all in one place. No more guessing what is working, no more chasing status updates. Full transparency for you, sharper creative decisions for them.
+          </motion.p>
+
+          {/* CTA pill — scale in with glow bloom */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6, filter: "blur(8px)" }}
+            animate={headerInView ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
+            transition={{ ...SPRING_OVERSHOOT, delay: 1.05 }}
+            className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
             style={{
               background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
               border: "1px solid rgba(168,85,247,0.45)",
@@ -949,37 +1262,45 @@ const EditorEdge = () => {
           >
             <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
             <span>Included free with every brand. You only pay per video.</span>
-          </div>
+          </motion.div>
         </div>
 
         {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           <FeatureCard
+            variant="left"
             delay={0}
             title="Trained on your KPIs"
             description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
-            visual={<EditorBrainVisual />}
+            visual={(settled) => <EditorBrainVisual active={settled} />}
           />
           <FeatureCard
-            delay={0.1}
+            variant="right"
+            delay={0.15}
             title="Editor delivery tracker"
             description="Delivered vs approved videos per editor, week by week. See exactly who is shipping and who is shipping work that lands."
-            visual={<EditorDeliveryTrackerVisual />}
+            visual={(settled) => <EditorDeliveryTrackerVisual active={settled} />}
           />
         </div>
 
         {/* Bottom row: KPI Dashboard full width */}
         <div className="grid grid-cols-1 gap-5 mb-16">
           <FeatureCard
-            delay={0.2}
+            variant="bottom"
+            delay={0.35}
             title="KPI Dashboard"
             description="ROAS front and centre, with CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving."
-            visual={<KpiDashboardVisual />}
+            visual={(settled) => <KpiDashboardVisual active={settled} />}
           />
         </div>
 
         <div className="text-center">
-          <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-white/70"
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.5 }}
+            className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-white/70"
             style={{
               background: "rgba(168,85,247,0.10)",
               border: "1px solid rgba(168,85,247,0.25)",
@@ -991,7 +1312,7 @@ const EditorEdge = () => {
                 style={{ boxShadow: "0 0 8px #a855f7" }} />
             </span>
             Interactive demo
-          </div>
+          </motion.div>
           <div>
             <Button
               asChild
@@ -1014,25 +1335,6 @@ const EditorEdge = () => {
       </div>
 
       <style>{`
-        .mw-card {
-          opacity: 0;
-          transform: translateY(20px);
-          animation: mw-card-in 1s cubic-bezier(.2,.7,.2,1) forwards;
-          transition: transform .5s cubic-bezier(.2,.7,.2,1), border-color .5s ease, box-shadow .5s ease;
-        }
-        @keyframes mw-card-in { to { opacity: 1; transform: translateY(0); } }
-        .mw-card:hover {
-          transform: translateY(-4px);
-          border-color: rgba(168,85,247,0.30) !important;
-          box-shadow:
-            0 1px 0 rgba(255,255,255,0.10) inset,
-            0 0 0 1px rgba(168,85,247,0.20) inset,
-            0 30px 80px -20px rgba(168,85,247,0.25),
-            0 0 60px -10px rgba(168,85,247,0.18) !important;
-        }
-        .mw-horizon { opacity: 0.55; transition: opacity 0.8s ease; }
-        .mw-card:hover .mw-horizon { opacity: 0.95; }
-
         /* Section grain */
         .mw-grain-bg {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
@@ -1050,61 +1352,8 @@ const EditorEdge = () => {
           opacity: 0.35;
         }
 
-        /* Animations */
-        @keyframes mw-breath {
-          0%, 100% { transform: scale(1); }
-          50%      { transform: scale(1.06); }
-        }
-        .mw-breath { animation: mw-breath 3.4s ease-in-out infinite; }
-
-        @keyframes mw-node-pulse {
-          0%, 100% { box-shadow: 0 0 14px rgba(168,85,247,0.35); }
-          50%      { box-shadow: 0 0 22px rgba(168,85,247,0.7); }
-        }
-        .mw-node-pulse { animation: mw-node-pulse 2.4s ease-in-out infinite; }
-
-        @keyframes mw-blink {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50%      { opacity: 0.5; transform: scale(0.85); }
-        }
-        .mw-blink { animation: mw-blink 1.4s ease-in-out infinite; }
-
-        @keyframes mw-bar-grow {
-          from { transform: scaleY(0); }
-          to   { transform: scaleY(1); }
-        }
-
-        @keyframes mw-fade-in {
-          from { opacity: 0; transform: translateY(4px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .mw-fade-in { animation: mw-fade-in 0.5s ease forwards; }
-
-        @keyframes mw-scan {
-          0%   { transform: translateX(0); opacity: 0; }
-          10%  { opacity: 0.7; }
-          90%  { opacity: 0.7; }
-          100% { transform: translateX(340px); opacity: 0; }
-        }
-
-        @keyframes mw-scan-kpi {
-          0%   { transform: translateX(0); opacity: 0; }
-          10%  { opacity: 0.5; }
-          90%  { opacity: 0.5; }
-          100% { transform: translateX(740px); opacity: 0; }
-        }
-
-        @keyframes mw-scan-feat {
-          0%   { transform: translateX(0); opacity: 0; }
-          10%  { opacity: 0.45; }
-          90%  { opacity: 0.45; }
-          100% { transform: translateX(420px); opacity: 0; }
-        }
-
         @media (prefers-reduced-motion: reduce) {
-          .mw-card, .mw-breath, .mw-node-pulse, .mw-blink, .mw-fade-in {
-            animation: none !important;
-          }
+          .mw-grain-bg, .mw-grain-purple { animation: none !important; }
         }
       `}</style>
     </section>
