@@ -542,20 +542,9 @@ function EditorDeliveryTrendVisual() {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual: Trained on your KPIs — animated learning concept
-// Floating concept chips (Hook Rate, Hold Curve, CPA, ROAS, Thumbstop, Pattern Interrupt)
-// orbiting/rising into a central "Editor brain" node.
+// Visual: Trained on your KPIs — bullseye / target-lock concept
 // ────────────────────────────────────────────────────────────────────────────
-const LEARN_CHIPS = [
-  "Hook Rate",
-  "Hold Curve",
-  "CPA",
-  "ROAS",
-  "Thumbstop",
-  "Pattern Interrupt",
-  "CTR",
-  "Retention",
-];
+
 
 function LearningVisual() {
   // Bullseye / target lock concept: editor scope locks onto winning KPIs
