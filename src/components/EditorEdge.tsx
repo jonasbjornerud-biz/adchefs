@@ -1,37 +1,32 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, GraduationCap, Repeat2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ACCENT = "#a855f7";
 
-// Moneywise's actual Lottie animations (publicly hosted, render perfectly)
+// Moneywise's actual Lottie animations (publicly hosted)
 const LOTTIE = {
   smarterTracking:
     "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3dce38346f6ce873258_smarter%20tracking.json",
-  automate:
-    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3ef1044fca43e45ed23_automated%20finances.json",
-  cashflow:
-    "https://cdn.prod.website-files.com/6916312c57d61394f5b6212c/692db3ef9e2ca754aea8c353_cashflow%20snapshot%20(2).json",
 };
 
 // ────────────────────────────────────────────────────────────────────────────
-// Lottie loader — recolors to brand purple AND rewrites text layers so the
-// animation actually says what the card itself says.
+// Lottie loader — recolors to brand purple AND rewrites text layers
 // ────────────────────────────────────────────────────────────────────────────
 function transformLottie(data: any, textMap?: Record<string, string>): any {
   const palette: [number, number, number][] = [
-    [0.486, 0.227, 0.929], // #7c3aed
-    [0.659, 0.333, 0.969], // #a855f7
-    [0.753, 0.518, 0.988], // #c084fc
-    [0.914, 0.835, 1.0],   // #e9d5ff
+    [0.486, 0.227, 0.929],
+    [0.659, 0.333, 0.969],
+    [0.753, 0.518, 0.988],
+    [0.914, 0.835, 1.0],
   ];
   let idx = 0;
   const pickColor = () => palette[idx++ % palette.length];
 
   const visit = (node: any): void => {
     if (!node || typeof node !== "object") return;
-
     if (node.ty === "fl" || node.ty === "st") {
       if (node.c && Array.isArray(node.c.k)) {
         const k = node.c.k;
@@ -52,7 +47,6 @@ function transformLottie(data: any, textMap?: Record<string, string>): any {
         }
       }
     }
-    // Lottie text layer rewrite: ty === 5
     if (node.ty === 5 && node.t?.d?.k) {
       for (const k of node.t.d.k) {
         const cur = k?.s?.t;
@@ -61,7 +55,6 @@ function transformLottie(data: any, textMap?: Record<string, string>): any {
         }
       }
     }
-
     for (const key of Object.keys(node)) {
       const v = node[key];
       if (Array.isArray(v)) v.forEach(visit);
@@ -83,13 +76,12 @@ function useLottieJson(url: string, textMap?: Record<string, string>) {
       .catch(() => {});
     return () => { alive = false; };
   }, [url]);
-  // re-transform if textMap changes
   const mapKey = textMap ? JSON.stringify(textMap) : "";
   return useMemo(() => (raw ? transformLottie(raw, textMap) : null), [raw, mapKey]);
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Card shell (smaller, refined motion — no spinning borders, no cheap pulses)
+// Card shell
 // ────────────────────────────────────────────────────────────────────────────
 function FeatureCard({
   title,
@@ -118,7 +110,6 @@ function FeatureCard({
           "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
       }}
     >
-      {/* Top inner highlight */}
       <div
         className="absolute inset-x-8 top-0 h-px pointer-events-none"
         style={{
@@ -126,7 +117,6 @@ function FeatureCard({
             "linear-gradient(90deg, transparent, rgba(168,85,247,0.55), transparent)",
         }}
       />
-      {/* Subtle, slow horizon glow — no obvious pulse */}
       <div
         className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon"
         style={{
@@ -151,7 +141,7 @@ function FeatureCard({
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual #1 — KPI Dashboard (moneywise smarter-tracking Lottie, recoloured)
+// Visual: Lottie wrapper
 // ────────────────────────────────────────────────────────────────────────────
 function LottieVisual({
   url,
@@ -180,181 +170,27 @@ function LottieVisual({
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Visual #2 — Editors trained on KPIs (moneywise automate Lottie, recoloured)
+// Visual: KPI Dashboard graph (CTR, Hook, Hold, ROAS, CPA)
 // ────────────────────────────────────────────────────────────────────────────
-// (uses LottieVisual)
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #3 — Meta-focused integrations (custom, Meta logo + orbit)
-// ────────────────────────────────────────────────────────────────────────────
-function MetaIntegrationVisual() {
-  return (
-    <div className="absolute inset-0">
-      {/* Slow concentric rings */}
-      <svg
-        viewBox="0 0 400 280"
-        className="absolute inset-0 w-full h-full"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <radialGradient id="metaGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(168,85,247,0.55)" />
-            <stop offset="60%" stopColor="rgba(168,85,247,0.10)" />
-            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
-          </radialGradient>
-          <linearGradient id="metaLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#c084fc" />
-            <stop offset="100%" stopColor="#7c3aed" />
-          </linearGradient>
-        </defs>
-
-        {/* Central glow */}
-        <ellipse cx="200" cy="140" rx="120" ry="80" fill="url(#metaGlow)" />
-
-        {/* Three rotating rings, different speeds */}
-        <g className="mw-orbit-slow" style={{ transformOrigin: "200px 140px" }}>
-          <ellipse
-            cx="200"
-            cy="140"
-            rx="135"
-            ry="72"
-            fill="none"
-            stroke="rgba(168,85,247,0.20)"
-            strokeWidth="1"
-            strokeDasharray="2 6"
-          />
-        </g>
-        <g
-          className="mw-orbit-mid"
-          style={{ transformOrigin: "200px 140px" }}
-        >
-          <ellipse
-            cx="200"
-            cy="140"
-            rx="100"
-            ry="54"
-            fill="none"
-            stroke="rgba(168,85,247,0.30)"
-            strokeWidth="1"
-          />
-          {/* Travelling particle on ring */}
-          <circle cx="300" cy="140" r="3" fill="#fff">
-            <animateMotion
-              dur="6s"
-              repeatCount="indefinite"
-              path="M 100,0 a 100,54 0 1,1 -200,0 a 100,54 0 1,1 200,0"
-            />
-          </circle>
-        </g>
-        <g className="mw-orbit-fast" style={{ transformOrigin: "200px 140px" }}>
-          <ellipse
-            cx="200"
-            cy="140"
-            rx="65"
-            ry="36"
-            fill="none"
-            stroke="rgba(168,85,247,0.40)"
-            strokeWidth="1.2"
-          />
-        </g>
-
-        {/* Central Meta logo (infinity-style ∞ from official Meta mark) */}
-        <g
-          transform="translate(160 110)"
-          className="mw-meta-breath"
-          style={{ transformOrigin: "40px 30px" }}
-        >
-          <path
-            d="M0,30 C0,12 12,0 26,0 C36,0 44,6 52,18 L60,30 L68,18 C76,6 84,0 94,0 C108,0 120,12 120,30 C120,48 108,60 94,60 C84,60 76,54 68,42 L60,30 L52,42 C44,54 36,60 26,60 C12,60 0,48 0,30 Z M14,30 C14,40 20,46 26,46 C32,46 38,40 44,30 C38,20 32,14 26,14 C20,14 14,20 14,30 Z M76,30 C82,40 88,46 94,46 C100,46 106,40 106,30 C106,20 100,14 94,14 C88,14 82,20 76,30 Z"
-            fill="url(#metaLogoGrad)"
-            style={{ filter: "drop-shadow(0 0 16px rgba(168,85,247,0.7))" }}
-            transform="scale(0.7)"
-          />
-        </g>
-
-        {/* Floating signal pulses outward from logo */}
-        <circle
-          cx="200"
-          cy="140"
-          r="0"
-          fill="none"
-          stroke="rgba(168,85,247,0.6)"
-          strokeWidth="1.5"
-        >
-          <animate attributeName="r" values="0;90" dur="3.5s" repeatCount="indefinite" />
-          <animate
-            attributeName="opacity"
-            values="0.7;0"
-            dur="3.5s"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle
-          cx="200"
-          cy="140"
-          r="0"
-          fill="none"
-          stroke="rgba(168,85,247,0.5)"
-          strokeWidth="1.5"
-        >
-          <animate
-            attributeName="r"
-            values="0;90"
-            dur="3.5s"
-            begin="1.75s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="opacity"
-            values="0.7;0"
-            dur="3.5s"
-            begin="1.75s"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
-
-      {/* Bottom label */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium text-white/85"
-        style={{
-          background: "rgba(168,85,247,0.12)",
-          border: "1px solid rgba(168,85,247,0.30)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: "0 0 8px #a855f7" }} />
-        Meta Marketing API · Connected
-      </div>
-    </div>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #4 — Live Metric Tracking by Editor (custom dynamic leaderboard)
-// ────────────────────────────────────────────────────────────────────────────
-// ────────────────────────────────────────────────────────────────────────────
-// Visual #5 — Live Editor Metrics Graph (multi-line, continuously streaming)
-// CTR · Hook Rate · Hold Rate · Thumbstop — all four metrics evolving in real time
-// ────────────────────────────────────────────────────────────────────────────
-const METRIC_DEFS = [
-  { key: "ctr",   label: "CTR",       color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number] },
-  { key: "hook",  label: "Hook Rate", color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number] },
-  { key: "hold",  label: "Hold Rate", color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number] },
-  { key: "stop",  label: "Thumbstop", color: "#7c3aed", base: 18,   amp: 2.5, range: [8, 28]    as [number, number] },
+const KPI_DEFS = [
+  { key: "ctr",  label: "CTR",  unit: "%",  color: "#e9d5ff", base: 3.2,  amp: 0.4, range: [1.5, 5.5] as [number, number] },
+  { key: "hook", label: "Hook", unit: "%",  color: "#c084fc", base: 38,   amp: 4,   range: [25, 55]   as [number, number] },
+  { key: "hold", label: "Hold", unit: "%",  color: "#a855f7", base: 26,   amp: 3,   range: [15, 38]   as [number, number] },
+  { key: "roas", label: "ROAS", unit: "x",  color: "#d8b4fe", base: 3.4,  amp: 0.3, range: [1.8, 5.2] as [number, number] },
+  { key: "cpa",  label: "CPA",  unit: "€",  color: "#7c3aed", base: 22,   amp: 2,   range: [12, 38]   as [number, number] },
 ];
 
-const POINTS = 36;     // points across the chart
-const TICK_MS = 900;   // how often a new sample arrives
+const POINTS = 36;
+const TICK_MS = 900;
 
 function smoothStep(prev: number, target: number, k = 0.35) {
   return prev + (target - prev) * k;
 }
 
-function EditorMetricsGraphVisual() {
-  // Each metric: an array of normalised values (0–1) sized POINTS
+function KpiDashboardGraphVisual() {
   const [series, setSeries] = useState<Record<string, number[]>>(() => {
     const init: Record<string, number[]> = {};
-    METRIC_DEFS.forEach((m) => {
+    KPI_DEFS.forEach((m) => {
       const arr: number[] = [];
       let v = m.base;
       for (let i = 0; i < POINTS; i++) {
@@ -369,7 +205,7 @@ function EditorMetricsGraphVisual() {
 
   const [latest, setLatest] = useState<Record<string, number>>(() => {
     const o: Record<string, number> = {};
-    METRIC_DEFS.forEach((m) => (o[m.key] = m.base));
+    KPI_DEFS.forEach((m) => (o[m.key] = m.base));
     return o;
   });
 
@@ -378,10 +214,9 @@ function EditorMetricsGraphVisual() {
       setSeries((prev) => {
         const next: Record<string, number[]> = {};
         const newLatest: Record<string, number> = {};
-        METRIC_DEFS.forEach((m) => {
+        KPI_DEFS.forEach((m) => {
           const arr = prev[m.key];
           const lastNorm = arr[arr.length - 1];
-          // bias slightly toward base to keep things bounded
           const baseNorm = (m.base - m.range[0]) / (m.range[1] - m.range[0]);
           const drift = (baseNorm - lastNorm) * 0.08;
           const target = lastNorm + drift + (Math.random() - 0.5) * 0.18;
@@ -398,15 +233,11 @@ function EditorMetricsGraphVisual() {
     return () => clearInterval(t);
   }, []);
 
-  // Build a smooth (catmull-rom-ish) path
-  const W = 400;
-  const H = 200;
-  const PAD_X = 18;
-  const PAD_Y = 22;
+  const W = 400, H = 200, PAD_X = 18, PAD_Y = 22;
   const innerW = W - PAD_X * 2;
   const innerH = H - PAD_Y * 2;
 
-  function buildPath(values: number[], close = false): string {
+  function buildPath(values: number[]): string {
     const pts = values.map((v, i) => {
       const x = PAD_X + (i / (POINTS - 1)) * innerW;
       const y = PAD_Y + (1 - v) * innerH;
@@ -420,25 +251,19 @@ function EditorMetricsGraphVisual() {
       d += ` Q ${x1},${y1} ${cx},${(y1 + y2) / 2}`;
     }
     d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
-    if (close) {
-      d += ` L ${PAD_X + innerW},${PAD_Y + innerH} L ${PAD_X},${PAD_Y + innerH} Z`;
-    }
     return d;
+  }
+
+  function fmt(v: number, m: typeof KPI_DEFS[number]) {
+    if (m.key === "roas") return v.toFixed(2);
+    if (m.key === "cpa") return v.toFixed(0);
+    if (m.key === "ctr") return v.toFixed(2);
+    return v.toFixed(1);
   }
 
   return (
     <div className="absolute inset-0 px-2 pt-1">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
-        <defs>
-          {METRIC_DEFS.map((m) => (
-            <linearGradient key={m.key} id={`grad-${m.key}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={m.color} stopOpacity="0.32" />
-              <stop offset="100%" stopColor={m.color} stopOpacity="0" />
-            </linearGradient>
-          ))}
-        </defs>
-
-        {/* horizontal grid lines */}
         {[0.25, 0.5, 0.75].map((p, i) => (
           <line
             key={i}
@@ -451,33 +276,24 @@ function EditorMetricsGraphVisual() {
           />
         ))}
 
-        {/* fills (lightest metric only — keeps it readable) */}
-        <path
-          d={buildPath(series.hook, true)}
-          fill={`url(#grad-hook)`}
-          style={{ transition: "d 0.9s linear" }}
-        />
-
-        {/* lines */}
-        {METRIC_DEFS.map((m) => (
+        {KPI_DEFS.map((m) => (
           <path
             key={m.key}
             d={buildPath(series[m.key])}
             fill="none"
             stroke={m.color}
-            strokeWidth={m.key === "ctr" ? 2.4 : 1.8}
+            strokeWidth={m.key === "roas" ? 2.4 : 1.7}
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
               filter: `drop-shadow(0 0 6px ${m.color}aa)`,
               transition: "d 0.9s linear",
-              opacity: m.key === "stop" ? 0.85 : 1,
+              opacity: m.key === "cpa" ? 0.85 : 1,
             }}
           />
         ))}
 
-        {/* leading dots on rightmost point */}
-        {METRIC_DEFS.map((m) => {
+        {KPI_DEFS.map((m) => {
           const v = series[m.key][POINTS - 1];
           const x = PAD_X + innerW;
           const y = PAD_Y + (1 - v) * innerH;
@@ -491,26 +307,25 @@ function EditorMetricsGraphVisual() {
         })}
       </svg>
 
-      {/* Legend with live values */}
-      <div className="absolute left-4 right-4 bottom-3 grid grid-cols-4 gap-2">
-        {METRIC_DEFS.map((m) => (
+      <div className="absolute left-3 right-3 bottom-3 grid grid-cols-5 gap-1.5">
+        {KPI_DEFS.map((m) => (
           <div key={m.key} className="flex flex-col">
-            <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-wider font-semibold text-white/45">
+            <div className="flex items-center gap-1 text-[8px] uppercase tracking-wider font-semibold text-white/45">
               <span
-                className="w-2 h-2 rounded-full"
+                className="w-1.5 h-1.5 rounded-full"
                 style={{ background: m.color, boxShadow: `0 0 6px ${m.color}` }}
               />
               {m.label}
             </div>
-            <div className="text-[13px] font-semibold text-white tabular-nums leading-tight mt-0.5">
-              {m.key === "ctr" ? latest[m.key].toFixed(2) : latest[m.key].toFixed(1)}
-              <span className="text-white/40 text-[10px] ml-0.5">%</span>
+            <div className="text-[12px] font-semibold text-white tabular-nums leading-tight mt-0.5">
+              {m.unit === "€" && <span className="text-white/40 text-[9px] mr-0.5">€</span>}
+              {fmt(latest[m.key], m)}
+              {m.unit !== "€" && <span className="text-white/40 text-[9px] ml-0.5">{m.unit}</span>}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Live indicator */}
       <div className="absolute right-3 top-2 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-wider text-[#a855f7]">
         <span className="relative flex w-1.5 h-1.5">
           <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
@@ -524,20 +339,452 @@ function EditorMetricsGraphVisual() {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// Visual: Editor Delivery Tracker — trendlines per editor (delivery, CTR, CPA, ROAS)
+// ────────────────────────────────────────────────────────────────────────────
+const EDITORS = [
+  { name: "Liam",   color: "#a855f7", deliveryBase: 11, ctrBase: 3.4, cpaBase: 19, roasBase: 3.8 },
+  { name: "Sofia",  color: "#c084fc", deliveryBase: 10, ctrBase: 3.1, cpaBase: 22, roasBase: 3.4 },
+  { name: "Noah",   color: "#7c3aed", deliveryBase: 9,  ctrBase: 2.8, cpaBase: 26, roasBase: 2.9 },
+  { name: "Iris",   color: "#e9d5ff", deliveryBase: 12, ctrBase: 3.7, cpaBase: 17, roasBase: 4.2 },
+];
+
+const WEEKS = 12;
+
+function EditorDeliveryTrendVisual() {
+  const [metric, setMetric] = useState<"delivery" | "ctr" | "cpa" | "roas">("delivery");
+  const [tick, setTick] = useState(0);
+
+  // cycle metric every 3.2s
+  useEffect(() => {
+    const order: typeof metric[] = ["delivery", "ctr", "roas", "cpa"];
+    const t = setInterval(() => {
+      setTick((x) => x + 1);
+    }, 3200);
+    return () => clearInterval(t);
+  }, []);
+  useEffect(() => {
+    const order: ("delivery" | "ctr" | "cpa" | "roas")[] = ["delivery", "ctr", "roas", "cpa"];
+    setMetric(order[tick % order.length]);
+  }, [tick]);
+
+  // generate stable series per editor per metric
+  const series = useMemo(() => {
+    const out: Record<string, Record<string, number[]>> = {};
+    EDITORS.forEach((e) => {
+      const ctxBase = {
+        delivery: e.deliveryBase,
+        ctr: e.ctrBase,
+        cpa: e.cpaBase,
+        roas: e.roasBase,
+      };
+      const amps = { delivery: 1.4, ctr: 0.3, cpa: 2.5, roas: 0.35 };
+      const m: Record<string, number[]> = {};
+      (Object.keys(ctxBase) as (keyof typeof ctxBase)[]).forEach((k) => {
+        let v = ctxBase[k];
+        const arr: number[] = [];
+        // seeded-ish randomness per editor+metric
+        let seed = e.name.charCodeAt(0) + k.charCodeAt(0);
+        const rand = () => {
+          seed = (seed * 9301 + 49297) % 233280;
+          return seed / 233280;
+        };
+        for (let i = 0; i < WEEKS; i++) {
+          v += (rand() - 0.5) * amps[k] * 1.6;
+          arr.push(v);
+        }
+        m[k] = arr;
+      });
+      out[e.name] = m;
+    });
+    return out;
+  }, []);
+
+  const W = 400, H = 200, PAD_X = 22, PAD_Y = 24;
+  const innerW = W - PAD_X * 2;
+  const innerH = H - PAD_Y * 2;
+
+  // domain for current metric
+  const allValues = EDITORS.flatMap((e) => series[e.name][metric]);
+  const min = Math.min(...allValues);
+  const max = Math.max(...allValues);
+  const span = max - min || 1;
+
+  function buildPath(values: number[]) {
+    const pts = values.map((v, i) => {
+      const x = PAD_X + (i / (WEEKS - 1)) * innerW;
+      const norm = (v - min) / span;
+      const y = PAD_Y + (1 - norm) * innerH;
+      return [x, y] as [number, number];
+    });
+    let d = `M ${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = pts[i - 1];
+      const [x2, y2] = pts[i];
+      const cx = (x1 + x2) / 2;
+      d += ` Q ${x1},${y1} ${cx},${(y1 + y2) / 2}`;
+    }
+    d += ` L ${pts[pts.length - 1][0]},${pts[pts.length - 1][1]}`;
+    return d;
+  }
+
+  function fmt(v: number) {
+    if (metric === "delivery") return `${v.toFixed(0)}`;
+    if (metric === "roas") return `${v.toFixed(2)}x`;
+    if (metric === "ctr") return `${v.toFixed(2)}%`;
+    return `€${v.toFixed(0)}`;
+  }
+
+  const metricLabel = {
+    delivery: "Avg weekly delivery",
+    ctr: "Avg CTR",
+    cpa: "Avg CPA",
+    roas: "Avg ROAS",
+  }[metric];
+
+  return (
+    <div className="absolute inset-0 px-2 pt-1">
+      {/* Top bar: metric label + cycling pill */}
+      <div className="absolute left-4 top-2 right-4 flex items-center justify-between z-10">
+        <div className="text-[10px] uppercase tracking-wider font-semibold text-white/55">
+          {metricLabel}
+        </div>
+        <div className="flex gap-1">
+          {(["delivery", "ctr", "roas", "cpa"] as const).map((k) => (
+            <span
+              key={k}
+              className="h-1 rounded-full transition-all duration-500"
+              style={{
+                width: k === metric ? 14 : 6,
+                background: k === metric ? "#a855f7" : "rgba(255,255,255,0.18)",
+                boxShadow: k === metric ? "0 0 8px #a855f7" : "none",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" preserveAspectRatio="none">
+        {[0.25, 0.5, 0.75].map((p, i) => (
+          <line
+            key={i}
+            x1={PAD_X}
+            x2={W - PAD_X}
+            y1={PAD_Y + p * innerH}
+            y2={PAD_Y + p * innerH}
+            stroke="rgba(255,255,255,0.05)"
+            strokeWidth="1"
+          />
+        ))}
+
+        {EDITORS.map((e) => (
+          <path
+            key={e.name}
+            d={buildPath(series[e.name][metric])}
+            fill="none"
+            stroke={e.color}
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: `drop-shadow(0 0 6px ${e.color}aa)`,
+              transition: "d 0.8s cubic-bezier(.4,0,.2,1)",
+            }}
+          />
+        ))}
+
+        {EDITORS.map((e) => {
+          const arr = series[e.name][metric];
+          const v = arr[arr.length - 1];
+          const norm = (v - min) / span;
+          const x = PAD_X + innerW;
+          const y = PAD_Y + (1 - norm) * innerH;
+          return (
+            <g key={e.name} style={{ transition: "transform 0.8s ease" }}>
+              <circle cx={x} cy={y} r="4" fill={e.color} opacity="0.25" />
+              <circle cx={x} cy={y} r="2.4" fill="#fff"
+                style={{ filter: `drop-shadow(0 0 6px ${e.color})` }} />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Legend with editor names + current value */}
+      <div className="absolute left-3 right-3 bottom-3 grid grid-cols-4 gap-1.5">
+        {EDITORS.map((e) => {
+          const arr = series[e.name][metric];
+          const v = arr[arr.length - 1];
+          return (
+            <div key={e.name} className="flex flex-col">
+              <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ background: e.color, boxShadow: `0 0 6px ${e.color}` }}
+                />
+                {e.name}
+              </div>
+              <div className="text-[12px] font-semibold text-white tabular-nums leading-tight mt-0.5">
+                {fmt(v)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Visual: Trained on your KPIs — animated learning concept
+// Floating concept chips (Hook Rate, Hold Curve, CPA, ROAS, Thumbstop, Pattern Interrupt)
+// orbiting/rising into a central "Editor brain" node.
+// ────────────────────────────────────────────────────────────────────────────
+const LEARN_CHIPS = [
+  "Hook Rate",
+  "Hold Curve",
+  "CPA",
+  "ROAS",
+  "Thumbstop",
+  "Pattern Interrupt",
+  "CTR",
+  "Retention",
+];
+
+function LearningVisual() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Rising chips */}
+      <div className="absolute inset-0">
+        {LEARN_CHIPS.map((c, i) => (
+          <div
+            key={c}
+            className="absolute mw-rise text-[10px] font-medium px-2 py-1 rounded-full text-white/85 whitespace-nowrap"
+            style={{
+              left: `${8 + (i * 12) % 80}%`,
+              bottom: "-30px",
+              background: "rgba(168,85,247,0.10)",
+              border: "1px solid rgba(168,85,247,0.30)",
+              backdropFilter: "blur(6px)",
+              animationDelay: `${(i * 0.7) % 5.5}s`,
+              animationDuration: `${6 + (i % 3)}s`,
+            }}
+          >
+            {c}
+          </div>
+        ))}
+      </div>
+
+      {/* Central brain / target node */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative">
+          <div
+            className="absolute inset-0 rounded-full mw-pulse-soft"
+            style={{
+              width: 110,
+              height: 110,
+              left: -55,
+              top: -55,
+              background:
+                "radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(168,85,247,0.10) 50%, transparent 75%)",
+              filter: "blur(8px)",
+            }}
+          />
+          <div
+            className="relative flex items-center justify-center rounded-2xl"
+            style={{
+              width: 76,
+              height: 76,
+              background:
+                "linear-gradient(135deg, rgba(168,85,247,0.25), rgba(124,58,237,0.10))",
+              border: "1px solid rgba(168,85,247,0.45)",
+              boxShadow:
+                "0 0 30px rgba(168,85,247,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            <GraduationCap className="w-8 h-8 text-white" />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom progress bar that fills + resets */}
+      <div className="absolute left-6 right-6 bottom-4">
+        <div className="flex items-center justify-between text-[9px] uppercase tracking-wider font-semibold text-white/45 mb-1.5">
+          <span>Training in progress</span>
+          <span className="text-[#a855f7]">Live</span>
+        </div>
+        <div className="h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+          <div
+            className="h-full mw-progress"
+            style={{
+              background:
+                "linear-gradient(90deg, #7c3aed, #a855f7, #c084fc)",
+              boxShadow: "0 0 8px #a855f7",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Visual: Iteration Engine — winning ad → variants spawn out
+// Replaces "Built for Meta"
+// ────────────────────────────────────────────────────────────────────────────
+function IterationEngineVisual() {
+  return (
+    <div className="absolute inset-0">
+      <svg viewBox="0 0 400 260" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="winnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#c084fc" />
+            <stop offset="100%" stopColor="#7c3aed" />
+          </linearGradient>
+          <radialGradient id="iterGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(168,85,247,0.40)" />
+            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+          </radialGradient>
+        </defs>
+
+        {/* Glow */}
+        <ellipse cx="200" cy="130" rx="160" ry="90" fill="url(#iterGlow)" />
+
+        {/* Connection lines from winner to variants */}
+        {[
+          { x: 80,  y: 70  },
+          { x: 80,  y: 190 },
+          { x: 320, y: 70  },
+          { x: 320, y: 190 },
+        ].map((p, i) => (
+          <line
+            key={i}
+            x1="200" y1="130"
+            x2={p.x} y2={p.y}
+            stroke="rgba(168,85,247,0.35)"
+            strokeWidth="1"
+            strokeDasharray="3 4"
+          >
+            <animate
+              attributeName="stroke-dashoffset"
+              values="0;-14"
+              dur="1.6s"
+              repeatCount="indefinite"
+            />
+          </line>
+        ))}
+
+        {/* Variant tiles */}
+        {[
+          { x: 80,  y: 70,  delay: 0.0 },
+          { x: 80,  y: 190, delay: 0.3 },
+          { x: 320, y: 70,  delay: 0.6 },
+          { x: 320, y: 190, delay: 0.9 },
+        ].map((p, i) => (
+          <g key={i} className="mw-variant-float" style={{ animationDelay: `${p.delay}s`, transformOrigin: `${p.x}px ${p.y}px` }}>
+            <rect
+              x={p.x - 28} y={p.y - 18}
+              width="56" height="36"
+              rx="8"
+              fill="rgba(20,16,32,0.85)"
+              stroke="rgba(168,85,247,0.45)"
+              strokeWidth="1"
+            />
+            {/* mini bars inside variant */}
+            {[0, 1, 2].map((b) => (
+              <rect
+                key={b}
+                x={p.x - 22 + b * 12}
+                y={p.y - 10 + (b % 2) * 4}
+                width="8"
+                height={10 + b * 3}
+                rx="1"
+                fill="#c084fc"
+                opacity={0.5 + b * 0.15}
+              />
+            ))}
+            <text
+              x={p.x} y={p.y + 14}
+              textAnchor="middle"
+              fontSize="7"
+              fontFamily="ui-sans-serif, system-ui, sans-serif"
+              fontWeight="600"
+              fill="rgba(255,255,255,0.55)"
+            >
+              V{i + 1}
+            </text>
+          </g>
+        ))}
+
+        {/* Center: winning ad */}
+        <g className="mw-winner-breath" style={{ transformOrigin: "200px 130px" }}>
+          <rect
+            x="160" y="100"
+            width="80" height="60"
+            rx="10"
+            fill="url(#winnerGrad)"
+            style={{ filter: "drop-shadow(0 0 16px rgba(168,85,247,0.7))" }}
+          />
+          <text
+            x="200" y="125"
+            textAnchor="middle"
+            fontSize="9"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="700"
+            fill="#fff"
+          >
+            WINNER
+          </text>
+          <text
+            x="200" y="142"
+            textAnchor="middle"
+            fontSize="11"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="800"
+            fill="#fff"
+          >
+            4.2x
+          </text>
+          <text
+            x="200" y="154"
+            textAnchor="middle"
+            fontSize="6"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fill="rgba(255,255,255,0.75)"
+          >
+            ROAS
+          </text>
+        </g>
+
+        {/* Pulse ring */}
+        <circle cx="200" cy="130" r="0" fill="none" stroke="rgba(168,85,247,0.55)" strokeWidth="1.2">
+          <animate attributeName="r" values="40;120" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.6;0" dur="3s" repeatCount="indefinite" />
+        </circle>
+      </svg>
+
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium text-white/85"
+        style={{
+          background: "rgba(168,85,247,0.12)",
+          border: "1px solid rgba(168,85,247,0.30)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <Repeat2 className="w-3 h-3" style={{ color: ACCENT }} />
+        Winners cloned, scaled, iterated
+      </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // Section
 // ────────────────────────────────────────────────────────────────────────────
 const EditorEdge = () => {
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section
       className="relative py-28 overflow-hidden"
       style={{ background: "#09090f" }}
     >
-      {/* Ambient glow + grain */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -545,9 +792,7 @@ const EditorEdge = () => {
             "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
         }}
       />
-      <div
-        className="absolute inset-0 pointer-events-none mw-grain-bg"
-      />
+      <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
@@ -577,8 +822,8 @@ const EditorEdge = () => {
           </h2>
           <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
             Most agencies hand you editors who push pixels. Ours are trained on
-            hook rates, hold curves, CPA and ROAS — they know which 3 seconds
-            make a winner, and why. That&apos;s how cuts go from &quot;nice&quot;
+            hook rates, hold curves, CPA and ROAS. They know which 3 seconds
+            make a winner, and why. That&apos;s how cuts go from nice
             to printing money.
           </p>
         </div>
@@ -588,59 +833,79 @@ const EditorEdge = () => {
           <FeatureCard
             delay={0}
             title="KPI Dashboard"
-            description="Real-time spend, ROAS and creative performance — synced live from Meta Ads."
-            visual={
-              <LottieVisual
-                url={LOTTIE.smarterTracking}
-                textMap={{
-                  "Smarter Tracking": "KPI Dashboard",
-                  "Automate expense and income records in real time.":
-                    "Spend, ROAS & creative performance — live.",
-                }}
-              />
-            }
+            description="CTR, hook rate, hold rate, ROAS and CPA. Streaming live across every editor on your account."
+            visual={<KpiDashboardGraphVisual />}
           />
           <FeatureCard
             delay={0.1}
-            title="Editors trained on your KPIs"
-            description="Hook rate. Hold rate. CPA. ROAS. Our team studies what your winners share — then engineers more of them."
-            visual={<LottieVisual url={LOTTIE.automate} />}
+            title="Trained on your KPIs"
+            description="Every editor on your account studies your hook rates, hold curves, CPA and ROAS. They learn what your winners share, then engineer more of them."
+            visual={<LearningVisual />}
           />
           <FeatureCard
             delay={0.2}
-            title="Built for Meta"
-            description="Direct Meta Marketing API integration. Spend, ROAS and creative metrics piped in live — no exports, no lag."
-            visual={<MetaIntegrationVisual />}
+            title="Iteration engine"
+            description="Winners get cloned, varied and tested at speed. New angles, new hooks, new patterns. Every week your top ad gets sharper."
+            visual={<IterationEngineVisual />}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-16">
           <FeatureCard
             delay={0.3}
-            title="Editor Delivery Tracker"
-            description="Every video logged, every approval timestamped — full visibility on output across your editor roster."
-            visual={<LottieVisual url={LOTTIE.cashflow} />}
+            title="Editor delivery tracker"
+            description="Trendlines per editor across 12 weeks. Average weekly delivery, CTR, CPA and ROAS, all side by side. See who is actually moving the needle."
+            visual={<EditorDeliveryTrendVisual />}
           />
           <FeatureCard
             delay={0.4}
-            title="Live editor metrics"
-            description="CTR, hook rate, hold rate and thumbstop — streaming live across every editor on your account."
-            visual={<EditorMetricsGraphVisual />}
+            title="Smarter creative tracking"
+            description="Spend, ROAS and creative performance synced live from Meta Ads. Every angle, hook and edit, scored and ranked automatically."
+            visual={
+              <LottieVisual
+                url={LOTTIE.smarterTracking}
+                textMap={{
+                  "Smarter Tracking": "Smarter Tracking",
+                  "Automate expense and income records in real time.":
+                    "Spend, ROAS and creative performance, live.",
+                }}
+              />
+            }
           />
         </div>
 
         <div className="text-center">
-          <Button
-            variant="cta"
-            size="lg"
-            onClick={() => scrollToSection("booking")}
-            className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+          <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-white/70"
+            style={{
+              background: "rgba(168,85,247,0.10)",
+              border: "1px solid rgba(168,85,247,0.25)",
+            }}
           >
-            <span className="relative z-10 flex items-center">
-              See it in action
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            <span className="relative flex w-1.5 h-1.5">
+              <span className="absolute inset-0 rounded-full animate-ping bg-[#a855f7] opacity-60" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#a855f7]"
+                style={{ boxShadow: "0 0 8px #a855f7" }} />
             </span>
-          </Button>
+            Interactive demo
+          </div>
+          <div>
+            <Button
+              asChild
+              variant="cta"
+              size="lg"
+              className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+            >
+              <Link to="/mock">
+                <span className="relative z-10 flex items-center">
+                  Explore the live demo
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-3 text-xs text-white/45 max-w-md mx-auto">
+            This is a sample dashboard with mock data. The real version is fully tailored to your brand, your editors and your campaigns.
+          </p>
         </div>
       </div>
 
@@ -688,19 +953,48 @@ const EditorEdge = () => {
           100% { background-position: -200% 0; }
         }
 
-        .mw-orbit-slow { animation: mw-spin 28s linear infinite; }
-        .mw-orbit-mid  { animation: mw-spin 18s linear infinite reverse; }
-        .mw-orbit-fast { animation: mw-spin 12s linear infinite; }
-        @keyframes mw-spin { to { transform: rotate(360deg); } }
-
-        .mw-meta-breath { animation: mw-breath 4.5s ease-in-out infinite; }
-        @keyframes mw-breath {
-          0%, 100% { transform: translate(160px, 110px) scale(1); }
-          50%      { transform: translate(160px, 110px) scale(1.06); }
+        @keyframes mw-rise {
+          0%   { transform: translateY(0) scale(0.95); opacity: 0; }
+          10%  { opacity: 0.9; }
+          70%  { opacity: 0.9; }
+          100% { transform: translateY(-260px) scale(0.85); opacity: 0; }
+        }
+        .mw-rise {
+          animation-name: mw-rise;
+          animation-iteration-count: infinite;
+          animation-timing-function: cubic-bezier(.4,0,.2,1);
         }
 
+        @keyframes mw-pulse-soft {
+          0%, 100% { transform: scale(1); opacity: 0.85; }
+          50%      { transform: scale(1.12); opacity: 1; }
+        }
+        .mw-pulse-soft { animation: mw-pulse-soft 3.6s ease-in-out infinite; }
+
+        @keyframes mw-progress {
+          0%   { width: 0%; }
+          90%  { width: 100%; }
+          100% { width: 100%; }
+        }
+        .mw-progress {
+          animation: mw-progress 4s cubic-bezier(.4,0,.2,1) infinite;
+        }
+
+        @keyframes mw-variant-float {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-4px); }
+        }
+        .mw-variant-float { animation: mw-variant-float 3.2s ease-in-out infinite; }
+
+        @keyframes mw-winner-breath {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.04); }
+        }
+        .mw-winner-breath { animation: mw-winner-breath 3.4s ease-in-out infinite; }
+
         @media (prefers-reduced-motion: reduce) {
-          .mw-card, .mw-orbit-slow, .mw-orbit-mid, .mw-orbit-fast, .mw-meta-breath, .mw-skeleton {
+          .mw-card, .mw-skeleton, .mw-rise, .mw-pulse-soft, .mw-progress,
+          .mw-variant-float, .mw-winner-breath {
             animation: none !important;
           }
         }
