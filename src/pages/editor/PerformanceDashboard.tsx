@@ -274,7 +274,7 @@ export default function PerformanceDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#09090f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#06060c]">
         <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 100%)' }} />
         <div className="flex flex-col items-center gap-4 relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(248,113,113,0.2) inset' }}>
