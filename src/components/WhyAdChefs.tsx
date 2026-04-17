@@ -43,65 +43,82 @@ const WhyAdChefs = () => {
               </p>
             </div>
 
-            {/* Handwritten signature */}
+            {/* Handwritten signature - merged JHB monogram */}
             <div className="pt-3 flex flex-col items-start">
               <svg
-                viewBox="0 0 220 90"
-                className="h-16 w-auto -ml-1"
+                viewBox="0 0 240 100"
+                className="h-20 w-auto -ml-1"
                 aria-label="JHB signature"
               >
-                <path
-                  d="M 18 22
-                     C 22 18, 30 16, 36 20
-                     C 38 22, 38 28, 36 38
-                     C 33 52, 28 64, 20 70
-                     C 14 74, 6 72, 4 66
-                     C 3 62, 6 58, 12 58"
+                <g
+                  transform="rotate(-12 120 50)"
                   fill="none"
                   stroke="hsl(var(--foreground))"
-                  strokeWidth="2.4"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                />
-                <path
-                  d="M 60 66
-                     C 64 50, 70 32, 74 16
-                     M 70 42
-                     C 80 38, 92 36, 102 40
-                     C 106 42, 106 46, 104 50
-                     M 100 18
-                     C 100 30, 100 50, 100 68"
-                  fill="none"
-                  stroke="hsl(var(--foreground))"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M 130 18
-                     C 130 34, 130 54, 130 70
-                     C 138 70, 150 70, 156 64
-                     C 162 58, 158 50, 148 48
-                     C 140 46, 132 48, 130 48
-                     M 130 48
-                     C 140 46, 154 44, 158 38
-                     C 162 32, 156 24, 146 24
-                     C 138 24, 132 28, 130 32"
-                  fill="none"
-                  stroke="hsl(var(--foreground))"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                {/* Underline flourish */}
-                <path
-                  d="M 10 82 C 60 78, 130 80, 200 76"
-                  fill="none"
-                  stroke="hsl(var(--foreground))"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  opacity="0.7"
-                />
+                >
+                  {/* Top flourish entering the J (thin upstroke) */}
+                  <path
+                    d="M 18 28 C 30 18, 48 14, 62 22"
+                    strokeWidth="1.4"
+                    opacity="0.85"
+                  />
+
+                  {/* SHARED LEFT VERTICAL: J descender + H left post.
+                      Thick downstroke, curls at the bottom into the J hook. */}
+                  <path
+                    d="M 62 18
+                       C 60 36, 58 56, 56 74
+                       C 55 84, 50 90, 42 88
+                       C 34 86, 32 78, 38 74"
+                    strokeWidth="4.2"
+                  />
+
+                  {/* H crossbar — branches off the shared left vertical,
+                      sweeps across to the shared right vertical. */}
+                  <path
+                    d="M 58 50 C 78 46, 110 46, 132 50"
+                    strokeWidth="3"
+                  />
+
+                  {/* SHARED RIGHT VERTICAL: H right post + B spine.
+                      Thick downstroke. */}
+                  <path
+                    d="M 134 22
+                       C 133 40, 132 60, 132 82"
+                    strokeWidth="4.2"
+                  />
+
+                  {/* Small entry tick into the H right post (thin upstroke) */}
+                  <path
+                    d="M 124 18 C 128 18, 132 20, 134 22"
+                    strokeWidth="1.4"
+                    opacity="0.85"
+                  />
+
+                  {/* B upper lobe — bumps out to the right from the shared spine */}
+                  <path
+                    d="M 132 24
+                       C 152 22, 172 30, 172 40
+                       C 172 48, 158 52, 132 52"
+                    strokeWidth="3.4"
+                  />
+
+                  {/* B lower lobe — larger bump, tapering off into a trailing stroke */}
+                  <path
+                    d="M 132 52
+                       C 158 52, 180 60, 180 72
+                       C 180 84, 160 88, 132 84"
+                    strokeWidth="3.8"
+                  />
+
+                  {/* Trailing flourish off the bottom of the B */}
+                  <path
+                    d="M 170 86 C 188 88, 206 84, 220 76"
+                    strokeWidth="1.4"
+                    opacity="0.8"
+                  />
+                </g>
               </svg>
               <p className="text-xs text-muted-foreground mt-1">
                 Jonas Bjørnerud, Founder
