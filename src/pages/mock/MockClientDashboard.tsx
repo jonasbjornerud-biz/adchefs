@@ -6,7 +6,7 @@ import { WtdStats } from '@/components/dashboard/WtdStats';
 import { getWeekToDateRange, formatCurrency, formatNumber } from '@/lib/weekToDate';
 import { generateMockAds, generateMockPerformanceData } from '@/data/mockDemoData';
 
-const BRAND = 'MOCK';
+const BRAND = 'Acme Goods';
 
 export default function MockClientDashboard() {
   const navigate = useNavigate();
@@ -27,24 +27,48 @@ export default function MockClientDashboard() {
     ];
   }, [wtd.daysCount]);
 
+  // Trend: synthesize per-day video deliveries across the WTD window
+  const performanceTrend = useMemo(() => {
+    const data = generateMockPerformanceData();
+    const totalVideos = data.eod.reduce((s, r) => s + Number(r['Videos Delivered'] || 0), 0);
+    const dailyAvg = (totalVideos / 28) * 0.9;
+    const seed = [0.7, 1.1, 0.85, 1.25, 1.0, 1.35, 0.95];
+    return Array.from({ length: wtd.daysCount }, (_, i) =>
+      Math.max(1, Math.round(dailyAvg * seed[i % seed.length])),
+    );
+  }, [wtd.daysCount]);
+
   // KPI Dashboard WTD: sum spend & avg ROAS over last N days from mock daily data
-  const adsStats = useMemo(() => {
+  const adsAggregate = useMemo(() => {
     const ads = generateMockAds();
     let spend = 0;
     let revenue = 0;
+    // per-day totals across the WTD window
+    const perDaySpend = new Array(wtd.daysCount).fill(0);
+    const perDayRevenue = new Array(wtd.daysCount).fill(0);
     ads.forEach((ad) => {
       const recent = (ad as any).dailyData?.slice(-wtd.daysCount) ?? [];
-      recent.forEach((d: any) => {
+      recent.forEach((d: any, idx: number) => {
         spend += d.spend || 0;
         revenue += d.revenue || 0;
+        perDaySpend[idx] += d.spend || 0;
+        perDayRevenue[idx] += d.revenue || 0;
       });
     });
     const roas = spend > 0 ? revenue / spend : 0;
-    return [
-      { label: 'Ad spend', value: formatCurrency(spend) },
-      { label: 'ROAS', value: `${roas.toFixed(2)}x` },
-    ];
+    const dailyRoas = perDaySpend.map((s, i) => (s > 0 ? perDayRevenue[i] / s : 0));
+    return {
+      stats: [
+        { label: 'Ad spend', value: formatCurrency(spend) },
+        { label: 'ROAS', value: `${roas.toFixed(2)}x` },
+      ],
+      trend: perDaySpend,
+      roasTrend: dailyRoas,
+    };
   }, [wtd.daysCount]);
+
+  const adsStats = adsAggregate.stats;
+  const adsTrend = adsAggregate.trend;
 
   const cards = [
     {
