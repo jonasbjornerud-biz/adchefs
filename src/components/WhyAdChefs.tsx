@@ -43,108 +43,131 @@ const WhyAdChefs = () => {
               </p>
             </div>
 
-            {/* Handwritten signature - hand-signed JHB */}
+            {/* Handwritten signature - rushed JHB with attached underline */}
             <div className="pt-3 flex flex-col items-start">
               <svg
-                viewBox="0 0 240 130"
+                viewBox="0 0 260 140"
                 className="h-24 w-auto -ml-1"
                 aria-label="JHB signature"
               >
                 <g
-                  transform="rotate(-17 120 60)"
+                  transform="rotate(-16 130 65)"
                   fill="none"
                   stroke="#1a1a1a"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {/* Casual entry tick into the J */}
+                  {/* Quick entry tick into J — short jittered segments */}
                   <path
-                    d="M 24 32 C 33 25, 43 23, 52 27"
-                    strokeWidth="1.2"
+                    d="M 22 34 Q 28 28 34 27 T 48 26 Q 52 27 55 30"
+                    strokeWidth="1.3"
                   />
 
-                  {/* J descender + loop, continuing up as H's left leg.
-                      Slightly wobbly, not a clean arc. Built from two overlapping
-                      strokes of different weight to fake pen-pressure variation. */}
+                  {/* J descender + bottom loop, continuing up as H's left leg.
+                      Built from short Q segments with offset control points to
+                      fake pen wobble — no clean cubic. */}
                   <path
-                    d="M 52 27
-                       C 54 30, 55 34, 54 40
-                       C 53 51, 51 63, 49 74
-                       C 48 81, 47 87, 45 91
-                       C 43 96, 36 97, 30 93
-                       C 25 89, 27 83, 34 81"
-                    strokeWidth="3.8"
+                    d="M 55 30
+                       Q 56 36 55 42
+                       Q 53 50 52 58
+                       Q 50 67 49 75
+                       Q 48 82 46 88
+                       Q 43 94 36 94
+                       Q 28 93 27 87
+                       Q 28 82 35 81
+                       Q 39 81 41 84"
+                    strokeWidth="3.6"
                   />
-                  {/* Pressure overlay on the heaviest part of the J downstroke */}
+                  {/* Heavy pressure overlay on middle of J downstroke */}
                   <path
-                    d="M 53 38 C 52 50, 50 62, 48 73"
-                    strokeWidth="2"
+                    d="M 54 44 Q 52 56 50 68 Q 49 74 48 78"
+                    strokeWidth="2.2"
                     opacity="0.55"
                   />
-
-                  {/* H crossbar — quick angled flick, slightly tilted up */}
+                  {/* Light tail wobble overlay */}
                   <path
-                    d="M 52 60 C 63 56, 76 55, 87 53"
-                    strokeWidth="1.7"
+                    d="M 49 74 Q 47 80 45 86"
+                    strokeWidth="1.1"
+                    opacity="0.6"
                   />
 
-                  {/* Tiny lead-in into top of H right leg */}
+                  {/* H crossbar — quick angled flick, jittered, tilts up */}
                   <path
-                    d="M 76 24 C 81 25, 84 26, 87 30"
+                    d="M 51 62 Q 60 59 70 57 T 90 54"
+                    strokeWidth="1.6"
+                  />
+
+                  {/* Tiny lead-in into H right leg */}
+                  <path
+                    d="M 78 26 Q 82 27 86 29 Q 89 31 90 33"
                     strokeWidth="1.2"
                   />
 
                   {/* H right leg → continues straight down as B spine.
-                      Slight wobble, not a ruler-straight line. */}
+                      Jittered, slight wobble. */}
                   <path
-                    d="M 87 30
-                       C 88 44, 89 60, 89 72
-                       C 89 80, 90 86, 91 92"
-                    strokeWidth="3.8"
+                    d="M 90 33
+                       Q 91 44 91 54
+                       Q 92 64 92 74
+                       Q 92 82 93 90
+                       Q 94 95 95 98"
+                    strokeWidth="3.6"
                   />
                   <path
-                    d="M 88 42 C 89 56, 90 70, 90 82"
+                    d="M 91 46 Q 92 58 92 70 Q 92 80 93 88"
                     strokeWidth="1.8"
                     opacity="0.5"
                   />
 
-                  {/* B upper lobe — smaller, slightly squashed, asymmetric */}
+                  {/* B upper lobe — small, squashed, asymmetric, jittered */}
                   <path
-                    d="M 89 32
-                       C 105 28, 122 32, 127 42
-                       C 130 50, 120 56, 90 58"
-                    strokeWidth="2.8"
+                    d="M 92 34
+                       Q 102 31 112 33
+                       Q 122 35 127 42
+                       Q 130 49 122 54
+                       Q 110 58 92 60"
+                    strokeWidth="2.7"
                   />
 
-                  {/* B lower lobe — bigger, looser, lopsided.
-                      Bulges more on the lower-right and pinches back in. */}
+                  {/* B lower lobe — bigger, lopsided, bulges low-right.
+                      Last stroke flows directly into the underline below. */}
                   <path
-                    d="M 90 58
-                       C 112 58, 138 64, 142 80
-                       C 144 92, 128 99, 108 96
-                       C 100 95, 94 93, 91 92"
-                    strokeWidth="3.4"
+                    d="M 92 60
+                       Q 108 59 122 63
+                       Q 138 68 144 78
+                       Q 147 88 138 95
+                       Q 124 100 108 99
+                       Q 100 98 95 98"
+                    strokeWidth="3.3"
                   />
 
-                  {/* Trailing pen exit off the B */}
+                  {/* CONTINUOUS pen exit: starts where the B finishes (~95,98),
+                      sweeps down and back LEFT under the whole signature,
+                      then exits to the right with a slight upturn flick.
+                      Drawn as one path so it reads as one motion. */}
                   <path
-                    d="M 134 96 C 150 100, 168 99, 184 92"
-                    strokeWidth="1.3"
+                    d="M 95 98
+                       Q 100 104 92 108
+                       Q 70 114 48 117
+                       Q 30 119 18 120
+                       Q 14 120 16 122
+                       Q 22 124 36 123
+                       Q 70 122 110 121
+                       Q 150 119 188 116
+                       Q 210 114 224 110
+                       Q 230 108 226 112"
+                    strokeWidth="2.2"
                   />
-
-                  {/* Hand-drawn underline — wavy, left-heavy, tapers off.
-                      Sits a few pixels under the signature, offset slightly left. */}
+                  {/* Pressure swell in the middle of the underline */}
                   <path
-                    d="M 14 116
-                       C 40 112, 70 120, 110 116
-                       C 140 113, 168 118, 196 110"
-                    strokeWidth="2.6"
-                    opacity="0.9"
+                    d="M 60 121 Q 110 122 168 119"
+                    strokeWidth="1.4"
+                    opacity="0.7"
                   />
-                  {/* Tapered tail of the underline */}
+                  {/* Tapered exit flick */}
                   <path
-                    d="M 196 110 C 204 108, 210 107, 214 106"
-                    strokeWidth="1.2"
+                    d="M 222 112 Q 230 110 236 107"
+                    strokeWidth="1"
                     opacity="0.7"
                   />
                 </g>
