@@ -424,6 +424,18 @@
     will-change: -webkit-mask-image, mask-image;
   }
 
+  @media (max-width: 640px) {
+    .hero-dotgrid {
+      background-image: radial-gradient(rgba(139, 92, 246, 0.10) 1px, transparent 1.5px);
+      background-size: 20px 20px;
+    }
+    .hero-spotlight {
+      background-image: radial-gradient(rgba(139, 92, 246, 0.28) 1px, transparent 1.5px);
+      background-size: 20px 20px;
+    }
+    .hero-orb-1, .hero-orb-2, .hero-orb-3 { opacity: 0.18 !important; filter: blur(80px); }
+  }
+
   @keyframes spotlight-drift {
     0%   { -webkit-mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%);
                    mask-image: radial-gradient(circle 280px at 18% 28%, #000 0%, rgba(0,0,0,0.7) 35%, transparent 75%); }
