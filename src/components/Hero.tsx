@@ -40,7 +40,7 @@ const Hero = () => {
           </span>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[14rem] font-extrabold leading-[0.95] tracking-tight mb-6 text-foreground xl:text-9xl">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[14rem] font-extrabold leading-[0.95] tracking-tight mb-6 text-foreground xl:text-8xl">
           Your <span className="hero-accent-word">dedicated</span> video editor
           <br />
           without the <span className="hero-accent-word">additional cost</span>
