@@ -77,21 +77,23 @@ export default function MockClientDashboard() {
       icon: BarChart3,
       route: '/mock/performance',
       accent: '#a855f7',
-      statusLabel: 'Sheet API connected',
+      statusLabel: 'Sample data',
       statusIcon: FileSpreadsheet,
       cta: 'Open Performance',
       stats: performanceStats,
+      trend: performanceTrend,
     },
     {
       title: 'KPI Dashboard',
       description: 'Monitor ad spend, ROAS, CTR, CPA, and revenue with real-time Meta Ads data.',
       icon: TrendingUp,
       route: '/mock/ads',
-      accent: '#34d399',
-      statusLabel: 'Meta API connected',
+      accent: '#c084fc',
+      statusLabel: 'Sample data',
       statusIcon: Zap,
       cta: 'Open Dashboard',
       stats: adsStats,
+      trend: adsTrend,
     },
   ];
 
@@ -115,9 +117,16 @@ export default function MockClientDashboard() {
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
-              M
+              {BRAND.charAt(0)}
             </div>
             <span className="text-sm font-medium text-white">{BRAND}</span>
+            <span className="ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-semibold uppercase tracking-wider" style={{
+              background: 'rgba(168,85,247,0.14)',
+              border: '1px solid rgba(168,85,247,0.35)',
+              color: '#d8b4fe',
+            }}>
+              Sample
+            </span>
           </div>
           <button onClick={() => navigate('/')} className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white transition-all duration-200 cursor-pointer">
             <LogOut className="w-3.5 h-3.5" /> Exit Demo
@@ -135,13 +144,13 @@ export default function MockClientDashboard() {
             boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
           }}>
             <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
-            Demo Portal
+            Sample data — explore the demo
           </div>
           <h1 className="text-5xl md:text-6xl font-black tracking-tight">
             <span className="text-white">Welcome back, </span>
             <span style={{ background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(168,85,247,0.5))' }}>{BRAND}</span>
           </h1>
-          <p className="text-sm text-white/50 mt-3">Select a dashboard to view your performance data and insights.</p>
+          <p className="text-sm text-white/50 mt-3">A live preview using sample data. Every chart and number below is illustrative.</p>
         </div>
       </div>
 
@@ -194,7 +203,7 @@ export default function MockClientDashboard() {
                   <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">{card.title}</h3>
                   <p className="text-sm text-white/45 leading-relaxed">{card.description}</p>
 
-                  <WtdStats rangeLabel={wtd.label} stats={card.stats} accent={card.accent} />
+                  <WtdStats rangeLabel={wtd.label} stats={card.stats} accent={card.accent} trend={card.trend} />
 
                   <div className="flex items-center justify-between pt-5 border-t border-white/[0.05] mt-auto">
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-medium tracking-wide" style={{ background: `${accent}12`, border: `1px solid ${accent}30`, color: accent }}>
