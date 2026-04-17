@@ -33,24 +33,24 @@ const Hero = () => {
       {/* Grain on top */}
       <div className="hero-grain" />
 
-      <div className="container mx-auto px-6 relative z-10 text-center max-w-6xl">
-        <div className="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
-          <span className="text-xs tracking-wide text-muted-foreground">
+      <div className="container mx-auto px-5 sm:px-6 relative z-10 text-center max-w-6xl">
+        <div className="inline-flex items-center px-3.5 py-1.5 mb-6 sm:mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
+          <span className="text-[11px] sm:text-xs tracking-wide text-muted-foreground">
             Built for e-com brands. Pay per video.
           </span>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[14rem] font-extrabold leading-[0.95] tracking-tight mb-6 text-foreground xl:text-5xl">
+        <h1 className="text-[2.5rem] sm:text-7xl md:text-8xl lg:text-[14rem] font-extrabold leading-[1.02] sm:leading-[0.95] tracking-tight mb-5 sm:mb-6 text-foreground xl:text-5xl">
           Your <span className="hero-accent-word">dedicated</span> video editor
           <br />
           without the <span className="hero-accent-word">additional cost</span>
         </h1>
 
-        <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4">
+        <p className="text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4 px-2 sm:px-0">
           I match e-commerce brands with video editors who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
         </p>
 
-        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 mb-10">
+        <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground/60 mb-8 sm:mb-10">
           <Check className="w-3.5 h-3.5 text-accent/60" />
           From €100/video. Cancel anytime.
         </div>
@@ -60,7 +60,7 @@ const Hero = () => {
             size="lg"
             variant="cta"
             onClick={() => scrollToSection("booking")}
-            className="text-base px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
+            className="text-base px-7 sm:px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
           >
             <span className="relative z-10 flex items-center">
               Book a Call
@@ -71,20 +71,20 @@ const Hero = () => {
       </div>
 
       {/* Marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-20 mb-8 marquee-wrapper">
-        <p className="text-center text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
+      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper">
+        <p className="text-center text-[11px] sm:text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
           Recent work
         </p>
 
         {/* Edge fade masks */}
-        <div className="absolute left-0 top-[44px] bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
-        <div className="absolute right-0 top-[44px] bottom-0 w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
+        <div className="absolute left-0 top-[44px] bottom-0 w-16 sm:w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
+        <div className="absolute right-0 top-[44px] bottom-0 w-16 sm:w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
 
-        <div className="marquee-track flex gap-5">
+        <div className="marquee-track flex gap-3 sm:gap-5">
           {doubled.map((src, i) => (
             <div
               key={i}
-              className="flex-shrink-0 w-[220px] h-[320px] rounded-2xl overflow-hidden border border-white/[0.08] ring-1 ring-white/[0.04]"
+              className="flex-shrink-0 w-[150px] h-[220px] sm:w-[220px] sm:h-[320px] rounded-2xl overflow-hidden border border-white/[0.08] ring-1 ring-white/[0.04]"
               style={{
                 boxShadow: '0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)',
               }}
