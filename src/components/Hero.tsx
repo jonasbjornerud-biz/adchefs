@@ -75,7 +75,7 @@ const Hero = () => {
       </div>
 
       {/* Marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper">
+      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper z-20">
         <p className="text-center text-[11px] sm:text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
           Recent work
         </p>
