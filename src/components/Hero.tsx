@@ -7,6 +7,10 @@ const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501820/GIF11_dfnd9x.webm",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
   "https://res.cloudinary.com/dqnifzwda/image/upload/v1773785219/GIF12_zcuv10.webp",
+  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562209/GIF12_i0rqck.gif",
+  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562212/GIF11_ts3qsg.gif",
+  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562215/GIF14_ajoqr7.gif",
+  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562219/GIF13_lrfho3.gif",
 ];
 
 const Hero = () => {
@@ -71,7 +75,7 @@ const Hero = () => {
       </div>
 
       {/* Marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper">
+      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper z-20">
         <p className="text-center text-[11px] sm:text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
           Recent work
         </p>
