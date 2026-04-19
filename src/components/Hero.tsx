@@ -4,7 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501820/GIF11_dfnd9x.webm",
+  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562702/GIF15_or6gkv.gif",
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
   "https://res.cloudinary.com/dqnifzwda/image/upload/v1773785219/GIF12_zcuv10.webp",
   "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562209/GIF12_i0rqck.gif",
