@@ -109,6 +109,10 @@ const Hero = () => {
             </div>
           ))}
         </div>
+
+        <p className="text-center text-[10px] sm:text-[11px] text-muted-foreground/50 mt-5 px-4 max-w-2xl mx-auto italic">
+          Disclaimer: Video editing only. All other services and brand ownership belong to respective clients.
+        </p>
       </div>
     </section>
   );
