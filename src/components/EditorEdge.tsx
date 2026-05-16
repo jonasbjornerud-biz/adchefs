@@ -123,7 +123,7 @@ function EditorBrainVisual() {
                 <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" />
               </circle>
               {/* Secondary slower pulse for depth */}
-              <circle r="1.4" fill="#fff" opacity="0.7">
+              <circle r="1.4" fill="#7c3aed" opacity="0.7">
                 <animateMotion dur={`${3.4 + i * 0.22}s`} begin={`${i * 0.4}s`} repeatCount="indefinite" path={d} />
               </circle>
             </g>
@@ -836,7 +836,7 @@ function KpiDashboardVisual() {
                 <animate attributeName="opacity" values="0.25;0;0.25" dur="2.4s" repeatCount="indefinite" />
               </circle>
               <circle cx={dotX} cy={dotY} r="4" fill={roas.color} opacity="0.5" />
-              <circle cx={dotX} cy={dotY} r="2.4" fill="#fff"
+              <circle cx={dotX} cy={dotY} r="2.4" fill="#7c3aed"
                 style={{ filter: `drop-shadow(0 0 6px ${roas.color})` }} />
             </g>
 
