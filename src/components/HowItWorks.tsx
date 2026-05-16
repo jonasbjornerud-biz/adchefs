@@ -206,7 +206,7 @@ function HiringVisual() {
                 fontSize="9"
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="600"
-                fill={isActive || isLast ? "rgba(233,213,255,0.95)" : "rgba(255,255,255,0.45)"}
+                fill={isActive || isLast ? "#6d28d9" : "rgba(15,12,30,0.5)"}
                 letterSpacing="0.3"
                 style={{ transition: "fill 0.4s ease" }}
               >
@@ -337,8 +337,8 @@ function MentoringVisual() {
                 key={m.label}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-md"
                 style={{
-                  background: m.unlocked ? "rgba(168,85,247,0.06)" : "rgba(255,255,255,0.02)",
-                  border: `1px solid ${m.unlocked ? "rgba(168,85,247,0.18)" : "rgba(255,255,255,0.04)"}`,
+                  background: m.unlocked ? "rgba(168,85,247,0.08)" : "rgba(15,12,30,0.025)",
+                  border: `1px solid ${m.unlocked ? "rgba(168,85,247,0.22)" : "rgba(15,12,30,0.05)"}`,
                   opacity: m.unlocked ? 1 : 0.5,
                 }}
               >
@@ -346,8 +346,8 @@ function MentoringVisual() {
                 <div
                   className="w-3.5 h-3.5 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: m.progress === 100 ? "#a855f7" : "rgba(255,255,255,0.05)",
-                    border: `1px solid ${m.progress === 100 ? "#a855f7" : "rgba(255,255,255,0.15)"}`,
+                    background: m.progress === 100 ? "#a855f7" : "rgba(15,12,30,0.06)",
+                    border: `1px solid ${m.progress === 100 ? "#a855f7" : "rgba(15,12,30,0.18)"}`,
                     boxShadow: m.progress === 100 ? "0 0 8px rgba(168,85,247,0.6)" : "none",
                   }}
                 >
