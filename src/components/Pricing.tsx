@@ -146,10 +146,9 @@ const Pricing = () => {
 
         {/* Math callout */}
         <p className="max-w-2xl mx-auto text-center text-[15px] text-muted-foreground leading-relaxed mt-10">
-          At 20 videos/month, that's{" "}
-          <span className="font-bold text-accent">€2,000 with AdChefs</span> vs{" "}
-          <span className="font-bold text-accent">€4,500+ with most agencies</span>.
-          You save the retainer. We earn the work.
+          At 20 videos, you pay{" "}
+          <span className="font-bold text-accent">€2,000</span> — not{" "}
+          <span className="font-bold text-accent">€4,500+</span>. We earn it per video, not per month.
         </p>
       </div>
     </section>

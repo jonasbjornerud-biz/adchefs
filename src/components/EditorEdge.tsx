@@ -993,6 +993,9 @@ const EditorEdge = () => {
             </span>
             Interactive demo
           </div>
+          <p className="text-sm text-[#6a637e] mb-3 max-w-md mx-auto">
+            See how your performance dashboard tracks creative, editors, and results in one place.
+          </p>
           <div>
             <Button
               asChild

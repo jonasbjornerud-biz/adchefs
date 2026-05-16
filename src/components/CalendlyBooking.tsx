@@ -16,9 +16,9 @@ const CalendlyBooking = () => {
               <div>
                 <p className="font-semibold text-foreground mb-2">Book a call if:</p>
                 <ul className="space-y-2 list-disc list-outside ml-5">
-                  <li>You're an e-commerce brand spending at least €5,000/month on paid ads</li>
-                  <li>You want to ship more video creative without hiring in-house</li>
-                  <li>You value real performance data over vanity deliverables</li>
+                  <li>You're spending €5K+/month on ads and need more creative</li>
+                  <li>You want dedicated editors without hiring in-house</li>
+                  <li>You care about what converts, not just what gets delivered</li>
                 </ul>
               </div>
 
