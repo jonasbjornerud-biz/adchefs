@@ -19,11 +19,15 @@ const Index = () => {
         <Navigation />
         <Hero />
         <WhyAdChefs />
-        <HowItWorks />
-        <EditorEdge />
+        <div className="section-band section-band-white">
+          <HowItWorks />
+        </div>
+        <div className="section-band section-band-white border-t border-[hsl(240_10%_90%)]">
+          <EditorEdge />
+        </div>
 
         {/* Pricing — light background (matches hero) */}
-        <div className="section-band section-band-white">
+        <div className="section-band section-band-white border-t border-[hsl(240_10%_90%)]">
           <div className="content-container">
             <Pricing />
           </div>
