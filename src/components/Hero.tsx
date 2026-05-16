@@ -51,7 +51,7 @@ const Hero = () => {
         </h1>
 
         <p className="text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4 px-2 sm:px-0">
-          I match e-commerce brands with video editors who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
+          I match e-commerce brands with video editors who learn your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
         </p>
 
         <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground/60 mb-8 sm:mb-10">

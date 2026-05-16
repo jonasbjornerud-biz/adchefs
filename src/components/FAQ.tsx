@@ -60,6 +60,10 @@ const FAQ = () => {
           </p>
         </div>
 
+        <p className="text-center text-sm text-[#6b7280] max-w-lg mx-auto mb-10">
+          If you're not ready to book yet, these usually cover what's left.
+        </p>
+
         <div className="w-full max-w-2xl mx-auto mt-14">
           <Accordion type="single" collapsible className="w-full space-y-3">
             {faqs.map((faq, index) => (
