@@ -440,9 +440,9 @@ function EditorDeliveryTrackerVisual() {
               onClick={() => { setActiveEditor(i); setAnimKey((k) => k + 1); }}
               className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold transition-all px-2 py-1 rounded-full"
               style={{
-                color: i === activeEditor ? "#fff" : "rgba(255,255,255,0.45)",
-                background: i === activeEditor ? `${e.color}25` : "rgba(255,255,255,0.03)",
-                border: i === activeEditor ? `1px solid ${e.color}66` : "1px solid rgba(255,255,255,0.06)",
+                color: i === activeEditor ? "#fff" : "rgba(15,12,30,0.55)",
+                background: i === activeEditor ? `${e.color}` : "rgba(15,12,30,0.035)",
+                border: i === activeEditor ? `1px solid ${e.color}` : "1px solid rgba(15,12,30,0.08)",
                 boxShadow: i === activeEditor ? `0 0 12px -2px ${e.color}` : "none",
               }}
             >
@@ -538,7 +538,7 @@ function MiniKpiTile({
   const goodDirection = def.key === "cpa" ? delta < 0 : delta > 0;
   const deltaPct = prev !== 0 ? (delta / prev) * 100 : 0;
   const arrow = delta > 0 ? "▲" : delta < 0 ? "▼" : "·";
-  const deltaColor = goodDirection ? "#a3e635" : "rgba(255,255,255,0.45)";
+  const deltaColor = goodDirection ? "#059669" : "rgba(15,12,30,0.5)";
 
   return (
     <div
@@ -596,8 +596,8 @@ function MiniKpiTile({
           className="text-[9px] font-semibold tabular-nums px-1.5 py-0.5 rounded-md"
           style={{
             color: deltaColor,
-            background: goodDirection ? "rgba(163,230,53,0.10)" : "rgba(255,255,255,0.04)",
-            border: `1px solid ${goodDirection ? "rgba(163,230,53,0.25)" : "rgba(255,255,255,0.06)"}`,
+            background: goodDirection ? "rgba(5,150,105,0.10)" : "rgba(15,12,30,0.04)",
+            border: `1px solid ${goodDirection ? "rgba(5,150,105,0.25)" : "rgba(15,12,30,0.08)"}`,
           }}
         >
           {arrow} {Math.abs(deltaPct).toFixed(1)}%
