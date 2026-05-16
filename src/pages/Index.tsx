@@ -18,13 +18,13 @@ const Index = () => {
       <div className="min-h-screen relative z-10">
         <Navigation />
         <Hero />
+        <WhyAdChefs />
         <div className="section-band section-band-white">
           <HowItWorks />
         </div>
         <div className="section-band section-band-white border-t border-[hsl(240_10%_90%)]">
           <EditorEdge />
         </div>
-        <WhyAdChefs />
 
         {/* Pricing — light background (matches hero) */}
         <div className="section-band section-band-white border-t border-[hsl(240_10%_90%)]">
