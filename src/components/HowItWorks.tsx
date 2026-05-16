@@ -77,7 +77,7 @@ function StepCard({
               border: "1px solid rgba(168,85,247,0.25)",
             }}
           >
-            <Icon className="w-3.5 h-3.5 text-white" />
+            <Icon className="w-3.5 h-3.5 text-[#7c3aed]" />
           </div>
         </div>
         <h3 className="text-[20px] font-semibold text-[#0f0c1e] tracking-tight mb-2">
@@ -241,7 +241,7 @@ function HiringVisual() {
               cx={fLeft + (fRight - fLeft) / 2}
               cy={dy}
               r="2.5"
-              fill="#fff"
+              fill="#7c3aed"
               opacity={1 - cycle * 0.6}
               style={{ filter: "drop-shadow(0 0 6px #c084fc)" }}
             />
@@ -509,7 +509,7 @@ function PlacementVisual() {
               <text x={cx} y={cy + 4} textAnchor="middle"
                 fontSize={m.initials.length > 3 ? "8" : "10"}
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="800" fill="#fff">
+                fontWeight="800" fill={m.color}>
                 {m.initials}
               </text>
               <text x={cx} y={cy + 38} textAnchor="middle"
