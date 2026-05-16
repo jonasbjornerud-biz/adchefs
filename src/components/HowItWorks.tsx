@@ -27,12 +27,12 @@ function StepCard({
       style={{
         animationDelay: `${delay}s`,
         background:
-          "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
-        border: "1px solid rgba(255,255,255,0.06)",
+          "linear-gradient(180deg, #ffffff 0%, #fbfaff 100%)",
+        border: "1px solid rgba(15,12,30,0.07)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         boxShadow:
-          "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
+          "0 1px 0 rgba(255,255,255,0.9) inset, 0 0 0 1px rgba(124,58,237,0.04) inset, 0 24px 60px -22px rgba(15,12,30,0.18), 0 4px 16px -4px rgba(124,58,237,0.08)",
       }}
     >
       <div
@@ -46,7 +46,7 @@ function StepCard({
         className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none hiw-horizon"
         style={{
           background:
-            "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.40) 0%, rgba(168,85,247,0.10) 35%, transparent 70%)",
+            "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.28) 0%, rgba(168,85,247,0.08) 35%, transparent 70%)",
           filter: "blur(20px)",
         }}
       />
@@ -63,7 +63,7 @@ function StepCard({
           <div
             className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
             style={{
-              color: "#e9d5ff",
+              color: "#5b21b6",
               background: "rgba(168,85,247,0.12)",
               border: "1px solid rgba(168,85,247,0.30)",
             }}
@@ -80,10 +80,10 @@ function StepCard({
             <Icon className="w-3.5 h-3.5 text-white" />
           </div>
         </div>
-        <h3 className="text-[20px] font-semibold text-white tracking-tight mb-2">
+        <h3 className="text-[20px] font-semibold text-[#0f0c1e] tracking-tight mb-2">
           {title}
         </h3>
-        <p className="text-sm text-white/50 leading-relaxed">{description}</p>
+        <p className="text-sm text-[#5b556e] leading-relaxed">{description}</p>
       </div>
     </div>
   );
@@ -164,8 +164,8 @@ function HiringVisual() {
                 width={fullW}
                 height={stageH}
                 rx={stageH / 2}
-                fill="rgba(255,255,255,0.025)"
-                stroke="rgba(255,255,255,0.04)"
+                fill="rgba(15,12,30,0.04)"
+                stroke="rgba(15,12,30,0.05)"
                 strokeWidth="1"
               />
               {/* Stage bar */}
@@ -193,7 +193,7 @@ function HiringVisual() {
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="800"
                 fill="#fff"
-                style={{ textShadow: isLast ? "0 0 10px rgba(168,85,247,0.8)" : "none" }}
+                style={{ textShadow: "none" }}
               >
                 {s.count}
               </text>
@@ -254,13 +254,13 @@ function HiringVisual() {
             x={W / 2 - 64} y="14"
             width="128" height="22"
             rx="11"
-            fill="rgba(20,16,32,0.85)"
+            fill="rgba(255,255,255,0.96)"
             stroke="rgba(168,85,247,0.30)"
             strokeWidth="1"
           />
           <text x={W / 2} y="29" textAnchor="middle"
             fontSize="10" fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700" fill="rgba(255,255,255,0.85)" letterSpacing="0.5">
+            fontWeight="700" fill="rgba(15,12,30,0.85)" letterSpacing="0.5">
             HIRING FUNNEL
           </text>
         </g>
@@ -305,7 +305,7 @@ function MentoringVisual() {
       <div
         className="flex-1 rounded-xl overflow-hidden relative"
         style={{
-          background: "rgba(20,16,32,0.6)",
+          background: "rgba(255,255,255,0.78)",
           border: "1px solid rgba(168,85,247,0.20)",
           backdropFilter: "blur(8px)",
         }}
@@ -316,7 +316,7 @@ function MentoringVisual() {
         >
           <div className="flex items-center gap-1.5">
             <GraduationCap className="w-3 h-3 text-[#c084fc]" />
-            <span className="text-[9px] uppercase tracking-wider font-semibold text-white/70">
+            <span className="text-[9px] uppercase tracking-wider font-semibold text-[#3a3354]">
               Editor curriculum
             </span>
           </div>
@@ -359,12 +359,12 @@ function MentoringVisual() {
                 </div>
 
                 {/* Label */}
-                <span className="text-[9px] font-medium text-white/85 flex-1 truncate">
+                <span className="text-[9px] font-medium text-[#1a1530] flex-1 truncate">
                   {m.label}
                 </span>
 
                 {/* Progress bar */}
-                <div className="w-12 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                <div className="w-12 h-1 rounded-full overflow-hidden" style={{ background: "rgba(15,12,30,0.08)" }}>
                   <div
                     className="h-full rounded-full transition-all duration-300"
                     style={{
@@ -396,7 +396,7 @@ function MentoringVisual() {
                 <stop offset="100%" stopColor="#7c3aed" />
               </linearGradient>
             </defs>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(15,12,30,0.07)" strokeWidth="6" />
             <circle
               cx="50" cy="50" r="40"
               fill="none"
@@ -417,11 +417,11 @@ function MentoringVisual() {
             </circle>
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-[22px] font-extrabold text-white leading-none tabular-nums"
-              style={{ textShadow: "0 0 12px rgba(168,85,247,0.7)" }}>
-              78<span className="text-[14px] font-bold text-white/70">%</span>
+            <span className="text-[22px] font-extrabold text-[#0f0c1e] leading-none tabular-nums"
+              style={{ textShadow: "0 1px 0 rgba(255,255,255,0.6)" }}>
+              78<span className="text-[14px] font-bold text-[#3a3354]">%</span>
             </span>
-            <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 mt-1 leading-none">
+            <span className="text-[8px] uppercase tracking-wider font-semibold text-[#5b556e] mt-1 leading-none">
               Complete
             </span>
           </div>
@@ -430,7 +430,7 @@ function MentoringVisual() {
         <div
           className="absolute bottom-2 left-2 right-2 text-center text-[8px] uppercase tracking-wider font-semibold rounded-md py-0.5"
           style={{
-            color: "#e9d5ff",
+            color: "#5b21b6",
             background: "rgba(168,85,247,0.15)",
             border: "1px solid rgba(168,85,247,0.30)",
           }}
@@ -486,14 +486,14 @@ function PlacementVisual() {
           width="280"
           height="130"
           rx="18"
-          fill="rgba(20,16,32,0.4)"
+          fill="rgba(15,12,30,0.62)"
           stroke="rgba(168,85,247,0.30)"
           strokeWidth="1"
           strokeDasharray="4 5"
         />
         <text x={W / 2} y="48" textAnchor="middle"
           fontSize="9" fontFamily="ui-sans-serif, system-ui, sans-serif"
-          fontWeight="700" fill="rgba(255,255,255,0.55)" letterSpacing="1">
+          fontWeight="700" fill="rgba(15,12,30,0.62)" letterSpacing="1">
           YOUR TEAM
         </text>
 
@@ -503,7 +503,7 @@ function PlacementVisual() {
           const cy = 120;
           return (
             <g key={i}>
-              <circle cx={cx} cy={cy} r="22" fill="rgba(20,16,32,0.85)"
+              <circle cx={cx} cy={cy} r="22" fill="rgba(255,255,255,0.96)"
                 stroke={m.color} strokeWidth="1.5"
                 style={{ filter: `drop-shadow(0 0 8px ${m.color}55)` }} />
               <text x={cx} y={cy + 4} textAnchor="middle"
@@ -514,7 +514,7 @@ function PlacementVisual() {
               </text>
               <text x={cx} y={cy + 38} textAnchor="middle"
                 fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif"
-                fontWeight="600" fill="rgba(255,255,255,0.45)" letterSpacing="0.5">
+                fontWeight="600" fill="rgba(15,12,30,0.55)" letterSpacing="0.5">
                 {m.role}
               </text>
             </g>
@@ -561,7 +561,7 @@ function PlacementVisual() {
           </text>
           <text x="290" y="158" textAnchor="middle"
             fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700" fill="#e9d5ff" letterSpacing="0.5">
+            fontWeight="700" fill="#6d28d9" letterSpacing="0.5">
             Your editor
           </text>
 
@@ -577,12 +577,12 @@ function PlacementVisual() {
         {/* Bottom badge */}
         <g>
           <rect x={W / 2 - 76} y="200" width="152" height="24" rx="12"
-            fill="rgba(20,16,32,0.85)"
+            fill="rgba(255,255,255,0.96)"
             stroke="rgba(168,85,247,0.40)"
             strokeWidth="1" />
           <text x={W / 2} y="216" textAnchor="middle"
             fontSize="10" fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontWeight="700" fill="#e9d5ff" letterSpacing="0.5">
+            fontWeight="700" fill="#6d28d9" letterSpacing="0.5">
             DEDICATED · NOT SHARED
           </text>
         </g>
@@ -599,13 +599,13 @@ const HowItWorks = () => {
     <section
       id="how-it-works"
       className="relative py-28 overflow-hidden -mx-6 md:-mx-0"
-      style={{ background: "#09090f" }}
+      style={{ background: "hsl(0 0% 100%)" }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.10) 0%, transparent 70%)",
         }}
       />
       <div className="absolute inset-0 pointer-events-none hiw-grain-bg" />
@@ -613,7 +613,7 @@ const HowItWorks = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-[#1a1530]"
             style={{
               background: "rgba(168,85,247,0.12)",
               border: "1px solid rgba(168,85,247,0.30)",
@@ -623,12 +623,12 @@ const HowItWorks = () => {
             <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
             How it works
           </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#0f0c1e] leading-tight mb-5">
             An{" "}
             <span
               style={{
                 background:
-                  "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
+                  "linear-gradient(135deg, #0f0c1e 0%, #4c1d95 40%, #7c3aed 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -637,7 +637,7 @@ const HowItWorks = () => {
             </span>
             , handled for you.
           </h2>
-          <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
+          <p className="text-[#5b556e] max-w-2xl mx-auto text-base leading-relaxed">
             Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team, like a contractor you never had to recruit. They learn your brand, sit in your Slack, and grow with your account. I handle the recruiting, the mentoring, and the performance management, so you don't have to.
           </p>
         </div>
@@ -682,10 +682,10 @@ const HowItWorks = () => {
           transform: translateY(-4px);
           border-color: rgba(168,85,247,0.30) !important;
           box-shadow:
-            0 1px 0 rgba(255,255,255,0.10) inset,
-            0 0 0 1px rgba(168,85,247,0.20) inset,
-            0 30px 80px -20px rgba(168,85,247,0.25),
-            0 0 60px -10px rgba(168,85,247,0.18) !important;
+            0 1px 0 rgba(255,255,255,1) inset,
+            0 0 0 1px rgba(124,58,237,0.18) inset,
+            0 30px 80px -20px rgba(124,58,237,0.25),
+            0 0 60px -10px rgba(124,58,237,0.18) !important;
         }
         .hiw-horizon { opacity: 0.55; transition: opacity 0.8s ease; }
         .hiw-card:hover .hiw-horizon { opacity: 0.95; }
@@ -693,15 +693,15 @@ const HowItWorks = () => {
         .hiw-grain-bg {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
           background-size: 220px 220px;
-          mix-blend-mode: overlay;
-          opacity: 0.05;
+          mix-blend-mode: multiply;
+          opacity: 0.025;
         }
         .hiw-grain-purple {
           background-image:
             url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.66  0 0 0 0 0.33  0 0 0 0 0.97  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
           background-size: 180px 180px;
           mix-blend-mode: soft-light;
-          opacity: 0.35;
+          opacity: 0.22;
         }
 
         @keyframes hiw-breath {

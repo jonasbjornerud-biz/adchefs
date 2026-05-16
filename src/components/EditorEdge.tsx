@@ -27,12 +27,12 @@ function FeatureCard({
       style={{
         animationDelay: `${delay}s`,
         background:
-          "linear-gradient(180deg, rgba(28,24,42,0.85) 0%, rgba(14,12,22,0.92) 100%)",
-        border: "1px solid rgba(255,255,255,0.06)",
+          "linear-gradient(180deg, #ffffff 0%, #fbfaff 100%)",
+        border: "1px solid rgba(15,12,30,0.07)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         boxShadow:
-          "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px -20px rgba(0,0,0,0.6)",
+          "0 1px 0 rgba(255,255,255,0.9) inset, 0 0 0 1px rgba(124,58,237,0.04) inset, 0 24px 60px -22px rgba(15,12,30,0.18), 0 4px 16px -4px rgba(124,58,237,0.08)",
       }}
     >
       {/* Top edge highlight */}
@@ -48,16 +48,16 @@ function FeatureCard({
         className="absolute inset-x-0 -bottom-32 h-64 pointer-events-none mw-horizon"
         style={{
           background:
-            "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.40) 0%, rgba(168,85,247,0.10) 35%, transparent 70%)",
+            "radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.28) 0%, rgba(168,85,247,0.08) 35%, transparent 70%)",
           filter: "blur(20px)",
         }}
       />
 
       <div className="relative p-7 pb-2">
-        <h3 className="text-[22px] font-semibold text-white tracking-tight mb-2">
+        <h3 className="text-[22px] font-semibold text-[#0f0c1e] tracking-tight mb-2">
           {title}
         </h3>
-        <p className="text-sm text-white/45 leading-relaxed max-w-md">
+        <p className="text-sm text-[#6a637e] leading-relaxed max-w-md">
           {description}
         </p>
       </div>
@@ -118,7 +118,7 @@ function EditorBrainVisual() {
             <g key={n.id}>
               <path d={d} fill="none" stroke="rgba(168,85,247,0.18)" strokeWidth="1" />
               {/* Pulse traveling along path */}
-              <circle r="2.4" fill="#e9d5ff" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
+              <circle r="2.4" fill="#6d28d9" style={{ filter: "drop-shadow(0 0 6px #a855f7)" }}>
                 <animateMotion dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" path={d} />
                 <animate attributeName="opacity" values="0;1;1;0" dur={`${2.6 + i * 0.18}s`} repeatCount="indefinite" />
               </circle>
@@ -151,7 +151,7 @@ function EditorBrainVisual() {
           <polygon
             points={hexPoints(center.x, center.y, 18)}
             fill="none"
-            stroke="rgba(255,255,255,0.5)"
+            stroke="rgba(124,58,237,0.55)"
             strokeWidth="1"
           />
         </g>
@@ -194,14 +194,14 @@ function EditorBrainVisual() {
           <div
             className="mw-node-pulse flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg backdrop-blur-md"
             style={{
-              background: "rgba(20,16,32,0.85)",
+              background: "rgba(255,255,255,0.96)",
               border: "1px solid rgba(168,85,247,0.45)",
               boxShadow: "0 0 14px rgba(168,85,247,0.35)",
               animationDelay: `${i * 0.25}s`,
             }}
           >
-            <span className="text-[8px] uppercase tracking-wider font-semibold text-white/55 leading-none">{n.label}</span>
-            <span className="text-[12px] font-bold text-white tabular-nums leading-none">{n.value}</span>
+            <span className="text-[8px] uppercase tracking-wider font-semibold text-[#5b556e] leading-none">{n.label}</span>
+            <span className="text-[12px] font-bold text-[#0f0c1e] tabular-nums leading-none">{n.value}</span>
           </div>
         </div>
       ))}
@@ -286,13 +286,13 @@ function EditorDeliveryTrackerVisual() {
             className="w-2 h-2 rounded-full mw-blink"
             style={{ background: activeColor, boxShadow: `0 0 8px ${activeColor}` }}
           />
-          <div className="text-[11px] uppercase tracking-wider font-semibold text-white">
+          <div className="text-[11px] uppercase tracking-wider font-semibold text-[#0f0c1e]">
             {activeName}
           </div>
-          <div className="text-[10px] font-medium text-white/40">· last 6 weeks</div>
+          <div className="text-[10px] font-medium text-[#7a7390]">· last 6 weeks</div>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-[10px] uppercase tracking-wider font-semibold text-white/40">Approval</span>
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-[#7a7390]">Approval</span>
           <span
             key={`rate-${animKey}`}
             className="text-[14px] font-bold tabular-nums mw-fade-in"
@@ -325,7 +325,7 @@ function EditorDeliveryTrackerVisual() {
                 x2={W - PAD_X}
                 y1={y}
                 y2={y}
-                stroke="rgba(255,255,255,0.06)"
+                stroke="rgba(15,12,30,0.07)"
                 strokeWidth="1"
                 strokeDasharray={v === 0 ? "0" : "2 4"}
               />
@@ -336,7 +336,7 @@ function EditorDeliveryTrackerVisual() {
                 fontSize="8"
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="600"
-                fill="rgba(255,255,255,0.30)"
+                fill="rgba(15,12,30,0.45)"
               >
                 {v}
               </text>
@@ -408,7 +408,7 @@ function EditorDeliveryTrackerVisual() {
                 fontSize="9"
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
                 fontWeight="600"
-                fill="rgba(255,255,255,0.40)"
+                fill="rgba(15,12,30,0.5)"
               >
                 W{i + 1}
               </text>
@@ -454,7 +454,7 @@ function EditorDeliveryTrackerVisual() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-white/45">
+        <div className="flex items-center gap-2 text-[8px] uppercase tracking-wider font-semibold text-[#6a637e]">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-sm" style={{ background: `${activeColor}40`, border: `1px solid ${activeColor}55` }} />
             Delivered
@@ -476,7 +476,7 @@ const KPI_DEFS = [
   { key: "roas", label: "ROAS", unit: "x", color: "#c084fc", base: 3.4, amp: 0.28, range: [1.8, 5.2] as [number, number] },
   { key: "cpa",  label: "CPA",  unit: "€", color: "#a855f7", base: 22,  amp: 1.6,  range: [12, 38]   as [number, number] },
   { key: "ctr",  label: "CTR",  unit: "%", color: "#d8b4fe", base: 3.2, amp: 0.32, range: [1.5, 5.5] as [number, number] },
-  { key: "hook", label: "Hook", unit: "%", color: "#e9d5ff", base: 38,  amp: 3.5,  range: [25, 55]   as [number, number] },
+  { key: "hook", label: "Hook", unit: "%", color: "#5b21b6", base: 38,  amp: 3.5,  range: [25, 55]   as [number, number] },
   { key: "hold", label: "Hold", unit: "%", color: "#7c3aed", base: 26,  amp: 2.6,  range: [15, 38]   as [number, number] },
 ];
 
@@ -544,10 +544,10 @@ function MiniKpiTile({
     <div
       className="relative rounded-xl overflow-hidden"
       style={{
-        background: "rgba(20,16,32,0.6)",
+        background: "rgba(255,255,255,0.78)",
         border: `1px solid ${def.color}22`,
         backdropFilter: "blur(8px)",
-        boxShadow: `inset 0 0 24px ${def.color}10`,
+        boxShadow: `inset 0 0 24px ${def.color}14`,
       }}
     >
       {/* Background sparkline */}
@@ -579,17 +579,17 @@ function MiniKpiTile({
 
       <div className="relative p-2.5 flex items-start justify-between h-full">
         <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
+          <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-[#5b556e]">
             <span
               className="w-1.5 h-1.5 rounded-full"
               style={{ background: def.color, boxShadow: `0 0 6px ${def.color}` }}
             />
             {def.label}
           </div>
-          <div className="text-[16px] font-bold text-white tabular-nums leading-none mt-0.5">
-            {def.unit === "€" && <span className="text-white/45 text-[10px] mr-0.5">€</span>}
+          <div className="text-[16px] font-bold text-[#0f0c1e] tabular-nums leading-none mt-0.5">
+            {def.unit === "€" && <span className="text-[#6a637e] text-[10px] mr-0.5">€</span>}
             {fmtKpi(latest, def.key)}
-            {def.unit !== "€" && <span className="text-white/45 text-[10px] ml-0.5">{def.unit}</span>}
+            {def.unit !== "€" && <span className="text-[#6a637e] text-[10px] ml-0.5">{def.unit}</span>}
           </div>
         </div>
         <div
@@ -704,11 +704,11 @@ function KpiDashboardVisual() {
       {/* Top header */}
       <div className="flex items-center justify-between mb-2 z-10">
         <div className="flex items-center gap-2">
-          <Activity className="w-3.5 h-3.5 text-white/70" />
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-white/85">
+          <Activity className="w-3.5 h-3.5 text-[#3a3354]" />
+          <span className="text-[11px] uppercase tracking-wider font-semibold text-[#1a1530]">
             Live performance feed
           </span>
-          <span className="text-[10px] text-white/35">· last 24h</span>
+          <span className="text-[10px] text-[#8a839e]">· last 24h</span>
         </div>
         <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider"
           style={{ color: ACCENT }}>
@@ -727,25 +727,25 @@ function KpiDashboardVisual() {
         <div
           className="relative rounded-2xl overflow-hidden"
           style={{
-            background: "linear-gradient(180deg, rgba(28,20,46,0.7) 0%, rgba(14,10,26,0.7) 100%)",
+            background: "linear-gradient(180deg, rgba(252,251,255,0.9) 0%, rgba(248,247,253,0.95) 100%)",
             border: "1px solid rgba(168,85,247,0.22)",
-            boxShadow: "inset 0 0 40px rgba(168,85,247,0.08)",
+            boxShadow: "inset 0 0 40px rgba(168,85,247,0.06)",
           }}
         >
           {/* Header inside featured */}
           <div className="absolute left-3 top-2.5 right-3 flex items-end justify-between z-10">
             <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-white/55">
+              <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider font-semibold text-[#5b556e]">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: roas.color, boxShadow: `0 0 6px ${roas.color}` }} />
                 {roas.label} · account avg
               </div>
-              <div className="text-[26px] font-extrabold text-white tabular-nums leading-none">
-                {fmtKpi(roasLatest, roas.key)}<span className="text-white/45 text-[14px] ml-0.5">x</span>
+              <div className="text-[26px] font-extrabold text-[#0f0c1e] tabular-nums leading-none">
+                {fmtKpi(roasLatest, roas.key)}<span className="text-[#6a637e] text-[14px] ml-0.5">x</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-0.5">
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-white/40">7d range</span>
-              <span className="text-[10px] font-semibold text-white/70 tabular-nums">
+              <span className="text-[9px] uppercase tracking-wider font-semibold text-[#7a7390]">7d range</span>
+              <span className="text-[10px] font-semibold text-[#3a3354] tabular-nums">
                 {roasMin.toFixed(1)}x – {roasMax.toFixed(1)}x
               </span>
             </div>
@@ -774,7 +774,7 @@ function KpiDashboardVisual() {
                     x2={FW - PAD_R}
                     y1={y}
                     y2={y}
-                    stroke="rgba(255,255,255,0.05)"
+                    stroke="rgba(15,12,30,0.06)"
                     strokeWidth="1"
                     strokeDasharray={p === 1 ? "0" : "2 5"}
                   />
@@ -785,7 +785,7 @@ function KpiDashboardVisual() {
                     fontSize="8"
                     fontFamily="ui-sans-serif, system-ui, sans-serif"
                     fontWeight="600"
-                    fill="rgba(255,255,255,0.30)"
+                    fill="rgba(15,12,30,0.45)"
                   >
                     {v.toFixed(1)}x
                   </text>
@@ -803,7 +803,7 @@ function KpiDashboardVisual() {
                   x2={x}
                   y1={PAD_T}
                   y2={PAD_T + innerH}
-                  stroke="rgba(255,255,255,0.03)"
+                  stroke="rgba(15,12,30,0.04)"
                   strokeWidth="1"
                 />
               );
@@ -866,7 +866,7 @@ function KpiDashboardVisual() {
                   fontSize="8"
                   fontFamily="ui-sans-serif, system-ui, sans-serif"
                   fontWeight="600"
-                  fill="rgba(255,255,255,0.30)"
+                  fill="rgba(15,12,30,0.45)"
                 >
                   {label}
                 </text>
@@ -899,13 +899,13 @@ const EditorEdge = () => {
   return (
     <section
       className="relative py-28 overflow-hidden"
-      style={{ background: "#09090f" }}
+      style={{ background: "hsl(0 0% 100%)" }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.14) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.10) 0%, transparent 70%)",
         }}
       />
       <div className="absolute inset-0 pointer-events-none mw-grain-bg" />
@@ -913,7 +913,7 @@ const EditorEdge = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-white/85"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-[11px] font-medium text-[#1a1530]"
             style={{
               background: "rgba(168,85,247,0.12)",
               border: "1px solid rgba(168,85,247,0.30)",
@@ -923,12 +923,12 @@ const EditorEdge = () => {
             <Sparkles className="w-3 h-3" style={{ color: ACCENT }} />
             What sets AdChefs apart
           </div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-5">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#0f0c1e] leading-tight mb-5">
             Editors who understand{" "}
             <span
               style={{
                 background:
-                  "linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)",
+                  "linear-gradient(135deg, #0f0c1e 0%, #4c1d95 40%, #7c3aed 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -937,18 +937,18 @@ const EditorEdge = () => {
             </span>
             .
           </h2>
-          <p className="text-white/50 max-w-2xl mx-auto text-base leading-relaxed">
+          <p className="text-[#5b556e] max-w-2xl mx-auto text-base leading-relaxed">
             Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, delivery, all in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions are driven by data, not guesses.
           </p>
 
-          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-white"
+          <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold text-[#0f0c1e]"
             style={{
               background: "linear-gradient(135deg, rgba(168,85,247,0.22), rgba(124,58,237,0.18))",
               border: "1px solid rgba(168,85,247,0.45)",
               boxShadow: "0 0 28px -4px rgba(168,85,247,0.55)",
             }}
           >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: "#e9d5ff" }} />
+            <Sparkles className="w-3.5 h-3.5" style={{ color: "#5b21b6" }} />
             <span>Included free. You only pay per video.</span>
           </div>
         </div>
@@ -980,7 +980,7 @@ const EditorEdge = () => {
         </div>
 
         <div className="text-center">
-          <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-white/70"
+          <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider text-[#3a3354]"
             style={{
               background: "rgba(168,85,247,0.10)",
               border: "1px solid rgba(168,85,247,0.25)",
@@ -1008,7 +1008,7 @@ const EditorEdge = () => {
               </Link>
             </Button>
           </div>
-          <p className="mt-3 text-xs text-white/45 max-w-md mx-auto">
+          <p className="mt-3 text-xs text-[#6a637e] max-w-md mx-auto">
             Sample dashboard with mock data. Your real version is fully tailored to your account.
           </p>
         </div>
@@ -1026,10 +1026,10 @@ const EditorEdge = () => {
           transform: translateY(-4px);
           border-color: rgba(168,85,247,0.30) !important;
           box-shadow:
-            0 1px 0 rgba(255,255,255,0.10) inset,
-            0 0 0 1px rgba(168,85,247,0.20) inset,
-            0 30px 80px -20px rgba(168,85,247,0.25),
-            0 0 60px -10px rgba(168,85,247,0.18) !important;
+            0 1px 0 rgba(255,255,255,1) inset,
+            0 0 0 1px rgba(124,58,237,0.18) inset,
+            0 30px 80px -20px rgba(124,58,237,0.25),
+            0 0 60px -10px rgba(124,58,237,0.18) !important;
         }
         .mw-horizon { opacity: 0.55; transition: opacity 0.8s ease; }
         .mw-card:hover .mw-horizon { opacity: 0.95; }
@@ -1038,8 +1038,8 @@ const EditorEdge = () => {
         .mw-grain-bg {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
           background-size: 220px 220px;
-          mix-blend-mode: overlay;
-          opacity: 0.05;
+          mix-blend-mode: multiply;
+          opacity: 0.025;
         }
 
         /* Per-visual purple-tinted grain */
@@ -1048,7 +1048,7 @@ const EditorEdge = () => {
             url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.66  0 0 0 0 0.33  0 0 0 0 0.97  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
           background-size: 180px 180px;
           mix-blend-mode: soft-light;
-          opacity: 0.35;
+          opacity: 0.22;
         }
 
         /* Animations */
