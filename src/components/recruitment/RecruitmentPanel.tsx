@@ -216,6 +216,12 @@ function Postings() {
                 <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
                 <Textarea rows={10} className="font-mono text-xs" value={editing.trial_email_body ?? ''} onChange={e => setEditing({ ...editing, trial_email_body: e.target.value })} />
               </div>
+              <div className="space-y-1.5 border-t border-border pt-4"><Label>Follow-up email subject</Label><Input value={editing.followup_email_subject ?? ''} onChange={e => setEditing({ ...editing, followup_email_subject: e.target.value })} /></div>
+              <div className="space-y-1.5">
+                <Label>Follow-up email body</Label>
+                <p className="text-xs text-muted-foreground">Sent manually when an applicant hasn't submitted the trial. Same variables available.</p>
+                <Textarea rows={8} className="font-mono text-xs" value={editing.followup_email_body ?? ''} onChange={e => setEditing({ ...editing, followup_email_body: e.target.value })} />
+              </div>
               <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={v => setEditing({ ...editing, is_active: v })} /><Label>Active (public)</Label></div>
             </div>
           )}
