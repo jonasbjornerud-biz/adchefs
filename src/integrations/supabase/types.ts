@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_config: {
+        Row: {
+          id: number
+          submission_form_url: string
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          submission_form_url?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          submission_form_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      applications: {
+        Row: {
+          additional_info: string | null
+          availability: string
+          created_at: string
+          email: string
+          first_name: string
+          followup_sent_at: string | null
+          id: string
+          job_posting_id: string | null
+          last_name: string
+          portfolio_url: string | null
+          proceed: boolean | null
+          qualifies: boolean
+          reviewed_at: string | null
+          software: string
+          stage: string
+          trial_email_scheduled_for: string | null
+          trial_email_sent_at: string | null
+          updated_at: string
+          years_experience: string | null
+        }
+        Insert: {
+          additional_info?: string | null
+          availability: string
+          created_at?: string
+          email: string
+          first_name: string
+          followup_sent_at?: string | null
+          id?: string
+          job_posting_id?: string | null
+          last_name: string
+          portfolio_url?: string | null
+          proceed?: boolean | null
+          qualifies?: boolean
+          reviewed_at?: string | null
+          software: string
+          stage?: string
+          trial_email_scheduled_for?: string | null
+          trial_email_sent_at?: string | null
+          updated_at?: string
+          years_experience?: string | null
+        }
+        Update: {
+          additional_info?: string | null
+          availability?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          followup_sent_at?: string | null
+          id?: string
+          job_posting_id?: string | null
+          last_name?: string
+          portfolio_url?: string | null
+          proceed?: boolean | null
+          qualifies?: boolean
+          reviewed_at?: string | null
+          software?: string
+          stage?: string
+          trial_email_scheduled_for?: string | null
+          trial_email_sent_at?: string | null
+          updated_at?: string
+          years_experience?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           brand_name: string
@@ -44,6 +136,51 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           username?: string
+        }
+        Relationships: []
+      }
+      job_postings: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          junior_pay: string | null
+          notion_task_url: string
+          senior_pay: string | null
+          slug: string
+          title: string
+          trial_email_body: string
+          trial_email_subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          junior_pay?: string | null
+          notion_task_url?: string
+          senior_pay?: string | null
+          slug: string
+          title: string
+          trial_email_body?: string
+          trial_email_subject?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          junior_pay?: string | null
+          notion_task_url?: string
+          senior_pay?: string | null
+          slug?: string
+          title?: string
+          trial_email_body?: string
+          trial_email_subject?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -198,6 +335,41 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trial_submissions: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          email: string
+          id: string
+          notes: string | null
+          submission_url: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          notes?: string | null
+          submission_url: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          notes?: string | null
+          submission_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trial_submissions_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
             referencedColumns: ["id"]
           },
         ]
