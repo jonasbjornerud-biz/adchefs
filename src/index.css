@@ -148,7 +148,7 @@
       #F7F6F3 0%,
       #9ED8F5 25%,
       #ffffff 45%,
-      #f5f3ff 55%,
+      #F7F6F3 55%,
       #9ED8F5 75%,
       #9ED8F5 100%
     );
@@ -174,7 +174,7 @@
   .text-muted-readable { color: rgba(255, 255, 255, 0.30); }
 
   .bg-page {
-    background-color: #09090f;
+    background-color: #1A1A1A;
     background-image:
       radial-gradient(ellipse 80% 40% at 50% 0%, rgba(59, 134, 168, 0.15) 0%, transparent 100%);
   }
@@ -185,15 +185,15 @@
   }
 
   .bg-card-surface {
-    background: #111118;
+    background: #1A1A1A;
   }
 
   .bg-elevated {
-    background: #111118;
+    background: #1A1A1A;
   }
 
   .bg-elevated-surface {
-    background: #111118;
+    background: #1A1A1A;
   }
 
   .bg-stat-box { background: rgba(158, 216, 245, 0.06); }
@@ -399,7 +399,7 @@
     height: 400px;
     top: 6%;
     right: 4%;
-    background: radial-gradient(circle, #c4b5fd 0%, rgba(158, 216, 245,0) 70%);
+    background: radial-gradient(circle, #9ED8F5 0%, rgba(158, 216, 245,0) 70%);
     animation: orb-float-2 35s ease-in-out infinite;
     opacity: 0.28;
   }
