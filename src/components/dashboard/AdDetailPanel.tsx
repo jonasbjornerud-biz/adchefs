@@ -44,7 +44,7 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
             <h2 className="text-lg font-semibold text-white">{ad.name}</h2>
             <p className="text-sm text-white/40">{ad.campaignName}</p>
           </div>
-          <button onClick={onClose} className="w-9 h-9 rounded-full flex items-center justify-center border border-white/[0.06] hover:border-[#a855f7]/30 hover:bg-[#a855f7]/5 transition-all duration-200 cursor-pointer">
+          <button onClick={onClose} className="w-9 h-9 rounded-full flex items-center justify-center border border-white/[0.06] hover:border-[#9ED8F5]/30 hover:bg-[#9ED8F5]/5 transition-all duration-200 cursor-pointer">
             <X className="w-4 h-4 text-white/40" />
           </button>
         </div>
@@ -65,20 +65,20 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
               <AreaChart data={ad.dailyData}>
                 <defs>
                   <linearGradient id="spendGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#a855f7" stopOpacity={0.25} />
-                    <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#34d399" stopOpacity={0.25} />
-                    <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#3B86A8" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
                 <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="spend" stroke="#a855f7" strokeWidth={2} fill="url(#spendGrad)" name="Spend" dot={false} activeDot={{ fill: "#a855f7", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
-                <Area type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={2} fill="url(#revGrad)" name="Revenue" dot={false} activeDot={{ fill: "#34d399", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#spendGrad)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="revenue" stroke="#3B86A8" strokeWidth={2} fill="url(#revGrad)" name="Revenue" dot={false} activeDot={{ fill: "#3B86A8", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -89,8 +89,8 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
               <BarChart data={ad.dailyData}>
                 <defs>
                   <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#a855f7" />
-                    <stop offset="100%" stopColor="#7c3aed" />
+                    <stop offset="0%" stopColor="#9ED8F5" />
+                    <stop offset="100%" stopColor="#3B86A8" />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" vertical={false} />

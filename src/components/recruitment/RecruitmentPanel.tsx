@@ -68,10 +68,10 @@ const STAGE_LABEL: Record<string, string> = {
 const STAGE_COLOR: Record<string, string> = {
   new: 'bg-muted text-muted-foreground',
   qualified: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-  trial_sent: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-  trial_submitted: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
+  trial_sent: 'bg-secondary text-foreground dark:text-foreground',
+  trial_submitted: 'bg-secondary text-foreground',
   interview: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
-  hired: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+  hired: 'bg-secondary text-foreground dark:text-accent',
   rejected: 'bg-rose-500/15 text-rose-600 dark:text-rose-400',
 };
 
@@ -365,7 +365,7 @@ function Pipeline() {
                   </td>
                   <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${STAGE_COLOR[app.stage]}`}>{STAGE_LABEL[app.stage]}</span></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3">{sub ? <Badge className="bg-violet-500/15 text-violet-600 dark:text-violet-400 hover:bg-violet-500/20 font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
+                  <td className="p-3">{sub ? <Badge className="bg-secondary text-foreground hover:bg-secondary font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                 </tr>
               );
@@ -439,7 +439,7 @@ function Pipeline() {
                       <div className="flex items-center justify-between">
                         <Label className="text-xs">Follow-up email</Label>
                         {selected.followup_sent_at ? (
-                          <span className="text-xs text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                          <span className="text-xs text-foreground dark:text-accent inline-flex items-center gap-1">
                             <MailCheck className="w-3.5 h-3.5" /> Sent {formatDistanceToNow(new Date(selected.followup_sent_at), { addSuffix: true })}
                           </span>
                         ) : (
@@ -499,7 +499,7 @@ function Field({ label, value, children }: { label: string; value?: string; chil
 function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) {
   if (app.trial_email_sent_at) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
+      <span className="inline-flex items-center gap-1 text-xs text-foreground dark:text-accent">
         <MailCheck className="w-3.5 h-3.5" />
         {verbose ? `Sent ${formatDistanceToNow(new Date(app.trial_email_sent_at), { addSuffix: true })}` : 'Sent'}
       </span>
@@ -509,7 +509,7 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     const due = new Date(app.trial_email_scheduled_for);
     const future = due.getTime() > Date.now();
     return (
-      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}`}>
+      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-rose-600 dark:text-rose-400'}`}>
         <Clock className="w-3.5 h-3.5" />
         {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
       </span>

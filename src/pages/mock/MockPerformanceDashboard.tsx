@@ -10,14 +10,14 @@ import { HorizonGlow } from '@/components/dashboard/HorizonGlow';
 import { generateMockPerformanceData, MockPerformanceData } from '@/data/mockDemoData';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#a855f7', '#06b6d4', '#fbbf24', '#34d399', '#ec4899', '#3b82f6', '#f87171', '#c084fc'];
+const COLORS = ['#9ED8F5', '#3B86A8', '#75726B', '#3B86A8', '#9ED8F5', '#3B86A8', '#75726B', '#9ED8F5'];
 const CARD_SHADOW = '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)';
-const CARD_SHADOW_HOVER = '0 0 0 1px rgba(168,85,247,0.2) inset, 0 0 0 1px rgba(99,102,241,0.1) inset, 0 4px 24px rgba(0,0,0,0.4)';
+const CARD_SHADOW_HOVER = '0 0 0 1px rgba(158, 216, 245,0.2) inset, 0 0 0 1px rgba(99,102,241,0.1) inset, 0 4px 24px rgba(0,0,0,0.4)';
 
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
       <p className="text-white/30 mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
@@ -36,12 +36,12 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/60 cursor-pointer transition-all duration-200 focus:outline-none bg-[#111118] border border-white/[0.06]"
+        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/60 cursor-pointer transition-all duration-200 focus:outline-none bg-[#1A1A1A] border border-white/[0.06]"
         style={{ boxShadow: CARD_SHADOW }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
       >
-        {options.map(o => <option key={o} value={o} className="bg-[#111118] text-white">{o}</option>)}
+        {options.map(o => <option key={o} value={o} className="bg-[#1A1A1A] text-white">{o}</option>)}
       </select>
       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -53,7 +53,7 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`bg-[#111118] rounded-2xl transition-all duration-200 ${className}`}
+      className={`bg-[#1A1A1A] rounded-2xl transition-all duration-200 ${className}`}
       style={{ boxShadow: CARD_SHADOW }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
@@ -153,14 +153,14 @@ export default function MockPerformanceDashboard() {
   }, [data, month]);
 
   return (
-    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
       {/* Top ambient glow */}
       <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(59, 134, 168,0.18) 0%, transparent 70%)',
       }} />
       {/* Bottom horizon glow */}
       <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.22) 0%, rgba(124,58,237,0.08) 35%, transparent 70%)',
+        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(158, 216, 245,0.22) 0%, rgba(59, 134, 168,0.08) 35%, transparent 70%)',
       }} />
       {/* Grid texture */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
@@ -185,11 +185,11 @@ export default function MockPerformanceDashboard() {
         <HorizonGlow height={300} />
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-12 pb-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
-            background: 'rgba(168,85,247,0.12)',
-            border: '1px solid rgba(168,85,247,0.30)',
-            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+            background: 'rgba(158, 216, 245,0.12)',
+            border: '1px solid rgba(158, 216, 245,0.30)',
+            boxShadow: '0 0 24px -6px rgba(158, 216, 245,0.5)',
           }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 8px rgba(158, 216, 245,0.8)' }} />
             Live Demo Mode
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">Editor Performance</h1>
@@ -239,8 +239,8 @@ export default function MockPerformanceDashboard() {
                   <BarChart data={weeklyOutputAll}>
                     <defs>
                       <linearGradient id="mockBarGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#a855f7" stopOpacity={0.9} />
-                        <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.6} />
+                        <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.9} />
+                        <stop offset="100%" stopColor="#3B86A8" stopOpacity={0.6} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -263,8 +263,8 @@ export default function MockPerformanceDashboard() {
               <BarChart data={monthlyApproved}>
                 <defs>
                   <linearGradient id="mockApprovedGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#34d399" stopOpacity={0.9} />
-                    <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
+                    <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#3B86A8" stopOpacity={0.6} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -284,7 +284,7 @@ export default function MockPerformanceDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+                    <tr style={{ borderTop: '1px solid rgba(158, 216, 245,0.2)' }}>
                       <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Editor</th>
                       <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Delivered</th>
                       <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Active Days</th>
@@ -305,7 +305,7 @@ export default function MockPerformanceDashboard() {
                           <td className="px-4 py-5 min-w-[160px]">
                             <div className="flex items-center gap-2">
                               <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                                <div className="h-full rounded-full transition-all duration-300" style={{ width: `${pct}%`, background: '#a855f7' }} />
+                                <div className="h-full rounded-full transition-all duration-300" style={{ width: `${pct}%`, background: '#9ED8F5' }} />
                               </div>
                             </div>
                           </td>
@@ -329,7 +329,7 @@ export default function MockPerformanceDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+                    <tr style={{ borderTop: '1px solid rgba(158, 216, 245,0.2)' }}>
                       <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Brief Name</th>
                       <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Approval Date</th>
                       <th className="text-left py-3 px-6 text-xs uppercase tracking-widest text-white/40 font-medium">Month</th>
@@ -344,12 +344,12 @@ export default function MockPerformanceDashboard() {
                         <td className="py-5 px-6 text-white/40">{row.month}</td>
                         <td className="py-5 px-6">
                           {row.approved ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Approved
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-secondary0/10 text-accent">
+                              <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Approved
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> Pending
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-foreground">
+                              <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" /> Pending
                             </span>
                           )}
                         </td>

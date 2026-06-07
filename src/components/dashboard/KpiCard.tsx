@@ -11,10 +11,10 @@ interface KpiCardProps {
 }
 
 const accentMap = {
-  purple: { stroke: "#a855f7", glow: "rgba(168,85,247,0.35)", iconBg: "rgba(168,85,247,0.12)", iconRing: "rgba(168,85,247,0.25)" },
-  emerald: { stroke: "#34d399", glow: "rgba(52,211,153,0.30)", iconBg: "rgba(52,211,153,0.10)", iconRing: "rgba(52,211,153,0.22)" },
-  pink: { stroke: "#ec4899", glow: "rgba(236,72,153,0.30)", iconBg: "rgba(236,72,153,0.10)", iconRing: "rgba(236,72,153,0.22)" },
-  blue: { stroke: "#60a5fa", glow: "rgba(96,165,250,0.30)", iconBg: "rgba(96,165,250,0.10)", iconRing: "rgba(96,165,250,0.22)" },
+  purple: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.35)", iconBg: "rgba(158, 216, 245,0.12)", iconRing: "rgba(158, 216, 245,0.25)" },
+  emerald: { stroke: "#3B86A8", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
+  pink: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.30)", iconBg: "rgba(158, 216, 245,0.10)", iconRing: "rgba(158, 216, 245,0.22)" },
+  blue: { stroke: "#60a5fa", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
 };
 
 function responsiveSize(value: string): string {
@@ -115,8 +115,8 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, accent = 
         {trend && (
           <span className={`inline-flex items-center self-start rounded-full px-2 py-0.5 text-[11px] font-semibold ${
             trend.positive
-              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-              : "bg-red-500/10 text-red-400 border border-red-500/20"
+              ? "bg-secondary0/10 text-accent border border-accent/30"
+              : "bg-destructive/10 text-destructive border border-destructive/30"
           }`}>
             {trend.positive ? "▲" : "▼"} {Math.abs(trend.value)}%
           </span>

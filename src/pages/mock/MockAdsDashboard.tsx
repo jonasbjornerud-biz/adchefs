@@ -51,10 +51,10 @@ const MockAdsDashboard = () => {
   }, [ads]);
 
   return (
-    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
       {/* Bottom horizon glow — ambient */}
       <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.18) 0%, rgba(124,58,237,0.06) 35%, transparent 70%)',
+        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(158, 216, 245,0.18) 0%, rgba(59, 134, 168,0.06) 35%, transparent 70%)',
       }} />
       {/* Grid texture */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
@@ -79,17 +79,17 @@ const MockAdsDashboard = () => {
         <HorizonGlow height={300} />
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-12 pb-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
-            background: 'rgba(168,85,247,0.12)',
-            border: '1px solid rgba(168,85,247,0.30)',
-            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+            background: 'rgba(158, 216, 245,0.12)',
+            border: '1px solid rgba(158, 216, 245,0.30)',
+            boxShadow: '0 0 24px -6px rgba(158, 216, 245,0.5)',
           }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 8px rgba(158, 216, 245,0.8)' }} />
             Live Demo Mode
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">KPI Dashboard</h1>
           <p className="text-sm text-white/50 mt-3">
             {dateLabel} · All campaigns
-            <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Demo</span>
+            <span className="inline-flex items-center gap-1 ml-2 text-accent"><Wifi className="w-3 h-3" /> Demo</span>
           </p>
         </div>
       </div>
@@ -111,7 +111,7 @@ const MockAdsDashboard = () => {
 
         <div>
           <h2 className="text-[10px] uppercase tracking-[0.18em] text-white/50 font-semibold mb-4 flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 6px rgba(168,85,247,0.8)' }} />
+            <span className="w-1 h-1 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 6px rgba(158, 216, 245,0.8)' }} />
             Individual Ads
           </h2>
           <AdTable ads={ads} onSelect={setSelectedAd} />

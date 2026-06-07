@@ -1,4 +1,5 @@
-import { Eye, Gauge, LineChart, Wallet } from "lucide-react";
+import { Eye, Gauge, LineChart, Wallet, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const principles = [
   {
@@ -28,11 +29,15 @@ const principles = [
 ];
 
 const EditorEdge = () => {
+  const scrollToBooking = () => {
+    const el = document.getElementById("booking");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
   return (
     <section className="py-24 sm:py-32 bg-foreground text-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
-          <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--background) / 0.2)", color: "hsl(var(--background))" }}>
+          <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
             What sets AdChefs apart
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
@@ -54,6 +59,17 @@ const EditorEdge = () => {
               <p className="text-[14px] text-background/60 leading-relaxed">{p.body}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-14 flex justify-center">
+          <Button
+            size="lg"
+            onClick={scrollToBooking}
+            className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
+          >
+            Book a call
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>

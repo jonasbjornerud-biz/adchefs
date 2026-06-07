@@ -43,7 +43,7 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate('/mock')}>
-              <Sparkles className="w-4 h-4 mr-1 text-purple-500" /> MOCK Demo
+              <Sparkles className="w-4 h-4 mr-1 text-accent" /> MOCK Demo
               <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
             </Button>
             <Button variant="outline" size="sm" onClick={() => { logout(); navigate('/login'); }}>
@@ -64,7 +64,7 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
         <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-3 mb-1">
-              <Users className="w-5 h-5 text-sky-500" />
+              <Users className="w-5 h-5 text-foreground" />
               <span className="text-sm text-muted-foreground">Total Clients</span>
             </div>
             <p className="text-3xl font-bold font-mono text-foreground">{clients.length}</p>
@@ -75,7 +75,7 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">Clients</h2>
-            <Button size="sm" onClick={() => navigate('/admin/clients/new')} className="bg-sky-500 hover:bg-sky-600 text-white">
+            <Button size="sm" onClick={() => navigate('/admin/clients/new')} className="bg-foreground hover:bg-foreground/90 text-white">
               <Plus className="w-4 h-4 mr-1" /> New Client
             </Button>
           </div>
@@ -94,7 +94,7 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
                   onClick={() => navigate(`/admin/clients/${client.id}`)}
                   className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:border-border/80 hover:shadow-sm transition-all text-left"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-700 dark:text-sky-400 font-bold text-sm">
+                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-foreground font-bold text-sm">
                     {client.brand_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">

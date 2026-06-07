@@ -66,6 +66,7 @@ export default {
         ink: "hsl(var(--ink))",
         paper: "hsl(var(--paper))",
         surface: "hsl(var(--surface))",
+        "accent-deep": "hsl(var(--accent-deep))",
       },
       borderRadius: {
         lg: "var(--radius)",

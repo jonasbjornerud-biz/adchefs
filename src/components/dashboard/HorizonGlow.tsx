@@ -59,7 +59,7 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
           width: '160%',
           height: height * 1.6,
           background:
-            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(168,85,247,0.45) 0%, rgba(124,58,237,0.18) 35%, transparent 65%)',
+            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(158, 216, 245,0.45) 0%, rgba(59, 134, 168,0.18) 35%, transparent 65%)',
           filter: 'blur(40px)',
           willChange: 'transform, opacity',
         }}
@@ -72,7 +72,7 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
           width: '110%',
           height: height * 1.1,
           background:
-            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(216,180,254,0.55) 0%, rgba(168,85,247,0.25) 30%, transparent 60%)',
+            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(247, 246, 243,0.55) 0%, rgba(158, 216, 245,0.25) 30%, transparent 60%)',
           filter: 'blur(20px)',
           willChange: 'transform, opacity',
         }}
@@ -87,15 +87,15 @@ export function HorizonGlow({ height = 280 }: { height?: number }) {
       >
         <defs>
           <linearGradient id="horizon-arc" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="rgba(168,85,247,0)" />
-            <stop offset="20%" stopColor="rgba(216,180,254,0.5)" />
+            <stop offset="0%" stopColor="rgba(158, 216, 245,0)" />
+            <stop offset="20%" stopColor="rgba(247, 246, 243,0.5)" />
             <stop offset="50%" stopColor="rgba(255,255,255,0.95)" />
-            <stop offset="80%" stopColor="rgba(216,180,254,0.5)" />
-            <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+            <stop offset="80%" stopColor="rgba(247, 246, 243,0.5)" />
+            <stop offset="100%" stopColor="rgba(158, 216, 245,0)" />
           </linearGradient>
           <linearGradient id="horizon-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(168,85,247,0.35)" />
-            <stop offset="100%" stopColor="rgba(124,58,237,0)" />
+            <stop offset="0%" stopColor="rgba(158, 216, 245,0.35)" />
+            <stop offset="100%" stopColor="rgba(59, 134, 168,0)" />
           </linearGradient>
           <filter id="horizon-blur" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="1.5" />
