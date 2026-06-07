@@ -105,7 +105,7 @@ const MetaAdsDashboard = () => {
             {isLoading ? (
               <span className="inline-flex items-center gap-1 ml-2 text-[#9ED8F5]"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
             ) : isLive ? (
-              <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Live</span>
+              <span className="inline-flex items-center gap-1 ml-2 text-accent"><Wifi className="w-3 h-3" /> Live</span>
             ) : (
               <span className="inline-flex items-center gap-1 ml-2 text-white/40"><WifiOff className="w-3 h-3" /> No data</span>
             )}

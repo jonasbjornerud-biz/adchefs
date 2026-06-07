@@ -74,7 +74,7 @@ export function OverviewChart({ ads }: OverviewChartProps) {
           <div className="w-px h-8 bg-white/10" />
           <div className="text-right">
             <div className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">Revenue</div>
-            <div className="text-sm font-black text-emerald-400 tracking-tight">${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
+            <div className="text-sm font-black text-accent tracking-tight">${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
           </div>
         </div>
       </div>

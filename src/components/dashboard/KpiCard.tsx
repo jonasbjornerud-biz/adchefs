@@ -115,7 +115,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, accent = 
         {trend && (
           <span className={`inline-flex items-center self-start rounded-full px-2 py-0.5 text-[11px] font-semibold ${
             trend.positive
-              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              ? "bg-secondary0/10 text-accent border border-accent/30"
               : "bg-red-500/10 text-red-400 border border-red-500/20"
           }`}>
             {trend.positive ? "▲" : "▼"} {Math.abs(trend.value)}%

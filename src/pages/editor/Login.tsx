@@ -102,7 +102,7 @@ export default function Login() {
               id="remember"
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(checked === true)}
-              className="border-white/20 data-[state=checked]:bg-violet-500 data-[state=checked]:border-violet-500"
+              className="border-white/20 data-[state=checked]:bg-secondary0 data-[state=checked]:border-violet-500"
             />
             <label htmlFor="remember" className="text-xs text-white/40 cursor-pointer select-none">
               Remember me

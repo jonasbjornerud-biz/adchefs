@@ -89,7 +89,7 @@ const MockAdsDashboard = () => {
           <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">KPI Dashboard</h1>
           <p className="text-sm text-white/50 mt-3">
             {dateLabel} · All campaigns
-            <span className="inline-flex items-center gap-1 ml-2 text-emerald-400"><Wifi className="w-3 h-3" /> Demo</span>
+            <span className="inline-flex items-center gap-1 ml-2 text-accent"><Wifi className="w-3 h-3" /> Demo</span>
           </p>
         </div>
       </div>

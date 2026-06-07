@@ -189,10 +189,10 @@ export default function EditorPerformance() {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl bg-slate-100" />)}
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl bg-secondary" />)}
         </div>
-        <Skeleton className="h-64 rounded-xl bg-slate-100" />
-        <Skeleton className="h-64 rounded-xl bg-slate-100" />
+        <Skeleton className="h-64 rounded-xl bg-secondary" />
+        <Skeleton className="h-64 rounded-xl bg-secondary" />
       </div>
     );
   }
@@ -203,10 +203,10 @@ export default function EditorPerformance() {
         <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
           <AlertCircle className="w-6 h-6 text-red-400" />
         </div>
-        <p className="text-sm text-slate-500">Failed to load performance data</p>
-        <p className="text-xs font-mono text-slate-400">{error}</p>
+        <p className="text-sm text-muted-foreground">Failed to load performance data</p>
+        <p className="text-xs font-mono text-muted-foreground">{error}</p>
         <Button variant="outline" size="sm" onClick={() => fetchData(true)}
-          className="rounded-lg text-xs border-slate-200 text-slate-500 hover:bg-slate-50">
+          className="rounded-lg text-xs border-border text-muted-foreground hover:bg-secondary">
           <RefreshCw className="w-3 h-3 mr-1.5" /> Retry
         </Button>
       </div>
@@ -219,20 +219,20 @@ export default function EditorPerformance() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex gap-3">
           <Select value={editor} onValueChange={setEditor}>
-            <SelectTrigger className="w-[180px] h-9 rounded-lg text-xs border-slate-200 bg-white text-slate-700">
+            <SelectTrigger className="w-[180px] h-9 rounded-lg text-xs border-border bg-white text-foreground">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-lg border-slate-200 bg-white">
+            <SelectContent className="rounded-lg border-border bg-white">
               {data?.editors.map(e => (
                 <SelectItem key={e} value={e} className="text-xs">{e}</SelectItem>
               ))}
             </SelectContent>
           </Select>
           <Select value={month} onValueChange={setMonth}>
-            <SelectTrigger className="w-[140px] h-9 rounded-lg text-xs border-slate-200 bg-white text-slate-700">
+            <SelectTrigger className="w-[140px] h-9 rounded-lg text-xs border-border bg-white text-foreground">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-lg border-slate-200 bg-white">
+            <SelectContent className="rounded-lg border-border bg-white">
               {data?.months.map(m => (
                 <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
               ))}
@@ -241,22 +241,22 @@ export default function EditorPerformance() {
         </div>
         <div className="flex items-center gap-3">
           {data && (
-            <span className="text-[10px] font-mono text-slate-400">
+            <span className="text-[10px] font-mono text-muted-foreground">
               Last synced: {new Date(data.lastSynced).toLocaleString()}
             </span>
           )}
           <Button variant="outline" size="sm" onClick={() => fetchData(true)}
-            className="rounded-lg text-[11px] h-7 px-2.5 border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700">
+            className="rounded-lg text-[11px] h-7 px-2.5 border-border text-muted-foreground hover:bg-secondary hover:text-foreground">
             <RefreshCw className="w-3 h-3 mr-1" /> Sync now
           </Button>
         </div>
       </div>
 
       {noData ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3 bg-white rounded-2xl border border-slate-200/80">
-          <FileBarChart className="w-10 h-10 text-slate-200" />
-          <p className="text-sm text-slate-400">
-            No data yet for <span className="text-slate-600 font-medium">{editor}</span> in <span className="text-slate-600 font-medium">{month}</span>
+        <div className="flex flex-col items-center justify-center py-20 gap-3 bg-white rounded-2xl border border-border/80">
+          <FileBarChart className="w-10 h-10 text-muted-foreground/40" />
+          <p className="text-sm text-muted-foreground">
+            No data yet for <span className="text-foreground/80 font-medium">{editor}</span> in <span className="text-foreground/80 font-medium">{month}</span>
           </p>
         </div>
       ) : (
@@ -264,30 +264,30 @@ export default function EditorPerformance() {
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#3B86A8', bg: 'bg-violet-50', border: 'border-violet-100' },
+              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#3B86A8', bg: 'bg-secondary', border: 'border-border' },
               { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#3B86A8', bg: 'bg-cyan-50', border: 'border-cyan-100' },
-              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#3B86A8', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#3B86A8', bg: 'bg-secondary', border: 'border-emerald-100' },
               { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#75726B', bg: 'bg-amber-50', border: 'border-amber-100' },
             ].map((kpi, i) => (
-              <div key={i} className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+              <div key={i} className="rounded-xl p-5 bg-white border border-border/80 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
                   <div className={`w-7 h-7 rounded-lg ${kpi.bg} ${kpi.border} border flex items-center justify-center`}>
                     <kpi.icon className="w-3.5 h-3.5" style={{ color: kpi.color }} />
                   </div>
                 </div>
-                <p className="text-2xl font-bold font-mono text-slate-800" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                <p className="text-2xl font-bold font-mono text-foreground" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                   {kpi.value}
                 </p>
-                <p className="text-[10px] uppercase tracking-widest font-medium text-slate-400 mt-1">{kpi.label}</p>
+                <p className="text-[10px] uppercase tracking-widest font-medium text-muted-foreground mt-1">{kpi.label}</p>
               </div>
             ))}
           </div>
 
           {/* Charts row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
-              <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Daily Deliveries by Week</h4>
-              <p className="text-[10px] text-slate-400 mb-4">Grouped by weekday, colored per week</p>
+            <div className="rounded-xl p-5 bg-white border border-border/80 shadow-sm">
+              <h4 className="text-sm font-semibold text-foreground mb-0.5">Daily Deliveries by Week</h4>
+              <p className="text-[10px] text-muted-foreground mb-4">Grouped by weekday, colored per week</p>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyByWeek} barCategoryGap="20%">
@@ -304,9 +304,9 @@ export default function EditorPerformance() {
               </div>
             </div>
 
-            <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
-              <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Weekly Output</h4>
-              <p className="text-[10px] text-slate-400 mb-4">Total videos delivered per week</p>
+            <div className="rounded-xl p-5 bg-white border border-border/80 shadow-sm">
+              <h4 className="text-sm font-semibold text-foreground mb-0.5">Weekly Output</h4>
+              <p className="text-[10px] text-muted-foreground mb-4">Total videos delivered per week</p>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyOutput}>
@@ -328,9 +328,9 @@ export default function EditorPerformance() {
           </div>
 
           {/* Cumulative chart */}
-          <div className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm">
-            <h4 className="text-sm font-semibold text-slate-800 mb-0.5">Cumulative Deliveries</h4>
-            <p className="text-[10px] text-slate-400 mb-4">Running total across the month</p>
+          <div className="rounded-xl p-5 bg-white border border-border/80 shadow-sm">
+            <h4 className="text-sm font-semibold text-foreground mb-0.5">Cumulative Deliveries</h4>
+            <p className="text-[10px] text-muted-foreground mb-4">Running total across the month</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={cumulative}>

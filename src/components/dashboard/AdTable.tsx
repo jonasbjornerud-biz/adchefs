@@ -12,7 +12,7 @@ type SortKey = "name" | "ctr" | "cpa" | "roas" | "hookRate" | "holdRate" | "spen
 function getRoasColor(roas: number) {
   if (roas === 0) return "text-red-400";
   if (roas < 1.5) return "text-amber-400";
-  return "text-emerald-400";
+  return "text-accent";
 }
 
 function adLibraryUrl(name: string) {
@@ -56,7 +56,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
   };
 
   const statusConfig: Record<string, { dot: string; pill: string }> = {
-    active: { dot: "bg-emerald-400", pill: "bg-emerald-500/10 text-emerald-400" },
+    active: { dot: "bg-accent", pill: "bg-secondary0/10 text-accent" },
     paused: { dot: "bg-amber-400", pill: "bg-amber-500/10 text-amber-400" },
     ended: { dot: "bg-red-400", pill: "bg-red-500/10 text-red-400" },
   };
