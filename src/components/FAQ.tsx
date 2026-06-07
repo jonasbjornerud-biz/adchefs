@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: "Who owns the footage and final videos?",
-    a: "You do. Full IP transfer on delivery. Raw files, project files, exports — yours. I keep nothing proprietary.",
+    a: "You do. Full IP transfer on delivery. You keep the raw files, project files and exports.",
   },
   {
     q: "What if I don't click with the editor?",
