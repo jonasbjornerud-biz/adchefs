@@ -134,7 +134,7 @@ export default function JobDetail() {
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
           </Link>
 
-          <span className="eyebrow inline-block mt-2" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+          <span className="eyebrow inline-block mt-2 ml-32 sm:ml-44" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
             Now hiring · Remote
           </span>
 
@@ -164,48 +164,35 @@ export default function JobDetail() {
       </section>
 
       {/* PERKS */}
-      <section className="relative overflow-hidden bg-background border-y border-border">
-        <div
-          className="absolute inset-0 opacity-60 pointer-events-none"
-          style={{
-            backgroundImage:
-              'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
-            backgroundSize: '56px 56px',
-            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 75%)',
-          }}
-        />
+      <section className="relative bg-background">
         <div className="relative max-w-[1100px] mx-auto px-6 py-24">
-          <div className="max-w-2xl mb-14">
+          <div className="max-w-2xl mb-16">
             <span className="eyebrow">Why edit with AdChefs</span>
             <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
               Built for editors who want their work to <em>matter.</em>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-x-12 gap-y-14">
             {perks.map((p, i) => (
               <div
                 key={p.title}
-                className="group relative bg-background border border-border rounded-[6px] p-8 overflow-hidden transition-all hover:border-foreground/40 hover:-translate-y-0.5"
+                className={`group relative ${i % 2 === 1 ? 'sm:mt-16' : ''}`}
               >
-                <div
-                  className="absolute inset-x-0 top-0 h-px"
-                  style={{
-                    background:
-                      'linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.25), transparent)',
-                  }}
-                />
-                <div className="absolute top-6 right-6 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                  0{i + 1}
+                <div className="flex items-baseline gap-5 mb-6 border-b border-border pb-5">
+                  <span className="font-display text-[56px] leading-none tracking-[-0.04em] text-foreground/15 group-hover:text-foreground/40 transition-colors">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    / Perk
+                  </span>
+                  <p.icon className="ml-auto w-5 h-5 text-foreground" strokeWidth={1.75} />
                 </div>
-                <div className="relative w-12 h-12 mb-6">
-                  <div className="absolute inset-0 rounded-[6px] border border-foreground/30 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5" />
-                  <div className="relative w-12 h-12 rounded-[6px] bg-foreground flex items-center justify-center">
-                    <p.icon className="w-5 h-5 text-background" strokeWidth={1.75} />
-                  </div>
-                </div>
-                <h3 className="font-display text-[20px] tracking-tight mb-2">{p.title}</h3>
-                <p className="text-[14px] text-muted-foreground leading-relaxed">{p.body}</p>
+                <h3 className="font-display text-[24px] md:text-[26px] tracking-tight mb-3 leading-tight">
+                  {p.title}
+                </h3>
+                <p className="text-[15px] text-muted-foreground leading-relaxed max-w-md">
+                  {p.body}
+                </p>
               </div>
             ))}
           </div>
