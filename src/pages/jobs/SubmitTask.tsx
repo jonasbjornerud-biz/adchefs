@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,8 @@ const schema = z.object({
 
 export default function SubmitTask() {
   const [params] = useSearchParams();
+  const { submitSlug } = useParams<{ submitSlug?: string }>();
+  const [posting, setPosting] = useState<{ title: string; brand: string } | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', submission_url: '', notes: '' });
@@ -25,6 +27,17 @@ export default function SubmitTask() {
     const e = params.get('email');
     if (e) setForm(f => ({ ...f, email: e }));
   }, [params]);
+
+  useEffect(() => {
+    if (!submitSlug) { setPosting(null); return; }
+    (async () => {
+      const { data } = await (supabase.from('job_postings' as never) as any)
+        .select('title, brand')
+        .eq('submit_slug', submitSlug)
+        .maybeSingle();
+      if (data) setPosting(data as any);
+    })();
+  }, [submitSlug]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
