@@ -70,18 +70,24 @@ Deno.serve(async (req) => {
     const subject = render(posting.trial_email_subject || 'Your AdChefs trial task', vars)
     const body = render(posting.trial_email_body || '', vars)
 
-    const { data: invokeData, error: invokeErr } = await supabase.functions.invoke('send-transactional-email', {
-      body: {
+    const sendRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
+      },
+      body: JSON.stringify({
         templateName: 'trial-task',
         recipientEmail: app.email,
         idempotencyKey: `trial-task-${app.id}`,
         templateData: { subject, body, first_name: app.first_name },
-      },
+      }),
     })
-
-    if (invokeErr) {
-      console.error('send failed', app.id, invokeErr)
-      results.push({ id: app.id, error: invokeErr.message })
+    const invokeData = await sendRes.json().catch(() => ({}))
+    if (!sendRes.ok) {
+      console.error('send failed', app.id, sendRes.status, invokeData)
+      results.push({ id: app.id, error: `status ${sendRes.status}`, body: invokeData })
       continue
     }
 

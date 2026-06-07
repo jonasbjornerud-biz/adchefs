@@ -58,17 +58,23 @@ Deno.serve(async (req) => {
   const subject = render(posting.followup_email_subject || 'Following up on your trial task', vars)
   const body = render(posting.followup_email_body || '', vars)
 
-  const { data: invokeData, error: invokeErr } = await supabase.functions.invoke('send-transactional-email', {
-    body: {
+  const sendRes = await fetch(`${supabaseUrl}/functions/v1/send-transactional-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${serviceKey}`,
+      apikey: serviceKey,
+    },
+    body: JSON.stringify({
       templateName: 'trial-followup',
       recipientEmail: app.email,
       idempotencyKey: `trial-followup-${app.id}-${Date.now()}`,
       templateData: { subject, body, first_name: app.first_name },
-    },
+    }),
   })
-
-  if (invokeErr) {
-    return new Response(JSON.stringify({ error: invokeErr.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+  const invokeData = await sendRes.json().catch(() => ({}))
+  if (!sendRes.ok) {
+    return new Response(JSON.stringify({ error: 'send failed', status: sendRes.status, body: invokeData }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 
   await supabase.from('applications').update({ followup_sent_at: new Date().toISOString() }).eq('id', app.id)
