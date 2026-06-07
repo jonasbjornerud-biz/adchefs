@@ -67,12 +67,12 @@ const STAGE_LABEL: Record<string, string> = {
 };
 const STAGE_COLOR: Record<string, string> = {
   new: 'bg-muted text-muted-foreground',
-  qualified: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+  qualified: 'bg-secondary text-foreground',
   trial_sent: 'bg-secondary text-foreground dark:text-foreground',
   trial_submitted: 'bg-secondary text-foreground',
-  interview: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
+  interview: 'bg-secondary text-foreground',
   hired: 'bg-secondary text-foreground dark:text-accent',
-  rejected: 'bg-rose-500/15 text-rose-600 dark:text-rose-400',
+  rejected: 'bg-destructive/15 text-destructive',
 };
 
 const emptyPosting = {
@@ -190,7 +190,7 @@ function Postings() {
             <Switch checked={p.is_active} onCheckedChange={() => toggleActive(p)} />
             <Button variant="ghost" size="icon" onClick={() => window.open(`/jobs/${p.slug}`, '_blank')}><ExternalLink className="w-4 h-4" /></Button>
             <Button variant="ghost" size="icon" onClick={() => edit(p)}><Pencil className="w-4 h-4" /></Button>
-            <Button variant="ghost" size="icon" onClick={() => remove(p)}><Trash2 className="w-4 h-4 text-rose-500" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => remove(p)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
           </div>
         ))}
       </div>
@@ -509,7 +509,7 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     const due = new Date(app.trial_email_scheduled_for);
     const future = due.getTime() > Date.now();
     return (
-      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-rose-600 dark:text-rose-400'}`}>
+      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-destructive'}`}>
         <Clock className="w-3.5 h-3.5" />
         {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
       </span>

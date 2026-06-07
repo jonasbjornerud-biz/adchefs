@@ -53,7 +53,7 @@ export default function ClientDetail() {
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#09090B' }}>
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-white/30">Loading…</span>
       </div>
     </div>
@@ -82,7 +82,7 @@ export default function ClientDetail() {
             </button>
             <div className="h-4 w-px bg-white/10" />
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-[11px] font-bold text-white shadow-lg shadow-violet-500/20">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-foreground to-foreground flex items-center justify-center text-[11px] font-bold text-white shadow-lg shadow-foreground/20">
                 {client.brand_name.charAt(0)}
               </div>
               <span className="text-sm font-medium text-white">{client.brand_name}</span>
@@ -122,7 +122,7 @@ export default function ClientDetail() {
         <div className="grid grid-cols-1 gap-5">
           <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-start justify-between mb-5">
-              <div className="w-10 h-10 rounded-xl bg-secondary0/10 border border-accent/30 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/30 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-accent" />
               </div>
             </div>

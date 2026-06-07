@@ -56,7 +56,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
   };
 
   const statusConfig: Record<string, { dot: string; pill: string }> = {
-    active: { dot: "bg-accent", pill: "bg-secondary0/10 text-accent" },
+    active: { dot: "bg-accent", pill: "bg-accent/10 text-accent" },
     paused: { dot: "bg-muted-foreground", pill: "bg-secondary text-foreground" },
     ended: { dot: "bg-destructive", pill: "bg-destructive/10 text-destructive" },
   };
