@@ -361,12 +361,16 @@ function Pipeline() {
   function renderTemplate(app: Application, kind: 'trial' | 'followup') {
     const p = postingFor(app);
     if (!p) return { subject: '', body: '' };
-    const sub = (config.submission_form_url || `${window.location.origin}/submit-task`);
+    const base = config.submission_form_url || `${window.location.origin}/submit-task`;
+    const sub = p.submit_slug
+      ? `${base}-${p.submit_slug}?email=${encodeURIComponent(app.email)}`
+      : `${base}?email=${encodeURIComponent(app.email)}`;
     const subject = kind === 'trial' ? p.trial_email_subject : p.followup_email_subject;
     const raw = kind === 'trial' ? p.trial_email_body : p.followup_email_body;
     const body = (raw ?? '')
       .replace(/\{\{first_name\}\}/g, app.first_name)
       .replace(/\{\{email\}\}/g, app.email)
+      .replace(/\{\{brand\}\}/g, p.brand || '')
       .replace(/\{\{notion_task_url\}\}/g, p.notion_task_url)
       .replace(/\{\{submission_form_url\}\}/g, sub);
     return { subject: subject ?? '', body };
