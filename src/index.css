@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,65 +9,71 @@
 
 @layer base {
   :root {
-    --background: 240 20% 97%;
-    --foreground: 240 24% 10%;
+    /* AdChefs brand tokens — Paper / Ink / Accent (#9ED8F5) */
+    --background: 45 21% 96%;       /* Paper #F7F6F3 */
+    --foreground: 0 0% 10%;         /* Ink #1A1A1A */
 
     --card: 0 0% 100%;
-    --card-foreground: 240 24% 10%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 24% 10%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 240 24% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0 0% 10%;            /* Ink */
+    --primary-foreground: 45 21% 96%;
 
-    --secondary: 240 14% 94%;
-    --secondary-foreground: 240 24% 10%;
+    --secondary: 45 11% 92%;        /* Surface #EEEDE8 */
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 240 10% 91%;
-    --muted-foreground: 240 8% 46%;
+    --muted: 45 11% 92%;
+    --muted-foreground: 40 5% 45%;  /* Muted #75726B */
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 200 81% 79%;          /* Accent #9ED8F5 */
+    --accent-foreground: 0 0% 10%;  /* Ink on blue */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 12% 90%;
-    --input: 240 12% 90%;
-    --ring: 262 83% 58%;
+    --border: 40 8% 86%;
+    --input: 40 8% 86%;
+    --ring: 200 81% 65%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;              /* rounded-[4px] */
+
+    --ink: 0 0% 10%;
+    --paper: 45 21% 96%;
+    --surface: 45 11% 92%;
   }
 
   .dark {
-    --background: 240 16% 6%;
-    --foreground: 0 0% 96%;
+    /* Dark variant — Ink background, Paper text. Used by admin/dashboard chrome. */
+    --background: 0 0% 10%;
+    --foreground: 45 21% 96%;
 
-    --card: 240 14% 9%;
-    --card-foreground: 0 0% 96%;
+    --card: 0 0% 13%;
+    --card-foreground: 45 21% 96%;
 
-    --popover: 240 14% 9%;
-    --popover-foreground: 0 0% 96%;
+    --popover: 0 0% 13%;
+    --popover-foreground: 45 21% 96%;
 
-    --primary: 0 0% 96%;
-    --primary-foreground: 240 16% 6%;
+    --primary: 45 21% 96%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 240 12% 12%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 45 21% 96%;
 
-    --muted: 240 10% 14%;
-    --muted-foreground: 240 6% 55%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 40 5% 65%;
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 200 81% 79%;
+    --accent-foreground: 0 0% 10%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 16%;
-    --input: 240 10% 14%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 200 81% 65%;
   }
 }
 
@@ -75,12 +83,50 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
+    font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Instrument Serif italic for emphasis word inside headings (brand pattern) */
+  h1 em, h2 em, h3 em, h4 em, .serif-em {
+    font-family: 'Instrument Serif', 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer components {
+  /* Brand eyebrow: mono uppercase chip */
+  .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: hsl(var(--foreground));
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 4px;
+    background: hsl(var(--background));
+  }
+
+  .eyebrow-accent {
+    background: hsl(var(--accent));
+    border-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
 }
 
