@@ -1,0 +1,450 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil } from 'lucide-react';
+import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+
+type Posting = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  junior_pay: string | null;
+  senior_pay: string | null;
+  notion_task_url: string;
+  trial_email_subject: string;
+  trial_email_body: string;
+  is_active: boolean;
+  created_at: string;
+};
+
+type Application = {
+  id: string;
+  job_posting_id: string | null;
+  first_name: string;
+  last_name: string;
+  email: string;
+  software: string;
+  availability: string;
+  portfolio_url: string | null;
+  years_experience: string | null;
+  additional_info: string | null;
+  stage: string;
+  qualifies: boolean;
+  trial_email_scheduled_for: string | null;
+  trial_email_sent_at: string | null;
+  followup_sent_at: string | null;
+  proceed: boolean | null;
+  reviewed_at: string | null;
+  created_at: string;
+};
+
+type Submission = {
+  id: string;
+  application_id: string | null;
+  email: string;
+  submission_url: string;
+  notes: string | null;
+  created_at: string;
+};
+
+const STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'hired', 'rejected'] as const;
+const STAGE_LABEL: Record<string, string> = {
+  new: 'New', qualified: 'Qualified', trial_sent: 'Trial sent',
+  trial_submitted: 'Trial submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
+};
+const STAGE_COLOR: Record<string, string> = {
+  new: 'bg-muted text-muted-foreground',
+  qualified: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+  trial_sent: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  trial_submitted: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
+  interview: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
+  hired: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+  rejected: 'bg-rose-500/15 text-rose-600 dark:text-rose-400',
+};
+
+const emptyPosting = {
+  slug: '', title: '', description: '',
+  junior_pay: '', senior_pay: '',
+  notion_task_url: '',
+  trial_email_subject: 'Your AdChefs trial task',
+  trial_email_body: `Hi {{first_name}},
+
+Thanks for applying to AdChefs. Here is your trial task:
+
+{{notion_task_url}}
+
+When you're done, submit it here:
+{{submission_form_url}}?email={{email}}
+
+— AdChefs`,
+  is_active: true,
+};
+
+export function RecruitmentPanel() {
+  return (
+    <Tabs defaultValue="pipeline" className="w-full">
+      <TabsList>
+        <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
+        <TabsTrigger value="postings">Job Postings</TabsTrigger>
+      </TabsList>
+      <TabsContent value="pipeline" className="mt-6"><Pipeline /></TabsContent>
+      <TabsContent value="postings" className="mt-6"><Postings /></TabsContent>
+    </Tabs>
+  );
+}
+
+/* ============== POSTINGS ============== */
+function Postings() {
+  const [postings, setPostings] = useState<Posting[]>([]);
+  const [editing, setEditing] = useState<Partial<Posting> | null>(null);
+  const [open, setOpen] = useState(false);
+
+  async function load() {
+    const { data } = await (supabase.from('job_postings' as never) as any)
+      .select('*').order('created_at', { ascending: false });
+    setPostings((data as Posting[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  function newOne() { setEditing({ ...emptyPosting }); setOpen(true); }
+  function edit(p: Posting) { setEditing(p); setOpen(true); }
+
+  async function save() {
+    if (!editing?.title || !editing?.slug) { toast.error('Title and slug required'); return; }
+    const payload: any = {
+      slug: editing.slug, title: editing.title,
+      description: editing.description ?? '',
+      junior_pay: editing.junior_pay || null,
+      senior_pay: editing.senior_pay || null,
+      notion_task_url: editing.notion_task_url ?? '',
+      trial_email_subject: editing.trial_email_subject ?? '',
+      trial_email_body: editing.trial_email_body ?? '',
+      is_active: editing.is_active ?? true,
+    };
+    const { error } = editing.id
+      ? await (supabase.from('job_postings' as never) as any).update(payload).eq('id', editing.id)
+      : await (supabase.from('job_postings' as never) as any).insert(payload);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Saved'); setOpen(false); load();
+  }
+
+  async function toggleActive(p: Posting) {
+    await (supabase.from('job_postings' as never) as any).update({ is_active: !p.is_active }).eq('id', p.id);
+    load();
+  }
+
+  async function remove(p: Posting) {
+    if (!confirm(`Delete posting "${p.title}"?`)) return;
+    await (supabase.from('job_postings' as never) as any).delete().eq('id', p.id);
+    load();
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">Create roles with their own skill task and trial email copy.</p>
+        <Button onClick={newOne} size="sm"><Plus className="w-4 h-4 mr-1" /> New role</Button>
+      </div>
+
+      <div className="space-y-2">
+        {postings.length === 0 && (
+          <div className="text-center py-12 border border-dashed border-border rounded-xl text-muted-foreground">
+            No roles yet. Create your first.
+          </div>
+        )}
+        {postings.map(p => (
+          <div key={p.id} className="p-4 rounded-xl border border-border bg-card flex items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="font-medium">{p.title}</p>
+                <Badge variant={p.is_active ? 'default' : 'secondary'}>{p.is_active ? 'Active' : 'Inactive'}</Badge>
+              </div>
+              <p className="text-xs text-muted-foreground font-mono mt-0.5">/jobs/{p.slug}</p>
+            </div>
+            <Switch checked={p.is_active} onCheckedChange={() => toggleActive(p)} />
+            <Button variant="ghost" size="icon" onClick={() => window.open(`/jobs/${p.slug}`, '_blank')}><ExternalLink className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => edit(p)}><Pencil className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => remove(p)}><Trash2 className="w-4 h-4 text-rose-500" /></Button>
+          </div>
+        ))}
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>{editing?.id ? 'Edit role' : 'New role'}</DialogTitle></DialogHeader>
+          {editing && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5"><Label>Title *</Label><Input value={editing.title ?? ''} onChange={e => setEditing({ ...editing, title: e.target.value })} /></div>
+                <div className="space-y-1.5"><Label>Slug *</Label><Input value={editing.slug ?? ''} onChange={e => setEditing({ ...editing, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} /></div>
+              </div>
+              <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} value={editing.description ?? ''} onChange={e => setEditing({ ...editing, description: e.target.value })} /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5"><Label>Junior pay</Label><Input value={editing.junior_pay ?? ''} onChange={e => setEditing({ ...editing, junior_pay: e.target.value })} placeholder="€30–60 per ad" /></div>
+                <div className="space-y-1.5"><Label>Senior pay</Label><Input value={editing.senior_pay ?? ''} onChange={e => setEditing({ ...editing, senior_pay: e.target.value })} placeholder="€80–150 per ad" /></div>
+              </div>
+              <div className="space-y-1.5"><Label>Skill task URL (Notion)</Label><Input value={editing.notion_task_url ?? ''} onChange={e => setEditing({ ...editing, notion_task_url: e.target.value })} placeholder="https://notion.so/…" /></div>
+              <div className="space-y-1.5"><Label>Trial email subject</Label><Input value={editing.trial_email_subject ?? ''} onChange={e => setEditing({ ...editing, trial_email_subject: e.target.value })} /></div>
+              <div className="space-y-1.5">
+                <Label>Trial email body</Label>
+                <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
+                <Textarea rows={10} className="font-mono text-xs" value={editing.trial_email_body ?? ''} onChange={e => setEditing({ ...editing, trial_email_body: e.target.value })} />
+              </div>
+              <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={v => setEditing({ ...editing, is_active: v })} /><Label>Active (public)</Label></div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={save}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+/* ============== PIPELINE ============== */
+function Pipeline() {
+  const [apps, setApps] = useState<Application[]>([]);
+  const [subs, setSubs] = useState<Submission[]>([]);
+  const [postings, setPostings] = useState<Posting[]>([]);
+  const [selected, setSelected] = useState<Application | null>(null);
+  const [stageFilter, setStageFilter] = useState<string>('all');
+  const [search, setSearch] = useState('');
+  const [config, setConfig] = useState<{ submission_form_url: string }>({ submission_form_url: '' });
+
+  async function load() {
+    const [{ data: a }, { data: s }, { data: p }, { data: c }] = await Promise.all([
+      (supabase.from('applications' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('trial_submissions' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('job_postings' as never) as any).select('*'),
+      (supabase.from('app_config' as never) as any).select('*').eq('id', 1).maybeSingle(),
+    ]);
+    setApps((a as Application[]) ?? []);
+    setSubs((s as Submission[]) ?? []);
+    setPostings((p as Posting[]) ?? []);
+    if (c) setConfig(c as any);
+  }
+  useEffect(() => { load(); }, []);
+
+  const counts = STAGES.reduce<Record<string, number>>((acc, st) => {
+    acc[st] = apps.filter(a => a.stage === st).length; return acc;
+  }, {});
+
+  const filtered = apps.filter(a => {
+    if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!`${a.first_name} ${a.last_name} ${a.email}`.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  async function updateApp(id: string, patch: Partial<Application>) {
+    const { error } = await (supabase.from('applications' as never) as any).update(patch).eq('id', id);
+    if (error) { toast.error(error.message); return; }
+    load();
+    if (selected?.id === id) setSelected({ ...selected, ...patch } as Application);
+  }
+
+  function postingFor(app: Application) { return postings.find(p => p.id === app.job_posting_id); }
+  function subFor(app: Application) {
+    return subs.find(s => s.application_id === app.id) ||
+      subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
+  }
+
+  function renderEmail(app: Application) {
+    const p = postingFor(app);
+    if (!p) return { subject: '', body: '' };
+    const sub = (config.submission_form_url || `${window.location.origin}/submit-task`);
+    const body = p.trial_email_body
+      .replaceAll('{{first_name}}', app.first_name)
+      .replaceAll('{{email}}', app.email)
+      .replaceAll('{{notion_task_url}}', p.notion_task_url)
+      .replaceAll('{{submission_form_url}}', sub);
+    return { subject: p.trial_email_subject, body };
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Stage counters */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+        <button onClick={() => setStageFilter('all')} className={`p-3 rounded-lg border text-left transition ${stageFilter === 'all' ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-foreground/30'}`}>
+          <p className="text-xs text-muted-foreground">All</p>
+          <p className="text-xl font-semibold font-mono">{apps.length}</p>
+        </button>
+        {STAGES.map(st => (
+          <button key={st} onClick={() => setStageFilter(st)} className={`p-3 rounded-lg border text-left transition ${stageFilter === st ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-foreground/30'}`}>
+            <p className="text-xs text-muted-foreground">{STAGE_LABEL[st]}</p>
+            <p className="text-xl font-semibold font-mono">{counts[st]}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <Input placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs" />
+      </div>
+
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/30 text-xs text-muted-foreground">
+            <tr>
+              <th className="text-left p-3">Applicant</th>
+              <th className="text-left p-3">Role</th>
+              <th className="text-left p-3">Software</th>
+              <th className="text-left p-3">Stage</th>
+              <th className="text-left p-3">Email</th>
+              <th className="text-left p-3">Task</th>
+              <th className="text-left p-3">Applied</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+            )}
+            {filtered.map(app => {
+              const sub = subFor(app);
+              const posting = postingFor(app);
+              return (
+                <tr key={app.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(app)}>
+                  <td className="p-3">
+                    <p className="font-medium">{app.first_name} {app.last_name}</p>
+                    <p className="text-xs text-muted-foreground">{app.email}</p>
+                  </td>
+                  <td className="p-3 text-muted-foreground">{posting?.title ?? '—'}</td>
+                  <td className="p-3">
+                    <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
+                  </td>
+                  <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${STAGE_COLOR[app.stage]}`}>{STAGE_LABEL[app.stage]}</span></td>
+                  <td className="p-3"><EmailStatus app={app} /></td>
+                  <td className="p-3">{sub ? <Badge className="bg-violet-500/15 text-violet-600 dark:text-violet-400 hover:bg-violet-500/20 font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
+                  <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Drawer */}
+      <Sheet open={!!selected} onOpenChange={o => !o && setSelected(null)}>
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          {selected && (() => {
+            const sub = subFor(selected);
+            const posting = postingFor(selected);
+            const { subject, body } = renderEmail(selected);
+            const mailtoHref = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            return (
+              <>
+                <SheetHeader>
+                  <SheetTitle>{selected.first_name} {selected.last_name}</SheetTitle>
+                  <p className="text-sm text-muted-foreground">{selected.email}</p>
+                </SheetHeader>
+                <div className="mt-6 space-y-5">
+                  <Field label="Role" value={posting?.title ?? '—'} />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Software" value={selected.software} />
+                    <Field label="Availability" value={selected.availability} />
+                  </div>
+                  {selected.portfolio_url && <Field label="Portfolio"><a href={selected.portfolio_url} target="_blank" rel="noreferrer" className="text-primary underline break-all">{selected.portfolio_url}</a></Field>}
+                  {selected.years_experience && <Field label="Experience" value={selected.years_experience} />}
+                  {selected.additional_info && <Field label="Notes"><p className="text-sm whitespace-pre-wrap">{selected.additional_info}</p></Field>}
+
+                  <div className="border-t border-border pt-4 space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs">Stage</Label>
+                      <Select value={selected.stage} onValueChange={v => updateApp(selected.id, { stage: v })}>
+                        <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {STAGES.map(s => <SelectItem key={s} value={s}>{STAGE_LABEL[s]}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <EmailStatus app={selected} verbose />
+                  </div>
+
+                  {posting && (
+                    <div className="border-t border-border pt-4 space-y-2">
+                      <Label className="text-xs">Trial email</Label>
+                      <div className="p-3 rounded-lg bg-muted/40 text-xs">
+                        <p className="font-semibold mb-1">Subject: {subject}</p>
+                        <pre className="whitespace-pre-wrap font-sans text-foreground/80">{body}</pre>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(body); toast.success('Copied'); }}><Copy className="w-3.5 h-3.5 mr-1" /> Copy</Button>
+                        <Button size="sm" asChild><a href={mailtoHref}><Send className="w-3.5 h-3.5 mr-1" /> Open in mail app</a></Button>
+                        {!selected.trial_email_sent_at && (
+                          <Button size="sm" variant="secondary" onClick={() => updateApp(selected.id, { trial_email_sent_at: new Date().toISOString(), stage: 'trial_sent' })}>
+                            <MailCheck className="w-3.5 h-3.5 mr-1" /> Mark sent
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {sub && (
+                    <div className="border-t border-border pt-4 space-y-2">
+                      <Label className="text-xs">Trial submission</Label>
+                      <a href={sub.submission_url} target="_blank" rel="noreferrer" className="block text-sm text-primary underline break-all">{sub.submission_url}</a>
+                      {sub.notes && <p className="text-xs text-muted-foreground whitespace-pre-wrap">{sub.notes}</p>}
+                      <div className="flex gap-2 pt-1">
+                        <Button size="sm" variant={selected.proceed === true ? 'default' : 'outline'} onClick={() => updateApp(selected.id, { proceed: true, reviewed_at: new Date().toISOString() })}>
+                          <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Proceed
+                        </Button>
+                        <Button size="sm" variant={selected.proceed === false ? 'destructive' : 'outline'} onClick={() => updateApp(selected.id, { proceed: false, reviewed_at: new Date().toISOString(), stage: 'rejected' })}>
+                          <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function Field({ label, value, children }: { label: string; value?: string; children?: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
+      {children ?? <p className="text-sm">{value}</p>}
+    </div>
+  );
+}
+
+function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) {
+  if (app.trial_email_sent_at) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
+        <MailCheck className="w-3.5 h-3.5" />
+        {verbose ? `Sent ${formatDistanceToNow(new Date(app.trial_email_sent_at), { addSuffix: true })}` : 'Sent'}
+      </span>
+    );
+  }
+  if (app.trial_email_scheduled_for) {
+    const due = new Date(app.trial_email_scheduled_for);
+    const future = due.getTime() > Date.now();
+    return (
+      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}`}>
+        <Clock className="w-3.5 h-3.5" />
+        {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
+      </span>
+    );
+  }
+  return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Mail className="w-3.5 h-3.5" /> Not queued</span>;
+}
