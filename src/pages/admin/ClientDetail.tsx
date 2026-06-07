@@ -1,44 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Client, Stage, Module, ModuleCompletion, StageWithModules } from '@/types/playbook';
-import { isModuleCompleted } from '@/lib/progression';
+import { Client } from '@/types/playbook';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, BarChart3, Edit, Trash2, RotateCcw, ChevronRight, BookOpen, GraduationCap, Lock } from 'lucide-react';
+import { ArrowLeft, BarChart3, Trash2, RotateCcw, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generatePassword } from '@/lib/auth';
-
-function ProgressBar({ pct }: { pct: number }) {
-  const done = pct === 100;
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] text-white/30">{done ? '🎉 Complete!' : 'Progress'}</span>
-        <span className="text-xs font-bold text-white/60" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{pct}%</span>
-      </div>
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{
-            width: `${pct}%`,
-            background: done
-              ? 'linear-gradient(90deg, #10B981, #34D399)'
-              : 'linear-gradient(90deg, #8B5CF6, #6366F1)',
-            boxShadow: pct > 0 ? '0 0 12px rgba(139,92,246,0.4)' : 'none',
-          }}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function ClientDetail() {
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [client, setClient] = useState<Client | null>(null);
-  const [stages, setStages] = useState<StageWithModules[]>([]);
-  const [completions, setCompletions] = useState<ModuleCompletion[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { loadData(); }, [clientId]);
@@ -46,20 +19,8 @@ export default function ClientDetail() {
   async function loadData() {
     if (!clientId) return;
     setLoading(true);
-    const [clientRes, stagesRes, modulesRes, completionsRes] = await Promise.all([
-      supabase.from('clients').select('*').eq('id', clientId).single(),
-      supabase.from('stages').select('*').eq('client_id', clientId).order('sort_order'),
-      supabase.from('modules').select('*').eq('client_id', clientId).order('sort_order'),
-      supabase.from('module_completions').select('*').eq('client_id', clientId),
-    ]);
-    setClient(clientRes.data as Client | null);
-    setCompletions((completionsRes.data || []) as ModuleCompletion[]);
-    const stagesData = (stagesRes.data || []) as Stage[];
-    const modulesData = (modulesRes.data || []) as Module[];
-    setStages(stagesData.map(s => ({
-      ...s,
-      modules: modulesData.filter(m => m.stage_id === s.id),
-    })));
+    const { data } = await supabase.from('clients').select('*').eq('id', clientId).single();
+    setClient(data as Client | null);
     setLoading(false);
   }
 
@@ -103,12 +64,6 @@ export default function ClientDetail() {
       Client not found
     </div>
   );
-
-  const totalModules = stages.reduce((sum, s) => sum + s.modules.length, 0);
-  const completedModules = stages.reduce((sum, s) => sum + s.modules.filter(m => isModuleCompleted(m.id, completions)).length, 0);
-  const pct = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
-  const stageCount = stages.length;
-  const stagesComplete = stages.filter(s => s.modules.length > 0 && s.modules.every(m => isModuleCompleted(m.id, completions))).length;
 
   return (
     <div className="min-h-screen" style={{ background: '#09090B' }}>
@@ -163,48 +118,8 @@ export default function ClientDetail() {
           </div>
         </div>
 
-        {/* Two cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Onboarding card */}
-          <button
-            onClick={() => navigate(`/admin/clients/${clientId}/playbook-view`)}
-            className="group text-left rounded-2xl p-6 transition-all duration-200 hover:scale-[1.01]"
-            style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px -5px rgba(139,92,246,0.15)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
-          >
-            <div className="flex items-start justify-between mb-5">
-              <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-violet-400" />
-              </div>
-              <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all" />
-            </div>
-            <h3 className="text-base font-semibold text-white mb-0.5">Onboarding</h3>
-            <p className="text-xs text-white/30 mb-5">SOPs, modules, and progression tracking</p>
-
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              {[
-                { val: totalModules, label: 'MODULES' },
-                { val: `${stagesComplete}/${stageCount}`, label: 'STAGES' },
-                { val: `${pct}%`, label: 'COMPLETE', highlight: pct === 100 },
-              ].map((s, i) => (
-                <div key={i} className="rounded-xl p-3 text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <p className={`text-lg font-bold ${s.highlight ? 'text-emerald-400' : 'text-white'}`} style={{ fontFamily: "'JetBrains Mono', monospace" }}>{s.val}</p>
-                  <p className="text-[8px] uppercase tracking-widest text-white/30">{s.label}</p>
-                </div>
-              ))}
-            </div>
-
-            <ProgressBar pct={pct} />
-
-            <div className="mt-5 flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-violet-400 group-hover:text-violet-300 transition-colors">
-                View Playbook →
-              </span>
-            </div>
-          </button>
-
-          {/* Editor Performance card */}
+        {/* Editor Performance card */}
+        <div className="grid grid-cols-1 gap-5">
           <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-start justify-between mb-5">
               <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
@@ -224,17 +139,6 @@ export default function ClientDetail() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => navigate(`/admin/clients/${clientId}/playbook`)}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs text-white/40 hover:text-white/70 transition-colors"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <Edit className="w-3.5 h-3.5" /> Edit Playbook Content
-          </button>
         </div>
       </main>
     </div>
