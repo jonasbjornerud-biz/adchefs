@@ -85,8 +85,7 @@ export default function SubmitTask() {
       {/* SUBMISSION FORM */}
       <section className="bg-secondary py-20 min-h-screen">
         <div className="max-w-2xl mx-auto px-6">
-          <span className="eyebrow">Upload in 60 seconds</span>
-          <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
+          <h2 className="font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
             Show us what you <em>edited.</em>
           </h2>
           <p className="mt-3 text-[14px] text-muted-foreground">
