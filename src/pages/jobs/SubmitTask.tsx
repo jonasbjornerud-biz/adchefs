@@ -99,7 +99,7 @@ export default function SubmitTask() {
             </Link>
 
             <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-              Trial task
+              {posting?.brand ? `${posting.brand} · Trial task` : 'Trial task'}
             </span>
           </div>
 
@@ -108,7 +108,9 @@ export default function SubmitTask() {
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            Upload your finished trial task below. We review every submission.
+            {posting?.brand
+              ? `Upload your finished ${posting.brand} trial task below. We review every submission.`
+              : 'Upload your finished trial task below. We review every submission.'}
           </p>
         </div>
       </section>
