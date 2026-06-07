@@ -43,6 +43,7 @@
     --ink: 0 0% 10%;
     --paper: 45 21% 96%;
     --surface: 45 11% 92%;
+    --accent-deep: 199 48% 44%;     /* #3B86A8 — legible accent on light bg */
   }
 
   .dark {
@@ -74,6 +75,7 @@
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 200 81% 65%;
+    --accent-deep: 199 48% 44%;
   }
 }
 
@@ -111,18 +113,18 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: hsl(var(--foreground));
+    color: hsl(var(--accent-deep));
     display: inline-block;
-    padding: 4px 10px;
-    border: 1px solid hsl(var(--border));
+    padding: 8px 14px;
+    border: 1px solid hsl(var(--accent-deep));
     border-radius: 4px;
-    background: hsl(var(--background));
+    background: transparent;
   }
 
   .eyebrow-accent {
-    background: hsl(var(--accent));
-    border-color: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background: transparent;
+    border-color: hsl(var(--accent-deep));
+    color: hsl(var(--accent-deep));
   }
 
   .mono {
@@ -621,10 +623,10 @@
   .rich-text-content li { @apply text-foreground/80; }
 
   .rich-text-content a {
-    @apply text-sky-600 dark:text-sky-400 underline underline-offset-2 decoration-sky-500/30;
+    @apply text-foreground underline underline-offset-2 decoration-foreground/30;
     transition: color 0.15s;
   }
-  .rich-text-content a:hover { @apply text-sky-500 decoration-sky-500/60; }
+  .rich-text-content a:hover { @apply text-foreground/70 decoration-foreground/60; }
 
   .rich-text-content table {
     @apply w-full border-collapse mb-4 text-sm;
@@ -654,7 +656,7 @@
   }
 
   .rich-text-content blockquote {
-    @apply border-l-4 border-sky-500/40 pl-4 py-1 my-4 text-foreground/70 italic;
+    @apply border-l-4 border-accent pl-4 py-1 my-4 text-foreground/70 italic;
   }
 
   .rich-text-content hr {
@@ -663,13 +665,13 @@
 
   /* Callout blocks */
   .rich-text-content .callout-info {
-    @apply rounded-xl border-l-4 border-sky-500 bg-sky-500/[0.06] p-4 my-4;
+    @apply rounded-[4px] border-l-4 border-accent bg-accent/10 p-4 my-4;
   }
   .rich-text-content .callout-warning {
-    @apply rounded-xl border-l-4 border-amber-500 bg-amber-500/[0.06] p-4 my-4;
+    @apply rounded-[4px] border-l-4 border-muted-foreground bg-secondary p-4 my-4;
   }
   .rich-text-content .callout-danger {
-    @apply rounded-xl border-l-4 border-red-500 bg-red-500/[0.06] p-4 my-4;
+    @apply rounded-[4px] border-l-4 border-destructive bg-destructive/10 p-4 my-4;
   }
 
   /* Loom & YouTube embeds */
@@ -680,7 +682,7 @@
 
   /* Checklist styling (display only) */
   .rich-text-content input[type="checkbox"] {
-    @apply w-4 h-4 rounded border-2 border-border mr-2 accent-sky-500;
+    @apply w-4 h-4 rounded border-2 border-border mr-2;
     pointer-events: none;
   }
 }
