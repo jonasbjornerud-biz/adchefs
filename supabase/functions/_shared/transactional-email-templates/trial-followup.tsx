@@ -1,5 +1,4 @@
 import * as React from 'npm:react@18.3.1'
-import { Body, Head, Html, Preview, Text } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -8,30 +7,28 @@ interface Props {
   first_name?: string
 }
 
-const main = {
-  backgroundColor: '#ffffff',
-  fontFamily: 'Arial, sans-serif',
-  color: '#222222',
-  margin: 0,
-  padding: 0,
+const Email = ({ subject = 'Quick follow-up on your trial task', body = '' }: Props) => {
+  const paragraphs = (body || '').split(/\n{2,}/)
+  return (
+    <html lang="en" dir="ltr">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{subject}</title>
+      </head>
+      <body style={{ margin: 0, padding: 0 }}>
+        <div style={{ display: 'none', overflow: 'hidden', lineHeight: 1, opacity: 0, maxHeight: 0, maxWidth: 0 }}>
+          {subject}
+        </div>
+        <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px', lineHeight: '1.5', color: '#222' }}>
+          {paragraphs.map((p, i) => (
+            <p key={i} style={{ margin: '0 0 14px 0', whiteSpace: 'pre-wrap' }}>{p}</p>
+          ))}
+        </div>
+      </body>
+    </html>
+  )
 }
-const para = {
-  fontSize: '14px',
-  lineHeight: '1.5',
-  whiteSpace: 'pre-wrap' as const,
-  margin: 0,
-  color: '#222222',
-}
-
-const Email = ({ subject = 'Quick follow-up on your trial task', body = '' }: Props) => (
-  <Html lang="en" dir="ltr">
-    <Head />
-    <Preview>{subject}</Preview>
-    <Body style={main}>
-      <Text style={para}>{body}</Text>
-    </Body>
-  </Html>
-)
 
 export const template = {
   component: Email,
