@@ -134,7 +134,7 @@ export default function JobDetail() {
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
           </Link>
 
-          <span className="eyebrow" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+          <span className="eyebrow inline-block mt-2" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
             Now hiring · Remote
           </span>
 
@@ -164,22 +164,42 @@ export default function JobDetail() {
       </section>
 
       {/* PERKS */}
-      <section className="bg-background border-y border-border">
-        <div className="max-w-[1100px] mx-auto px-6 py-20">
-          <div className="max-w-2xl mb-12">
-            <span className="eyebrow">Why edit with AdChefs</span>
-            <h2 className="mt-5 font-display text-[28px] md:text-[36px] leading-[1.1] tracking-[-0.02em]">
-              Built for editors who want their work to <em>matter.</em>
+      <section className="relative overflow-hidden bg-foreground text-background border-y border-foreground">
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div className="absolute -bottom-40 -left-40 w-[460px] h-[460px] rounded-full pointer-events-none" style={{
+          background: 'radial-gradient(circle, hsl(var(--accent) / 0.20) 0%, transparent 65%)',
+          filter: 'blur(50px)',
+        }} />
+
+        <div className="relative max-w-[1100px] mx-auto px-6 py-24">
+          <div className="max-w-2xl mb-14">
+            <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+              Why edit with AdChefs
+            </span>
+            <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
+              Built for editors who want their work to <em style={{ color: "hsl(var(--accent))" }}>matter.</em>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-px bg-border border border-border rounded-[4px] overflow-hidden">
-            {perks.map((p) => (
-              <div key={p.title} className="bg-background p-8">
-                <div className="w-9 h-9 rounded-[4px] bg-secondary flex items-center justify-center mb-5">
-                  <p.icon className="w-4 h-4 text-foreground" />
+          <div className="grid sm:grid-cols-2 gap-5">
+            {perks.map((p, i) => (
+              <div
+                key={p.title}
+                className="group relative bg-background/[0.03] border border-background/10 rounded-[6px] p-8 hover:border-accent/50 hover:bg-background/[0.06] transition-colors"
+              >
+                <div className="absolute top-6 right-6 mono text-[10px] uppercase tracking-[0.18em] text-background/30">
+                  0{i + 1}
                 </div>
-                <h3 className="font-display text-[18px] tracking-tight mb-2">{p.title}</h3>
-                <p className="text-[14px] text-muted-foreground leading-relaxed">{p.body}</p>
+                <div className="w-11 h-11 rounded-[4px] border border-accent/40 bg-accent/10 flex items-center justify-center mb-6">
+                  <p.icon className="w-5 h-5 text-accent" />
+                </div>
+                <h3 className="font-display text-[20px] tracking-tight mb-2">{p.title}</h3>
+                <p className="text-[14px] text-background/60 leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
