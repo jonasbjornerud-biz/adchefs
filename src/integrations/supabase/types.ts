@@ -228,6 +228,7 @@ export type Database = {
       }
       job_postings: {
         Row: {
+          brand: string
           created_at: string
           description: string
           followup_email_body: string
@@ -238,12 +239,14 @@ export type Database = {
           notion_task_url: string
           senior_pay: string | null
           slug: string
+          submit_slug: string
           title: string
           trial_email_body: string
           trial_email_subject: string
           updated_at: string
         }
         Insert: {
+          brand?: string
           created_at?: string
           description?: string
           followup_email_body?: string
@@ -254,12 +257,14 @@ export type Database = {
           notion_task_url?: string
           senior_pay?: string | null
           slug: string
+          submit_slug: string
           title: string
           trial_email_body?: string
           trial_email_subject?: string
           updated_at?: string
         }
         Update: {
+          brand?: string
           created_at?: string
           description?: string
           followup_email_body?: string
@@ -270,6 +275,7 @@ export type Database = {
           notion_task_url?: string
           senior_pay?: string | null
           slug?: string
+          submit_slug?: string
           title?: string
           trial_email_body?: string
           trial_email_subject?: string
