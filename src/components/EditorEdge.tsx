@@ -1,5 +1,6 @@
 import { Eye, Gauge, LineChart, Wallet, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const principles = [
   {
@@ -29,16 +30,13 @@ const principles = [
 ];
 
 const EditorEdge = () => {
-  const scrollToBooking = () => {
-    const el = document.getElementById("booking");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  const navigate = useNavigate();
   return (
     <section className="py-24 sm:py-32 bg-foreground text-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
-            What sets AdChefs apart
+            See how it works
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
             Editors who understand <em style={{ color: "hsl(var(--accent))" }}>why ads work.</em>
@@ -64,10 +62,10 @@ const EditorEdge = () => {
         <div className="mt-14 flex justify-center">
           <Button
             size="lg"
-            onClick={scrollToBooking}
+            onClick={() => navigate('/mock')}
             className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
           >
-            Book a call
+            See how it works
             <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </div>
