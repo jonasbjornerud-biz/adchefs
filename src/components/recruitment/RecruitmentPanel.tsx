@@ -478,29 +478,33 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
         {([['all', 'All', apps.length] as const, ...STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
             <button
               key={key}
               onClick={() => setStageFilter(key)}
-              className="p-3 rounded-[4px] border text-left transition-colors"
+              className="group relative px-3 py-2.5 rounded-[3px] text-left transition-all duration-150"
               style={{
-                borderColor: active ? '#1A1A1A' : '#E2E0D9',
                 backgroundColor: active ? '#1A1A1A' : 'transparent',
                 color: active ? '#FAF8F3' : '#1A1A1A',
               }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
-              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.7)' : '#75726B' }}>
+              <p className="mono text-[9px] uppercase tracking-[0.18em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
                 {label}
               </p>
               <p
-                className="mt-1 text-[22px] tracking-[-0.02em]"
+                className="mt-1 text-[22px] leading-none tracking-[-0.02em]"
                 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
               >
                 {String(count).padStart(2, '0')}
               </p>
+              {active && (
+                <span className="absolute left-3 right-3 -bottom-px h-[2px]" style={{ backgroundColor: '#9ED8F5' }} />
+              )}
             </button>
           );
         })}
@@ -523,6 +527,7 @@ function Pipeline() {
         <table className="w-full text-sm">
           <thead style={{ backgroundColor: '#EEEDE8' }}>
             <tr className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+              <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal">Role</th>
               <th className="text-left p-3 font-normal">Software</th>
@@ -534,13 +539,26 @@ function Pipeline() {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+              <tr><td colSpan={8} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
             {filtered.map(app => {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8]" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8] group" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
+                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
+                    <button
+                      onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
+                      className="p-1 rounded-[3px] transition-colors hover:bg-[#E2E0D9]"
+                      aria-label={app.starred ? 'Unstar' : 'Shortlist'}
+                      title={app.starred ? 'Remove from shortlist' : 'Add to shortlist'}
+                    >
+                      <Star
+                        className="w-4 h-4"
+                        style={{ color: app.starred ? '#1A1A1A' : '#C8C5BC', fill: app.starred ? '#9ED8F5' : 'transparent' }}
+                      />
+                    </button>
+                  </td>
                   <td className="p-3">
                     <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
                     <p className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B] mt-0.5">{app.email}</p>
@@ -549,9 +567,24 @@ function Pipeline() {
                   <td className="p-3">
                     <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
                   </td>
-                  <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${STAGE_COLOR[app.stage]}`}>{STAGE_LABEL[app.stage]}</span></td>
+                  <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3">{sub ? <Badge className="bg-secondary text-foreground hover:bg-secondary font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
+                  <td className="p-3">
+                    {sub ? (
+                      <a
+                        href={sub.submission_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-2 px-2 py-1 rounded-[3px] border hover:bg-[#E2E0D9] transition-colors"
+                        style={{ borderColor: '#E2E0D9' }}
+                        title={sub.submission_url}
+                      >
+                        <LinkFavicon url={sub.submission_url} />
+                        <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A]">{hostOf(sub.submission_url) || 'View'}</span>
+                      </a>
+                    ) : <span className="text-muted-foreground text-xs">—</span>}
+                  </td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                 </tr>
               );
