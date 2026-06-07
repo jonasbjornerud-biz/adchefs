@@ -1,5 +1,5 @@
 import * as React from 'npm:react@18.3.1'
-import { Body, Container, Head, Html, Preview, Text } from 'npm:@react-email/components@0.0.22'
+import { Body, Head, Html, Preview, Text } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
 
 interface Props {
@@ -8,18 +8,27 @@ interface Props {
   first_name?: string
 }
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Inter, Arial, sans-serif', color: '#0f0f17' }
-const container = { padding: '24px 28px', maxWidth: '600px' }
-const para = { fontSize: '15px', lineHeight: '1.6', whiteSpace: 'pre-wrap' as const, margin: '0 0 12px' }
+const main = {
+  backgroundColor: '#ffffff',
+  fontFamily: 'Arial, sans-serif',
+  color: '#222222',
+  margin: 0,
+  padding: 0,
+}
+const para = {
+  fontSize: '14px',
+  lineHeight: '1.5',
+  whiteSpace: 'pre-wrap' as const,
+  margin: 0,
+  color: '#222222',
+}
 
 const Email = ({ subject = 'Quick follow-up on your trial task', body = '' }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
     <Preview>{subject}</Preview>
     <Body style={main}>
-      <Container style={container}>
-        <Text style={para}>{body}</Text>
-      </Container>
+      <Text style={para}>{body}</Text>
     </Body>
   </Html>
 )
