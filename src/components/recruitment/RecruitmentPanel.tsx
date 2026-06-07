@@ -24,6 +24,8 @@ type Posting = {
   notion_task_url: string;
   trial_email_subject: string;
   trial_email_body: string;
+  followup_email_subject: string;
+  followup_email_body: string;
   is_active: boolean;
   created_at: string;
 };
@@ -88,6 +90,17 @@ When you're done, submit it here:
 {{submission_form_url}}?email={{email}}
 
 — AdChefs`,
+  followup_email_subject: 'Following up on your AdChefs trial task',
+  followup_email_body: `Hi {{first_name}},
+
+Just checking in — we sent you the trial task a few days ago and haven't seen a submission yet. If life got in the way, no worries, but we'd love to see what you can do.
+
+Task: {{notion_task_url}}
+Submit here: {{submission_form_url}}?email={{email}}
+
+Let me know if you have any questions.
+
+— AdChefs`,
   is_active: true,
 };
 
@@ -130,6 +143,8 @@ function Postings() {
       notion_task_url: editing.notion_task_url ?? '',
       trial_email_subject: editing.trial_email_subject ?? '',
       trial_email_body: editing.trial_email_body ?? '',
+      followup_email_subject: editing.followup_email_subject ?? '',
+      followup_email_body: editing.followup_email_body ?? '',
       is_active: editing.is_active ?? true,
     };
     const { error } = editing.id
@@ -201,6 +216,12 @@ function Postings() {
                 <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
                 <Textarea rows={10} className="font-mono text-xs" value={editing.trial_email_body ?? ''} onChange={e => setEditing({ ...editing, trial_email_body: e.target.value })} />
               </div>
+              <div className="space-y-1.5 border-t border-border pt-4"><Label>Follow-up email subject</Label><Input value={editing.followup_email_subject ?? ''} onChange={e => setEditing({ ...editing, followup_email_subject: e.target.value })} /></div>
+              <div className="space-y-1.5">
+                <Label>Follow-up email body</Label>
+                <p className="text-xs text-muted-foreground">Sent manually when an applicant hasn't submitted the trial. Same variables available.</p>
+                <Textarea rows={8} className="font-mono text-xs" value={editing.followup_email_body ?? ''} onChange={e => setEditing({ ...editing, followup_email_body: e.target.value })} />
+              </div>
               <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={v => setEditing({ ...editing, is_active: v })} /><Label>Active (public)</Label></div>
             </div>
           )}
@@ -221,6 +242,7 @@ function Pipeline() {
   const [postings, setPostings] = useState<Posting[]>([]);
   const [selected, setSelected] = useState<Application | null>(null);
   const [stageFilter, setStageFilter] = useState<string>('all');
+  const [postingFilter, setPostingFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [config, setConfig] = useState<{ submission_form_url: string }>({ submission_form_url: '' });
 
@@ -238,11 +260,15 @@ function Pipeline() {
   }
   useEffect(() => { load(); }, []);
 
+  const scopedApps = postingFilter === 'all'
+    ? apps
+    : apps.filter(a => a.job_posting_id === postingFilter);
+
   const counts = STAGES.reduce<Record<string, number>>((acc, st) => {
-    acc[st] = apps.filter(a => a.stage === st).length; return acc;
+    acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
 
-  const filtered = apps.filter(a => {
+  const filtered = scopedApps.filter(a => {
     if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
     if (search) {
       const q = search.toLowerCase();
@@ -264,16 +290,18 @@ function Pipeline() {
       subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
   }
 
-  function renderEmail(app: Application) {
+  function renderTemplate(app: Application, kind: 'trial' | 'followup') {
     const p = postingFor(app);
     if (!p) return { subject: '', body: '' };
     const sub = (config.submission_form_url || `${window.location.origin}/submit-task`);
-    const body = p.trial_email_body
+    const subject = kind === 'trial' ? p.trial_email_subject : p.followup_email_subject;
+    const raw = kind === 'trial' ? p.trial_email_body : p.followup_email_body;
+    const body = (raw ?? '')
       .replace(/\{\{first_name\}\}/g, app.first_name)
       .replace(/\{\{email\}\}/g, app.email)
       .replace(/\{\{notion_task_url\}\}/g, p.notion_task_url)
       .replace(/\{\{submission_form_url\}\}/g, sub);
-    return { subject: p.trial_email_subject, body };
+    return { subject: subject ?? '', body };
   }
 
   return (
@@ -294,6 +322,15 @@ function Pipeline() {
 
       <div className="flex gap-2">
         <Input placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs" />
+        <Select value={postingFilter} onValueChange={setPostingFilter}>
+          <SelectTrigger className="w-56"><SelectValue placeholder="All roles" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All roles</SelectItem>
+            {postings.map(p => (
+              <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -322,7 +359,7 @@ function Pipeline() {
                     <p className="font-medium">{app.first_name} {app.last_name}</p>
                     <p className="text-xs text-muted-foreground">{app.email}</p>
                   </td>
-                  <td className="p-3 text-muted-foreground">{posting?.title ?? '—'}</td>
+                   <td className="p-3 text-muted-foreground">{posting?.title ?? '—'}</td>
                   <td className="p-3">
                     <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
                   </td>
@@ -343,8 +380,12 @@ function Pipeline() {
           {selected && (() => {
             const sub = subFor(selected);
             const posting = postingFor(selected);
-            const { subject, body } = renderEmail(selected);
-            const mailtoHref = `mailto:${selected.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const trial = renderTemplate(selected, 'trial');
+            const followup = renderTemplate(selected, 'followup');
+            const mailto = (s: string, b: string) =>
+              `mailto:${selected.email}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(b)}`;
+            const showFollowup =
+              !!posting && !!selected.trial_email_sent_at && !sub;
             return (
               <>
                 <SheetHeader>
@@ -378,17 +419,45 @@ function Pipeline() {
                     <div className="border-t border-border pt-4 space-y-2">
                       <Label className="text-xs">Trial email</Label>
                       <div className="p-3 rounded-lg bg-muted/40 text-xs">
-                        <p className="font-semibold mb-1">Subject: {subject}</p>
-                        <pre className="whitespace-pre-wrap font-sans text-foreground/80">{body}</pre>
+                        <p className="font-semibold mb-1">Subject: {trial.subject}</p>
+                        <pre className="whitespace-pre-wrap font-sans text-foreground/80">{trial.body}</pre>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(body); toast.success('Copied'); }}><Copy className="w-3.5 h-3.5 mr-1" /> Copy</Button>
-                        <Button size="sm" asChild><a href={mailtoHref}><Send className="w-3.5 h-3.5 mr-1" /> Open in mail app</a></Button>
+                        <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(trial.body); toast.success('Copied'); }}><Copy className="w-3.5 h-3.5 mr-1" /> Copy</Button>
+                        <Button size="sm" asChild><a href={mailto(trial.subject, trial.body)}><Send className="w-3.5 h-3.5 mr-1" /> Open in mail app</a></Button>
                         {!selected.trial_email_sent_at && (
                           <Button size="sm" variant="secondary" onClick={() => updateApp(selected.id, { trial_email_sent_at: new Date().toISOString(), stage: 'trial_sent' })}>
                             <MailCheck className="w-3.5 h-3.5 mr-1" /> Mark sent
                           </Button>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {showFollowup && (
+                    <div className="border-t border-border pt-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs">Follow-up email</Label>
+                        {selected.followup_sent_at ? (
+                          <span className="text-xs text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                            <MailCheck className="w-3.5 h-3.5" /> Sent {formatDistanceToNow(new Date(selected.followup_sent_at), { addSuffix: true })}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            Trial sent {formatDistanceToNow(new Date(selected.trial_email_sent_at!), { addSuffix: true })}, no submission
+                          </span>
+                        )}
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/40 text-xs">
+                        <p className="font-semibold mb-1">Subject: {followup.subject}</p>
+                        <pre className="whitespace-pre-wrap font-sans text-foreground/80">{followup.body}</pre>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(followup.body); toast.success('Copied'); }}><Copy className="w-3.5 h-3.5 mr-1" /> Copy</Button>
+                        <Button size="sm" asChild><a href={mailto(followup.subject, followup.body)}><Send className="w-3.5 h-3.5 mr-1" /> Open in mail app</a></Button>
+                        <Button size="sm" variant="secondary" onClick={() => updateApp(selected.id, { followup_sent_at: new Date().toISOString() })}>
+                          <MailCheck className="w-3.5 h-3.5 mr-1" /> Mark follow-up sent
+                        </Button>
                       </div>
                     </div>
                   )}
