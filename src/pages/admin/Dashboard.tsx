@@ -34,80 +34,177 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Admin</h1>
-            <p className="text-sm text-muted-foreground">Manage clients & recruitment</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate('/mock')}>
-              <Sparkles className="w-4 h-4 mr-1 text-accent" /> MOCK Demo
-              <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => { logout(); navigate('/login'); }}>
-              <LogOut className="w-4 h-4 mr-1" /> Logout
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-foreground text-background pt-16 pb-20">
+        <div
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 65%)',
+            filter: 'blur(40px)',
+          }}
+        />
 
-      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+        <div className="relative max-w-[1100px] mx-auto px-6">
+          <div className="mb-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-background/60">
+                Backend
+              </span>
+              <span
+                className="eyebrow inline-block"
+                style={{ borderColor: 'hsl(var(--accent))', color: 'hsl(var(--accent))', background: 'transparent' }}
+              >
+                Admin · Internal
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/mock')}
+                className="bg-transparent border-background/30 text-background hover:bg-background/10 hover:text-background"
+              >
+                <Sparkles className="w-4 h-4 mr-1" style={{ color: 'hsl(var(--accent))' }} /> MOCK Demo
+                <ExternalLink className="w-3 h-3 ml-1.5 opacity-50" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { logout(); navigate('/login'); }}
+                className="bg-transparent border-background/30 text-background hover:bg-background/10 hover:text-background"
+              >
+                <LogOut className="w-4 h-4 mr-1" /> Logout
+              </Button>
+            </div>
+          </div>
+
+          <h1
+            className="mt-6 font-display text-[40px] sm:text-[60px] md:text-[72px] leading-[1.0] tracking-[-0.03em] max-w-4xl"
+          >
+            Run the{' '}
+            <em style={{ color: 'hsl(var(--accent))' }}>operation.</em>
+          </h1>
+          <p className="mt-7 text-[15px] sm:text-[17px] leading-relaxed text-background/70 max-w-xl">
+            Manage clients, briefs, and the editor pipeline from one place.
+          </p>
+        </div>
+      </section>
+
+      {/* MAIN */}
+      <main className="relative max-w-[1100px] mx-auto px-6 py-16">
         <Tabs defaultValue={initialTab} className="w-full">
           <TabsList>
             <TabsTrigger value="clients">Clients</TabsTrigger>
             <TabsTrigger value="recruitment">Recruitment</TabsTrigger>
           </TabsList>
-          <TabsContent value="clients" className="mt-6 space-y-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center gap-3 mb-1">
-              <Users className="w-5 h-5 text-foreground" />
-              <span className="text-sm text-muted-foreground">Total Clients</span>
-            </div>
-            <p className="text-3xl font-bold font-mono text-foreground">{clients.length}</p>
-          </div>
-        </div>
 
-        {/* Client list */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-foreground">Clients</h2>
-            <Button size="sm" onClick={() => navigate('/admin/clients/new')} className="bg-foreground hover:bg-foreground/90 text-white">
-              <Plus className="w-4 h-4 mr-1" /> New Client
-            </Button>
-          </div>
-
-          {loading ? (
-            <div className="text-center py-12 text-muted-foreground">Loading...</div>
-          ) : clients.length === 0 ? (
-            <div className="text-center py-12 border border-dashed border-border rounded-xl text-muted-foreground">
-              No clients yet. Create your first client to get started.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {clients.map(client => (
-                <button
-                  key={client.id}
-                  onClick={() => navigate(`/admin/clients/${client.id}`)}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:border-border/80 hover:shadow-sm transition-all text-left"
+          <TabsContent value="clients" className="mt-10 space-y-12">
+            {/* Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
+              <div
+                className="rounded-[4px] border p-6"
+                style={{ borderColor: '#E2E0D9', backgroundColor: '#EEEDE8' }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="w-4 h-4" style={{ color: '#3B86A8' }} />
+                  <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                    Total clients
+                  </span>
+                </div>
+                <p
+                  className="text-[40px] tracking-[-0.02em] text-[#1A1A1A]"
+                  style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
                 >
-                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-foreground font-bold text-sm">
-                    {client.brand_name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-foreground">{client.brand_name}</p>
-                    <p className="text-xs text-muted-foreground font-mono">@{client.username}</p>
-                  </div>
-                </button>
-              ))}
+                  {String(clients.length).padStart(2, '0')}
+                </p>
+              </div>
             </div>
-          )}
-        </div>
+
+            {/* Client list */}
+            <div>
+              <div className="flex items-end justify-between gap-6 mb-8">
+                <div>
+                  <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+                    Roster
+                  </span>
+                  <h2
+                    className="mt-5 text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
+                    style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+                  >
+                    Active{' '}
+                    <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>clients.</em>
+                  </h2>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => navigate('/admin/clients/new')}
+                  className="bg-foreground hover:bg-foreground/90 text-background rounded-[4px]"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> New client
+                </Button>
+              </div>
+
+              {loading ? (
+                <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">Loading…</p>
+              ) : clients.length === 0 ? (
+                <div className="rounded-[4px] px-8 py-14 text-center" style={{ backgroundColor: '#EEEDE8' }}>
+                  <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                    No clients yet. Create your first client to get started.
+                  </p>
+                </div>
+              ) : (
+                <ul className="border-t" style={{ borderColor: '#E2E0D9' }}>
+                  {clients.map((client, i) => (
+                    <li key={client.id} className="border-b" style={{ borderColor: '#E2E0D9' }}>
+                      <button
+                        onClick={() => navigate(`/admin/clients/${client.id}`)}
+                        className="group w-full grid grid-cols-[auto_auto_1fr_auto] items-center gap-6 sm:gap-8 py-6 transition-colors hover:bg-[#EEEDE8] px-3 sm:px-5 -mx-3 sm:-mx-5 rounded-[4px] text-left"
+                      >
+                        <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <div
+                          className="w-10 h-10 rounded-[4px] flex items-center justify-center text-background"
+                          style={{ backgroundColor: '#1A1A1A', fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                        >
+                          {client.brand_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p
+                            className="text-[20px] sm:text-[22px] tracking-[-0.02em] text-[#1A1A1A] leading-tight truncate"
+                            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                          >
+                            {client.brand_name}
+                          </p>
+                          <p className="mt-1 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                            @{client.username}
+                          </p>
+                        </div>
+                        <span className="flex items-center gap-3">
+                          <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] hidden sm:inline">
+                            Open
+                          </span>
+                          <span className="w-10 h-10 rounded-[4px] border border-[#E2E0D9] flex items-center justify-center text-[#1A1A1A] group-hover:bg-[#1A1A1A] group-hover:text-background group-hover:border-[#1A1A1A] transition-colors">
+                            <ExternalLink className="w-4 h-4" strokeWidth={1.75} />
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </TabsContent>
-          <TabsContent value="recruitment" className="mt-6">
+
+          <TabsContent value="recruitment" className="mt-10">
             <RecruitmentPanel />
           </TabsContent>
         </Tabs>
