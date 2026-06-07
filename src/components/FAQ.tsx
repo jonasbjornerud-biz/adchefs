@@ -20,7 +20,7 @@ const faqs = [
   },
   {
     q: "Can you match our existing brand style?",
-    a: "Yes. I personally onboard the editor on your brand before they start — past winners, visual style, tone, do's and don'ts. First few cuts are calibration. After that, it looks like you made it in-house.",
+    a: "Yes. I personally onboard the editor on your brand before they start. We align on your previous winners, internal SOP's and brand identity, and I build a full playbook for the editors based on that. The first edits are calibration, before the editor fully adapts to your brand and products.",
   },
   {
     q: "Who owns the footage and final videos?",
