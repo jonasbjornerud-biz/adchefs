@@ -32,6 +32,14 @@ const Hero = () => {
         }}
       />
 
+      {/* Top-right radial gradient accent */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[1]"
+        style={{
+          background: 'radial-gradient(ellipse at 85% 10%, rgba(158, 216, 245, 0.35) 0%, transparent 60%)',
+        }}
+      />
+
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
         <div className="max-w-3xl -ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
@@ -49,7 +57,7 @@ const Hero = () => {
               Book a Call
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => scrollToSection("how-it-works")}>
+            <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
               See how it works
             </Button>
           </div>
