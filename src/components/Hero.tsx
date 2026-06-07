@@ -48,7 +48,8 @@ const Hero = () => {
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
           <h1 className="mt-4 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[0.93] tracking-[-0.03em] text-foreground">
-            Your <em>dedicated</em> video editor without the additional cost
+            Your <em>dedicated</em> video editor<br />
+            without the additional cost
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
@@ -60,7 +61,7 @@ const Hero = () => {
               Book a Call
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => navigate('/mock')}>
+            <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
               See how it works
             </Button>
           </div>

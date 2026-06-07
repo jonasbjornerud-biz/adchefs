@@ -38,7 +38,7 @@ const EditorEdge = () => {
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
             See how it works
           </span>
-          <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
+          <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] whitespace-nowrap">
             Editors who understand <em style={{ color: "hsl(var(--accent))" }}>why ads work.</em>
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
