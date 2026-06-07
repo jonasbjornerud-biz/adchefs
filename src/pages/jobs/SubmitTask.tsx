@@ -84,7 +84,7 @@ export default function SubmitTask() {
             <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
           </Link>
 
-          <span className="eyebrow inline-block mt-2 ml-32 sm:ml-44" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+          <span className="eyebrow inline-block mt-2" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
             Trial task
           </span>
 
