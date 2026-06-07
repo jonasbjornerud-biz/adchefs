@@ -76,7 +76,7 @@ export default function MockClientDashboard() {
       description: 'Track deliveries, editor output, approval rates, and weekly trends across your team.',
       icon: BarChart3,
       route: '/mock/performance',
-      accent: '#a855f7',
+      accent: '#9ED8F5',
       statusLabel: 'Sample data',
       statusIcon: FileSpreadsheet,
       cta: 'Open Performance',
@@ -88,7 +88,7 @@ export default function MockClientDashboard() {
       description: 'Monitor ad spend, ROAS, CTR, CPA, and revenue with real-time Meta Ads data.',
       icon: TrendingUp,
       route: '/mock/ads',
-      accent: '#c084fc',
+      accent: '#9ED8F5',
       statusLabel: 'Sample data',
       statusIcon: Zap,
       cta: 'Open Dashboard',
@@ -101,11 +101,11 @@ export default function MockClientDashboard() {
     <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
       {/* Top ambient glow */}
       <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(59, 134, 168,0.18) 0%, transparent 70%)',
       }} />
       {/* Bottom horizon glow */}
       <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(168,85,247,0.22) 0%, rgba(124,58,237,0.08) 35%, transparent 70%)',
+        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(158, 216, 245,0.22) 0%, rgba(59, 134, 168,0.08) 35%, transparent 70%)',
       }} />
       {/* Grid texture */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
@@ -116,14 +116,14 @@ export default function MockClientDashboard() {
       <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(6,6,12,0.6)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #a855f7, #7c3aed)', boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #9ED8F5, #3B86A8)', boxShadow: '0 0 20px rgba(158, 216, 245,0.3)' }}>
               {BRAND.charAt(0)}
             </div>
             <span className="text-sm font-medium text-white">{BRAND}</span>
             <span className="ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-semibold uppercase tracking-wider" style={{
-              background: 'rgba(168,85,247,0.14)',
-              border: '1px solid rgba(168,85,247,0.35)',
-              color: '#d8b4fe',
+              background: 'rgba(158, 216, 245,0.14)',
+              border: '1px solid rgba(158, 216, 245,0.35)',
+              color: '#9ED8F5',
             }}>
               Sample
             </span>
@@ -139,16 +139,16 @@ export default function MockClientDashboard() {
         <HorizonGlow height={300} />
         <div className="max-w-5xl mx-auto px-6 pt-12 pb-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
-            background: 'rgba(168,85,247,0.12)',
-            border: '1px solid rgba(168,85,247,0.30)',
-            boxShadow: '0 0 24px -6px rgba(168,85,247,0.5)',
+            background: 'rgba(158, 216, 245,0.12)',
+            border: '1px solid rgba(158, 216, 245,0.30)',
+            boxShadow: '0 0 24px -6px rgba(158, 216, 245,0.5)',
           }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.8)' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 8px rgba(158, 216, 245,0.8)' }} />
             Sample data — explore the demo
           </div>
           <h1 className="text-5xl md:text-6xl font-black tracking-tight">
             <span className="text-white">Welcome back, </span>
-            <span style={{ background: 'linear-gradient(135deg, #a855f7, #c084fc, #e9d5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(168,85,247,0.5))' }}>{BRAND}</span>
+            <span style={{ background: 'linear-gradient(135deg, #9ED8F5, #9ED8F5, #F7F6F3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(158, 216, 245,0.5))' }}>{BRAND}</span>
           </h1>
           <p className="text-sm text-white/50 mt-3">A live preview using sample data. Every chart and number below is illustrative.</p>
         </div>

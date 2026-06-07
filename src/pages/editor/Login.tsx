@@ -60,7 +60,7 @@ export default function Login() {
       }} />
       {/* Radial glow */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.08) 0%, transparent 60%)',
+        background: 'radial-gradient(ellipse at center, rgba(158, 216, 245,0.08) 0%, transparent 60%)',
       }} />
 
       <div className="relative w-full max-w-sm space-y-8">

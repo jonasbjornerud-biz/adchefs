@@ -25,7 +25,7 @@ interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved 
 interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; months: string[]; lastSynced: number; }
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#7c3aed', '#06b6d4', '#f59e0b', '#22c55e', '#ec4899', '#3b82f6', '#ef4444', '#8b5cf6'];
+const COLORS = ['#3B86A8', '#3B86A8', '#75726B', '#3B86A8', '#9ED8F5', '#3B86A8', '#75726B', '#9ED8F5'];
 
 function parseCSV<T>(text: string): T[] {
   return Papa.parse<T>(text, { header: true, skipEmptyLines: true }).data;
@@ -264,10 +264,10 @@ export default function EditorPerformance() {
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#7c3aed', bg: 'bg-violet-50', border: 'border-violet-100' },
-              { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#06b6d4', bg: 'bg-cyan-50', border: 'border-cyan-100' },
-              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#22c55e', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-              { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-100' },
+              { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#3B86A8', bg: 'bg-violet-50', border: 'border-violet-100' },
+              { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#3B86A8', bg: 'bg-cyan-50', border: 'border-cyan-100' },
+              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#3B86A8', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+              { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#75726B', bg: 'bg-amber-50', border: 'border-amber-100' },
             ].map((kpi, i) => (
               <div key={i} className="rounded-xl p-5 bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-3">
@@ -312,7 +312,7 @@ export default function EditorPerformance() {
                   <BarChart data={weeklyOutput}>
                     <defs>
                       <linearGradient id="barGradLight" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.85} />
+                        <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.85} />
                         <stop offset="100%" stopColor="#a78bfa" stopOpacity={0.6} />
                       </linearGradient>
                     </defs>
@@ -344,7 +344,7 @@ export default function EditorPerformance() {
                       <Line key={ed} type="monotone" dataKey={ed} stroke={COLORS[i % COLORS.length]} strokeWidth={2} dot={false} />
                     ))
                   ) : (
-                    <Line type="monotone" dataKey="total" stroke="#7c3aed" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="total" stroke="#3B86A8" strokeWidth={2} dot={false} />
                   )}
                 </LineChart>
               </ResponsiveContainer>

@@ -11,8 +11,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     <div className="rounded-xl p-3 text-sm" style={{
       background: 'rgba(20,20,30,0.85)',
       backdropFilter: 'blur(16px)',
-      border: '1px solid rgba(168,85,247,0.25)',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 24px -8px rgba(168,85,247,0.4)',
+      border: '1px solid rgba(158, 216, 245,0.25)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 24px -8px rgba(158, 216, 245,0.4)',
     }}>
       <p className="text-white/40 text-[10px] uppercase tracking-widest mb-2 font-semibold">{label}</p>
       {payload.map((p: any, i: number) => (
@@ -56,10 +56,10 @@ export function OverviewChart({ ads }: OverviewChartProps) {
     >
       {/* Decorative gradient orb */}
       <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full pointer-events-none opacity-40" style={{
-        background: 'radial-gradient(circle, rgba(168,85,247,0.25) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(158, 216, 245,0.25) 0%, transparent 70%)',
       }} />
       {/* Top sheen */}
-      <div className="absolute inset-x-0 top-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.4), transparent)' }} />
+      <div className="absolute inset-x-0 top-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(158, 216, 245,0.4), transparent)' }} />
 
       <div className="flex items-start justify-between mb-5 relative">
         <div>
@@ -88,30 +88,30 @@ export function OverviewChart({ ads }: OverviewChartProps) {
           <AreaChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="overviewSpend" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#a855f7" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
+                <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="overviewRev" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#34d399" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#34d399" stopOpacity={0} />
+                <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#3B86A8" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.35)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
             <YAxis tick={{ fill: "rgba(255,255,255,0.35)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(168,85,247,0.3)', strokeWidth: 1, strokeDasharray: '3 3' }} />
-            <Area type="monotone" dataKey="spend" stroke="#a855f7" strokeWidth={2} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#a855f7", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
-            <Area type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={2} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#34d399", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(158, 216, 245,0.3)', strokeWidth: 1, strokeDasharray: '3 3' }} />
+            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+            <Area type="monotone" dataKey="revenue" stroke="#3B86A8" strokeWidth={2} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#3B86A8", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
           </AreaChart>
         </ResponsiveContainer>
       )}
 
       <div className="flex gap-5 mt-4 relative">
         <div className="flex items-center gap-2 text-xs text-white/50">
-          <span className="w-2 h-2 rounded-full bg-[#a855f7]" style={{ boxShadow: '0 0 8px rgba(168,85,247,0.6)' }} /> Spend
+          <span className="w-2 h-2 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 8px rgba(158, 216, 245,0.6)' }} /> Spend
         </div>
         <div className="flex items-center gap-2 text-xs text-white/50">
-          <span className="w-2 h-2 rounded-full bg-[#34d399]" style={{ boxShadow: '0 0 8px rgba(52,211,153,0.6)' }} /> Revenue
+          <span className="w-2 h-2 rounded-full bg-[#3B86A8]" style={{ boxShadow: '0 0 8px rgba(59, 134, 168,0.6)' }} /> Revenue
         </div>
       </div>
     </div>

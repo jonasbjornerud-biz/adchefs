@@ -75,7 +75,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
         animationDelay: "400ms",
       }}
     >
-      <div className="absolute inset-x-0 top-0 h-px pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(168,85,247,0.4), transparent)' }} />
+      <div className="absolute inset-x-0 top-0 h-px pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(158, 216, 245,0.4), transparent)' }} />
       {/* Search bar */}
       <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2 relative">
         <div className="relative flex-1 max-w-md">
@@ -85,7 +85,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search ad name or campaign…"
-            className="w-full h-9 pl-9 pr-3 rounded-lg bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#a855f7]/40 transition-colors"
+            className="w-full h-9 pl-9 pr-3 rounded-lg bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#9ED8F5]/40 transition-colors"
           />
         </div>
         <span className="text-[11px] text-white/30 ml-auto">{sorted.length} {sorted.length === 1 ? 'ad' : 'ads'}</span>
@@ -99,7 +99,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ borderTop: '1px solid rgba(168,85,247,0.2)' }}>
+              <tr style={{ borderTop: '1px solid rgba(158, 216, 245,0.2)' }}>
                 {([
                   { key: "name" as SortKey, label: "Ad Name" },
                   { key: "spend" as SortKey, label: "Spend" },
@@ -112,7 +112,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                   <th
                     key={col.key}
                     onClick={() => toggleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40 cursor-pointer hover:text-[#a855f7] transition-colors whitespace-nowrap"
+                    className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40 cursor-pointer hover:text-[#9ED8F5] transition-colors whitespace-nowrap"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -137,10 +137,10 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                   <td className="px-4 py-5 whitespace-nowrap text-white/60">${ad.cpa}</td>
                   <td className={`px-4 py-5 whitespace-nowrap font-bold ${getRoasColor(ad.roas)}`}>{ad.roas}x</td>
                   <td className="px-4 py-5 whitespace-nowrap min-w-[140px]">
-                    <InlineBar value={ad.hookRate} color="#34d399" />
+                    <InlineBar value={ad.hookRate} color="#3B86A8" />
                   </td>
                   <td className="px-4 py-5 whitespace-nowrap min-w-[140px]">
-                    <InlineBar value={ad.holdRate} color="#a855f7" />
+                    <InlineBar value={ad.holdRate} color="#9ED8F5" />
                   </td>
                   <td className="px-4 py-5">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig[ad.status]?.pill}`}>
@@ -155,7 +155,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       title="Open in Meta Ad Library"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/70 bg-white/[0.04] hover:bg-[#a855f7]/15 hover:text-white border border-white/[0.06] hover:border-[#a855f7]/40 transition-all"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/70 bg-white/[0.04] hover:bg-[#9ED8F5]/15 hover:text-white border border-white/[0.06] hover:border-[#9ED8F5]/40 transition-all"
                     >
                       <ExternalLink className="w-3 h-3" /> Ad Library
                     </a>

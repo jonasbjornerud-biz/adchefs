@@ -11,10 +11,10 @@ interface KpiCardProps {
 }
 
 const accentMap = {
-  purple: { stroke: "#a855f7", glow: "rgba(168,85,247,0.35)", iconBg: "rgba(168,85,247,0.12)", iconRing: "rgba(168,85,247,0.25)" },
-  emerald: { stroke: "#34d399", glow: "rgba(52,211,153,0.30)", iconBg: "rgba(52,211,153,0.10)", iconRing: "rgba(52,211,153,0.22)" },
-  pink: { stroke: "#ec4899", glow: "rgba(236,72,153,0.30)", iconBg: "rgba(236,72,153,0.10)", iconRing: "rgba(236,72,153,0.22)" },
-  blue: { stroke: "#60a5fa", glow: "rgba(96,165,250,0.30)", iconBg: "rgba(96,165,250,0.10)", iconRing: "rgba(96,165,250,0.22)" },
+  purple: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.35)", iconBg: "rgba(158, 216, 245,0.12)", iconRing: "rgba(158, 216, 245,0.25)" },
+  emerald: { stroke: "#3B86A8", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
+  pink: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.30)", iconBg: "rgba(158, 216, 245,0.10)", iconRing: "rgba(158, 216, 245,0.22)" },
+  blue: { stroke: "#60a5fa", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
 };
 
 function responsiveSize(value: string): string {
