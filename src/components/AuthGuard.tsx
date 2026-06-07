@@ -12,7 +12,18 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Bypass auth inside the Lovable builder preview iframe (id-preview--*.lovable.app)
+  // so the editor can view/test admin & client routes without logging in every refresh.
+  const isLovablePreview =
+    typeof window !== 'undefined' &&
+    /^id-preview--/.test(window.location.hostname);
+
   useEffect(() => {
+    if (isLovablePreview) {
+      setAuthorized(true);
+      setLoading(false);
+      return;
+    }
     checkAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
