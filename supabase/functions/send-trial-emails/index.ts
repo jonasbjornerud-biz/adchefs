@@ -4,7 +4,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
 
-const SENDER_DOMAIN = 'notify.adchefs.com'
+const SENDER_DOMAIN = 'adchefs.com'
 const FROM_DOMAIN = 'adchefs.com'
 
 function generateToken(): string {
