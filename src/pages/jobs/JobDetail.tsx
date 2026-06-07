@@ -166,35 +166,39 @@ export default function JobDetail() {
       {/* PERKS */}
       <section className="relative bg-background">
         <div className="relative max-w-[1100px] mx-auto px-6 py-24">
-          <div className="max-w-2xl mb-16">
-            <span className="eyebrow">Why edit with AdChefs</span>
-            <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
-              Built for editors who want their work to <em>matter.</em>
+          <div className="max-w-2xl mb-14">
+            <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+              Why edit with AdChefs
+            </span>
+            <h2 className="mt-5 text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
+              Built for editors who want their work to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>matter.</em>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-x-12 gap-y-14">
-            {perks.map((p, i) => (
-              <div
-                key={p.title}
-                className={`group relative ${i % 2 === 1 ? 'sm:mt-16' : ''}`}
-              >
-                <div className="flex items-baseline gap-5 mb-6 border-b border-border pb-5">
-                  <span className="font-display text-[56px] leading-none tracking-[-0.04em] text-foreground/15 group-hover:text-foreground/40 transition-colors">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    / Perk
-                  </span>
-                  <p.icon className="ml-auto w-5 h-5 text-foreground" strokeWidth={1.75} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-12">
+            {perks.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <div
+                  key={p.title}
+                  className="rounded-[4px]"
+                  style={{ backgroundColor: '#EEEDE8', padding: '32px 28px' }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B]">
+                      PERK {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <Icon className="w-[18px] h-[18px] text-[#3B86A8]" strokeWidth={1.75} />
+                  </div>
+                  <div className="mt-3 mb-5 h-px" style={{ backgroundColor: '#E2E0D9' }} />
+                  <h3 className="text-[22px] tracking-[-0.02em] text-[#1A1A1A] leading-tight" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                    {p.title}
+                  </h3>
+                  <p className="mt-2.5 text-[15px] leading-[1.55] text-[#75726B]" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400 }}>
+                    {p.body}
+                  </p>
                 </div>
-                <h3 className="font-display text-[24px] md:text-[26px] tracking-tight mb-3 leading-tight">
-                  {p.title}
-                </h3>
-                <p className="text-[15px] text-muted-foreground leading-relaxed max-w-md">
-                  {p.body}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
