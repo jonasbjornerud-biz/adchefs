@@ -24,19 +24,19 @@ const Hero = () => {
     <section className="relative pt-32 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
         <div className="max-w-3xl">
-          <span className="eyebrow">For e-commerce brands</span>
+          <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
           <h1 className="mt-6 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[1.02] tracking-[-0.03em] text-foreground">
-            Your dedicated video editor <em>without</em> the additional cost
+            Your <em>dedicated</em> video editor without the additional cost
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-            We place dedicated video editors inside e-commerce brands on a pay-per-video model. Built for hook rate, hold rate, BEROAS — no retainers, no agency markup, no rotating freelancers.
+            I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Button size="lg" variant="cta" onClick={() => scrollToSection("booking")}>
-              Book a call
+              Book a Call
               <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" onClick={() => scrollToSection("how-it-works")}>
@@ -46,8 +46,6 @@ const Hero = () => {
 
           <div className="mt-7 flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             <span>From €100 / video</span>
-            <span className="h-3 w-px bg-border" />
-            <span>No retainer</span>
             <span className="h-3 w-px bg-border" />
             <span>Cancel anytime</span>
           </div>

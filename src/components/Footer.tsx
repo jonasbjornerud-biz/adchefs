@@ -13,7 +13,7 @@ const Footer = () => {
               AdChefs<span className="text-accent">.</span>
             </p>
             <p className="mt-4 text-[14px] text-background/60 leading-relaxed max-w-sm">
-              Dedicated video editors placed inside e-commerce brands. Pay per video. Built for hook rate, hold rate, BEROAS.
+              A dedicated video editor matched to your e-commerce brand. Pay per video. No retainers, no agency markup, no rotating freelancers.
             </p>
           </div>
 

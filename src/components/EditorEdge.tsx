@@ -1,28 +1,28 @@
-import { Eye, Gauge, Headphones, Repeat } from "lucide-react";
+import { Eye, Gauge, LineChart, Wallet } from "lucide-react";
 
 const principles = [
   {
     icon: Eye,
     title: "Trained on your KPIs",
-    body: "Editors read your dashboard, not your brief. They cut for hook rate, hold rate and BEROAS — and iterate based on what the numbers say.",
-    stat: "HOOK 47%",
+    body: "Your editor studies your hook rates, hold curves, CPA and ROAS every week. They learn what your winners share, then engineer more of them. Creative informed by data, not taste.",
+    stat: "HOOK · HOLD · ROAS",
   },
   {
     icon: Gauge,
-    title: "Output that actually ships",
-    body: "6–10 cuts per editor per week. 48–72h on first drafts. Same-day revisions. Built for the volume real media buyers need.",
-    stat: "48–72H TURNAROUND",
+    title: "Delivery you can track",
+    body: "See exactly how many videos were delivered and approved per editor, week by week. No more chasing status updates or wondering what's in the pipeline.",
+    stat: "WEEKLY DELIVERY",
   },
   {
-    icon: Headphones,
-    title: "Direct line, no PM layer",
-    body: "Slack, Notion or whatever you already use. You brief the editor directly. No account manager translating, no agency bottleneck.",
-    stat: "1 EDITOR · 1 SLACK",
+    icon: LineChart,
+    title: "Live KPI Dashboard",
+    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving.",
+    stat: "INCLUDED FREE",
   },
   {
-    icon: Repeat,
-    title: "Pay per delivered video",
-    body: "Flat rate per cut that ships and is approved. No retainer, no minimum, no contract. You scale up the months you need volume and pause the months you don't.",
+    icon: Wallet,
+    title: "You only pay per video",
+    body: "No retainers. No minimums. No long contracts. You pay for videos delivered, nothing else. The dashboard, the oversight, the editor management is on me.",
     stat: "FROM €100 / VIDEO",
   },
 ];
@@ -33,13 +33,13 @@ const EditorEdge = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--background) / 0.2)", color: "hsl(var(--background))" }}>
-            What sets us apart
+            What sets AdChefs apart
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
-            We ship video. <em style={{ color: "hsl(var(--accent))" }}>We don't talk about it.</em>
+            Editors who understand <em style={{ color: "hsl(var(--accent))" }}>why ads work.</em>
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
-            Built for hook rate, hold rate, BEROAS. Designed for media buyers who measure creative in delivered cuts, not in deliverables decks.
+            Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, delivery, all in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions are driven by data, not guesses.
           </p>
         </div>
 

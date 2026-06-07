@@ -23,10 +23,13 @@ const WhyAdChefs = () => {
             </h2>
             <div className="mt-6 space-y-4 text-[15px] text-muted-foreground leading-relaxed max-w-xl">
               <p>
-                I'm Jonas. I spent 7 years cutting direct response video for e-commerce. Every team hit the same wall — rotating editors, slow turnarounds, retainers, nobody tracking what actually drove performance. I built AdChefs to fix it.
+                I'm Jonas. I've spent 7 years editing direct response video ads for e-commerce brands, learning exactly what makes someone stop scrolling, watch, and buy.
               </p>
               <p>
-                I recruit, train and oversee every editor on the roster. I vet every brand before we start. If an ad underperforms, I know why and we fix it.
+                Every e-commerce brand and agency I worked with had the same problem: rotating editors, slow turnarounds, retainer lock-in, and no real understanding of what drives performance. So I built AdChefs to fix it.
+              </p>
+              <p>
+                I personally recruit, train, and oversee every editor on the roster. I vet every brand before we start. And I stay close enough to the work that if an ad underperforms, I know why, and we fix it.
               </p>
             </div>
 
