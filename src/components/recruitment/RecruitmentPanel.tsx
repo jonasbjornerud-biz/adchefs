@@ -269,10 +269,10 @@ function Pipeline() {
     if (!p) return { subject: '', body: '' };
     const sub = (config.submission_form_url || `${window.location.origin}/submit-task`);
     const body = p.trial_email_body
-      .replaceAll('{{first_name}}', app.first_name)
-      .replaceAll('{{email}}', app.email)
-      .replaceAll('{{notion_task_url}}', p.notion_task_url)
-      .replaceAll('{{submission_form_url}}', sub);
+      .replace(/\{\{first_name\}\}/g, app.first_name)
+      .replace(/\{\{email\}\}/g, app.email)
+      .replace(/\{\{notion_task_url\}\}/g, p.notion_task_url)
+      .replace(/\{\{submission_form_url\}\}/g, sub);
     return { subject: p.trial_email_subject, body };
   }
 
