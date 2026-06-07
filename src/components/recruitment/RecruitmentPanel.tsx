@@ -145,6 +145,8 @@ function Postings() {
     if (!editing?.title || !editing?.slug) { toast.error('Title and slug required'); return; }
     const payload: any = {
       slug: editing.slug, title: editing.title,
+      brand: editing.brand ?? '',
+      submit_slug: (editing.submit_slug || editing.slug || '').toLowerCase().replace(/[^a-z0-9-]/g, '-'),
       description: editing.description ?? '',
       junior_pay: editing.junior_pay || null,
       senior_pay: editing.senior_pay || null,
