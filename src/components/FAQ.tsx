@@ -47,7 +47,7 @@ const FAQ = () => {
         <div className="grid md:grid-cols-[1fr_1.6fr] gap-12">
           <div>
             <span className="eyebrow">FAQ</span>
-            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground">
+            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground whitespace-nowrap">
               Things people <em>actually</em> ask.
             </h2>
             <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
