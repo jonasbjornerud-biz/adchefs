@@ -36,7 +36,7 @@ const Hero = () => {
         <div className="max-w-3xl -ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
-          <h1 className="mt-6 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[1.02] tracking-[-0.03em] text-foreground">
+          <h1 className="mt-4 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[0.93] tracking-[-0.03em] text-foreground">
             Your <em>dedicated</em> video editor without the additional cost
           </h1>
 
@@ -45,16 +45,18 @@ const Hero = () => {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button size="lg" variant="cta" onClick={() => scrollToSection("booking")}>
+            <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("booking")}>
               Book a Call
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" onClick={() => scrollToSection("how-it-works")}>
               See how it works
             </Button>
           </div>
 
-          <div className="mt-7 flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+          <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
+
+          <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             <span>From €100 / video</span>
             <span className="h-3 w-px bg-border" />
             <span>Cancel anytime</span>
