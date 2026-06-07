@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil } from 'lucide-react';
+import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil, Star, Play, X, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -51,6 +51,7 @@ type Application = {
   proceed: boolean | null;
   reviewed_at: string | null;
   created_at: string;
+  starred?: boolean | null;
 };
 
 type Submission = {
@@ -67,15 +68,98 @@ const STAGE_LABEL: Record<string, string> = {
   new: 'New', qualified: 'Qualified', trial_sent: 'Trial sent',
   trial_submitted: 'Trial submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
 };
-const STAGE_COLOR: Record<string, string> = {
-  new: 'bg-muted text-muted-foreground',
-  qualified: 'bg-secondary text-foreground',
-  trial_sent: 'bg-secondary text-foreground dark:text-foreground',
-  trial_submitted: 'bg-secondary text-foreground',
-  interview: 'bg-secondary text-foreground',
-  hired: 'bg-secondary text-foreground dark:text-accent',
-  rejected: 'bg-destructive/15 text-destructive',
+
+/** Editorial stage chip styles (inline so they survive Tailwind purge). */
+const STAGE_CHIP: Record<string, React.CSSProperties> = {
+  new:              { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
+  qualified:        { backgroundColor: '#E2E0D9', color: '#1A1A1A', borderColor: '#D5D2C8' },
+  trial_sent:       { backgroundColor: 'rgba(158,216,245,0.28)', color: '#1A1A1A', borderColor: '#9ED8F5' },
+  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
+  interview:        { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
+  hired:            { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
+  rejected:         { backgroundColor: 'rgba(214, 64, 64, 0.12)', color: '#B43A3A', borderColor: 'rgba(180, 58, 58, 0.35)' },
 };
+
+function StageChip({ stage }: { stage: string }) {
+  return (
+    <span
+      className="mono inline-flex items-center text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px] border"
+      style={STAGE_CHIP[stage] ?? STAGE_CHIP.new}
+    >
+      {STAGE_LABEL[stage] ?? stage}
+    </span>
+  );
+}
+
+/* ---------------- Embed helpers ---------------- */
+function hostOf(url: string) { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } }
+function faviconFor(url: string) {
+  const h = hostOf(url);
+  return h ? `https://www.google.com/s2/favicons?domain=${h}&sz=64` : '';
+}
+type Embed = { kind: 'iframe' | 'image' | 'link'; src?: string; thumb?: string; host: string };
+function embedFor(url: string): Embed {
+  const host = hostOf(url);
+  // Loom
+  let m = url.match(/loom\.com\/(?:share|embed)\/([a-f0-9-]+)/i);
+  if (m) return { kind: 'iframe', src: `https://www.loom.com/embed/${m[1]}`, host };
+  // YouTube
+  m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (m) return { kind: 'iframe', src: `https://www.youtube.com/embed/${m[1]}`, thumb: `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`, host };
+  // Vimeo
+  m = url.match(/vimeo\.com\/(\d+)/);
+  if (m) return { kind: 'iframe', src: `https://player.vimeo.com/video/${m[1]}`, host };
+  // Google Drive file
+  m = url.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
+  if (m) return { kind: 'iframe', src: `https://drive.google.com/file/d/${m[1]}/preview`, host };
+  // Frame.io / others -> link with favicon
+  return { kind: 'link', host };
+}
+
+function LinkFavicon({ url, size = 16 }: { url: string; size?: number }) {
+  const src = faviconFor(url);
+  if (!src) return null;
+  return (
+    <img
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      className="rounded-[2px] shrink-0"
+      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+    />
+  );
+}
+
+function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
+  const e = embedFor(url);
+  if (e.kind === 'iframe' && e.src) {
+    return (
+      <div className={`relative w-full overflow-hidden rounded-[4px] border ${compact ? '' : ''}`} style={{ borderColor: '#E2E0D9', backgroundColor: '#000', aspectRatio: '16 / 9' }}>
+        <iframe
+          src={e.src}
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="flex items-center justify-center gap-2 w-full rounded-[4px] border px-4 py-10"
+      style={{ borderColor: '#E2E0D9', backgroundColor: '#EEEDE8' }}
+    >
+      <LinkFavicon url={url} size={20} />
+      <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#1A1A1A]">{e.host || 'Open submission'}</span>
+      <ExternalLink className="w-3.5 h-3.5 text-[#75726B]" />
+    </a>
+  );
+}
 
 const emptyPosting = {
   slug: '', title: '', brand: '', submit_slug: '', description: '',
@@ -115,11 +199,13 @@ Let me know if you have any questions.
 export function RecruitmentPanel() {
   return (
     <Tabs defaultValue="pipeline" className="w-full">
-      <TabsList>
-        <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
-        <TabsTrigger value="postings">Job Postings</TabsTrigger>
+      <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
+        <TabsTrigger value="pipeline" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Pipeline</TabsTrigger>
+        <TabsTrigger value="shortlist" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Shortlist</TabsTrigger>
+        <TabsTrigger value="postings" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Job Postings</TabsTrigger>
       </TabsList>
       <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
+      <TabsContent value="shortlist" className="mt-8"><Shortlist /></TabsContent>
       <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
