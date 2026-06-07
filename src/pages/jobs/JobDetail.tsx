@@ -106,9 +106,9 @@ export default function JobDetail() {
   }
 
   const perks = [
-    { icon: Zap, title: "Per-video pay", body: "Get paid for what you ship. No hourly grind. The faster and sharper you are, the more you make." },
-    { icon: Trophy, title: "Real DR work", body: "Edit ads that actually run on €5K+/mo brands. Hook rate, hold curve, ROAS — you'll see what wins." },
-    { icon: Globe2, title: "Remote, async", body: "Work from anywhere. We care about cuts that convert, not green dots on Slack." },
+    { icon: Zap, title: "Per-video pay", body: "Get paid for the videos you edit, not the hours spent. The faster and sharper you are, the more you make." },
+    { icon: Trophy, title: "Real direct response work", body: "Edit ads that actually run for e-commerce brands, and get live feedback on the results." },
+    { icon: Globe2, title: "Remote", body: "Work from anywhere. We care about cuts that convert, not where you work from." },
     { icon: Sparkles, title: "Direct mentorship", body: "Notes from a founder with 7 years in DR video. Every project sharpens your craft." },
   ];
 
@@ -135,7 +135,7 @@ export default function JobDetail() {
           </Link>
 
           <span className="eyebrow" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-            Now hiring · Remote · Async
+            Now hiring · Remote
           </span>
 
           <h1 className="mt-6 font-display text-[48px] sm:text-[68px] md:text-[84px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
@@ -144,7 +144,7 @@ export default function JobDetail() {
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            Cut ads that actually run. Get paid per video. Work with brands that obsess over hook rate, hold curve, and ROAS — not vibes.
+            Edit ads that drive sales. Get paid per video, and learn about the performance metrics.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -191,7 +191,7 @@ export default function JobDetail() {
         <div className="max-w-2xl mx-auto px-6">
           <span className="eyebrow">Apply in 2 minutes</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
-            Ready to <em>ship?</em>
+            Ready to <em>edit some winning ads?</em>
           </h2>
           <p className="mt-3 text-[14px] text-muted-foreground">
             We review every submission. Strong fits get a paid trial task within 48 hours.
