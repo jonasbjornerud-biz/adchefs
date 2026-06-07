@@ -6,8 +6,6 @@ import { ProgressBar } from '@/components/playbook/ProgressBar';
 import { Button } from '@/components/ui/button';
 import { Plus, Users, TrendingUp, AlertCircle, LogOut, Sparkles, ExternalLink } from 'lucide-react';
 import { logout } from '@/lib/auth';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -80,12 +78,6 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-        <Tabs defaultValue="clients" className="w-full">
-          <TabsList>
-            <TabsTrigger value="clients">Clients</TabsTrigger>
-            <TabsTrigger value="recruitment">Recruitment</TabsTrigger>
-          </TabsList>
-          <TabsContent value="clients" className="mt-6 space-y-8">
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="rounded-xl border border-border bg-card p-5">
@@ -149,11 +141,6 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
-          </TabsContent>
-          <TabsContent value="recruitment" className="mt-6">
-            <RecruitmentPanel />
-          </TabsContent>
-        </Tabs>
       </main>
     </div>
   );
