@@ -111,8 +111,8 @@ export function RecruitmentPanel() {
         <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
         <TabsTrigger value="postings">Job Postings</TabsTrigger>
       </TabsList>
-      <TabsContent value="pipeline" className="mt-6"><Pipeline /></TabsContent>
-      <TabsContent value="postings" className="mt-6"><Postings /></TabsContent>
+      <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
+      <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
 }
@@ -166,34 +166,80 @@ function Postings() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Create roles with their own skill task and trial email copy.</p>
-        <Button onClick={newOne} size="sm"><Plus className="w-4 h-4 mr-1" /> New role</Button>
+    <div className="space-y-8">
+      <div className="flex items-end justify-between gap-6">
+        <div>
+          <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+            Roles
+          </span>
+          <h2
+            className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
+            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+          >
+            Job{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>postings.</em>
+          </h2>
+          <p className="mt-2 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+            Roles with their own skill task & email copy
+          </p>
+        </div>
+        <Button
+          onClick={newOne}
+          size="sm"
+          className="bg-foreground hover:bg-foreground/90 text-background rounded-[4px]"
+        >
+          <Plus className="w-4 h-4 mr-1" /> New role
+        </Button>
       </div>
 
-      <div className="space-y-2">
-        {postings.length === 0 && (
-          <div className="text-center py-12 border border-dashed border-border rounded-xl text-muted-foreground">
+      {postings.length === 0 ? (
+        <div className="rounded-[4px] px-8 py-14 text-center" style={{ backgroundColor: '#EEEDE8' }}>
+          <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
             No roles yet. Create your first.
-          </div>
-        )}
-        {postings.map(p => (
-          <div key={p.id} className="p-4 rounded-xl border border-border bg-card flex items-center gap-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="font-medium">{p.title}</p>
-                <Badge variant={p.is_active ? 'default' : 'secondary'}>{p.is_active ? 'Active' : 'Inactive'}</Badge>
+          </p>
+        </div>
+      ) : (
+        <ul className="border-t" style={{ borderColor: '#E2E0D9' }}>
+          {postings.map((p, i) => (
+            <li key={p.id} className="border-b" style={{ borderColor: '#E2E0D9' }}>
+              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 py-5 px-3 sm:px-5 -mx-3 sm:-mx-5 rounded-[4px] hover:bg-[#EEEDE8] transition-colors">
+                <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p
+                      className="text-[20px] tracking-[-0.02em] text-[#1A1A1A] leading-tight truncate"
+                      style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                    >
+                      {p.title}
+                    </p>
+                    <span
+                      className="mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-[3px]"
+                      style={
+                        p.is_active
+                          ? { color: '#1A1A1A', backgroundColor: '#E2E0D9' }
+                          : { color: '#75726B', backgroundColor: 'transparent', border: '1px solid #E2E0D9' }
+                      }
+                    >
+                      {p.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <p className="mt-1 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+                    /jobs/{p.slug}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Switch checked={p.is_active} onCheckedChange={() => toggleActive(p)} />
+                  <Button variant="ghost" size="icon" onClick={() => window.open(`/jobs/${p.slug}`, '_blank')}><ExternalLink className="w-4 h-4" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => edit(p)}><Pencil className="w-4 h-4" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => remove(p)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground font-mono mt-0.5">/jobs/{p.slug}</p>
-            </div>
-            <Switch checked={p.is_active} onCheckedChange={() => toggleActive(p)} />
-            <Button variant="ghost" size="icon" onClick={() => window.open(`/jobs/${p.slug}`, '_blank')}><ExternalLink className="w-4 h-4" /></Button>
-            <Button variant="ghost" size="icon" onClick={() => edit(p)}><Pencil className="w-4 h-4" /></Button>
-            <Button variant="ghost" size="icon" onClick={() => remove(p)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
-          </div>
-        ))}
-      </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -305,25 +351,53 @@ function Pipeline() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+          Pipeline
+        </span>
+        <h2
+          className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+        >
+          Editor{' '}
+          <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>applicants.</em>
+        </h2>
+      </div>
+
       {/* Stage counters */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-        <button onClick={() => setStageFilter('all')} className={`p-3 rounded-lg border text-left transition ${stageFilter === 'all' ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-foreground/30'}`}>
-          <p className="text-xs text-muted-foreground">All</p>
-          <p className="text-xl font-semibold font-mono">{apps.length}</p>
-        </button>
-        {STAGES.map(st => (
-          <button key={st} onClick={() => setStageFilter(st)} className={`p-3 rounded-lg border text-left transition ${stageFilter === st ? 'border-primary bg-primary/5' : 'border-border bg-card hover:border-foreground/30'}`}>
-            <p className="text-xs text-muted-foreground">{STAGE_LABEL[st]}</p>
-            <p className="text-xl font-semibold font-mono">{counts[st]}</p>
-          </button>
-        ))}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+        {([['all', 'All', apps.length] as const, ...STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
+          const active = stageFilter === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setStageFilter(key)}
+              className="p-3 rounded-[4px] border text-left transition-colors"
+              style={{
+                borderColor: active ? '#1A1A1A' : '#E2E0D9',
+                backgroundColor: active ? '#1A1A1A' : 'transparent',
+                color: active ? '#FAF8F3' : '#1A1A1A',
+              }}
+            >
+              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.7)' : '#75726B' }}>
+                {label}
+              </p>
+              <p
+                className="mt-1 text-[22px] tracking-[-0.02em]"
+                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+              >
+                {String(count).padStart(2, '0')}
+              </p>
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex gap-2">
-        <Input placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs" />
+        <Input placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs rounded-[4px]" />
         <Select value={postingFilter} onValueChange={setPostingFilter}>
-          <SelectTrigger className="w-56"><SelectValue placeholder="All roles" /></SelectTrigger>
+          <SelectTrigger className="w-56 rounded-[4px]"><SelectValue placeholder="All roles" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All roles</SelectItem>
             {postings.map(p => (
@@ -333,33 +407,33 @@ function Pipeline() {
         </Select>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="rounded-[4px] border overflow-hidden" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
         <table className="w-full text-sm">
-          <thead className="bg-muted/30 text-xs text-muted-foreground">
-            <tr>
-              <th className="text-left p-3">Applicant</th>
-              <th className="text-left p-3">Role</th>
-              <th className="text-left p-3">Software</th>
-              <th className="text-left p-3">Stage</th>
-              <th className="text-left p-3">Email</th>
-              <th className="text-left p-3">Task</th>
-              <th className="text-left p-3">Applied</th>
+          <thead style={{ backgroundColor: '#EEEDE8' }}>
+            <tr className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+              <th className="text-left p-3 font-normal">Applicant</th>
+              <th className="text-left p-3 font-normal">Role</th>
+              <th className="text-left p-3 font-normal">Software</th>
+              <th className="text-left p-3 font-normal">Stage</th>
+              <th className="text-left p-3 font-normal">Email</th>
+              <th className="text-left p-3 font-normal">Task</th>
+              <th className="text-left p-3 font-normal">Applied</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+              <tr><td colSpan={7} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
             {filtered.map(app => {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-t border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8]" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
                   <td className="p-3">
-                    <p className="font-medium">{app.first_name} {app.last_name}</p>
-                    <p className="text-xs text-muted-foreground">{app.email}</p>
+                    <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
+                    <p className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B] mt-0.5">{app.email}</p>
                   </td>
-                   <td className="p-3 text-muted-foreground">{posting?.title ?? '—'}</td>
+                   <td className="p-3 text-[#75726B]">{posting?.title ?? '—'}</td>
                   <td className="p-3">
                     <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
                   </td>
