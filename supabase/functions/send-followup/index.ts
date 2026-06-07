@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
   const { data: cfg } = await supabase.from('app_config').select('submission_form_url').eq('id', 1).maybeSingle()
   const { data: posting } = await supabase
     .from('job_postings')
-    .select('followup_email_subject, followup_email_body, notion_task_url')
+    .select('followup_email_subject, followup_email_body, notion_task_url, brand, submit_slug')
     .eq('id', app.job_posting_id!)
     .maybeSingle()
 
@@ -43,12 +43,17 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ error: 'posting not found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
   }
 
+  const base = cfg?.submission_form_url || ''
+  const submitUrl = base && posting.submit_slug
+    ? `${base}-${posting.submit_slug}?email=${encodeURIComponent(app.email)}`
+    : (base ? `${base}?email=${encodeURIComponent(app.email)}` : '')
   const vars = {
     first_name: app.first_name,
     last_name: app.last_name,
     email: app.email,
+    brand: posting.brand || '',
     notion_task_url: posting.notion_task_url || '',
-    submission_form_url: cfg?.submission_form_url ? `${cfg.submission_form_url}?email=${encodeURIComponent(app.email)}` : '',
+    submission_form_url: submitUrl,
   }
   const subject = render(posting.followup_email_subject || 'Following up on your trial task', vars)
   const body = render(posting.followup_email_body || '', vars)
