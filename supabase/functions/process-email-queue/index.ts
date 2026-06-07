@@ -7,6 +7,53 @@ const DEFAULT_SEND_DELAY_MS = 200
 const DEFAULT_AUTH_TTL_MINUTES = 15
 const DEFAULT_TRANSACTIONAL_TTL_MINUTES = 60
 
+const RESEND_GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend/emails'
+
+// Send a transactional email via Resend (through the Lovable connector gateway).
+// Throws an Error with a `.status` property on non-2xx so the existing
+// rate-limit / forbidden / retry handling paths work unchanged.
+async function sendViaResend(
+  payload: Record<string, any>,
+  lovableApiKey: string,
+  resendApiKey: string
+): Promise<void> {
+  const body: Record<string, unknown> = {
+    from: payload.from,
+    to: Array.isArray(payload.to) ? payload.to : [payload.to],
+    subject: payload.subject,
+  }
+  if (payload.html) body.html = payload.html
+  if (payload.text) body.text = payload.text
+  if (payload.message_id) {
+    body.headers = { 'X-Entity-Ref-ID': payload.message_id }
+  }
+
+  const res = await fetch(RESEND_GATEWAY_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${lovableApiKey}`,
+      'X-Connection-Api-Key': resendApiKey,
+    },
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    const retryAfterHeader = res.headers.get('Retry-After')
+    const retryAfterSeconds = retryAfterHeader ? Number(retryAfterHeader) : null
+    const err = new Error(`Resend ${res.status}: ${text}`) as Error & {
+      status: number
+      retryAfterSeconds: number | null
+    }
+    err.status = res.status
+    err.retryAfterSeconds = Number.isFinite(retryAfterSeconds as number)
+      ? (retryAfterSeconds as number)
+      : null
+    throw err
+  }
+}
+
 // Check if an error is a rate-limit (429) response.
 // Uses EmailAPIError.status when available (email-js >=0.x with structured errors),
 // falls back to parsing the error message for older versions.
@@ -249,26 +296,34 @@ Deno.serve(async (req) => {
       }
 
       try {
-        await sendLovableEmail(
-          {
-            run_id: payload.run_id,
-            to: payload.to,
-            from: payload.from,
-            sender_domain: payload.sender_domain,
-            subject: payload.subject,
-            html: payload.html,
-            text: payload.text,
-            purpose: payload.purpose,
-            label: payload.label,
-            idempotency_key: payload.idempotency_key,
-            message_id: payload.message_id,
-            unsubscribe_token: payload.unsubscribe_token,
-          },
-          // sendUrl is optional — when LOVABLE_SEND_URL is not set, the library
-          // falls back to the default Lovable API endpoint (https://api.lovable.dev).
-          // Set LOVABLE_SEND_URL as a Supabase secret to override (e.g. for local dev).
-          { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
-        )
+        if (queue === 'transactional_emails') {
+          // App emails go through Resend so we have full control over the
+          // template (no platform-appended unsubscribe footer).
+          const resendApiKey = Deno.env.get('RESEND_API_KEY')
+          if (!resendApiKey) {
+            throw new Error('RESEND_API_KEY is not configured')
+          }
+          await sendViaResend(payload, apiKey, resendApiKey)
+        } else {
+          // Auth emails still go through Lovable (Supabase auth hook integration).
+          await sendLovableEmail(
+            {
+              run_id: payload.run_id,
+              to: payload.to,
+              from: payload.from,
+              sender_domain: payload.sender_domain,
+              subject: payload.subject,
+              html: payload.html,
+              text: payload.text,
+              purpose: payload.purpose,
+              label: payload.label,
+              idempotency_key: payload.idempotency_key,
+              message_id: payload.message_id,
+              unsubscribe_token: payload.unsubscribe_token,
+            },
+            { apiKey, sendUrl: Deno.env.get('LOVABLE_SEND_URL') }
+          )
+        }
 
         // Log success
         await supabase.from('email_send_log').insert({
