@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "Do you sign NDAs?",
-    a: "Yes. Happy to sign non-competes for direct category competitors too. Use your paperwork or mine.",
+    a: "Yes. Happy to sign non-competes for direct category competitors too.",
   },
 ];
 
