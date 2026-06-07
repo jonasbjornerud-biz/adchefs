@@ -80,13 +80,15 @@ export default function SubmitTask() {
         }} />
 
         <div className="relative max-w-[1100px] mx-auto px-6">
-          <Link to="/jobs" className="inline-flex items-center mono text-[11px] uppercase tracking-[0.15em] text-background/60 hover:text-accent transition-colors mb-10">
-            <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
-          </Link>
+          <div className="mb-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <Link to="/jobs" className="inline-flex items-center mono text-[11px] uppercase tracking-[0.15em] text-background/60 hover:text-accent transition-colors">
+              <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
+            </Link>
 
-          <span className="eyebrow inline-block mt-2" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-            Trial task
-          </span>
+            <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+              Trial task
+            </span>
+          </div>
 
           <h1 className="mt-6 font-display text-[48px] sm:text-[68px] md:text-[84px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
             Submit your <em style={{ color: "hsl(var(--accent))" }}>edit.</em>
