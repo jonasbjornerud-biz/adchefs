@@ -598,6 +598,17 @@ function Pipeline() {
                     ) : <span className="text-muted-foreground text-xs">—</span>}
                   </td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteApp(app)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"
+                      title="Delete applicant"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </Button>
+                  </td>
                 </tr>
               );
             })}
