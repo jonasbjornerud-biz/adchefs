@@ -608,8 +608,23 @@ function Pipeline() {
             return (
               <>
                 <SheetHeader>
-                  <SheetTitle>{selected.first_name} {selected.last_name}</SheetTitle>
-                  <p className="text-sm text-muted-foreground">{selected.email}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <SheetTitle className="tracking-[-0.02em]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
+                        {selected.first_name} {selected.last_name}
+                      </SheetTitle>
+                      <p className="mt-1 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">{selected.email}</p>
+                      <div className="mt-3"><StageChip stage={selected.stage} /></div>
+                    </div>
+                    <button
+                      onClick={() => updateApp(selected.id, { starred: !selected.starred } as any)}
+                      className="p-2 rounded-[3px] border hover:bg-[#EEEDE8] transition-colors"
+                      style={{ borderColor: '#E2E0D9' }}
+                      title={selected.starred ? 'Remove from shortlist' : 'Add to shortlist'}
+                    >
+                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: selected.starred ? '#9ED8F5' : 'transparent' }} />
+                    </button>
+                  </div>
                 </SheetHeader>
                 <div className="mt-6 space-y-5">
                   <Field label="Role" value={posting?.title ?? '—'} />
