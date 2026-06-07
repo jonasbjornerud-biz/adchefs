@@ -6,7 +6,6 @@ import { KpiCard } from "@/components/dashboard/KpiCard";
 import { AdTable } from "@/components/dashboard/AdTable";
 import { AdDetailPanel } from "@/components/dashboard/AdDetailPanel";
 import { OverviewChart } from "@/components/dashboard/OverviewChart";
-import { HorizonGlow } from "@/components/dashboard/HorizonGlow";
 import { DateRangePicker } from "@/components/dashboard/DateRangePicker";
 import { AdMetric, getAggregateMetrics } from "@/data/mockAds";
 import { generateMockAds } from "@/data/mockDemoData";
@@ -51,50 +50,56 @@ const MockAdsDashboard = () => {
   }, [ads]);
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
-      {/* Bottom horizon glow — ambient */}
-      <div className="fixed inset-x-0 bottom-0 h-[400px] pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 100% at 50% 100%, rgba(158, 216, 245,0.18) 0%, rgba(59, 134, 168,0.06) 35%, transparent 70%)',
-      }} />
-      {/* Grid texture */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.025]" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-        backgroundSize: '48px 48px',
-      }} />
+    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+      {/* Subtle paper grain */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
+          backgroundSize: '200px 200px',
+        }}
+      />
+      <div
+        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
+        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
+      />
 
-      <header className="sticky top-0 z-40 border-b border-white/[0.06]" style={{ background: 'rgba(6,6,12,0.6)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/mock')} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/[0.06] transition-all duration-200 cursor-pointer border border-white/[0.06]">
-              <ArrowLeft className="w-4 h-4 text-white/50" />
+            <button
+              onClick={() => navigate('/mock')}
+              className="w-8 h-8 rounded-[4px] flex items-center justify-center hover:bg-white transition-all duration-200 cursor-pointer border border-[#E2E0D9] hover:border-[#1A1A1A]"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />
             </button>
-            <span className="text-base font-semibold text-white tracking-tight">Meta Ads</span>
-            <span className="text-sm text-white/30 hidden sm:inline">Demo Dashboard</span>
+            <span className="text-sm font-medium text-[#1A1A1A] tracking-tight">KPI Dashboard</span>
           </div>
+          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] inline-flex items-center gap-1.5">
+            <span className="relative flex w-1.5 h-1.5">
+              <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+            </span>
+            <Wifi className="w-3 h-3" strokeWidth={1.5} /> Demo
+          </span>
         </div>
       </header>
 
-      {/* Hero band with the moneywise-style horizon arc */}
-      <div className="relative">
-        <HorizonGlow height={300} />
-        <div className="max-w-[1280px] mx-auto px-5 md:px-8 pt-12 pb-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-5 text-[11px] font-medium text-white/80" style={{
-            background: 'rgba(158, 216, 245,0.12)',
-            border: '1px solid rgba(158, 216, 245,0.30)',
-            boxShadow: '0 0 24px -6px rgba(158, 216, 245,0.5)',
-          }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 8px rgba(158, 216, 245,0.8)' }} />
-            Live Demo Mode
-          </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight">KPI Dashboard</h1>
-          <p className="text-sm text-white/50 mt-3">
-            {dateLabel} · All campaigns
-            <span className="inline-flex items-center gap-1 ml-2 text-accent"><Wifi className="w-3 h-3" /> Demo</span>
-          </p>
-        </div>
-      </div>
+      {/* Hero band */}
+      <section className="relative z-10 max-w-[1280px] mx-auto px-5 md:px-8 pt-16 pb-10">
+        <span className="eyebrow eyebrow-accent">Paid Performance — {dateLabel}</span>
+        <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
+          Ad <em>performance</em>, at a glance.
+        </h1>
+        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
+          A demo view with sample Meta Ads data — ROAS, CPA, hook rate, hold rate. Drill into any individual ad to see daily trends.
+        </p>
+        <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
+      </section>
 
-      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-10 space-y-8 relative z-10">
+      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-16 space-y-8 relative z-10">
         <div className="flex justify-end">
           <DateRangePicker dateRange={dateRange} onDateRangeChange={setDateRange} />
         </div>
@@ -110,10 +115,7 @@ const MockAdsDashboard = () => {
         <OverviewChart ads={ads} />
 
         <div>
-          <h2 className="text-[10px] uppercase tracking-[0.18em] text-white/50 font-semibold mb-4 flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-[#9ED8F5]" style={{ boxShadow: '0 0 6px rgba(158, 216, 245,0.8)' }} />
-            Individual Ads
-          </h2>
+          <span className="eyebrow mb-4 inline-block">Individual Ads</span>
           <AdTable ads={ads} onSelect={setSelectedAd} />
         </div>
       </main>
