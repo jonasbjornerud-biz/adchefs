@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "How fast is turnaround?",
-    a: "48–72 hours brief to first draft. Revisions usually same-day. Rush work — talk to me on the call, we can almost always accommodate.",
+    a: "As fast as 12 hours from brief to first draft. Revisions are typically handled within 6 hours from feedback is given, depending on the time of day.",
   },
   {
     q: "Can you match our existing brand style?",
