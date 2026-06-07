@@ -21,6 +21,7 @@ import MockPerformanceDashboard from "./pages/mock/MockPerformanceDashboard";
 import JobBoard from "./pages/jobs/JobBoard";
 import JobDetail from "./pages/jobs/JobDetail";
 import SubmitTask from "./pages/jobs/SubmitTask";
+import Unsubscribe from "./pages/Unsubscribe";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/jobs" element={<JobBoard />} />
             <Route path="/jobs/:slug" element={<JobDetail />} />
             <Route path="/submit-task" element={<SubmitTask />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
 
             {/* Client */}
             <Route path="/dashboard" element={<AuthGuard><ClientDashboard /></AuthGuard>} />
