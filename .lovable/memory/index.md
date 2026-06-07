@@ -1,19 +1,15 @@
 # Project Memory
 
 ## Core
-- Premium agency site. Light-only (no dark mode toggle). ClicksWaves-inspired layout.
-- Pay-per-video agency model, no retainers. Target: E-com with >€5k/mo ad spend. Max 2-3 brands/mo.
-- Pure CSS/SVG backgrounds. Never use Three.js or heavy JS particle systems.
-- Flow: Hero → How It Works → Dark "What Sets Us Apart" (EditorEdge) → Booking → FAQ → Footer. NEVER add Results or Case Studies.
+- AdChefs Brand v1.0 (2026). Premium muted editorial. Light-only on marketing.
+- Palette: Ink #1A1A1A, Paper #F7F6F3, Accent #9ED8F5 (light blue), Surface #EEEDE8, Muted text #75726B. All radii rounded-[4px].
+- Fonts: Inter Tight (headings, 500-700), Instrument Serif Italic (one emphasis word per headline, wrap in `<em>`), Inter (body), JetBrains Mono (eyebrows + KPIs, uppercase, tracking 0.15em).
+- Eyebrow pattern: `<span className="eyebrow">LABEL</span>` (mono chip, 4px border). Accent variant: `eyebrow eyebrow-accent`.
+- Voice: operator, not copywriter. Lead with the metric then the claim. Never "we help you / solution / amazing results". Use "we build / we ship / per delivered video".
+- Pay-per-video model. No retainers. Target: e-com with >€5k/mo ad spend. Max 2-3 brands/month.
+- Landing flow: Hero → WhyAdChefs (founder) → HowItWorks → EditorEdge (dark Ink band) → Pricing → Booking (Accent band) → FAQ → Footer (dark Ink). Never add Results or Case Studies.
+- Logo wordmark: `AdChefs<span class="text-accent">.</span>` — the period is part of the mark.
 
 ## Memories
-- [Visual Direction](mem://style/visual-direction) — Premium Apple-meets-dark-SaaS aesthetic details and background effects
-- [Light Mode Palette](mem://style/light-mode-palette) — Colors and opacities for the light mode variant
-- [Background Layers](mem://architecture/background-layers) — CSS and SVG implementation of the site background
-- [How It Works Cards](mem://features/how-it-works-3d-cards) — 3D floating grid cards for the How It Works section
-- [Landing Page Layout](mem://features/page-layout) — Allowed sections and flow for the landing page
 - [Booking Qualification Rules](mem://constraints/booking-qualification) — Target audience constraints for Calendly booking
 - [FAQ Content](mem://features/faq-content) — The 3 core FAQ topics and their answers
-- [Hero Marquee Animation](mem://features/hero-marquee) — Full-width scrolling video/image marquee
-- [Business Model Copy](mem://business/model-and-copy) — Copy guidelines emphasizing pay-per-video and no retainers
-- [Footer Layout](mem://features/footer-layout) — Minimalist single-row footer design
