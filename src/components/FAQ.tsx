@@ -7,83 +7,72 @@ import {
 
 const faqs = [
   {
-    question: "How does the pay-per-video model work?",
-    answer:
-      "You pay a flat rate per delivered video, starting at €100. No retainer, no minimum commitment. You request videos when you need them, your editor delivers, and you only pay for what ships and is approved. Most brands end up ordering 15 to 40 videos per month once we're dialed in.",
+    q: "How does the pay-per-video model work?",
+    a: "Flat rate per delivered video, starting at €100. No retainer, no minimum. You request cuts when you need them, the editor delivers, you pay for what ships and is approved. Most brands end up ordering 15–40 videos a month once we're dialed in.",
   },
   {
-    question: "What's included in the price?",
-    answer:
-      "Every video includes full editing, sound design, captions, revisions until approved, and delivery in your preferred formats. You also get a private performance dashboard, direct communication with your editor, and my oversight on quality and strategy, all free.",
+    q: "What's included in the price?",
+    a: "Full edit, sound design, captions, revisions until approved, delivery in your formats. Plus a private performance dashboard, direct line to your editor, and my oversight on quality and strategy — all free.",
   },
   {
-    question: "How fast is turnaround?",
-    answer:
-      "Standard turnaround is 48 to 72 hours from brief to first draft. Revisions are typically same-day. If you need faster, talk to me on the call. We can usually accommodate rush work.",
+    q: "How fast is turnaround?",
+    a: "48–72 hours brief to first draft. Revisions usually same-day. Rush work — talk to me on the call, we can almost always accommodate.",
   },
   {
-    question: "Can you match our existing brand style?",
-    answer:
-      "Yes. Before your editor starts, I personally onboard them on your brand: past winners, visual style, tone of voice, do's and don'ts. Your first few videos are calibration. After that, output looks like you made it in-house.",
+    q: "Can you match our existing brand style?",
+    a: "Yes. I personally onboard the editor on your brand before they start — past winners, visual style, tone, do's and don'ts. First few cuts are calibration. After that, it looks like you made it in-house.",
   },
   {
-    question: "Who owns the footage and final videos?",
-    answer:
-      "You do. Full IP transfer on delivery. Raw files, project files, and final exports are yours. I keep nothing proprietary.",
+    q: "Who owns the footage and final videos?",
+    a: "You do. Full IP transfer on delivery. Raw files, project files, exports — yours. I keep nothing proprietary.",
   },
   {
-    question: "What if I don't like the editor I'm matched with?",
-    answer:
-      "You get a new one, no questions asked. I only win if the editor-brand match works, so I'd rather swap early than force a bad fit.",
+    q: "What if I don't click with the editor?",
+    a: "You get a new one, no questions asked. I only win if the match works, so I'd rather swap early than force a bad fit.",
   },
   {
-    question: "What tools and software do your editors use?",
-    answer:
-      "Primarily Adobe Premiere Pro and After Effects. Editors are briefed through Notion or your preferred system and deliver through Frame.io, Google Drive, or whatever you use. We adapt to your workflow, not the other way around.",
+    q: "What tools do your editors use?",
+    a: "Primarily Adobe Premiere Pro and After Effects. Briefed through Notion or your system. Delivered through Frame.io, Drive, or wherever you live. We adapt to your workflow, not the other way around.",
   },
   {
-    question: "Do you sign NDAs?",
-    answer:
-      "Yes, happy to. I also sign non-compete clauses for direct competitors in your category if needed. Bring your own agreement or use mine.",
+    q: "Do you sign NDAs?",
+    a: "Yes. Happy to sign non-competes for direct category competitors too. Use your paperwork or mine.",
   },
 ];
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-28">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-6">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#7c3aed] mb-3 font-medium">Support</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a2e] mb-3">Frequently Asked Questions</h2>
-          <p className="text-[#6b7280] max-w-md mx-auto text-sm">
-            Everything you need to know before booking a call.
-          </p>
-        </div>
+    <section id="faq" className="py-24 sm:py-32 bg-background">
+      <div className="mx-auto max-w-[1100px] px-6">
+        <div className="grid md:grid-cols-[1fr_1.6fr] gap-12">
+          <div>
+            <span className="eyebrow">FAQ</span>
+            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground">
+              Things people <em>actually</em> ask.
+            </h2>
+            <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
+              If you're not ready to book yet, these usually cover what's left.
+            </p>
+          </div>
 
-        <p className="text-center text-sm text-[#6b7280] max-w-lg mx-auto mb-10">
-          If you're not ready to book yet, these usually cover what's left.
-        </p>
-
-        <div className="w-full max-w-2xl mx-auto mt-14">
-          <Accordion type="single" collapsible className="w-full space-y-3">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="rounded-xl border border-[#f0ecff] bg-white px-5 hover:!transform-none"
-                style={{
-                  boxShadow: '0 1px 3px rgba(139,92,246,0.04), 0 4px 12px rgba(139,92,246,0.04)',
-                }}
-              >
-                <AccordionTrigger className="text-left text-sm font-medium text-[#1a1a2e] hover:text-[#7c3aed] py-4">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#6b7280] leading-relaxed pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <div>
+            <Accordion type="single" collapsible className="w-full space-y-2">
+              {faqs.map((f, i) => (
+                <AccordionItem
+                  key={i}
+                  value={`item-${i}`}
+                  className="border border-foreground/10 rounded-[4px] px-5 bg-card"
+                >
+                  <AccordionTrigger className="text-left text-[15px] font-medium text-foreground hover:no-underline py-5">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-[14px] text-muted-foreground leading-relaxed pb-5">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
         </div>
       </div>
     </section>

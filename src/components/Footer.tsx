@@ -5,64 +5,45 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border/30 py-10">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+    <footer className="bg-foreground text-background pt-20 pb-10">
+      <div className="mx-auto max-w-[1200px] px-6">
+        <div className="grid md:grid-cols-[1.5fr_1fr_1fr] gap-12 mb-16">
           <div>
-            <h3 className="text-lg font-bold text-foreground">AdChefs</h3>
-            <p className="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xs">
-              Dedicated video editors for e-commerce. Pay per video.
+            <p className="font-display text-[28px] tracking-tight">
+              AdChefs<span className="text-accent">.</span>
+            </p>
+            <p className="mt-4 text-[14px] text-background/60 leading-relaxed max-w-sm">
+              Dedicated video editors placed inside e-commerce brands. Pay per video. Built for hook rate, hold rate, BEROAS.
             </p>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-foreground font-semibold mb-3">
-              Links
-            </p>
-            <ul className="space-y-2 text-xs text-muted-foreground">
-              <li>
-                <button onClick={() => scrollTo("how-it-works")} className="hover:text-foreground transition-colors">
-                  How It Works
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollTo("pricing")} className="hover:text-foreground transition-colors">
-                  Pricing
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollTo("faq")} className="hover:text-foreground transition-colors">
-                  FAQ
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollTo("booking")} className="hover:text-foreground transition-colors">
-                  Book a Call
-                </button>
-              </li>
-              <li>
-                <a href="/jobs" className="hover:text-foreground transition-colors">
-                  Careers
-                </a>
-              </li>
+            <p className="mono text-[11px] uppercase tracking-[0.15em] text-background/50 mb-4">Navigate</p>
+            <ul className="space-y-2.5 text-[14px] text-background/80">
+              <li><button onClick={() => scrollTo("how-it-works")} className="hover:text-accent transition-colors">How it works</button></li>
+              <li><button onClick={() => scrollTo("pricing")} className="hover:text-accent transition-colors">Pricing</button></li>
+              <li><button onClick={() => scrollTo("faq")} className="hover:text-accent transition-colors">FAQ</button></li>
+              <li><button onClick={() => scrollTo("booking")} className="hover:text-accent transition-colors">Book a call</button></li>
+              <li><a href="/jobs" className="hover:text-accent transition-colors">Careers</a></li>
             </ul>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-foreground font-semibold mb-3">
-              Contact
-            </p>
-            <a
-              href="mailto:jonas@adchefs.com"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <p className="mono text-[11px] uppercase tracking-[0.15em] text-background/50 mb-4">Contact</p>
+            <a href="mailto:jonas@adchefs.com" className="text-[14px] text-background/80 hover:text-accent transition-colors block">
               jonas@adchefs.com
             </a>
+            <p className="mt-3 mono text-[11px] uppercase tracking-[0.15em] text-background/50">Based in Norway</p>
           </div>
         </div>
 
-        <div className="border-t border-border/20 pt-5 text-center text-xs text-muted-foreground">
-          <p>© 2026 Bjørnerud Media. All rights reserved.</p>
+        <div className="pt-8 border-t border-background/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="mono text-[11px] uppercase tracking-[0.15em] text-background/40">
+            © 2026 Bjørnerud Media. All rights reserved.
+          </p>
+          <p className="mono text-[11px] uppercase tracking-[0.15em] text-background/40">
+            adchefs.com
+          </p>
         </div>
       </div>
     </footer>
