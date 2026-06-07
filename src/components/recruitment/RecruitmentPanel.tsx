@@ -18,6 +18,8 @@ type Posting = {
   id: string;
   slug: string;
   title: string;
+  brand: string;
+  submit_slug: string;
   description: string;
   junior_pay: string | null;
   senior_pay: string | null;
@@ -76,20 +78,26 @@ const STAGE_COLOR: Record<string, string> = {
 };
 
 const emptyPosting = {
-  slug: '', title: '', description: '',
+  slug: '', title: '', brand: '', submit_slug: '', description: '',
   junior_pay: '', senior_pay: '',
   notion_task_url: '',
   trial_email_subject: 'Your AdChefs trial task',
   trial_email_body: `Hi {{first_name}},
 
-Thanks for applying to AdChefs. Here is your trial task:
+After reviewing your submission for the video editing role at {{brand}}, we were impressed with your portfolio and work examples, and would like to proceed with the hiring process.
+
+The next step will involve a task of editing a short video for one of {{brand}}'s products, where you have full creative freedom.
+
+All of the material for the task is here:
 
 {{notion_task_url}}
 
-When you're done, submit it here:
-{{submission_form_url}}?email={{email}}
+When you're done, please submit your work here: {{submission_form_url}}
 
-— AdChefs`,
+We look forward to reviewing your work before moving to the last stage, an interview, if we see potential. Best of luck!
+
+Best,
+Jonas`,
   followup_email_subject: 'Following up on your AdChefs trial task',
   followup_email_body: `Hi {{first_name}},
 
