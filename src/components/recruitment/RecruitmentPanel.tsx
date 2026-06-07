@@ -744,6 +744,16 @@ function Pipeline() {
                     </div>
                   )}
                 </div>
+                <div className="mt-8 pt-4 border-t border-border flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteApp(selected)}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete applicant
+                  </Button>
+                </div>
               </>
             );
           })()}
