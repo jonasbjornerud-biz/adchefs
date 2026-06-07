@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "What's included in the price?",
-    a: "Full edit, sound design, captions, revisions until approved, delivery in your formats. Plus a private performance dashboard, direct line to your editor, and my oversight on quality and strategy — all free.",
+    a: "Full edit, sound design, captions, and revisions until approved, including different formats and resolutions. You also get a private performance dashboard with performance oversight of all ads and the editors' deliverables over time.",
   },
   {
     q: "How fast is turnaround?",
