@@ -32,7 +32,7 @@ const faqs = [
   },
   {
     q: "What tools do your editors use?",
-    a: "Primarily Adobe Premiere Pro and After Effects. Briefed through Notion or your system. Delivered through Frame.io, Drive, or wherever you live. We adapt to your workflow, not the other way around.",
+    a: "Primarily Adobe Premiere Pro and After Effects, trained with our internal SOP's tailored to your brand. Delivered through Frame.io, Drive, or wherever you live. We adapt to your workflow, not the other way around.",
   },
   {
     q: "Do you sign NDAs?",
