@@ -48,6 +48,7 @@ const App = () => (
 
             {/* Admin */}
             <Route path="/admin" element={<AuthGuard requireAdmin><AdminDashboard /></AuthGuard>} />
+            <Route path="/admin/recruitment" element={<AuthGuard requireAdmin><AdminDashboard initialTab="recruitment" /></AuthGuard>} />
             <Route path="/admin/clients/new" element={<AuthGuard requireAdmin><ClientForm /></AuthGuard>} />
             <Route path="/admin/clients/:clientId" element={<AuthGuard requireAdmin><ClientDetail /></AuthGuard>} />
 

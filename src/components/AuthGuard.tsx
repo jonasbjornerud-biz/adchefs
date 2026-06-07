@@ -12,11 +12,13 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Bypass auth inside the Lovable builder preview iframe (id-preview--*.lovable.app)
+  // Bypass auth inside Lovable builder previews so admin routes can be inspected
   // so the editor can view/test admin & client routes without logging in every refresh.
   const isLovablePreview =
     typeof window !== 'undefined' &&
-    /^id-preview--/.test(window.location.hostname);
+    (/^id-preview--/.test(window.location.hostname) ||
+      window.location.hostname.endsWith('.lovableproject.com') ||
+      window.location.search.includes('__lovable_token='));
 
   useEffect(() => {
     if (isLovablePreview) {

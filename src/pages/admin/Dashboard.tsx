@@ -8,7 +8,11 @@ import { logout } from '@/lib/auth';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
 
-export default function AdminDashboard() {
+type AdminDashboardProps = {
+  initialTab?: 'clients' | 'recruitment';
+};
+
+export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboardProps) {
   const navigate = useNavigate();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +54,7 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-        <Tabs defaultValue="clients" className="w-full">
+        <Tabs defaultValue={initialTab} className="w-full">
           <TabsList>
             <TabsTrigger value="clients">Clients</TabsTrigger>
             <TabsTrigger value="recruitment">Recruitment</TabsTrigger>
