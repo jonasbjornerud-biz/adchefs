@@ -439,10 +439,9 @@ function Pipeline() {
   }
 
   async function deleteApp(app: Application) {
-    if (!confirm(`Delete applicant ${app.first_name} ${app.last_name}? This also removes related submissions and email logs.`)) return;
+    if (!confirm(`Delete applicant ${app.first_name} ${app.last_name}? This also removes related trial submissions.`)) return;
     // Remove dependent rows first to avoid FK issues
     await (supabase.from('trial_submissions' as never) as any).delete().eq('application_id', app.id);
-    await (supabase.from('email_send_log' as never) as any).delete().eq('recipient_email', app.email);
     const { error } = await (supabase.from('applications' as never) as any).delete().eq('id', app.id);
     if (error) { toast.error(error.message); return; }
     toast.success('Applicant deleted');
