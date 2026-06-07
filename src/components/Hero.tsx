@@ -22,11 +22,21 @@ const Hero = () => {
 
   return (
     <section className="relative pt-32 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+      {/* Subtle noise texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none z-[1]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 200px',
+        }}
+      />
+
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl -ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
-          <h1 className="mt-6 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[1.02] tracking-[-0.03em] text-foreground">
+          <h1 className="mt-4 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[0.93] tracking-[-0.03em] text-foreground">
             Your <em>dedicated</em> video editor without the additional cost
           </h1>
 
@@ -35,16 +45,18 @@ const Hero = () => {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button size="lg" variant="cta" onClick={() => scrollToSection("booking")}>
+            <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("booking")}>
               Book a Call
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" onClick={() => scrollToSection("how-it-works")}>
               See how it works
             </Button>
           </div>
 
-          <div className="mt-7 flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+          <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
+
+          <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             <span>From €100 / video</span>
             <span className="h-3 w-px bg-border" />
             <span>Cancel anytime</span>
