@@ -3,86 +3,44 @@ import jonasSignature from "@/assets/jonas-signature.png";
 
 const WhyAdChefs = () => {
   return (
-    <section className="py-28">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-[auto_1fr] gap-12 md:gap-16 items-start max-w-4xl mx-auto">
-          {/* Photo */}
-          <div className="flex justify-center md:justify-start">
-            <div
-              className="w-[200px] h-[200px] rounded-full overflow-hidden"
-              style={{
-                border: "3px solid hsl(var(--accent))",
-                boxShadow:
-                  "0 0 0 4px hsl(var(--accent) / 0.12), 0 20px 50px -12px hsl(var(--accent) / 0.4)",
-              }}
-            >
+    <section className="py-24 sm:py-32 bg-secondary border-y border-foreground/5">
+      <div className="mx-auto max-w-[1100px] px-6">
+        <div className="grid md:grid-cols-[220px_1fr] gap-10 md:gap-16 items-start">
+          <div className="flex justify-start">
+            <div className="w-[180px] h-[180px] rounded-[4px] overflow-hidden border border-foreground/10">
               <img
                 src={jonasPhoto}
                 alt="Jonas Bjørnerud, founder of AdChefs"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover grayscale"
               />
             </div>
           </div>
 
-          {/* Text */}
-          <div className="space-y-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-accent font-medium">
-              Why AdChefs
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              Built by an operator, not an agency.
+          <div>
+            <span className="eyebrow">Why AdChefs</span>
+            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground">
+              Built by an <em>operator</em>, not an agency.
             </h2>
-            <div className="space-y-4 text-sm md:text-base text-muted-foreground leading-relaxed">
+            <div className="mt-6 space-y-4 text-[15px] text-muted-foreground leading-relaxed max-w-xl">
               <p>
-                I'm Jonas. I spent 7 years editing direct response video ads for e-commerce brands, and every team I worked with faced the same problem: rotating editors, slow turnarounds, retainer lock-in, and no one actually understanding what drove performance. So I built AdChefs to fix it.
+                I'm Jonas. I spent 7 years cutting direct response video for e-commerce. Every team hit the same wall — rotating editors, slow turnarounds, retainers, nobody tracking what actually drove performance. I built AdChefs to fix it.
               </p>
               <p>
-                I personally recruit, train, and oversee every editor on the roster. I vet every brand before we start. And I stay close enough to the work that if an ad underperforms, I know why, and we fix it.
+                I recruit, train and oversee every editor on the roster. I vet every brand before we start. If an ad underperforms, I know why and we fix it.
               </p>
             </div>
 
-            {/* Handwritten signature with hand-drawn underline */}
-            <div className="pt-3 flex flex-col items-start w-full max-w-[260px]">
+            <div className="mt-7 flex items-end gap-4">
               <img
                 src={jonasSignature}
                 alt="Jonas Bjørnerud signature"
-                className="h-16 w-auto -ml-1 select-none pointer-events-none dark:invert"
+                className="h-14 w-auto select-none pointer-events-none"
                 draggable={false}
               />
-
-              {/* Hand-drawn underline divider */}
-              <svg
-                viewBox="0 0 240 14"
-                className="w-full max-w-[220px] h-3 -mt-1 -ml-1 dark:invert"
-                aria-hidden="true"
-                preserveAspectRatio="none"
-              >
-                <g
-                  fill="none"
-                  stroke="#1a1a1a"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path
-                    d="M 6 7 Q 22 5 44 7 Q 70 10 100 9 Q 132 8 162 8 Q 188 8 208 6 Q 218 5 224 4"
-                    strokeWidth="2.4"
-                  />
-                  <path
-                    d="M 14 7 Q 40 6 78 8 Q 100 9 118 9"
-                    strokeWidth="1.4"
-                    opacity="0.7"
-                  />
-                  <path
-                    d="M 224 4 Q 230 4 234 3"
-                    strokeWidth="0.9"
-                    opacity="0.7"
-                  />
-                </g>
-              </svg>
-
-              <p className="text-xs text-muted-foreground mt-1">
-                Jonas Bjørnerud, Founder
-              </p>
+              <div className="pb-1">
+                <p className="text-[13px] font-medium text-foreground">Jonas Bjørnerud</p>
+                <p className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-0.5">Founder · AdChefs</p>
+              </div>
             </div>
           </div>
         </div>
