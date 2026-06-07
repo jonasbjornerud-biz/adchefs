@@ -547,11 +547,12 @@ function Pipeline() {
               <th className="text-left p-3 font-normal">Email</th>
               <th className="text-left p-3 font-normal">Task</th>
               <th className="text-left p-3 font-normal">Applied</th>
+              <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={8} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+              <tr><td colSpan={9} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
             {filtered.map(app => {
               const sub = subFor(app);
