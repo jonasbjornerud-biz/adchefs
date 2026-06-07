@@ -17,7 +17,7 @@ const CARD_SHADOW_HOVER = '0 0 0 1px rgba(158, 216, 245,0.2) inset, 0 0 0 1px rg
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
       <p className="text-white/30 mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
@@ -36,12 +36,12 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/60 cursor-pointer transition-all duration-200 focus:outline-none bg-[#111118] border border-white/[0.06]"
+        className="appearance-none h-9 px-3 pr-8 rounded-lg text-xs font-medium text-white/60 cursor-pointer transition-all duration-200 focus:outline-none bg-[#1A1A1A] border border-white/[0.06]"
         style={{ boxShadow: CARD_SHADOW }}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
       >
-        {options.map(o => <option key={o} value={o} className="bg-[#111118] text-white">{o}</option>)}
+        {options.map(o => <option key={o} value={o} className="bg-[#1A1A1A] text-white">{o}</option>)}
       </select>
       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -53,7 +53,7 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`bg-[#111118] rounded-2xl transition-all duration-200 ${className}`}
+      className={`bg-[#1A1A1A] rounded-2xl transition-all duration-200 ${className}`}
       style={{ boxShadow: CARD_SHADOW }}
       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW_HOVER; }}
       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = CARD_SHADOW; }}
@@ -153,7 +153,7 @@ export default function MockPerformanceDashboard() {
   }, [data, month]);
 
   return (
-    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
       {/* Top ambient glow */}
       <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
         background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(59, 134, 168,0.18) 0%, transparent 70%)',
@@ -264,7 +264,7 @@ export default function MockPerformanceDashboard() {
                 <defs>
                   <linearGradient id="mockApprovedGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.9} />
-                    <stop offset="100%" stopColor="#059669" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="#3B86A8" stopOpacity={0.6} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />

@@ -98,7 +98,7 @@ export default function MockClientDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
       {/* Top ambient glow */}
       <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
         background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(59, 134, 168,0.18) 0%, transparent 70%)',

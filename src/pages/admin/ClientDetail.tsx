@@ -107,7 +107,7 @@ export default function ClientDetail() {
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-10 space-y-8">
         {/* Hero */}
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-indigo-500/20 border border-violet-500/20 flex items-center justify-center text-xl font-bold text-violet-400 shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/30 flex items-center justify-center text-xl font-bold text-accent shrink-0">
             {client.brand_name.charAt(0)}
           </div>
           <div>
@@ -122,8 +122,8 @@ export default function ClientDetail() {
         <div className="grid grid-cols-1 gap-5">
           <div className="rounded-2xl p-6 relative overflow-hidden" style={{ background: '#111113', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-start justify-between mb-5">
-              <div className="w-10 h-10 rounded-xl bg-secondary0/10 border border-violet-500/20 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-violet-400" />
+              <div className="w-10 h-10 rounded-xl bg-secondary0/10 border border-accent/30 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-accent" />
               </div>
             </div>
             <h3 className="text-base font-semibold text-white mb-0.5">Editor Performance</h3>

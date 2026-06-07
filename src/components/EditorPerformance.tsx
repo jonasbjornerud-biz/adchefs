@@ -181,8 +181,8 @@ export default function EditorPerformance() {
 
   const chartTooltipStyle = {
     contentStyle: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 12, fontFamily: "'JetBrains Mono', monospace", boxShadow: '0 4px 12px rgba(0,0,0,0.08)' },
-    labelStyle: { color: '#64748b' },
-    itemStyle: { color: '#334155' },
+    labelStyle: { color: '#75726B' },
+    itemStyle: { color: '#1A1A1A' },
   };
 
   if (loading) {
@@ -292,10 +292,10 @@ export default function EditorPerformance() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyByWeek} barCategoryGap="20%">
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="day" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 10, color: '#64748b' }} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                     {weekKeys.map((wk, i) => (
                       <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} />
                     ))}
@@ -317,8 +317,8 @@ export default function EditorPerformance() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="week" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="week" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
                     <Bar dataKey="total" fill="url(#barGradLight)" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -335,10 +335,10 @@ export default function EditorPerformance() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={cumulative}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="day" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip {...chartTooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 10, color: '#64748b' }} />
+                  <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                   {editor === '(All Editors)' ? (
                     cumulativeEditors.map((ed, i) => (
                       <Line key={ed} type="monotone" dataKey={ed} stroke={COLORS[i % COLORS.length]} strokeWidth={2} dot={false} />

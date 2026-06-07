@@ -107,7 +107,7 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#06060c]">
+      <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[#9ED8F5] border-t-transparent rounded-full animate-spin" />
           <span className="text-sm text-white/30">Loading…</span>
@@ -148,7 +148,7 @@ export default function ClientDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#06060c] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1A1A1A] relative overflow-hidden">
       {/* Top ambient glow */}
       <div className="fixed inset-x-0 top-0 h-[500px] pointer-events-none" style={{
         background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(59, 134, 168,0.18) 0%, transparent 70%)',

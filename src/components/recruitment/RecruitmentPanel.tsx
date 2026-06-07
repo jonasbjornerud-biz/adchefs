@@ -69,9 +69,9 @@ const STAGE_COLOR: Record<string, string> = {
   new: 'bg-muted text-muted-foreground',
   qualified: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
   trial_sent: 'bg-secondary text-foreground dark:text-foreground',
-  trial_submitted: 'bg-secondary0/15 text-violet-600 dark:text-violet-400',
+  trial_submitted: 'bg-secondary text-foreground',
   interview: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
-  hired: 'bg-secondary0/15 text-foreground dark:text-accent',
+  hired: 'bg-secondary text-foreground dark:text-accent',
   rejected: 'bg-rose-500/15 text-rose-600 dark:text-rose-400',
 };
 
@@ -365,7 +365,7 @@ function Pipeline() {
                   </td>
                   <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${STAGE_COLOR[app.stage]}`}>{STAGE_LABEL[app.stage]}</span></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3">{sub ? <Badge className="bg-secondary0/15 text-violet-600 dark:text-violet-400 hover:bg-secondary0/20 font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
+                  <td className="p-3">{sub ? <Badge className="bg-secondary text-foreground hover:bg-secondary font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                 </tr>
               );
