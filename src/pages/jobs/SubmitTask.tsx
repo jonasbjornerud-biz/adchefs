@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,8 @@ const schema = z.object({
 
 export default function SubmitTask() {
   const [params] = useSearchParams();
+  const { submitSlug } = useParams<{ submitSlug?: string }>();
+  const [posting, setPosting] = useState<{ title: string; brand: string } | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', submission_url: '', notes: '' });
@@ -25,6 +27,17 @@ export default function SubmitTask() {
     const e = params.get('email');
     if (e) setForm(f => ({ ...f, email: e }));
   }, [params]);
+
+  useEffect(() => {
+    if (!submitSlug) { setPosting(null); return; }
+    (async () => {
+      const { data } = await (supabase.from('job_postings' as never) as any)
+        .select('title, brand')
+        .eq('submit_slug', submitSlug)
+        .maybeSingle();
+      if (data) setPosting(data as any);
+    })();
+  }, [submitSlug]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -86,7 +99,7 @@ export default function SubmitTask() {
             </Link>
 
             <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-              Trial task
+              {posting?.brand ? `${posting.brand} · Trial task` : 'Trial task'}
             </span>
           </div>
 
@@ -95,7 +108,9 @@ export default function SubmitTask() {
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            Upload your finished trial task below. We review every submission.
+            {posting?.brand
+              ? `Upload your finished ${posting.brand} trial task below. We review every submission.`
+              : 'Upload your finished trial task below. We review every submission.'}
           </p>
         </div>
       </section>

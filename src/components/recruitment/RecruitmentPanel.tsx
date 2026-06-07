@@ -18,6 +18,8 @@ type Posting = {
   id: string;
   slug: string;
   title: string;
+  brand: string;
+  submit_slug: string;
   description: string;
   junior_pay: string | null;
   senior_pay: string | null;
@@ -76,20 +78,26 @@ const STAGE_COLOR: Record<string, string> = {
 };
 
 const emptyPosting = {
-  slug: '', title: '', description: '',
+  slug: '', title: '', brand: '', submit_slug: '', description: '',
   junior_pay: '', senior_pay: '',
   notion_task_url: '',
   trial_email_subject: 'Your AdChefs trial task',
   trial_email_body: `Hi {{first_name}},
 
-Thanks for applying to AdChefs. Here is your trial task:
+After reviewing your submission for the video editing role at {{brand}}, we were impressed with your portfolio and work examples, and would like to proceed with the hiring process.
+
+The next step will involve a task of editing a short video for one of {{brand}}'s products, where you have full creative freedom.
+
+All of the material for the task is here:
 
 {{notion_task_url}}
 
-When you're done, submit it here:
-{{submission_form_url}}?email={{email}}
+When you're done, please submit your work here: {{submission_form_url}}
 
-— AdChefs`,
+We look forward to reviewing your work before moving to the last stage, an interview, if we see potential. Best of luck!
+
+Best,
+Jonas`,
   followup_email_subject: 'Following up on your AdChefs trial task',
   followup_email_body: `Hi {{first_name}},
 
@@ -137,6 +145,8 @@ function Postings() {
     if (!editing?.title || !editing?.slug) { toast.error('Title and slug required'); return; }
     const payload: any = {
       slug: editing.slug, title: editing.title,
+      brand: editing.brand ?? '',
+      submit_slug: (editing.submit_slug || editing.slug || '').toLowerCase().replace(/[^a-z0-9-]/g, '-'),
       description: editing.description ?? '',
       junior_pay: editing.junior_pay || null,
       senior_pay: editing.senior_pay || null,
@@ -250,6 +260,18 @@ function Postings() {
                 <div className="space-y-1.5"><Label>Title *</Label><Input value={editing.title ?? ''} onChange={e => setEditing({ ...editing, title: e.target.value })} /></div>
                 <div className="space-y-1.5"><Label>Slug *</Label><Input value={editing.slug ?? ''} onChange={e => setEditing({ ...editing, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} /></div>
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5"><Label>Brand *</Label><Input value={editing.brand ?? ''} onChange={e => setEditing({ ...editing, brand: e.target.value })} placeholder="Rituel" /></div>
+                <div className="space-y-1.5">
+                  <Label>Submit URL slug *</Label>
+                  <Input
+                    value={editing.submit_slug ?? ''}
+                    onChange={e => setEditing({ ...editing, submit_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
+                    placeholder="rituel"
+                  />
+                  <p className="text-xs text-muted-foreground">Public URL: /submit-task-{editing.submit_slug || '…'}</p>
+                </div>
+              </div>
               <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} value={editing.description ?? ''} onChange={e => setEditing({ ...editing, description: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5"><Label>Junior pay</Label><Input value={editing.junior_pay ?? ''} onChange={e => setEditing({ ...editing, junior_pay: e.target.value })} placeholder="€30–60 per ad" /></div>
@@ -259,7 +281,7 @@ function Postings() {
               <div className="space-y-1.5"><Label>Trial email subject</Label><Input value={editing.trial_email_subject ?? ''} onChange={e => setEditing({ ...editing, trial_email_subject: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label>Trial email body</Label>
-                <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
+                <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{brand}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
                 <Textarea rows={10} className="font-mono text-xs" value={editing.trial_email_body ?? ''} onChange={e => setEditing({ ...editing, trial_email_body: e.target.value })} />
               </div>
               <div className="space-y-1.5 border-t border-border pt-4"><Label>Follow-up email subject</Label><Input value={editing.followup_email_subject ?? ''} onChange={e => setEditing({ ...editing, followup_email_subject: e.target.value })} /></div>
@@ -339,12 +361,16 @@ function Pipeline() {
   function renderTemplate(app: Application, kind: 'trial' | 'followup') {
     const p = postingFor(app);
     if (!p) return { subject: '', body: '' };
-    const sub = (config.submission_form_url || `${window.location.origin}/submit-task`);
+    const base = config.submission_form_url || `${window.location.origin}/submit-task`;
+    const sub = p.submit_slug
+      ? `${base}-${p.submit_slug}?email=${encodeURIComponent(app.email)}`
+      : `${base}?email=${encodeURIComponent(app.email)}`;
     const subject = kind === 'trial' ? p.trial_email_subject : p.followup_email_subject;
     const raw = kind === 'trial' ? p.trial_email_body : p.followup_email_body;
     const body = (raw ?? '')
       .replace(/\{\{first_name\}\}/g, app.first_name)
       .replace(/\{\{email\}\}/g, app.email)
+      .replace(/\{\{brand\}\}/g, p.brand || '')
       .replace(/\{\{notion_task_url\}\}/g, p.notion_task_url)
       .replace(/\{\{submission_form_url\}\}/g, sub);
     return { subject: subject ?? '', body };

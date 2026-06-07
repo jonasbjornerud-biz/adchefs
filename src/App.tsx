@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/jobs" element={<JobBoard />} />
             <Route path="/jobs/:slug" element={<JobDetail />} />
             <Route path="/submit-task" element={<SubmitTask />} />
+            <Route path="/submit-task-:submitSlug" element={<SubmitTask />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
 
             {/* Client */}

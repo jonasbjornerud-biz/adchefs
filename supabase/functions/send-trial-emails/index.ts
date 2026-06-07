@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     }
     const { data: posting } = await supabase
       .from('job_postings')
-      .select('trial_email_subject, trial_email_body, notion_task_url')
+      .select('trial_email_subject, trial_email_body, notion_task_url, brand, submit_slug')
       .eq('id', app.job_posting_id)
       .maybeSingle()
     if (!posting) {
@@ -56,12 +56,16 @@ Deno.serve(async (req) => {
       continue
     }
 
+    const submitUrl = submissionFormUrl && posting.submit_slug
+      ? `${submissionFormUrl}-${posting.submit_slug}?email=${encodeURIComponent(app.email)}`
+      : (submissionFormUrl ? `${submissionFormUrl}?email=${encodeURIComponent(app.email)}` : '')
     const vars = {
       first_name: app.first_name,
       last_name: app.last_name,
       email: app.email,
+      brand: posting.brand || '',
       notion_task_url: posting.notion_task_url || '',
-      submission_form_url: submissionFormUrl ? `${submissionFormUrl}?email=${encodeURIComponent(app.email)}` : '',
+      submission_form_url: submitUrl,
     }
     const subject = render(posting.trial_email_subject || 'Your AdChefs trial task', vars)
     const body = render(posting.trial_email_body || '', vars)
