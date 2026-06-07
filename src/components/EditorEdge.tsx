@@ -65,7 +65,7 @@ const EditorEdge = () => {
             onClick={() => navigate('/mock')}
             className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
           >
-            See how it works
+            View demo dashboard
             <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
         </div>

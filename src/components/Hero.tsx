@@ -62,7 +62,7 @@ const Hero = () => {
               <ArrowRight className="h-4 w-4" />
             </Button>
             <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
-              View demo dashboard
+              See how it works
             </Button>
           </div>
 
