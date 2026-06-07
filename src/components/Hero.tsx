@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
@@ -21,96 +21,78 @@ const Hero = () => {
   const doubled = [...mediaSources, ...mediaSources];
 
   return (
-    <section className="hero-section relative min-h-[100svh] flex flex-col justify-center pt-20 overflow-hidden">
-      {/* Aurora orbs (subtle, behind grid) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
-        <div className="hero-orb hero-orb-1" />
-        <div className="hero-orb hero-orb-2" />
-        <div className="hero-orb hero-orb-3" />
+    <section className="relative pt-32 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+      <div className="mx-auto max-w-[1200px] px-6 relative z-10">
+        <div className="max-w-3xl">
+          <span className="eyebrow">For e-commerce brands</span>
+
+          <h1 className="mt-6 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[1.02] tracking-[-0.03em] text-foreground">
+            Your dedicated video editor <em>without</em> the additional cost
+          </h1>
+
+          <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
+            We place dedicated video editors inside e-commerce brands on a pay-per-video model. Built for hook rate, hold rate, BEROAS — no retainers, no agency markup, no rotating freelancers.
+          </p>
+
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Button size="lg" variant="cta" onClick={() => scrollToSection("booking")}>
+              Book a call
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => scrollToSection("how-it-works")}>
+              See how it works
+            </Button>
+          </div>
+
+          <div className="mt-7 flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+            <span>From €100 / video</span>
+            <span className="h-3 w-px bg-border" />
+            <span>No retainer</span>
+            <span className="h-3 w-px bg-border" />
+            <span>Cancel anytime</span>
+          </div>
+        </div>
       </div>
 
-      {/* Dotted grid + drifting spotlight */}
-      <div className="hero-dotgrid" aria-hidden="true" />
-      <div className="hero-spotlight" aria-hidden="true" />
-
-      {/* Grain on top */}
-      <div className="hero-grain" />
-
-      <div className="container mx-auto px-5 sm:px-6 relative z-10 text-center max-w-6xl">
-        <div className="inline-flex items-center px-3.5 py-1.5 mb-6 sm:mb-8 rounded-full bg-accent/[0.08] border border-accent/20 backdrop-blur-sm">
-          <span className="text-[11px] sm:text-xs tracking-wide text-muted-foreground">
-            Built for e-com brands. Pay per video.
+      {/* Recent work marquee */}
+      <div className="relative mt-20 sm:mt-24">
+        <div className="mx-auto max-w-[1200px] px-6 mb-6 flex items-end justify-between">
+          <span className="eyebrow">Recent work</span>
+          <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+            Live cuts shipping for clients
           </span>
         </div>
 
-        <h1 className="text-[2.5rem] sm:text-7xl md:text-8xl lg:text-[14rem] font-extrabold leading-[1.02] sm:leading-[0.95] tracking-tight mb-5 sm:mb-6 text-foreground xl:text-5xl">
-          Your <span className="hero-accent-word">dedicated</span> video editor
-          <br />
-          without the <span className="hero-accent-word">additional cost</span>
-        </h1>
+        <div className="relative w-full overflow-hidden marquee-wrapper">
+          <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
 
-        <p className="text-[15px] sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto mb-4 px-2 sm:px-0">
-          I match e-commerce brands with video editors who learn your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
-        </p>
-
-        <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground/60 mb-8 sm:mb-10">
-          <Check className="w-3.5 h-3.5 text-accent/60" />
-          From €100/video. Cancel anytime.
+          <div className="marquee-track flex gap-4">
+            {doubled.map((src, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary"
+              >
+                {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
+                  <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                ) : (
+                  <video
+                    src={src}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="cta-glow inline-block">
-          <Button
-            size="lg"
-            variant="cta"
-            onClick={() => scrollToSection("booking")}
-            className="text-base px-7 sm:px-8 py-5 h-auto group relative overflow-hidden shimmer-button rounded-xl"
-          >
-            <span className="relative z-10 flex items-center">
-              Book a Call
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-            </span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Marquee */}
-      <div className="relative w-screen left-1/2 -translate-x-1/2 mt-14 sm:mt-20 mb-8 marquee-wrapper z-20">
-        <p className="text-center text-[11px] sm:text-xs uppercase tracking-[0.1em] text-accent font-medium mb-5">
-          Recent work
-        </p>
-
-        {/* Edge fade masks */}
-        <div className="absolute left-0 top-[44px] bottom-0 w-16 sm:w-32 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
-        <div className="absolute right-0 top-[44px] bottom-0 w-16 sm:w-32 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
-
-        <div className="marquee-track flex gap-3 sm:gap-5">
-          {doubled.map((src, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 w-[150px] h-[220px] sm:w-[220px] sm:h-[320px] rounded-2xl overflow-hidden border border-white/[0.08] ring-1 ring-white/[0.04]"
-              style={{
-                boxShadow: '0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)',
-              }}
-            >
-              {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
-                <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
-              ) : (
-                <video
-                  src={src}
-                  className="w-full h-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="text-center text-[10px] sm:text-[11px] text-muted-foreground/50 mt-5 px-4 max-w-2xl mx-auto italic">
-          Disclaimer: Video editing only. All other services and brand ownership belong to respective clients.
+        <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-6 px-4">
+          Video editing only. Brand ownership belongs to respective clients.
         </p>
       </div>
     </section>
