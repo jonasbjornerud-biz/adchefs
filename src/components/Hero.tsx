@@ -22,8 +22,18 @@ const Hero = () => {
 
   return (
     <section className="relative pt-32 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+      {/* Subtle noise texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none z-[1]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 200px',
+        }}
+      />
+
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl -ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
           <h1 className="mt-6 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[1.02] tracking-[-0.03em] text-foreground">
