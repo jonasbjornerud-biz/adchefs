@@ -344,7 +344,7 @@ export default function MockPerformanceDashboard() {
                         <td className="py-5 px-6 text-white/40">{row.month}</td>
                         <td className="py-5 px-6">
                           {row.approved ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-secondary0/10 text-accent">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent">
                               <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Approved
                             </span>
                           ) : (

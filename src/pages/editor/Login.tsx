@@ -67,7 +67,7 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center">
           <div className="inline-flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-white text-sm font-bold">A</div>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-foreground to-foreground flex items-center justify-center text-white text-sm font-bold">A</div>
             <span className="text-white/80 text-sm font-medium tracking-wide">AdChefs</span>
           </div>
           <h1 className="text-2xl font-semibold text-white">Welcome back</h1>
@@ -82,7 +82,7 @@ export default function Login() {
               onChange={e => setUsername(e.target.value)}
               placeholder="Enter your username"
               autoComplete="username"
-              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-violet-500/50 focus:ring-violet-500/20 h-10"
+              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-accent/50 focus:ring-accent/30 h-10"
             />
           </div>
           <div>
@@ -93,7 +93,7 @@ export default function Login() {
               onChange={e => setPassword(e.target.value)}
               placeholder="Enter your password"
               autoComplete="current-password"
-              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-violet-500/50 focus:ring-violet-500/20 h-10"
+              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-accent/50 focus:ring-accent/30 h-10"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function Login() {
               id="remember"
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(checked === true)}
-              className="border-white/20 data-[state=checked]:bg-secondary0 data-[state=checked]:border-violet-500"
+              className="border-white/20 data-[state=checked]:bg-accent data-[state=checked]:border-accent"
             />
             <label htmlFor="remember" className="text-xs text-white/40 cursor-pointer select-none">
               Remember me
@@ -112,7 +112,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={loading || !username || !password}
-            className="w-full h-10 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border-0 shadow-lg shadow-violet-500/20 transition-all duration-200"
+            className="w-full h-10 bg-gradient-to-r from-foreground to-foreground hover:from-foreground/90 hover:to-foreground/90 text-white border-0 shadow-lg shadow-foreground/20 transition-all duration-200"
           >
             <LogIn className="w-4 h-4 mr-2" />
             {loading ? 'Signing in...' : 'Sign In'}
