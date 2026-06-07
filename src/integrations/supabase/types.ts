@@ -49,6 +49,7 @@ export type Database = {
           reviewed_at: string | null
           software: string
           stage: string
+          starred: boolean
           trial_email_scheduled_for: string | null
           trial_email_sent_at: string | null
           updated_at: string
@@ -70,6 +71,7 @@ export type Database = {
           reviewed_at?: string | null
           software: string
           stage?: string
+          starred?: boolean
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string
@@ -91,6 +93,7 @@ export type Database = {
           reviewed_at?: string | null
           software?: string
           stage?: string
+          starred?: boolean
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string

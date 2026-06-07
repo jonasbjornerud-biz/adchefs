@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil } from 'lucide-react';
+import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil, Star, Play, X, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -51,6 +51,7 @@ type Application = {
   proceed: boolean | null;
   reviewed_at: string | null;
   created_at: string;
+  starred?: boolean | null;
 };
 
 type Submission = {
@@ -67,15 +68,98 @@ const STAGE_LABEL: Record<string, string> = {
   new: 'New', qualified: 'Qualified', trial_sent: 'Trial sent',
   trial_submitted: 'Trial submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
 };
-const STAGE_COLOR: Record<string, string> = {
-  new: 'bg-muted text-muted-foreground',
-  qualified: 'bg-secondary text-foreground',
-  trial_sent: 'bg-secondary text-foreground dark:text-foreground',
-  trial_submitted: 'bg-secondary text-foreground',
-  interview: 'bg-secondary text-foreground',
-  hired: 'bg-secondary text-foreground dark:text-accent',
-  rejected: 'bg-destructive/15 text-destructive',
+
+/** Editorial stage chip styles (inline so they survive Tailwind purge). */
+const STAGE_CHIP: Record<string, React.CSSProperties> = {
+  new:              { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
+  qualified:        { backgroundColor: '#E2E0D9', color: '#1A1A1A', borderColor: '#D5D2C8' },
+  trial_sent:       { backgroundColor: 'rgba(158,216,245,0.28)', color: '#1A1A1A', borderColor: '#9ED8F5' },
+  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
+  interview:        { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
+  hired:            { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
+  rejected:         { backgroundColor: 'rgba(214, 64, 64, 0.12)', color: '#B43A3A', borderColor: 'rgba(180, 58, 58, 0.35)' },
 };
+
+function StageChip({ stage }: { stage: string }) {
+  return (
+    <span
+      className="mono inline-flex items-center text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px] border"
+      style={STAGE_CHIP[stage] ?? STAGE_CHIP.new}
+    >
+      {STAGE_LABEL[stage] ?? stage}
+    </span>
+  );
+}
+
+/* ---------------- Embed helpers ---------------- */
+function hostOf(url: string) { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } }
+function faviconFor(url: string) {
+  const h = hostOf(url);
+  return h ? `https://www.google.com/s2/favicons?domain=${h}&sz=64` : '';
+}
+type Embed = { kind: 'iframe' | 'image' | 'link'; src?: string; thumb?: string; host: string };
+function embedFor(url: string): Embed {
+  const host = hostOf(url);
+  // Loom
+  let m = url.match(/loom\.com\/(?:share|embed)\/([a-f0-9-]+)/i);
+  if (m) return { kind: 'iframe', src: `https://www.loom.com/embed/${m[1]}`, host };
+  // YouTube
+  m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (m) return { kind: 'iframe', src: `https://www.youtube.com/embed/${m[1]}`, thumb: `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`, host };
+  // Vimeo
+  m = url.match(/vimeo\.com\/(\d+)/);
+  if (m) return { kind: 'iframe', src: `https://player.vimeo.com/video/${m[1]}`, host };
+  // Google Drive file
+  m = url.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
+  if (m) return { kind: 'iframe', src: `https://drive.google.com/file/d/${m[1]}/preview`, host };
+  // Frame.io / others -> link with favicon
+  return { kind: 'link', host };
+}
+
+function LinkFavicon({ url, size = 16 }: { url: string; size?: number }) {
+  const src = faviconFor(url);
+  if (!src) return null;
+  return (
+    <img
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      className="rounded-[2px] shrink-0"
+      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+    />
+  );
+}
+
+function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
+  const e = embedFor(url);
+  if (e.kind === 'iframe' && e.src) {
+    return (
+      <div className={`relative w-full overflow-hidden rounded-[4px] border ${compact ? '' : ''}`} style={{ borderColor: '#E2E0D9', backgroundColor: '#000', aspectRatio: '16 / 9' }}>
+        <iframe
+          src={e.src}
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="flex items-center justify-center gap-2 w-full rounded-[4px] border px-4 py-10"
+      style={{ borderColor: '#E2E0D9', backgroundColor: '#EEEDE8' }}
+    >
+      <LinkFavicon url={url} size={20} />
+      <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#1A1A1A]">{e.host || 'Open submission'}</span>
+      <ExternalLink className="w-3.5 h-3.5 text-[#75726B]" />
+    </a>
+  );
+}
 
 const emptyPosting = {
   slug: '', title: '', brand: '', submit_slug: '', description: '',
@@ -115,11 +199,13 @@ Let me know if you have any questions.
 export function RecruitmentPanel() {
   return (
     <Tabs defaultValue="pipeline" className="w-full">
-      <TabsList>
-        <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
-        <TabsTrigger value="postings">Job Postings</TabsTrigger>
+      <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
+        <TabsTrigger value="pipeline" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Pipeline</TabsTrigger>
+        <TabsTrigger value="shortlist" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Shortlist</TabsTrigger>
+        <TabsTrigger value="postings" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Job Postings</TabsTrigger>
       </TabsList>
       <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
+      <TabsContent value="shortlist" className="mt-8"><Shortlist /></TabsContent>
       <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
@@ -392,29 +478,33 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
         {([['all', 'All', apps.length] as const, ...STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
             <button
               key={key}
               onClick={() => setStageFilter(key)}
-              className="p-3 rounded-[4px] border text-left transition-colors"
+              className="group relative px-3 py-2.5 rounded-[3px] text-left transition-all duration-150"
               style={{
-                borderColor: active ? '#1A1A1A' : '#E2E0D9',
                 backgroundColor: active ? '#1A1A1A' : 'transparent',
                 color: active ? '#FAF8F3' : '#1A1A1A',
               }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
-              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.7)' : '#75726B' }}>
+              <p className="mono text-[9px] uppercase tracking-[0.18em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
                 {label}
               </p>
               <p
-                className="mt-1 text-[22px] tracking-[-0.02em]"
+                className="mt-1 text-[22px] leading-none tracking-[-0.02em]"
                 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
               >
                 {String(count).padStart(2, '0')}
               </p>
+              {active && (
+                <span className="absolute left-3 right-3 -bottom-px h-[2px]" style={{ backgroundColor: '#9ED8F5' }} />
+              )}
             </button>
           );
         })}
@@ -437,6 +527,7 @@ function Pipeline() {
         <table className="w-full text-sm">
           <thead style={{ backgroundColor: '#EEEDE8' }}>
             <tr className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+              <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal">Role</th>
               <th className="text-left p-3 font-normal">Software</th>
@@ -448,13 +539,26 @@ function Pipeline() {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={7} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+              <tr><td colSpan={8} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
             {filtered.map(app => {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8]" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8] group" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
+                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
+                    <button
+                      onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
+                      className="p-1 rounded-[3px] transition-colors hover:bg-[#E2E0D9]"
+                      aria-label={app.starred ? 'Unstar' : 'Shortlist'}
+                      title={app.starred ? 'Remove from shortlist' : 'Add to shortlist'}
+                    >
+                      <Star
+                        className="w-4 h-4"
+                        style={{ color: app.starred ? '#1A1A1A' : '#C8C5BC', fill: app.starred ? '#9ED8F5' : 'transparent' }}
+                      />
+                    </button>
+                  </td>
                   <td className="p-3">
                     <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
                     <p className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B] mt-0.5">{app.email}</p>
@@ -463,9 +567,24 @@ function Pipeline() {
                   <td className="p-3">
                     <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
                   </td>
-                  <td className="p-3"><span className={`px-2 py-1 rounded text-xs font-medium ${STAGE_COLOR[app.stage]}`}>{STAGE_LABEL[app.stage]}</span></td>
+                  <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3">{sub ? <Badge className="bg-secondary text-foreground hover:bg-secondary font-normal">Submitted</Badge> : <span className="text-muted-foreground text-xs">—</span>}</td>
+                  <td className="p-3">
+                    {sub ? (
+                      <a
+                        href={sub.submission_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-2 px-2 py-1 rounded-[3px] border hover:bg-[#E2E0D9] transition-colors"
+                        style={{ borderColor: '#E2E0D9' }}
+                        title={sub.submission_url}
+                      >
+                        <LinkFavicon url={sub.submission_url} />
+                        <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A]">{hostOf(sub.submission_url) || 'View'}</span>
+                      </a>
+                    ) : <span className="text-muted-foreground text-xs">—</span>}
+                  </td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                 </tr>
               );
@@ -489,8 +608,23 @@ function Pipeline() {
             return (
               <>
                 <SheetHeader>
-                  <SheetTitle>{selected.first_name} {selected.last_name}</SheetTitle>
-                  <p className="text-sm text-muted-foreground">{selected.email}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <SheetTitle className="tracking-[-0.02em]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
+                        {selected.first_name} {selected.last_name}
+                      </SheetTitle>
+                      <p className="mt-1 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">{selected.email}</p>
+                      <div className="mt-3"><StageChip stage={selected.stage} /></div>
+                    </div>
+                    <button
+                      onClick={() => updateApp(selected.id, { starred: !selected.starred } as any)}
+                      className="p-2 rounded-[3px] border hover:bg-[#EEEDE8] transition-colors"
+                      style={{ borderColor: '#E2E0D9' }}
+                      title={selected.starred ? 'Remove from shortlist' : 'Add to shortlist'}
+                    >
+                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: selected.starred ? '#9ED8F5' : 'transparent' }} />
+                    </button>
+                  </div>
                 </SheetHeader>
                 <div className="mt-6 space-y-5">
                   <Field label="Role" value={posting?.title ?? '—'} />
@@ -565,7 +699,15 @@ function Pipeline() {
                   {sub && (
                     <div className="border-t border-border pt-4 space-y-2">
                       <Label className="text-xs">Trial submission</Label>
-                      <a href={sub.submission_url} target="_blank" rel="noreferrer" className="block text-sm text-primary underline break-all">{sub.submission_url}</a>
+                      <EmbeddedSubmission url={sub.submission_url} />
+                      <a
+                        href={sub.submission_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] hover:text-[#1A1A1A] transition-colors"
+                      >
+                        <LinkFavicon url={sub.submission_url} /> Open on {hostOf(sub.submission_url) || 'source'} <ExternalLink className="w-3 h-3" />
+                      </a>
                       {sub.notes && <p className="text-xs text-muted-foreground whitespace-pre-wrap">{sub.notes}</p>}
                       <div className="flex gap-2 pt-1">
                         <Button size="sm" variant={selected.proceed === true ? 'default' : 'outline'} onClick={() => updateApp(selected.id, { proceed: true, reviewed_at: new Date().toISOString() })}>
@@ -616,4 +758,218 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     );
   }
   return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Mail className="w-3.5 h-3.5" /> Not queued</span>;
+}
+
+/* ============== SHORTLIST ============== */
+function Shortlist() {
+  const [apps, setApps] = useState<Application[]>([]);
+  const [subs, setSubs] = useState<Submission[]>([]);
+  const [postings, setPostings] = useState<Posting[]>([]);
+  const [compare, setCompare] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  async function load() {
+    const [{ data: a }, { data: s }, { data: p }] = await Promise.all([
+      (supabase.from('applications' as never) as any).select('*').eq('starred', true).order('created_at', { ascending: false }),
+      (supabase.from('trial_submissions' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('job_postings' as never) as any).select('*'),
+    ]);
+    setApps((a as Application[]) ?? []);
+    setSubs((s as Submission[]) ?? []);
+    setPostings((p as Posting[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function updateApp(id: string, patch: Partial<Application>) {
+    const { error } = await (supabase.from('applications' as never) as any).update(patch).eq('id', id);
+    if (error) { toast.error(error.message); return; }
+    load();
+  }
+
+  function subFor(app: Application) {
+    return subs.find(s => s.application_id === app.id) ||
+      subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
+  }
+  function postingFor(app: Application) { return postings.find(p => p.id === app.job_posting_id); }
+
+  function toggleCompare(id: string) {
+    setCompare(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= 4) { toast.error('Compare up to 4 at once'); return prev; }
+      return [...prev, id];
+    });
+  }
+
+  const compareApps = apps.filter(a => compare.includes(a.id));
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-end justify-between gap-6 flex-wrap">
+        <div>
+          <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+            Shortlist
+          </span>
+          <h2
+            className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
+            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+          >
+            Hand-picked{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>candidates.</em>
+          </h2>
+          <p className="mt-2 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+            {apps.length} starred · select 2–4 to compare
+          </p>
+        </div>
+        <Button
+          size="sm"
+          disabled={compare.length < 2}
+          onClick={() => setCompareOpen(true)}
+          className="bg-[#1A1A1A] hover:bg-[#1A1A1A]/90 text-[#FAF8F3] rounded-[4px] disabled:opacity-40"
+        >
+          Compare {compare.length > 0 ? `(${compare.length})` : ''}
+        </Button>
+      </div>
+
+      {apps.length === 0 ? (
+        <div className="rounded-[4px] px-8 py-16 text-center" style={{ backgroundColor: '#EEEDE8' }}>
+          <Star className="w-5 h-5 mx-auto mb-3" style={{ color: '#75726B' }} />
+          <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+            No shortlisted candidates yet. Tap the star on any applicant in the pipeline.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {apps.map(app => {
+            const sub = subFor(app);
+            const posting = postingFor(app);
+            const checked = compare.includes(app.id);
+            return (
+              <article
+                key={app.id}
+                className="relative rounded-[4px] border overflow-hidden flex flex-col"
+                style={{ borderColor: checked ? '#1A1A1A' : '#E2E0D9', backgroundColor: '#FAF8F3' }}
+              >
+                {sub ? (
+                  <EmbeddedSubmission url={sub.submission_url} />
+                ) : (
+                  <div className="aspect-video flex items-center justify-center" style={{ backgroundColor: '#EEEDE8' }}>
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No submission yet</span>
+                  </div>
+                )}
+                <div className="p-4 space-y-3 flex-1 flex flex-col">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-[18px] tracking-[-0.02em] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600, color: '#1A1A1A' }}>
+                        {app.first_name} {app.last_name}
+                      </p>
+                      <p className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] truncate">
+                        {posting?.title ?? 'No role'} · {app.software}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => updateApp(app.id, { starred: false } as any)}
+                      className="p-1 rounded-[3px] hover:bg-[#EEEDE8] transition-colors"
+                      title="Remove from shortlist"
+                    >
+                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <StageChip stage={app.stage} />
+                    {app.proceed === true && (
+                      <span className="mono inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px]" style={{ backgroundColor: '#9ED8F5', color: '#1A1A1A' }}>
+                        <CheckCircle2 className="w-3 h-3" /> Reviewed
+                      </span>
+                    )}
+                  </div>
+
+                  {app.additional_info && (
+                    <p className="text-[13px] leading-[1.5] text-[#1A1A1A]/80 line-clamp-3 whitespace-pre-wrap">{app.additional_info}</p>
+                  )}
+
+                  <div className="mt-auto pt-3 border-t flex items-center justify-between gap-2" style={{ borderColor: '#E2E0D9' }}>
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleCompare(app.id)}
+                        className="accent-[#1A1A1A] w-3.5 h-3.5 rounded-[2px]"
+                      />
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">Compare</span>
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em]"
+                        onClick={() => updateApp(app.id, { stage: 'interview' })}
+                        disabled={app.stage === 'interview' || app.stage === 'hired'}
+                      >
+                        Interview
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] bg-[#1A1A1A] text-[#9ED8F5] hover:bg-[#1A1A1A]/90"
+                        onClick={() => updateApp(app.id, { stage: 'hired' })}
+                        disabled={app.stage === 'hired'}
+                      >
+                        Hire <ArrowRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Compare modal */}
+      <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
+        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[92vh] overflow-y-auto rounded-[4px]">
+          <DialogHeader>
+            <DialogTitle className="tracking-[-0.02em]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
+              Side-by-side <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>review</em>
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className="grid gap-4 mt-2"
+            style={{ gridTemplateColumns: `repeat(${Math.min(Math.max(compareApps.length, 1), 4)}, minmax(0, 1fr))` }}
+          >
+            {compareApps.map(app => {
+              const sub = subFor(app);
+              const posting = postingFor(app);
+              return (
+                <div key={app.id} className="rounded-[4px] border overflow-hidden flex flex-col" style={{ borderColor: '#E2E0D9' }}>
+                  {sub ? <EmbeddedSubmission url={sub.submission_url} /> : (
+                    <div className="aspect-video flex items-center justify-center" style={{ backgroundColor: '#EEEDE8' }}>
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No submission</span>
+                    </div>
+                  )}
+                  <div className="p-3 space-y-2">
+                    <p className="text-[15px] tracking-[-0.02em] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                      {app.first_name} {app.last_name}
+                    </p>
+                    <p className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] truncate">
+                      {posting?.title ?? '—'} · {app.software}
+                    </p>
+                    <StageChip stage={app.stage} />
+                    <div className="flex gap-1 pt-1">
+                      <Button size="sm" variant="outline" className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] flex-1" onClick={() => updateApp(app.id, { stage: 'interview' })}>
+                        Interview
+                      </Button>
+                      <Button size="sm" className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] flex-1 bg-[#1A1A1A] text-[#9ED8F5] hover:bg-[#1A1A1A]/90" onClick={() => updateApp(app.id, { stage: 'hired' })}>
+                        Hire
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
