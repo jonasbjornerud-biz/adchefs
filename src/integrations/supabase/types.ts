@@ -143,6 +143,8 @@ export type Database = {
         Row: {
           created_at: string
           description: string
+          followup_email_body: string
+          followup_email_subject: string
           id: string
           is_active: boolean
           junior_pay: string | null
@@ -157,6 +159,8 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string
+          followup_email_body?: string
+          followup_email_subject?: string
           id?: string
           is_active?: boolean
           junior_pay?: string | null
@@ -171,6 +175,8 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          followup_email_body?: string
+          followup_email_subject?: string
           id?: string
           is_active?: boolean
           junior_pay?: string | null
