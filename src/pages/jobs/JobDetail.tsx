@@ -164,42 +164,48 @@ export default function JobDetail() {
       </section>
 
       {/* PERKS */}
-      <section className="relative overflow-hidden bg-foreground text-background border-y border-foreground">
+      <section className="relative overflow-hidden bg-background border-y border-border">
         <div
-          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          className="absolute inset-0 opacity-60 pointer-events-none"
           style={{
-            backgroundImage: 'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
-            backgroundSize: '24px 24px',
+            backgroundImage:
+              'linear-gradient(hsl(var(--border)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 75%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 75%)',
           }}
         />
-        <div className="absolute -bottom-40 -left-40 w-[460px] h-[460px] rounded-full pointer-events-none" style={{
-          background: 'radial-gradient(circle, hsl(var(--accent) / 0.20) 0%, transparent 65%)',
-          filter: 'blur(50px)',
-        }} />
-
         <div className="relative max-w-[1100px] mx-auto px-6 py-24">
           <div className="max-w-2xl mb-14">
-            <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-              Why edit with AdChefs
-            </span>
+            <span className="eyebrow">Why edit with AdChefs</span>
             <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
-              Built for editors who want their work to <em style={{ color: "hsl(var(--accent))" }}>matter.</em>
+              Built for editors who want their work to <em>matter.</em>
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-5">
             {perks.map((p, i) => (
               <div
                 key={p.title}
-                className="group relative bg-background/[0.03] border border-background/10 rounded-[6px] p-8 hover:border-accent/50 hover:bg-background/[0.06] transition-colors"
+                className="group relative bg-background border border-border rounded-[6px] p-8 overflow-hidden transition-all hover:border-foreground/40 hover:-translate-y-0.5"
               >
-                <div className="absolute top-6 right-6 mono text-[10px] uppercase tracking-[0.18em] text-background/30">
+                <div
+                  className="absolute inset-x-0 top-0 h-px"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.25), transparent)',
+                  }}
+                />
+                <div className="absolute top-6 right-6 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
                   0{i + 1}
                 </div>
-                <div className="w-11 h-11 rounded-[4px] border border-accent/40 bg-accent/10 flex items-center justify-center mb-6">
-                  <p.icon className="w-5 h-5 text-accent" />
+                <div className="relative w-12 h-12 mb-6">
+                  <div className="absolute inset-0 rounded-[6px] border border-foreground/30 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5" />
+                  <div className="relative w-12 h-12 rounded-[6px] bg-foreground flex items-center justify-center">
+                    <p.icon className="w-5 h-5 text-background" strokeWidth={1.75} />
+                  </div>
                 </div>
                 <h3 className="font-display text-[20px] tracking-tight mb-2">{p.title}</h3>
-                <p className="text-[14px] text-background/60 leading-relaxed">{p.body}</p>
+                <p className="text-[14px] text-muted-foreground leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
