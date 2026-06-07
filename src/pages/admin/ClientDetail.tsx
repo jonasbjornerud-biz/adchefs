@@ -96,7 +96,7 @@ export default function ClientDetail() {
               <RotateCcw className="w-3 h-3" /> Reset PW
             </button>
             <button onClick={handleDelete}
-              className="flex items-center gap-1 h-7 px-2.5 rounded-lg text-[11px] text-red-400/60 hover:text-red-400 transition-colors"
+              className="flex items-center gap-1 h-7 px-2.5 rounded-lg text-[11px] text-destructive/60 hover:text-destructive transition-colors"
               style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)' }}>
               <Trash2 className="w-3 h-3" /> Delete
             </button>

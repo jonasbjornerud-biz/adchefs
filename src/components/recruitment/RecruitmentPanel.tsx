@@ -68,7 +68,7 @@ const STAGE_LABEL: Record<string, string> = {
 const STAGE_COLOR: Record<string, string> = {
   new: 'bg-muted text-muted-foreground',
   qualified: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-  trial_sent: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  trial_sent: 'bg-secondary text-foreground dark:text-foreground',
   trial_submitted: 'bg-secondary0/15 text-violet-600 dark:text-violet-400',
   interview: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
   hired: 'bg-secondary0/15 text-foreground dark:text-accent',
@@ -509,7 +509,7 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     const due = new Date(app.trial_email_scheduled_for);
     const future = due.getTime() > Date.now();
     return (
-      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'}`}>
+      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-rose-600 dark:text-rose-400'}`}>
         <Clock className="w-3.5 h-3.5" />
         {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
       </span>

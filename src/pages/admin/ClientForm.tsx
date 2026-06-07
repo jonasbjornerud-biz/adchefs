@@ -98,7 +98,7 @@ export default function ClientForm() {
                 </p>
               )}
               {sheetUrl && !extractSheetId(sheetUrl) && (
-                <p className="text-xs text-red-500 mt-1">Invalid Google Sheets URL</p>
+                <p className="text-xs text-destructive mt-1">Invalid Google Sheets URL</p>
               )}
             </div>
             <Button onClick={handleCreate} disabled={!brandName.trim() || loading} className="bg-foreground hover:bg-foreground/90 text-white">

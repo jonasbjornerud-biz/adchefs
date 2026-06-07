@@ -277,8 +277,8 @@ export default function PerformanceDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-[#06060c]">
         <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(59, 134, 168,0.15) 0%, transparent 100%)' }} />
         <div className="flex flex-col items-center gap-4 relative z-10">
-          <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(248,113,113,0.2) inset' }}>
-            <AlertCircle className="w-6 h-6 text-red-400" />
+          <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center" style={{ boxShadow: '0 0 0 1px rgba(248,113,113,0.2) inset' }}>
+            <AlertCircle className="w-6 h-6 text-destructive" />
           </div>
           <p className="text-sm text-white/40">Failed to load performance data</p>
           <p className="text-xs text-white/20">{error}</p>
@@ -531,8 +531,8 @@ export default function PerformanceDashboard() {
                                   Approved
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-foreground">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
                                   Pending
                                 </span>
                               )}

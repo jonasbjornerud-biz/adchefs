@@ -201,7 +201,7 @@ export default function EditorPerformance() {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
-          <AlertCircle className="w-6 h-6 text-red-400" />
+          <AlertCircle className="w-6 h-6 text-destructive" />
         </div>
         <p className="text-sm text-muted-foreground">Failed to load performance data</p>
         <p className="text-xs font-mono text-muted-foreground">{error}</p>
@@ -266,7 +266,7 @@ export default function EditorPerformance() {
             {[
               { icon: FileBarChart, label: 'Total Delivered', value: kpis.delivered, color: '#3B86A8', bg: 'bg-secondary', border: 'border-border' },
               { icon: TrendingUp, label: 'Videos Approved', value: kpis.approved, color: '#3B86A8', bg: 'bg-cyan-50', border: 'border-cyan-100' },
-              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#3B86A8', bg: 'bg-secondary', border: 'border-emerald-100' },
+              { icon: Percent, label: 'Approval Rate', value: kpis.rate !== null ? `${kpis.rate}%` : '—', color: '#3B86A8', bg: 'bg-secondary', border: 'border-border' },
               { icon: Calendar, label: 'Avg Videos/Day', value: kpis.avg ?? '—', color: '#75726B', bg: 'bg-amber-50', border: 'border-amber-100' },
             ].map((kpi, i) => (
               <div key={i} className="rounded-xl p-5 bg-white border border-border/80 shadow-sm hover:shadow-md transition-shadow">
