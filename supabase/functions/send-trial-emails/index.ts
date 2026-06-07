@@ -1,5 +1,78 @@
+import * as React from 'npm:react@18.3.1'
+import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
+
+const SENDER_DOMAIN = 'notify.adchefs.com'
+const FROM_DOMAIN = 'adchefs.com'
+
+function generateToken(): string {
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function enqueueTemplate(
+  supabase: any,
+  templateName: string,
+  recipientEmail: string,
+  idempotencyKey: string,
+  templateData: Record<string, any>,
+) {
+  const template = TEMPLATES[templateName]
+  if (!template) throw new Error(`template ${templateName} not registered`)
+
+  const normalized = recipientEmail.toLowerCase()
+
+  const { data: suppressed } = await supabase
+    .from('suppressed_emails').select('id').eq('email', normalized).maybeSingle()
+  if (suppressed) return { suppressed: true }
+
+  let unsubscribeToken: string
+  const { data: existing } = await supabase
+    .from('email_unsubscribe_tokens').select('token, used_at').eq('email', normalized).maybeSingle()
+  if (existing && !existing.used_at) {
+    unsubscribeToken = existing.token
+  } else {
+    unsubscribeToken = generateToken()
+    await supabase.from('email_unsubscribe_tokens')
+      .upsert({ token: unsubscribeToken, email: normalized }, { onConflict: 'email', ignoreDuplicates: true })
+    const { data: stored } = await supabase
+      .from('email_unsubscribe_tokens').select('token').eq('email', normalized).maybeSingle()
+    if (stored?.token) unsubscribeToken = stored.token
+  }
+
+  const html = await renderAsync(React.createElement(template.component, templateData))
+  const plainText = await renderAsync(React.createElement(template.component, templateData), { plainText: true })
+  const subject = typeof template.subject === 'function' ? template.subject(templateData) : template.subject
+
+  const messageId = crypto.randomUUID()
+  await supabase.from('email_send_log').insert({
+    message_id: messageId, template_name: templateName, recipient_email: recipientEmail, status: 'pending',
+  })
+
+  const { error } = await supabase.rpc('enqueue_email', {
+    queue_name: 'transactional_emails',
+    payload: {
+      message_id: messageId,
+      to: recipientEmail,
+      from: `Jonas at AdChefs <jonas@${FROM_DOMAIN}>`,
+      reply_to: `jonas@${FROM_DOMAIN}`,
+      sender_domain: SENDER_DOMAIN,
+      subject,
+      html,
+      text: plainText,
+      purpose: 'transactional',
+      label: templateName,
+      idempotency_key: idempotencyKey,
+      unsubscribe_token: unsubscribeToken,
+      queued_at: new Date().toISOString(),
+    },
+  })
+  if (error) throw new Error(error.message)
+  return { queued: true, messageId }
+}
 
 // Cron-invoked every 5 minutes. Also callable on-demand from the admin UI
 // (with ?application_id=... to send a specific one immediately).
@@ -70,18 +143,15 @@ Deno.serve(async (req) => {
     const subject = render(posting.trial_email_subject || 'Your AdChefs trial task', vars)
     const body = render(posting.trial_email_body || '', vars)
 
-    const { data: invokeData, error: invokeErr } = await supabase.functions.invoke('send-transactional-email', {
-      body: {
-        templateName: 'trial-task',
-        recipientEmail: app.email,
-        idempotencyKey: `trial-task-${app.id}`,
-        templateData: { subject, body, first_name: app.first_name },
-      },
-    })
-
-    if (invokeErr) {
-      console.error('send failed', app.id, invokeErr)
-      results.push({ id: app.id, error: invokeErr.message })
+    let invokeData: any
+    try {
+      invokeData = await enqueueTemplate(
+        supabase, 'trial-task', app.email, `trial-task-${app.id}`,
+        { subject, body, first_name: app.first_name },
+      )
+    } catch (e) {
+      console.error('send failed', app.id, e)
+      results.push({ id: app.id, error: (e as Error).message })
       continue
     }
 
