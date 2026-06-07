@@ -262,6 +262,7 @@ Deno.serve(async (req) => {
             label: payload.label,
             idempotency_key: payload.idempotency_key,
             message_id: payload.message_id,
+            unsubscribe_token: payload.unsubscribe_token,
           },
           // sendUrl is optional — when LOVABLE_SEND_URL is not set, the library
           // falls back to the default Lovable API endpoint (https://api.lovable.dev).
