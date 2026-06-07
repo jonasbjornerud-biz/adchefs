@@ -4,20 +4,20 @@ const steps = [
   {
     n: "01",
     icon: Search,
-    title: "We find the editor",
-    body: "247 applicants. AI-screened on past work, hook quality and turnaround. Top 1% reaches a paid trial. You meet finalists who already match your category.",
+    title: "Vetted through a real funnel",
+    body: "I screen hundreds of editors every month through a structured evaluation: skills tests, brand-voice trials, paid trial tasks. Only editors who pass every stage work with brands. No \"matching\" based on a portfolio. Every editor proves they can ship before they ever touch your account.",
   },
   {
     n: "02",
     icon: GraduationCap,
-    title: "We train them on your brand",
-    body: "Your winners, your voice, your offer, your dashboard data. By video three, output looks like you cut it in-house — because the editor learns from your numbers, not a brief.",
+    title: "Trained on what actually wins",
+    body: "Every editor goes through my direct response masterclass: hook engineering, hold-curve retention, brand voice, sound design. They keep training while they work for you, so quality compounds over time instead of plateauing.",
   },
   {
     n: "03",
     icon: Rocket,
-    title: "They ship — you pay per video",
-    body: "6–10 cuts a week, 48–72h turnaround, unlimited revisions. Flat rate per delivered video. No retainer, no minimum, no lock-in.",
+    title: "Embedded in your workflow",
+    body: "Your editor gets added to your Slack, your Notion, your brand folder, and works only on your account. You treat them like an in-house hire. I stay in the background, managing performance, quality, and any issues before they become your problem.",
   },
 ];
 
@@ -28,10 +28,10 @@ const HowItWorks = () => {
         <div className="max-w-2xl mb-14">
           <span className="eyebrow">How it works</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
-            One editor. <em>Every</em> video.
+            An <em>in-house editor</em>, handled for you.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
-            Three steps from the first call to a dedicated editor shipping cuts on your account.
+            Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team, like a contractor you never had to recruit. They learn your brand, sit in your Slack, and grow with your account. I handle the recruiting, the mentoring, and the performance management, so you don't have to.
           </p>
         </div>
 

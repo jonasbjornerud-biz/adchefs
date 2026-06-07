@@ -4,9 +4,9 @@ import { ArrowRight, Check, X } from "lucide-react";
 const usBullets = [
   "Dedicated editor matched to your brand",
   "Private performance dashboard, free",
-  "Direct Slack or Notion line — no PM layer",
+  "Direct Slack or Notion communication",
   "Unlimited revisions until approved",
-  "No retainer, no minimum, no contract",
+  "No retainer, no minimum, no long contracts",
 ];
 
 const themBullets = [
@@ -30,10 +30,10 @@ const Pricing = () => {
         <div className="max-w-2xl mb-14">
           <span className="eyebrow">Pricing</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
-            Pay per video. <em>Not</em> per retainer.
+            Simple pricing. <em>Pay per video.</em>
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
-            Most agencies charge €4,000–€10,000/month whether they deliver or not. We charge per cut that ships. Here's the math.
+            No retainers. No minimums. No long contracts. You pay for videos delivered, nothing else.
           </p>
         </div>
 
@@ -92,7 +92,7 @@ const Pricing = () => {
         </div>
 
         <p className="max-w-2xl text-[14px] text-muted-foreground leading-relaxed mt-10">
-          At 20 videos you pay <span className="text-foreground font-medium">€2,000</span> — not <span className="text-foreground font-medium">€4,500+</span>. We earn it per cut, not per month. Complex edits and longer-form priced on the call.
+          Complex edits and longer-form priced on the call. Cancel anytime.
         </p>
       </div>
     </section>

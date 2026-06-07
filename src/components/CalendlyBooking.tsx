@@ -6,10 +6,10 @@ const CalendlyBooking = () => {
           <div>
             <span className="eyebrow eyebrow-accent">Get started</span>
             <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
-              Ready to <em>ship</em> more video?
+              Let's see if we're a <em>fit.</em>
             </h2>
             <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-              I onboard 2–3 new brands a month to protect editor quality. Book a call if you want to see if we're a fit.
+              I only onboard 2–3 new brands a month to protect editor quality. Book a 15-minute call and I'll show you how AdChefs would plug into your workflow.
             </p>
 
             <div className="mt-8 space-y-6">
@@ -17,7 +17,7 @@ const CalendlyBooking = () => {
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">Book a call if</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
                   <li>· You spend €5K+/month on ads and need more creative</li>
-                  <li>· You want dedicated editors without hiring in-house</li>
+                  <li>· You want a dedicated editor without hiring in-house</li>
                   <li>· You care about what converts, not just what gets delivered</li>
                 </ul>
               </div>
