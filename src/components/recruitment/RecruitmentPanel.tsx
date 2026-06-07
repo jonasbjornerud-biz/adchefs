@@ -438,6 +438,17 @@ function Pipeline() {
     if (selected?.id === id) setSelected({ ...selected, ...patch } as Application);
   }
 
+  async function deleteApp(app: Application) {
+    if (!confirm(`Delete applicant ${app.first_name} ${app.last_name}? This also removes related trial submissions.`)) return;
+    // Remove dependent rows first to avoid FK issues
+    await (supabase.from('trial_submissions' as never) as any).delete().eq('application_id', app.id);
+    const { error } = await (supabase.from('applications' as never) as any).delete().eq('id', app.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Applicant deleted');
+    if (selected?.id === app.id) setSelected(null);
+    load();
+  }
+
   function postingFor(app: Application) { return postings.find(p => p.id === app.job_posting_id); }
   function subFor(app: Application) {
     return subs.find(s => s.application_id === app.id) ||
@@ -535,11 +546,12 @@ function Pipeline() {
               <th className="text-left p-3 font-normal">Email</th>
               <th className="text-left p-3 font-normal">Task</th>
               <th className="text-left p-3 font-normal">Applied</th>
+              <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={8} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
+              <tr><td colSpan={9} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
             {filtered.map(app => {
               const sub = subFor(app);
@@ -586,6 +598,17 @@ function Pipeline() {
                     ) : <span className="text-muted-foreground text-xs">—</span>}
                   </td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteApp(app)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"
+                      title="Delete applicant"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                    </Button>
+                  </td>
                 </tr>
               );
             })}
@@ -719,6 +742,16 @@ function Pipeline() {
                       </div>
                     </div>
                   )}
+                </div>
+                <div className="mt-8 pt-4 border-t border-border flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteApp(selected)}
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete applicant
+                  </Button>
                 </div>
               </>
             );

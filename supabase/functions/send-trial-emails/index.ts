@@ -57,7 +57,7 @@ async function enqueueTemplate(
     payload: {
       message_id: messageId,
       to: recipientEmail,
-      from: `Jonas at AdChefs <jonas@${FROM_DOMAIN}>`,
+      from: `Jonas <jonas@${FROM_DOMAIN}>`,
       reply_to: `jonas@${FROM_DOMAIN}`,
       sender_domain: SENDER_DOMAIN,
       subject,
