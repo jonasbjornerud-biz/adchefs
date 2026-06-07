@@ -61,16 +61,17 @@ export default function JobDetail() {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from('applications').insert({
+    const { error } = await supabase.from('applications').insert([{
       job_posting_id: posting!.id,
       first_name: parsed.data.first_name,
       last_name: parsed.data.last_name,
       email: parsed.data.email,
       software: parsed.data.software,
+      availability: 'Not specified',
       portfolio_url: parsed.data.portfolio_url || null,
       years_experience: parsed.data.years_experience || null,
       additional_info: parsed.data.additional_info || null,
-    });
+    }]);
     setSubmitting(false);
     if (error) { toast.error('Could not submit. Try again.'); return; }
     setSubmitted(true);
