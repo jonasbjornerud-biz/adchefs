@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import { AuthGuard } from "@/components/AuthGuard";
 
@@ -26,6 +26,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const SubmitTaskSlugRoute = () => {
+  const location = useLocation();
+
+  if (location.pathname.startsWith("/submit-task-")) {
+    return <SubmitTask />;
+  }
+
+  return <NotFound />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -39,7 +49,6 @@ const App = () => (
             <Route path="/jobs" element={<JobBoard />} />
             <Route path="/jobs/:slug" element={<JobDetail />} />
             <Route path="/submit-task" element={<SubmitTask />} />
-            <Route path="/submit-task-:submitSlug" element={<SubmitTask />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
 
             {/* Client */}
@@ -58,7 +67,7 @@ const App = () => (
             <Route path="/mock/ads" element={<MockAdsDashboard />} />
             <Route path="/mock/performance" element={<MockPerformanceDashboard />} />
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<SubmitTaskSlugRoute />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
