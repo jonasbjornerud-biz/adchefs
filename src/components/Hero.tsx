@@ -44,10 +44,10 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
-        <div className="max-w-3xl -ml-4">
+        <div className="max-w-[1200px] -ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
-          <h1 className="mt-4 font-display text-[44px] sm:text-[64px] md:text-[80px] leading-[0.93] tracking-[-0.03em] text-foreground">
+          <h1 className="mt-4 font-display text-[40px] sm:text-[56px] md:text-[68px] leading-[0.95] tracking-[-0.03em] text-foreground whitespace-nowrap">
             Your <em>dedicated</em> video editor<br />
             without the additional cost
           </h1>
