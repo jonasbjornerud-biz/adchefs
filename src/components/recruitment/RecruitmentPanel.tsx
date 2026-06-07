@@ -759,3 +759,217 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
   }
   return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Mail className="w-3.5 h-3.5" /> Not queued</span>;
 }
+
+/* ============== SHORTLIST ============== */
+function Shortlist() {
+  const [apps, setApps] = useState<Application[]>([]);
+  const [subs, setSubs] = useState<Submission[]>([]);
+  const [postings, setPostings] = useState<Posting[]>([]);
+  const [compare, setCompare] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  async function load() {
+    const [{ data: a }, { data: s }, { data: p }] = await Promise.all([
+      (supabase.from('applications' as never) as any).select('*').eq('starred', true).order('created_at', { ascending: false }),
+      (supabase.from('trial_submissions' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('job_postings' as never) as any).select('*'),
+    ]);
+    setApps((a as Application[]) ?? []);
+    setSubs((s as Submission[]) ?? []);
+    setPostings((p as Posting[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function updateApp(id: string, patch: Partial<Application>) {
+    const { error } = await (supabase.from('applications' as never) as any).update(patch).eq('id', id);
+    if (error) { toast.error(error.message); return; }
+    load();
+  }
+
+  function subFor(app: Application) {
+    return subs.find(s => s.application_id === app.id) ||
+      subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
+  }
+  function postingFor(app: Application) { return postings.find(p => p.id === app.job_posting_id); }
+
+  function toggleCompare(id: string) {
+    setCompare(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= 4) { toast.error('Compare up to 4 at once'); return prev; }
+      return [...prev, id];
+    });
+  }
+
+  const compareApps = apps.filter(a => compare.includes(a.id));
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-end justify-between gap-6 flex-wrap">
+        <div>
+          <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
+            Shortlist
+          </span>
+          <h2
+            className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
+            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+          >
+            Hand-picked{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>candidates.</em>
+          </h2>
+          <p className="mt-2 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+            {apps.length} starred · select 2–4 to compare
+          </p>
+        </div>
+        <Button
+          size="sm"
+          disabled={compare.length < 2}
+          onClick={() => setCompareOpen(true)}
+          className="bg-[#1A1A1A] hover:bg-[#1A1A1A]/90 text-[#FAF8F3] rounded-[4px] disabled:opacity-40"
+        >
+          Compare {compare.length > 0 ? `(${compare.length})` : ''}
+        </Button>
+      </div>
+
+      {apps.length === 0 ? (
+        <div className="rounded-[4px] px-8 py-16 text-center" style={{ backgroundColor: '#EEEDE8' }}>
+          <Star className="w-5 h-5 mx-auto mb-3" style={{ color: '#75726B' }} />
+          <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
+            No shortlisted candidates yet. Tap the star on any applicant in the pipeline.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {apps.map(app => {
+            const sub = subFor(app);
+            const posting = postingFor(app);
+            const checked = compare.includes(app.id);
+            return (
+              <article
+                key={app.id}
+                className="relative rounded-[4px] border overflow-hidden flex flex-col"
+                style={{ borderColor: checked ? '#1A1A1A' : '#E2E0D9', backgroundColor: '#FAF8F3' }}
+              >
+                {sub ? (
+                  <EmbeddedSubmission url={sub.submission_url} />
+                ) : (
+                  <div className="aspect-video flex items-center justify-center" style={{ backgroundColor: '#EEEDE8' }}>
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No submission yet</span>
+                  </div>
+                )}
+                <div className="p-4 space-y-3 flex-1 flex flex-col">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-[18px] tracking-[-0.02em] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600, color: '#1A1A1A' }}>
+                        {app.first_name} {app.last_name}
+                      </p>
+                      <p className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] truncate">
+                        {posting?.title ?? 'No role'} · {app.software}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => updateApp(app.id, { starred: false } as any)}
+                      className="p-1 rounded-[3px] hover:bg-[#EEEDE8] transition-colors"
+                      title="Remove from shortlist"
+                    >
+                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <StageChip stage={app.stage} />
+                    {app.proceed === true && (
+                      <span className="mono inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px]" style={{ backgroundColor: '#9ED8F5', color: '#1A1A1A' }}>
+                        <CheckCircle2 className="w-3 h-3" /> Reviewed
+                      </span>
+                    )}
+                  </div>
+
+                  {app.additional_info && (
+                    <p className="text-[13px] leading-[1.5] text-[#1A1A1A]/80 line-clamp-3 whitespace-pre-wrap">{app.additional_info}</p>
+                  )}
+
+                  <div className="mt-auto pt-3 border-t flex items-center justify-between gap-2" style={{ borderColor: '#E2E0D9' }}>
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleCompare(app.id)}
+                        className="accent-[#1A1A1A] w-3.5 h-3.5 rounded-[2px]"
+                      />
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">Compare</span>
+                    </label>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em]"
+                        onClick={() => updateApp(app.id, { stage: 'interview' })}
+                        disabled={app.stage === 'interview' || app.stage === 'hired'}
+                      >
+                        Interview
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] bg-[#1A1A1A] text-[#9ED8F5] hover:bg-[#1A1A1A]/90"
+                        onClick={() => updateApp(app.id, { stage: 'hired' })}
+                        disabled={app.stage === 'hired'}
+                      >
+                        Hire <ArrowRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Compare modal */}
+      <Dialog open={compareOpen} onOpenChange={setCompareOpen}>
+        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[92vh] overflow-y-auto rounded-[4px]">
+          <DialogHeader>
+            <DialogTitle className="tracking-[-0.02em]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
+              Side-by-side <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>review</em>
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className="grid gap-4 mt-2"
+            style={{ gridTemplateColumns: `repeat(${Math.min(Math.max(compareApps.length, 1), 4)}, minmax(0, 1fr))` }}
+          >
+            {compareApps.map(app => {
+              const sub = subFor(app);
+              const posting = postingFor(app);
+              return (
+                <div key={app.id} className="rounded-[4px] border overflow-hidden flex flex-col" style={{ borderColor: '#E2E0D9' }}>
+                  {sub ? <EmbeddedSubmission url={sub.submission_url} /> : (
+                    <div className="aspect-video flex items-center justify-center" style={{ backgroundColor: '#EEEDE8' }}>
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No submission</span>
+                    </div>
+                  )}
+                  <div className="p-3 space-y-2">
+                    <p className="text-[15px] tracking-[-0.02em] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                      {app.first_name} {app.last_name}
+                    </p>
+                    <p className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] truncate">
+                      {posting?.title ?? '—'} · {app.software}
+                    </p>
+                    <StageChip stage={app.stage} />
+                    <div className="flex gap-1 pt-1">
+                      <Button size="sm" variant="outline" className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] flex-1" onClick={() => updateApp(app.id, { stage: 'interview' })}>
+                        Interview
+                      </Button>
+                      <Button size="sm" className="rounded-[3px] h-7 px-2 mono text-[10px] uppercase tracking-[0.15em] flex-1 bg-[#1A1A1A] text-[#9ED8F5] hover:bg-[#1A1A1A]/90" onClick={() => updateApp(app.id, { stage: 'hired' })}>
+                        Hire
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
