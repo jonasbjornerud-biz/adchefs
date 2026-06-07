@@ -82,46 +82,8 @@ export default function SubmitTask() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-foreground text-background pt-24 pb-32">
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          style={{
-            backgroundImage:
-              'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none" style={{
-          background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 65%)',
-          filter: 'blur(40px)',
-        }} />
-
-        <div className="relative max-w-[1100px] mx-auto px-6">
-          <div className="mb-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Link to="/jobs" className="inline-flex items-center mono text-[11px] uppercase tracking-[0.15em] text-background/60 hover:text-accent transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
-            </Link>
-
-            <span className="eyebrow inline-block" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-              {posting?.brand ? `${posting.brand} · Trial task` : 'Trial task'}
-            </span>
-          </div>
-
-          <h1 className="mt-6 font-display text-[48px] sm:text-[68px] md:text-[84px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
-            Submit your <em style={{ color: "hsl(var(--accent))" }}>edit.</em>
-          </h1>
-
-          <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            {posting?.brand
-              ? `Upload your finished ${posting.brand} trial task below. We review every submission.`
-              : 'Upload your finished trial task below. We review every submission.'}
-          </p>
-        </div>
-      </section>
-
       {/* SUBMISSION FORM */}
-      <section className="bg-secondary py-20">
+      <section className="bg-secondary py-20 min-h-screen">
         <div className="max-w-2xl mx-auto px-6">
           <span className="eyebrow">Upload in 60 seconds</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
