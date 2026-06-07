@@ -20,13 +20,13 @@ function adLibraryUrl(name: string) {
   return `https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=ALL&q=${q}&search_type=keyword_unordered&media_type=all`;
 }
 
-function InlineBar({ value, max = 100, color }: { value: number; max?: number; color: string }) {
+function InlineBar({ value, max = 100 }: { value: number; max?: number; color?: string }) {
   const pct = Math.min((value / max) * 100, 100);
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs font-medium text-white/80 w-10 text-right">{value}%</span>
-      <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-300" style={{ width: `${pct}%`, background: color }} />
+      <span className="text-xs font-medium text-[#1A1A1A] tabular-nums w-10 text-right">{value}%</span>
+      <div className="flex-1 h-[3px] rounded-full bg-[#E2E0D9] overflow-hidden">
+        <div className="h-full rounded-full bg-[#1A1A1A] transition-all duration-300" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -56,50 +56,43 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
   };
 
   const statusConfig: Record<string, { dot: string; pill: string }> = {
-    active: { dot: "bg-accent", pill: "bg-accent/10 text-accent" },
-    paused: { dot: "bg-muted-foreground", pill: "bg-secondary text-foreground" },
-    ended: { dot: "bg-destructive", pill: "bg-destructive/10 text-destructive" },
+    active: { dot: "bg-[#9ED8F5]", pill: "bg-[#9ED8F5]/25 text-[#1A1A1A] border border-[#9ED8F5]" },
+    paused: { dot: "bg-[#75726B]", pill: "bg-[#F7F6F3] text-[#75726B] border border-[#E2E0D9]" },
+    ended: { dot: "bg-destructive", pill: "bg-destructive/10 text-destructive border border-destructive/30" },
   };
 
   const isEmpty = sorted.length === 0;
 
   return (
     <div
-      className="relative rounded-2xl overflow-hidden animate-card-enter"
-      style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px -20px rgba(0,0,0,0.6)',
-        animationDelay: "400ms",
-      }}
+      className="relative rounded-[4px] overflow-hidden animate-card-enter bg-white border border-[#E2E0D9]"
+      style={{ animationDelay: "400ms" }}
     >
-      <div className="absolute inset-x-0 top-0 h-px pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(158, 216, 245,0.4), transparent)' }} />
+      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
       {/* Search bar */}
-      <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2 relative">
+      <div className="px-4 py-3 border-b border-[#E2E0D9] flex items-center gap-2 relative">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-[#75726B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={1.5} />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search ad name or campaign…"
-            className="w-full h-9 pl-9 pr-3 rounded-lg bg-white/[0.03] border border-white/[0.06] text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#9ED8F5]/40 transition-colors"
+            className="w-full h-9 pl-9 pr-3 rounded-[4px] bg-[#F7F6F3] border border-[#E2E0D9] text-sm text-[#1A1A1A] placeholder:text-[#75726B] focus:outline-none focus:border-[#1A1A1A] transition-colors"
           />
         </div>
-        <span className="text-[11px] text-white/30 ml-auto">{sorted.length} {sorted.length === 1 ? 'ad' : 'ads'}</span>
+        <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] ml-auto">{sorted.length} {sorted.length === 1 ? 'ad' : 'ads'}</span>
       </div>
 
       {isEmpty ? (
         <div className="flex items-center justify-center py-20">
-          <p className="text-white/30 text-sm">{query ? `No ads match "${query}"` : 'No ads found for this date range'}</p>
+          <p className="text-[#75726B] text-sm">{query ? `No ads match "${query}"` : 'No ads found for this date range'}</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ borderTop: '1px solid rgba(158, 216, 245,0.2)' }}>
+              <tr className="bg-[#F7F6F3]">
                 {([
                   { key: "name" as SortKey, label: "Ad Name" },
                   { key: "spend" as SortKey, label: "Spend" },
@@ -112,7 +105,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                   <th
                     key={col.key}
                     onClick={() => toggleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40 cursor-pointer hover:text-[#9ED8F5] transition-colors whitespace-nowrap"
+                    className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] cursor-pointer hover:text-[#1A1A1A] transition-colors whitespace-nowrap"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -120,8 +113,8 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Status</th>
-                <th className="px-4 py-3 text-left text-xs uppercase tracking-widest font-medium text-white/40">Watch</th>
+                <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Status</th>
+                <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Watch</th>
               </tr>
             </thead>
             <tbody>
@@ -129,23 +122,23 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                 <tr
                   key={ad.id}
                   onClick={() => onSelect(ad)}
-                  className="cursor-pointer transition-all duration-200 hover:bg-white/[0.03] border-b border-white/[0.03]"
+                  className="cursor-pointer transition-colors duration-200 hover:bg-[#F7F6F3] border-b border-[#E2E0D9] last:border-b-0"
                 >
-                  <td className="px-4 py-5 whitespace-nowrap text-white font-medium">{ad.name}</td>
-                  <td className="px-4 py-5 whitespace-nowrap font-black text-white/80">${ad.spend.toLocaleString()}</td>
-                  <td className="px-4 py-5 whitespace-nowrap text-white/60">{ad.ctr}%</td>
-                  <td className="px-4 py-5 whitespace-nowrap text-white/60">${ad.cpa}</td>
-                  <td className={`px-4 py-5 whitespace-nowrap font-bold ${getRoasColor(ad.roas)}`}>{ad.roas}x</td>
+                  <td className="px-4 py-5 whitespace-nowrap text-[#1A1A1A] font-medium">{ad.name}</td>
+                  <td className="px-4 py-5 whitespace-nowrap font-semibold text-[#1A1A1A] tabular-nums">${ad.spend.toLocaleString()}</td>
+                  <td className="px-4 py-5 whitespace-nowrap text-[#75726B] tabular-nums">{ad.ctr}%</td>
+                  <td className="px-4 py-5 whitespace-nowrap text-[#75726B] tabular-nums">${ad.cpa}</td>
+                  <td className={`px-4 py-5 whitespace-nowrap font-semibold tabular-nums ${ad.roas === 0 ? 'text-destructive' : ad.roas < 1.5 ? 'text-[#1A1A1A]' : 'text-[#1A1A1A]'}`}>{ad.roas}x</td>
                   <td className="px-4 py-5 whitespace-nowrap min-w-[140px]">
-                    <InlineBar value={ad.hookRate} color="#3B86A8" />
+                    <InlineBar value={ad.hookRate} />
                   </td>
                   <td className="px-4 py-5 whitespace-nowrap min-w-[140px]">
-                    <InlineBar value={ad.holdRate} color="#9ED8F5" />
+                    <InlineBar value={ad.holdRate} />
                   </td>
                   <td className="px-4 py-5">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig[ad.status]?.pill}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] ${statusConfig[ad.status]?.pill}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${statusConfig[ad.status]?.dot}`} />
-                      {ad.status.charAt(0).toUpperCase() + ad.status.slice(1)}
+                      {ad.status}
                     </span>
                   </td>
                   <td className="px-4 py-5">
@@ -155,9 +148,9 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       title="Open in Meta Ad Library"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-white/70 bg-white/[0.04] hover:bg-[#9ED8F5]/15 hover:text-white border border-white/[0.06] hover:border-[#9ED8F5]/40 transition-all"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] text-[#1A1A1A] bg-[#F7F6F3] hover:bg-[#9ED8F5]/30 border border-[#E2E0D9] hover:border-[#1A1A1A] transition-all"
                     >
-                      <ExternalLink className="w-3 h-3" /> Ad Library
+                      <ExternalLink className="w-3 h-3" strokeWidth={1.5} /> Library
                     </a>
                   </td>
                 </tr>

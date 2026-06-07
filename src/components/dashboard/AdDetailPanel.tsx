@@ -9,12 +9,12 @@ interface AdDetailPanelProps {
 
 function MetricBox({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-[#111118] rounded-xl p-4" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset' }}>
+    <div className="bg-[#F7F6F3] rounded-[4px] p-4 border border-[#E2E0D9]">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-white/30">{icon}</span>
-        <span className="text-xs uppercase tracking-widest font-medium text-white/40">{label}</span>
+        <span className="text-[#75726B]">{icon}</span>
+        <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">{label}</span>
       </div>
-      <span className="font-black text-xl text-white">{value}</span>
+      <span className="font-semibold text-xl text-[#1A1A1A] tabular-nums tracking-tight">{value}</span>
     </div>
   );
 }
@@ -22,12 +22,12 @@ function MetricBox({ label, value, icon }: { label: string; value: string; icon:
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl p-3 text-sm" style={{ background: '#1a1a24', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
-      <p className="text-white/30 text-xs mb-1">{label}</p>
+    <div className="rounded-[4px] p-3 text-sm bg-white border border-[#1A1A1A] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.25)]">
+      <p className="text-[#75726B] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
-        <p key={i} className="text-white/80 text-xs">
+        <p key={i} className="text-[#75726B] text-xs">
           <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ background: p.color }} />
-          {p.name}: <span className="text-white font-black">{typeof p.value === "number" ? `$${p.value.toFixed(2)}` : p.value}</span>
+          {p.name}: <span className="text-[#1A1A1A] font-semibold tabular-nums">{typeof p.value === "number" ? `$${p.value.toFixed(2)}` : p.value}</span>
         </p>
       ))}
     </div>
@@ -37,15 +37,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-2xl bg-[#09090f] border-l border-white/[0.06] overflow-y-auto animate-[slide-in-right_300ms_ease-out]">
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-[#09090f] border-b border-white/[0.06]">
+      <div className="absolute inset-0 bg-[#1A1A1A]/30 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-2xl bg-[#F7F6F3] border-l border-[#E2E0D9] overflow-y-auto animate-[slide-in-right_300ms_ease-out]">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-[#F7F6F3] border-b border-[#E2E0D9]">
           <div>
-            <h2 className="text-lg font-semibold text-white">{ad.name}</h2>
-            <p className="text-sm text-white/40">{ad.campaignName}</p>
+            <h2 className="text-lg font-semibold text-[#1A1A1A] tracking-tight">{ad.name}</h2>
+            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mt-0.5">{ad.campaignName}</p>
           </div>
-          <button onClick={onClose} className="w-9 h-9 rounded-full flex items-center justify-center border border-white/[0.06] hover:border-[#9ED8F5]/30 hover:bg-[#9ED8F5]/5 transition-all duration-200 cursor-pointer">
-            <X className="w-4 h-4 text-white/40" />
+          <button onClick={onClose} className="w-9 h-9 rounded-[4px] flex items-center justify-center border border-[#E2E0D9] hover:border-[#1A1A1A] hover:bg-white transition-all duration-200 cursor-pointer">
+            <X className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />
           </button>
         </div>
 
@@ -59,51 +59,51 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
             <MetricBox label="Spend" value={`$${ad.spend.toLocaleString()}`} icon={<DollarSign className="w-4 h-4" />} />
           </div>
 
-          <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
-            <h3 className="text-sm font-semibold text-white mb-4">Spend vs Revenue (14 days)</h3>
+          <div className="bg-white rounded-[4px] p-6 border border-[#E2E0D9]">
+            <h3 className="text-sm font-semibold text-[#1A1A1A] mb-4 tracking-tight">Spend vs Revenue <span className="text-[#75726B] font-normal">(14 days)</span></h3>
             <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={ad.dailyData}>
                 <defs>
                   <linearGradient id="spendGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.25} />
+                    <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.5} />
                     <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3B86A8" stopOpacity={0.25} />
-                    <stop offset="100%" stopColor="#3B86A8" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#1A1A1A" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
-                <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="date" tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
+                <YAxis tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#spendGrad)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
-                <Area type="monotone" dataKey="revenue" stroke="#3B86A8" strokeWidth={2} fill="url(#revGrad)" name="Revenue" dot={false} activeDot={{ fill: "#3B86A8", stroke: "#1a1a24", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#spendGrad)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
+                <Area type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2} fill="url(#revGrad)" name="Revenue" dot={false} activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
-            <h3 className="text-sm font-semibold text-white mb-4">Daily Clicks</h3>
+          <div className="bg-white rounded-[4px] p-6 border border-[#E2E0D9]">
+            <h3 className="text-sm font-semibold text-[#1A1A1A] mb-4 tracking-tight">Daily Clicks</h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={ad.dailyData}>
                 <defs>
                   <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#9ED8F5" />
-                    <stop offset="100%" stopColor="#3B86A8" />
+                    <stop offset="0%" stopColor="#1A1A1A" />
+                    <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0.6} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
-                <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="date" tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
+                <YAxis tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="clicks" fill="url(#barGrad)" radius={[4, 4, 0, 0]} name="Clicks" />
+                <Bar dataKey="clicks" fill="url(#barGrad)" radius={[2, 2, 0, 0]} name="Clicks" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="bg-[#111118] rounded-2xl p-6" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06) inset, 0 4px 24px rgba(0,0,0,0.4)' }}>
-            <h3 className="text-sm font-semibold text-white mb-4">Detailed Stats</h3>
+          <div className="bg-white rounded-[4px] p-6 border border-[#E2E0D9]">
+            <h3 className="text-sm font-semibold text-[#1A1A1A] mb-4 tracking-tight">Detailed Stats</h3>
             <div className="space-y-3">
               {[
                 ["Impressions", ad.impressions.toLocaleString()],
@@ -113,9 +113,9 @@ export function AdDetailPanel({ ad, onClose }: AdDetailPanelProps) {
                 ["3s Views (Hook)", ad.threeSecViews.toLocaleString()],
                 ["Completed Views", ad.completedViews.toLocaleString()],
               ].map(([label, val]) => (
-                <div key={label} className="flex justify-between items-center py-2 border-b border-white/[0.03]">
-                  <span className="text-sm text-white/40">{label}</span>
-                  <span className="text-sm text-white font-black">{val}</span>
+                <div key={label} className="flex justify-between items-center py-2 border-b border-[#E2E0D9] last:border-b-0">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">{label}</span>
+                  <span className="text-sm text-[#1A1A1A] font-semibold tabular-nums">{val}</span>
                 </div>
               ))}
             </div>
