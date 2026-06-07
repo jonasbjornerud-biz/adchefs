@@ -10,20 +10,13 @@ interface KpiCardProps {
   accent?: "purple" | "emerald" | "pink" | "blue";
 }
 
-const accentMap = {
-  purple: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.35)", iconBg: "rgba(158, 216, 245,0.12)", iconRing: "rgba(158, 216, 245,0.25)" },
-  emerald: { stroke: "#3B86A8", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
-  pink: { stroke: "#9ED8F5", glow: "rgba(158, 216, 245,0.30)", iconBg: "rgba(158, 216, 245,0.10)", iconRing: "rgba(158, 216, 245,0.22)" },
-  blue: { stroke: "#60a5fa", glow: "rgba(59, 134, 168,0.30)", iconBg: "rgba(59, 134, 168,0.10)", iconRing: "rgba(59, 134, 168,0.22)" },
-};
-
 function responsiveSize(value: string): string {
   if (value.length > 8) return "text-2xl";
   if (value.length > 6) return "text-3xl";
   return "text-4xl";
 }
 
-function Sparkline({ data, color, gradId }: { data: number[]; color: string; gradId: string }) {
+function Sparkline({ data, gradId }: { data: number[]; gradId: string }) {
   if (!data || data.length < 2) return null;
   const w = 120;
   const h = 36;
@@ -33,90 +26,50 @@ function Sparkline({ data, color, gradId }: { data: number[]; color: string; gra
   const step = w / (data.length - 1);
   const points = data.map((v, i) => `${i * step},${h - ((v - min) / range) * h}`).join(" ");
   const area = `0,${h} ${points} ${w},${h}`;
+  const color = "#1A1A1A";
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-9 overflow-visible" preserveAspectRatio="none">
       <defs>
         <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.35} />
-          <stop offset="100%" stopColor={color} stopOpacity={0} />
+          <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.5} />
+          <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
         </linearGradient>
       </defs>
       <polygon points={area} fill={`url(#${gradId})`} />
-      <polyline points={points} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke={color} strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-export function KpiCard({ label, value, icon, trend, delay = 0, spark, accent = "purple" }: KpiCardProps) {
-  const a = accentMap[accent];
+export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCardProps) {
   const uid = useId().replace(/:/g, "");
 
   return (
     <div
-      className="group relative rounded-2xl p-5 flex flex-col gap-4 transition-all duration-300 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0 overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 40px -20px rgba(0,0,0,0.6)',
-        animationDelay: `${delay}ms`,
-      }}
-      onMouseEnter={e => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = a.iconRing;
-        el.style.boxShadow = `0 1px 0 rgba(255,255,255,0.06) inset, 0 20px 40px -20px rgba(0,0,0,0.6), 0 0 30px -5px ${a.glow}`;
-        el.style.transform = 'translateY(-2px)';
-      }}
-      onMouseLeave={e => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = 'rgba(255,255,255,0.07)';
-        el.style.boxShadow = '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 40px -20px rgba(0,0,0,0.6)';
-        el.style.transform = 'translateY(0)';
-      }}
+      className="group relative rounded-[4px] p-5 flex flex-col gap-4 transition-all duration-300 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0 overflow-hidden bg-white border border-[#E2E0D9] hover:border-[#1A1A1A] hover:-translate-y-0.5"
+      style={{ animationDelay: `${delay}ms` }}
     >
-      {/* Top sheen */}
-      <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${a.glow}, transparent)` }} />
-
-      {/* Hover purple bloom from top edge (matches reference) */}
-      <div
-        className="absolute inset-x-0 top-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          height: '70%',
-          background: `radial-gradient(ellipse 70% 100% at 50% 0%, ${a.glow} 0%, transparent 65%)`,
-        }}
-      />
-      {/* Hover top highlight line */}
-      <div
-        className="absolute inset-x-6 top-0 h-px pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${a.stroke}, transparent)`,
-          boxShadow: `0 0 12px ${a.stroke}`,
-        }}
-      />
+      {/* Accent corner mark */}
+      <span className="absolute top-0 left-0 h-px w-10 bg-[#9ED8F5] transition-all duration-300 group-hover:w-20" />
 
       <div className="flex items-start justify-between relative">
-        <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-white/50 flex items-center gap-1.5">
-          <span className="w-1 h-1 rounded-full" style={{ background: a.stroke, boxShadow: `0 0 6px ${a.glow}` }} />
+        <span className="text-[10px] uppercase tracking-[0.15em] font-mono font-medium text-[#75726B] flex items-center gap-1.5">
           {label}
         </span>
-        <span
-          className="w-7 h-7 rounded-lg flex items-center justify-center text-white/80"
-          style={{ background: a.iconBg, border: `1px solid ${a.iconRing}` }}
-        >
+        <span className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#1A1A1A] bg-[#F7F6F3] border border-[#E2E0D9]">
           {icon}
         </span>
       </div>
 
       <div className="flex flex-col gap-2 relative">
-        <span className={`font-black text-white leading-none whitespace-nowrap tracking-tight ${responsiveSize(value)}`}>
+        <span className={`font-semibold text-[#1A1A1A] leading-none whitespace-nowrap tracking-tight tabular-nums ${responsiveSize(value)}`}>
           {value}
         </span>
         {trend && (
-          <span className={`inline-flex items-center self-start rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+          <span className={`inline-flex items-center self-start rounded-[4px] px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.1em] border ${
             trend.positive
-              ? "bg-accent/10 text-accent border border-accent/30"
-              : "bg-destructive/10 text-destructive border border-destructive/30"
+              ? "bg-[#9ED8F5]/25 text-[#1A1A1A] border-[#9ED8F5]"
+              : "bg-[#1A1A1A]/[0.04] text-[#75726B] border-[#E2E0D9]"
           }`}>
             {trend.positive ? "▲" : "▼"} {Math.abs(trend.value)}%
           </span>
@@ -125,7 +78,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, accent = 
 
       {spark && spark.length > 1 && (
         <div className="relative -mx-1 -mb-1">
-          <Sparkline data={spark} color={a.stroke} gradId={`spark-${uid}`} />
+          <Sparkline data={spark} gradId={`spark-${uid}`} />
         </div>
       )}
     </div>
