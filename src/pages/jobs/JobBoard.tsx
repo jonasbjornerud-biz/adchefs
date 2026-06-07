@@ -66,7 +66,7 @@ export default function JobBoard() {
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            We craft high-converting paid social video ads for top e-commerce brands. Pay-per-video, remote, no retainers.
+            We craft high-converting paid social video ads for top e-commerce brands. Fully remote.
           </p>
         </div>
       </section>
