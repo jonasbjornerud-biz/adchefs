@@ -85,15 +85,15 @@ export default function SubmitTask() {
           </Link>
 
           <span className="eyebrow inline-block mt-2 ml-32 sm:ml-44" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
-            Trial task · Final cut
+            Trial task
           </span>
 
           <h1 className="mt-6 font-display text-[48px] sm:text-[68px] md:text-[84px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
-            Drop your <em style={{ color: "hsl(var(--accent))" }}>cut.</em>
+            Submit your <em style={{ color: "hsl(var(--accent))" }}>edit.</em>
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
-            Upload your finished trial task below. We review every submission — strong cuts get a paid project within 48 hours.
+            Upload your finished trial task below. We review every submission.
           </p>
         </div>
       </section>
@@ -103,7 +103,7 @@ export default function SubmitTask() {
         <div className="max-w-2xl mx-auto px-6">
           <span className="eyebrow">Upload in 60 seconds</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
-            Show us what you <em>shipped.</em>
+            Show us what you <em>edited.</em>
           </h2>
           <p className="mt-3 text-[14px] text-muted-foreground">
             Make sure your link is publicly viewable. Google Drive, WeTransfer, Frame.io all work.
