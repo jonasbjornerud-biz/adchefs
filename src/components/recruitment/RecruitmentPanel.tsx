@@ -260,6 +260,18 @@ function Postings() {
                 <div className="space-y-1.5"><Label>Title *</Label><Input value={editing.title ?? ''} onChange={e => setEditing({ ...editing, title: e.target.value })} /></div>
                 <div className="space-y-1.5"><Label>Slug *</Label><Input value={editing.slug ?? ''} onChange={e => setEditing({ ...editing, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} /></div>
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5"><Label>Brand *</Label><Input value={editing.brand ?? ''} onChange={e => setEditing({ ...editing, brand: e.target.value })} placeholder="Rituel" /></div>
+                <div className="space-y-1.5">
+                  <Label>Submit URL slug *</Label>
+                  <Input
+                    value={editing.submit_slug ?? ''}
+                    onChange={e => setEditing({ ...editing, submit_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })}
+                    placeholder="rituel"
+                  />
+                  <p className="text-xs text-muted-foreground">Public URL: /submit-task-{editing.submit_slug || '…'}</p>
+                </div>
+              </div>
               <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} value={editing.description ?? ''} onChange={e => setEditing({ ...editing, description: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5"><Label>Junior pay</Label><Input value={editing.junior_pay ?? ''} onChange={e => setEditing({ ...editing, junior_pay: e.target.value })} placeholder="€30–60 per ad" /></div>
@@ -269,7 +281,7 @@ function Postings() {
               <div className="space-y-1.5"><Label>Trial email subject</Label><Input value={editing.trial_email_subject ?? ''} onChange={e => setEditing({ ...editing, trial_email_subject: e.target.value })} /></div>
               <div className="space-y-1.5">
                 <Label>Trial email body</Label>
-                <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
+                <p className="text-xs text-muted-foreground">Available variables: <code>{'{{first_name}}'}</code>, <code>{'{{email}}'}</code>, <code>{'{{brand}}'}</code>, <code>{'{{notion_task_url}}'}</code>, <code>{'{{submission_form_url}}'}</code></p>
                 <Textarea rows={10} className="font-mono text-xs" value={editing.trial_email_body ?? ''} onChange={e => setEditing({ ...editing, trial_email_body: e.target.value })} />
               </div>
               <div className="space-y-1.5 border-t border-border pt-4"><Label>Follow-up email subject</Label><Input value={editing.followup_email_subject ?? ''} onChange={e => setEditing({ ...editing, followup_email_subject: e.target.value })} /></div>
