@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Upload } from 'lucide-react';
 import { z } from 'zod';
 import { toast } from 'sonner';
 
@@ -43,11 +43,20 @@ export default function SubmitTask() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="max-w-md text-center">
-          <CheckCircle2 className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h1 className="text-2xl font-semibold mb-2">Submission received.</h1>
-          <p className="text-muted-foreground">We'll review your task and get back to you shortly.</p>
+      <div className="min-h-screen bg-foreground text-background flex items-center justify-center px-6">
+        <div className="max-w-lg text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-[4px] bg-accent text-foreground mb-6">
+            <CheckCircle2 className="w-7 h-7" />
+          </div>
+          <span className="eyebrow" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
+            Task received
+          </span>
+          <h1 className="mt-5 font-display text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
+            Cut's <em style={{ color: "hsl(var(--accent))" }}>in</em>. We're watching.
+          </h1>
+          <p className="mt-4 text-[15px] text-background/70 leading-relaxed">
+            We review every submission frame by frame. Expect notes — and a next step — within 48 hours.
+          </p>
         </div>
       </div>
     );
@@ -55,12 +64,52 @@ export default function SubmitTask() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="max-w-xl mx-auto px-6 py-12">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">ADCHEFS</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Skill Task Submission</h1>
-        <p className="text-muted-foreground mt-2">Upload your finished trial task below.</p>
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-foreground text-background pt-24 pb-32">
+        <div
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          style={{
+            backgroundImage:
+              'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none" style={{
+          background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 65%)',
+          filter: 'blur(40px)',
+        }} />
 
-        <form onSubmit={onSubmit} className="mt-8 space-y-5">
+        <div className="relative max-w-[1100px] mx-auto px-6">
+          <Link to="/jobs" className="inline-flex items-center mono text-[11px] uppercase tracking-[0.15em] text-background/60 hover:text-accent transition-colors mb-10">
+            <ArrowLeft className="w-3.5 h-3.5 mr-1.5" /> All roles
+          </Link>
+
+          <span className="eyebrow inline-block mt-2 ml-32 sm:ml-44" style={{ borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))", background: "transparent" }}>
+            Trial task · Final cut
+          </span>
+
+          <h1 className="mt-6 font-display text-[48px] sm:text-[68px] md:text-[84px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
+            Drop your <em style={{ color: "hsl(var(--accent))" }}>cut.</em>
+          </h1>
+
+          <p className="mt-7 text-[16px] sm:text-[18px] leading-relaxed text-background/70 max-w-xl">
+            Upload your finished trial task below. We review every submission — strong cuts get a paid project within 48 hours.
+          </p>
+        </div>
+      </section>
+
+      {/* SUBMISSION FORM */}
+      <section className="bg-secondary py-20">
+        <div className="max-w-2xl mx-auto px-6">
+          <span className="eyebrow">Upload in 60 seconds</span>
+          <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em]">
+            Show us what you <em>shipped.</em>
+          </h2>
+          <p className="mt-3 text-[14px] text-muted-foreground">
+            Make sure your link is publicly viewable. Google Drive, WeTransfer, Frame.io all work.
+          </p>
+
+          <form onSubmit={onSubmit} className="mt-10 space-y-5 bg-background border border-border rounded-[4px] p-8">
           <div className="space-y-2">
             <Label>Email *</Label>
             <Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
@@ -73,11 +122,13 @@ export default function SubmitTask() {
             <Label>Notes (optional)</Label>
             <Textarea rows={4} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
           </div>
-          <Button type="submit" disabled={submitting} className="w-full">
+          <Button type="submit" disabled={submitting} variant="cta" size="lg" className="w-full">
             {submitting ? 'Submitting…' : 'Submit task'}
+            {!submitting && <ArrowRight className="ml-1 h-4 w-4" />}
           </Button>
-        </form>
-      </div>
+          </form>
+        </div>
+      </section>
     </div>
   );
 }
