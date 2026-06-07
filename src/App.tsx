@@ -21,6 +21,9 @@ import AdminPlaybookView from "./pages/admin/AdminPlaybookView";
 import MockClientDashboard from "./pages/mock/MockClientDashboard";
 import MockAdsDashboard from "./pages/mock/MockAdsDashboard";
 import MockPerformanceDashboard from "./pages/mock/MockPerformanceDashboard";
+import JobBoard from "./pages/jobs/JobBoard";
+import JobDetail from "./pages/jobs/JobDetail";
+import SubmitTask from "./pages/jobs/SubmitTask";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +38,9 @@ const App = () => (
             {/* Public */}
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/jobs" element={<JobBoard />} />
+            <Route path="/jobs/:slug" element={<JobDetail />} />
+            <Route path="/submit-task" element={<SubmitTask />} />
 
             {/* Client */}
             <Route path="/dashboard" element={<AuthGuard><ClientDashboard /></AuthGuard>} />

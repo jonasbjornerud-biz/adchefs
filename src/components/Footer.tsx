@@ -40,6 +40,11 @@ const Footer = () => {
                   Book a Call
                 </button>
               </li>
+              <li>
+                <a href="/jobs" className="hover:text-foreground transition-colors">
+                  Careers
+                </a>
+              </li>
             </ul>
           </div>
 
