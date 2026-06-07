@@ -143,6 +143,8 @@ function Postings() {
       notion_task_url: editing.notion_task_url ?? '',
       trial_email_subject: editing.trial_email_subject ?? '',
       trial_email_body: editing.trial_email_body ?? '',
+      followup_email_subject: editing.followup_email_subject ?? '',
+      followup_email_body: editing.followup_email_body ?? '',
       is_active: editing.is_active ?? true,
     };
     const { error } = editing.id
