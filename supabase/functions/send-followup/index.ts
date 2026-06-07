@@ -10,6 +10,7 @@ Deno.serve(async (req) => {
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
   const supabase = createClient(supabaseUrl, serviceKey)
 
   let application_id: string
@@ -62,8 +63,8 @@ Deno.serve(async (req) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${serviceKey}`,
-      apikey: serviceKey,
+      Authorization: `Bearer ${anonKey}`,
+      apikey: anonKey,
     },
     body: JSON.stringify({
       templateName: 'trial-followup',
