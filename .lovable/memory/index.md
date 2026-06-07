@@ -9,7 +9,9 @@
 - Pay-per-video model. No retainers. Target: e-com with >€5k/mo ad spend. Max 2-3 brands/month.
 - Landing flow: Hero → WhyAdChefs (founder) → HowItWorks → EditorEdge (dark Ink band) → Pricing → Booking (Accent band) → FAQ → Footer (dark Ink). Never add Results or Case Studies.
 - Logo wordmark: `AdChefs<span class="text-accent">.</span>` — the period is part of the mark.
+- All dashboards (editor/* and mock/*) must stay in sync — mirror every style/layout change across all six files in the same turn; prefer editing shared components in src/components/dashboard/.
 
 ## Memories
 - [Booking Qualification Rules](mem://constraints/booking-qualification) — Target audience constraints for Calendly booking
 - [FAQ Content](mem://features/faq-content) — The 3 core FAQ topics and their answers
+- [Dashboard parity](mem://preferences/dashboard-parity) — Keep editor and mock dashboards visually identical
