@@ -72,12 +72,12 @@ const STAGE_LABEL: Record<string, string> = {
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
   new:              { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
-  qualified:        { backgroundColor: '#E2E0D9', color: '#1A1A1A', borderColor: '#D5D2C8' },
-  trial_sent:       { backgroundColor: 'rgba(158,216,245,0.28)', color: '#1A1A1A', borderColor: '#9ED8F5' },
-  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
-  interview:        { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
-  hired:            { backgroundColor: '#1A1A1A', color: '#9ED8F5', borderColor: '#1A1A1A' },
-  rejected:         { backgroundColor: 'rgba(214, 64, 64, 0.12)', color: '#B43A3A', borderColor: 'rgba(180, 58, 58, 0.35)' },
+  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
+  trial_sent:       { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
+  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5', fontWeight: 700 },
+  interview:        { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
+  hired:            { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
+  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
 };
 
 function StageChip({ stage }: { stage: string }) {
@@ -476,12 +476,12 @@ function Pipeline() {
   return (
     <div className="space-y-8">
       <div>
-        <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[8px]">
-          Pipeline
+        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-[14px] py-[8px]">
+          PIPELINE
         </span>
         <h2
           className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
-          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
         >
           Editor{' '}
           <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>applicants.</em>
@@ -496,7 +496,7 @@ function Pipeline() {
             <button
               key={key}
               onClick={() => setStageFilter(key)}
-              className="group relative px-3 py-2.5 rounded-[3px] text-left transition-all duration-150"
+              className="group relative px-5 py-3 rounded-[4px] text-left transition-all duration-150"
               style={{
                 backgroundColor: active ? '#1A1A1A' : 'transparent',
                 color: active ? '#FAF8F3' : '#1A1A1A',
@@ -504,12 +504,12 @@ function Pipeline() {
               onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
               onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
-              <p className="mono text-[9px] uppercase tracking-[0.18em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
+              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
                 {label}
               </p>
               <p
-                className="mt-1 text-[22px] leading-none tracking-[-0.02em]"
-                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+                className="mt-1 text-[1.75rem] leading-none tracking-[-0.02em]"
+                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
               >
                 {String(count).padStart(2, '0')}
               </p>
@@ -557,7 +557,7 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-t cursor-pointer transition-colors hover:bg-[#EEEDE8] group" style={{ borderColor: '#E2E0D9' }} onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#EEEDE8] group min-h-[56px]" style={{ borderColor: '#EEEDE8' }} onClick={() => setSelected(app)}>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
@@ -577,7 +577,15 @@ function Pipeline() {
                   </td>
                    <td className="p-3 text-[#75726B]">{posting?.title ?? '—'}</td>
                   <td className="p-3">
-                    <Badge variant={['Premiere Pro','DaVinci Resolve'].includes(app.software) ? 'default' : 'secondary'} className="font-normal">{app.software}</Badge>
+                    {['Premiere Pro','CapCut'].includes(app.software) ? (
+                      <span className="inline-flex items-center rounded-[4px] bg-[#1A1A1A] text-[#FAF8F3] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
+                        {app.software}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-[4px] bg-[#EEEDE8] text-[#75726B] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
+                        {app.software}
+                      </span>
+                    )}
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
@@ -588,14 +596,13 @@ function Pipeline() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="inline-flex items-center gap-2 px-2 py-1 rounded-[3px] border hover:bg-[#E2E0D9] transition-colors"
-                        style={{ borderColor: '#E2E0D9' }}
+                        className="text-[13px] text-[#75726B] hover:underline transition-colors"
+                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
                         title={sub.submission_url}
                       >
-                        <LinkFavicon url={sub.submission_url} />
-                        <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A]">{hostOf(sub.submission_url) || 'View'}</span>
+                        {hostOf(sub.submission_url) || 'View'}
                       </a>
-                    ) : <span className="text-muted-foreground text-xs">—</span>}
+                    ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
                   <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
