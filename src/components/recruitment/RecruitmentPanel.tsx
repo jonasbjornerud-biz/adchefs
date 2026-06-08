@@ -75,7 +75,7 @@ const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'inter
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
   new:              { backgroundColor: '#EEEDE8', color: '#75726B' },
   qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A' },
-  trial_sent:       { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  trial_sent:       { backgroundColor: '#EEEDE8', color: '#1A1A1A', border: '1px solid #1A1A1A' },
   trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', fontWeight: 600 },
   interview:        { backgroundColor: '#EEEDE8', color: '#1A1A1A' },
   hired:            { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
@@ -100,22 +100,13 @@ function StageChip({ stage }: { stage: string }) {
   );
 }
 
-const SOFTWARE_CHIP: Record<string, { bg: string; color: string }> = {
-  'capcut':       { bg: '#E5484D', color: '#F7F6F3' },
-  'premiere pro': { bg: '#9ED8F5', color: '#1A1A1A' },
-  'premiere':     { bg: '#9ED8F5', color: '#1A1A1A' },
-  'davinci resolve': { bg: '#F5C518', color: '#1A1A1A' },
-  'davinci':      { bg: '#F5C518', color: '#1A1A1A' },
-};
 function SoftwareChip({ software }: { software: string }) {
-  const key = (software ?? '').trim().toLowerCase();
-  const style = SOFTWARE_CHIP[key] ?? { bg: '#1A1A1A', color: '#F7F6F3' };
   return (
     <span
       className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
       style={{
-        backgroundColor: style.bg,
-        color: style.color,
+        backgroundColor: '#1A1A1A',
+        color: '#F7F6F3',
         fontSize: '10px',
         letterSpacing: '0.15em',
         padding: '4px 10px',
