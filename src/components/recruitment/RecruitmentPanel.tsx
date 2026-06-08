@@ -561,12 +561,12 @@ function Pipeline() {
             <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.15em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
-              <th className="text-left p-3 font-normal">Role</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap">Role</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Software</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
-              <th className="text-left p-3 font-normal">Applied</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap">Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
@@ -596,20 +596,9 @@ function Pipeline() {
                     <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
                     <p className="mt-0.5" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}>{app.email}</p>
                   </td>
-                   <td className="p-3 text-[#75726B]">{posting?.title ?? '—'}</td>
+                   <td className="p-3 text-[#75726B] whitespace-nowrap">{posting?.title ?? '—'}</td>
                   <td className="p-3">
-                    <span
-                      className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
-                      style={{
-                        backgroundColor: '#1A1A1A',
-                        color: '#F7F6F3',
-                        fontSize: '10px',
-                        letterSpacing: '0.15em',
-                        padding: '4px 10px',
-                      }}
-                    >
-                      {app.software}
-                    </span>
+                    <SoftwareChip software={app.software} />
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
@@ -628,7 +617,7 @@ function Pipeline() {
                       </a>
                     ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
-                  <td className="p-3 text-xs text-muted-foreground">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                  <td className="p-3 text-xs text-muted-foreground whitespace-nowrap">{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost"
