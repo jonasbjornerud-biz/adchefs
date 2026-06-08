@@ -64,26 +64,36 @@ type Submission = {
 
 const STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'hired', 'rejected'] as const;
 const STAGE_LABEL: Record<string, string> = {
-  new: 'New', qualified: 'Qualified', trial_sent: 'Trial sent',
-  trial_submitted: 'Trial submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
+  new: 'New', qualified: 'Qualified', trial_sent: 'Sent',
+  trial_submitted: 'Submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
 };
+
+/** Stages shown in the stat filter bar (Hired & Rejected hidden per brand). */
+const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview'] as const;
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
-  new:              { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
-  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
-  trial_sent:       { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5', fontWeight: 700 },
-  interview:        { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  hired:            { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
+  new:              { backgroundColor: '#EEEDE8', color: '#75726B' },
+  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A' },
+  trial_sent:       { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', fontWeight: 600 },
+  interview:        { backgroundColor: '#EEEDE8', color: '#1A1A1A' },
+  hired:            { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B' },
 };
 
 function StageChip({ stage }: { stage: string }) {
   return (
     <span
-      className="mono inline-flex items-center text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px] border"
-      style={STAGE_CHIP[stage] ?? STAGE_CHIP.new}
+      className="inline-flex items-center whitespace-nowrap rounded-[4px]"
+      style={{
+        ...(STAGE_CHIP[stage] ?? STAGE_CHIP.new),
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: (STAGE_CHIP[stage] as any)?.fontWeight ?? 500,
+        fontSize: '11px',
+        lineHeight: 1.2,
+        padding: '4px 10px',
+      }}
     >
       {STAGE_LABEL[stage] ?? stage}
     </span>
@@ -475,7 +485,7 @@ function Pipeline() {
   return (
     <div className="space-y-8">
       <div>
-        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-[14px] py-[8px]">
+        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-2 py-[3px]">
           PIPELINE
         </span>
         <h2
@@ -488,8 +498,8 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
-        {([['all', 'All', apps.length] as const, ...STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
+      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+        {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
             <button
@@ -498,19 +508,31 @@ function Pipeline() {
               className="group relative px-5 py-3 rounded-[4px] text-left transition-all duration-150"
               style={{
                 backgroundColor: active ? '#1A1A1A' : 'transparent',
-                color: active ? '#FAF8F3' : '#1A1A1A',
+                color: active ? '#F7F6F3' : '#1A1A1A',
               }}
               onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
               onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
-              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
+              <p
+                className="mono uppercase whitespace-nowrap"
+                style={{
+                  fontSize: '9px',
+                  letterSpacing: '0.12em',
+                  color: active ? 'rgba(247,246,243,0.7)' : '#75726B',
+                }}
+              >
                 {label}
               </p>
               <p
-                className="mt-1 text-[1.75rem] leading-none tracking-[-0.02em]"
-                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                className="mt-1 leading-none tracking-[-0.02em]"
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: active ? '#F7F6F3' : '#1A1A1A',
+                }}
               >
-                {String(count).padStart(2, '0')}
+                {count}
               </p>
               {active && (
                 <span className="absolute left-3 right-3 -bottom-px h-[2px]" style={{ backgroundColor: '#9ED8F5' }} />
@@ -536,14 +558,14 @@ function Pipeline() {
       <div className="rounded-[4px] border overflow-hidden" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
         <table className="w-full text-sm">
           <thead style={{ backgroundColor: '#EEEDE8' }}>
-            <tr className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.15em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal">Role</th>
-              <th className="text-left p-3 font-normal">Software</th>
-              <th className="text-left p-3 font-normal">Stage</th>
-              <th className="text-left p-3 font-normal">Email</th>
-              <th className="text-left p-3 font-normal">Task</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Software</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
               <th className="text-left p-3 font-normal">Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
@@ -556,7 +578,7 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#EEEDE8] group min-h-[56px]" style={{ borderColor: '#EEEDE8' }} onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#F7F6F3] group" style={{ borderColor: '#EEEDE8', height: '56px' }} onClick={() => setSelected(app)}>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
@@ -572,19 +594,22 @@ function Pipeline() {
                   </td>
                   <td className="p-3">
                     <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
-                    <p className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B] mt-0.5">{app.email}</p>
+                    <p className="mt-0.5" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}>{app.email}</p>
                   </td>
                    <td className="p-3 text-[#75726B]">{posting?.title ?? '—'}</td>
                   <td className="p-3">
-                    {['Premiere Pro','CapCut'].includes(app.software) ? (
-                      <span className="inline-flex items-center rounded-[4px] bg-[#1A1A1A] text-[#FAF8F3] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
-                        {app.software}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-[4px] bg-[#EEEDE8] text-[#75726B] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
-                        {app.software}
-                      </span>
-                    )}
+                    <span
+                      className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
+                      style={{
+                        backgroundColor: '#1A1A1A',
+                        color: '#F7F6F3',
+                        fontSize: '10px',
+                        letterSpacing: '0.15em',
+                        padding: '4px 10px',
+                      }}
+                    >
+                      {app.software}
+                    </span>
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
@@ -595,8 +620,8 @@ function Pipeline() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="text-[13px] text-[#75726B] hover:underline transition-colors"
-                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
+                        className="hover:underline transition-colors"
+                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}
                         title={sub.submission_url}
                       >
                         {hostOf(sub.submission_url) || 'View'}
