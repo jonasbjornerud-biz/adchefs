@@ -64,26 +64,36 @@ type Submission = {
 
 const STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'hired', 'rejected'] as const;
 const STAGE_LABEL: Record<string, string> = {
-  new: 'New', qualified: 'Qualified', trial_sent: 'Trial sent',
-  trial_submitted: 'Trial submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
+  new: 'New', qualified: 'Qualified', trial_sent: 'Sent',
+  trial_submitted: 'Submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
 };
+
+/** Stages shown in the stat filter bar (Hired & Rejected hidden per brand). */
+const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview'] as const;
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
-  new:              { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
-  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5' },
-  trial_sent:       { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', borderColor: '#9ED8F5', fontWeight: 700 },
-  interview:        { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  hired:            { backgroundColor: '#1A1A1A', color: '#FAF8F3', borderColor: '#1A1A1A' },
-  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B', borderColor: '#E2E0D9' },
+  new:              { backgroundColor: '#EEEDE8', color: '#75726B' },
+  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A' },
+  trial_sent:       { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', fontWeight: 600 },
+  interview:        { backgroundColor: '#EEEDE8', color: '#1A1A1A' },
+  hired:            { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B' },
 };
 
 function StageChip({ stage }: { stage: string }) {
   return (
     <span
-      className="mono inline-flex items-center text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-[4px] border"
-      style={STAGE_CHIP[stage] ?? STAGE_CHIP.new}
+      className="inline-flex items-center whitespace-nowrap rounded-[4px]"
+      style={{
+        ...(STAGE_CHIP[stage] ?? STAGE_CHIP.new),
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: (STAGE_CHIP[stage] as any)?.fontWeight ?? 500,
+        fontSize: '11px',
+        lineHeight: 1.2,
+        padding: '4px 10px',
+      }}
     >
       {STAGE_LABEL[stage] ?? stage}
     </span>
