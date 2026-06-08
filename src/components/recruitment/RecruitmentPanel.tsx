@@ -73,13 +73,13 @@ const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'inter
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
-  new:              { backgroundColor: '#EEEDE8', color: '#75726B' },
-  qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A' },
-  trial_sent:       { backgroundColor: '#EEEDE8', color: '#1A1A1A', border: '1px solid #1A1A1A' },
-  trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', fontWeight: 600 },
-  interview:        { backgroundColor: '#EEEDE8', color: '#1A1A1A' },
-  hired:            { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
-  rejected:         { backgroundColor: '#EEEDE8', color: '#75726B' },
+  new:             { background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', color: '#75726B' },
+  qualified:       { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B' },
+  trial_sent:      { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B' },
+  trial_submitted: { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B', fontWeight: 600 },
+  interview:       { background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', color: '#75726B' },
+  hired:           { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  rejected:        { backgroundColor: '#EEEDE8', color: '#75726B' },
 };
 
 function StageChip({ stage }: { stage: string }) {
