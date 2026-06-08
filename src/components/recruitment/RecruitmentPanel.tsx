@@ -558,14 +558,14 @@ function Pipeline() {
       <div className="rounded-[4px] border overflow-hidden" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
         <table className="w-full text-sm">
           <thead style={{ backgroundColor: '#EEEDE8' }}>
-            <tr className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.15em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal">Role</th>
-              <th className="text-left p-3 font-normal">Software</th>
-              <th className="text-left p-3 font-normal">Stage</th>
-              <th className="text-left p-3 font-normal">Email</th>
-              <th className="text-left p-3 font-normal">Task</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Software</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
               <th className="text-left p-3 font-normal">Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
@@ -578,7 +578,7 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#EEEDE8] group min-h-[56px]" style={{ borderColor: '#EEEDE8' }} onClick={() => setSelected(app)}>
+                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#F7F6F3] group" style={{ borderColor: '#EEEDE8', height: '56px' }} onClick={() => setSelected(app)}>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
@@ -594,19 +594,22 @@ function Pipeline() {
                   </td>
                   <td className="p-3">
                     <p className="text-[15px] text-[#1A1A1A]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{app.first_name} {app.last_name}</p>
-                    <p className="mono text-[11px] uppercase tracking-[0.12em] text-[#75726B] mt-0.5">{app.email}</p>
+                    <p className="mt-0.5" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}>{app.email}</p>
                   </td>
                    <td className="p-3 text-[#75726B]">{posting?.title ?? '—'}</td>
                   <td className="p-3">
-                    {['Premiere Pro','CapCut'].includes(app.software) ? (
-                      <span className="inline-flex items-center rounded-[4px] bg-[#1A1A1A] text-[#FAF8F3] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
-                        {app.software}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-[4px] bg-[#EEEDE8] text-[#75726B] px-2 py-1 mono text-[10px] uppercase tracking-[0.15em]">
-                        {app.software}
-                      </span>
-                    )}
+                    <span
+                      className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
+                      style={{
+                        backgroundColor: '#1A1A1A',
+                        color: '#F7F6F3',
+                        fontSize: '10px',
+                        letterSpacing: '0.15em',
+                        padding: '4px 10px',
+                      }}
+                    >
+                      {app.software}
+                    </span>
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
@@ -617,8 +620,8 @@ function Pipeline() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="text-[13px] text-[#75726B] hover:underline transition-colors"
-                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300 }}
+                        className="hover:underline transition-colors"
+                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}
                         title={sub.submission_url}
                       >
                         {hostOf(sub.submission_url) || 'View'}
