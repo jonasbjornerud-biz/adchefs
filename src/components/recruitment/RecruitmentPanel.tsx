@@ -73,11 +73,11 @@ const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'inter
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
-  new:             { background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', color: '#75726B' },
-  qualified:       { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B' },
-  trial_sent:      { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B' },
-  trial_submitted: { background: 'linear-gradient(135deg, #C8E8F8 0%, #B8DCF2 100%)', color: '#1A4A6B', fontWeight: 600 },
-  interview:       { background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', color: '#75726B' },
+  new:             { background: 'linear-gradient(90deg, #EDECE6 0%, #FAF9F5 100%)', color: '#75726B' },
+  qualified:       { background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)', color: '#1A4A6B' },
+  trial_sent:      { background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)', color: '#1A4A6B' },
+  trial_submitted: { background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)', color: '#1A4A6B', fontWeight: 600 },
+  interview:       { background: 'linear-gradient(90deg, #EDECE6 0%, #FAF9F5 100%)', color: '#75726B' },
   hired:           { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
   rejected:        { backgroundColor: '#EEEDE8', color: '#75726B' },
 };
@@ -104,13 +104,13 @@ function SoftwareChip({ software }: { software: string }) {
   const key = (software ?? '').toLowerCase().trim();
   let style: React.CSSProperties;
   if (key.includes('premiere')) {
-    style = { background: 'linear-gradient(135deg, #C8E8F8, #B8DCF2)', color: '#1A4A6B' };
+    style = { background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)', color: '#1A4A6B' };
   } else if (key.includes('capcut')) {
-    style = { background: 'linear-gradient(135deg, #F8C8C8, #F2B8B8)', color: '#6B1A1A' };
+    style = { background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)', color: '#6B1A1A' };
   } else if (key.includes('davinci') || key.includes('resolve')) {
-    style = { background: 'linear-gradient(135deg, #FDF4C8, #F8EDB0)', color: '#5C4A0A' };
+    style = { background: 'linear-gradient(90deg, #FBEFAE 0%, #FDF9DE 100%)', color: '#5C4A0A' };
   } else {
-    style = { background: 'linear-gradient(135deg, #EEEDE8, #E5E4DF)', color: '#75726B' };
+    style = { background: 'linear-gradient(90deg, #EDECE6 0%, #FAF9F5 100%)', color: '#75726B' };
   }
   return (
     <span
