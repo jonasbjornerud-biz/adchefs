@@ -101,15 +101,29 @@ function StageChip({ stage }: { stage: string }) {
 }
 
 function SoftwareChip({ software }: { software: string }) {
+  const key = (software ?? '').toLowerCase().trim();
+  let style: React.CSSProperties;
+  if (key.includes('premiere')) {
+    style = { background: 'linear-gradient(135deg, #C8E8F8, #B8DCF2)', color: '#1A4A6B' };
+  } else if (key.includes('capcut')) {
+    style = { background: 'linear-gradient(135deg, #F8C8C8, #F2B8B8)', color: '#6B1A1A' };
+  } else if (key.includes('davinci') || key.includes('resolve')) {
+    style = { background: 'linear-gradient(135deg, #FDF4C8, #F8EDB0)', color: '#5C4A0A' };
+  } else {
+    style = { background: 'linear-gradient(135deg, #EEEDE8, #E5E4DF)', color: '#75726B' };
+  }
   return (
     <span
-      className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
+      className="inline-flex items-center whitespace-nowrap rounded-[4px]"
       style={{
-        backgroundColor: '#1A1A1A',
-        color: '#F7F6F3',
+        ...style,
+        fontFamily: "'JetBrains Mono', monospace",
+        textTransform: 'uppercase',
+        fontWeight: 500,
         fontSize: '10px',
-        letterSpacing: '0.15em',
+        letterSpacing: '0.12em',
         padding: '4px 10px',
+        border: 'none',
       }}
     >
       {software}
@@ -580,18 +594,18 @@ function Pipeline() {
         </Select>
       </div>
 
-      <div className="rounded-[4px] border overflow-x-auto" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
-        <table className="w-full text-sm" style={{ minWidth: '1100px' }}>
-          <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E8E7E2 100%)', borderBottom: '1px solid #D8D7D2' }}>
-            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.12em' }}>
+      <div className="rounded-[4px] border overflow-x-auto w-full" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+        <table className="w-full text-sm" style={{ minWidth: '960px', borderCollapse: 'collapse' }}>
+          <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', borderBottom: '1px solid #D8D7D2' }}>
+            <tr style={{ fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', color: '#75726B', fontSize: '10px', letterSpacing: '0.12em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
-              <th className="text-left p-3 font-normal">Applicant</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap">Role</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Software</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
+              <th className="text-left p-3 font-normal" style={{ minWidth: '200px' }}>Applicant</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Role</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Software</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '120px' }}>Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Applied</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '100px' }}>Task</th>
+              <th className="text-left p-3 font-normal" style={{ minWidth: '140px', whiteSpace: 'nowrap' }}>Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
