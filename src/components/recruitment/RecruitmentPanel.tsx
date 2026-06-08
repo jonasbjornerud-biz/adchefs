@@ -515,7 +515,15 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+      <div
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1"
+        style={{
+          background: 'linear-gradient(135deg, #F7F6F3 0%, #EEEDE8 100%)',
+          border: '1px solid #E5E4DF',
+          borderRadius: '6px',
+          padding: '20px 24px',
+        }}
+      >
         {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
@@ -572,10 +580,10 @@ function Pipeline() {
         </Select>
       </div>
 
-      <div className="rounded-[4px] border overflow-hidden" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
-        <table className="w-full text-sm">
-          <thead style={{ backgroundColor: '#EEEDE8' }}>
-            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.15em' }}>
+      <div className="rounded-[4px] border overflow-x-auto" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+        <table className="w-full text-sm" style={{ minWidth: '1100px' }}>
+          <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E8E7E2 100%)', borderBottom: '1px solid #D8D7D2' }}>
+            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.12em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal whitespace-nowrap">Role</th>
@@ -583,7 +591,7 @@ function Pipeline() {
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap">Applied</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
