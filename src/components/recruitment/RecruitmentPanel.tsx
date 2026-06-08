@@ -75,7 +75,7 @@ const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'inter
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
   new:              { backgroundColor: '#EEEDE8', color: '#75726B' },
   qualified:        { backgroundColor: '#9ED8F5', color: '#1A1A1A' },
-  trial_sent:       { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
+  trial_sent:       { backgroundColor: '#EEEDE8', color: '#1A1A1A', border: '1px solid #1A1A1A' },
   trial_submitted:  { backgroundColor: '#9ED8F5', color: '#1A1A1A', fontWeight: 600 },
   interview:        { backgroundColor: '#EEEDE8', color: '#1A1A1A' },
   hired:            { backgroundColor: '#1A1A1A', color: '#F7F6F3' },
@@ -100,22 +100,13 @@ function StageChip({ stage }: { stage: string }) {
   );
 }
 
-const SOFTWARE_CHIP: Record<string, { bg: string; color: string }> = {
-  'capcut':       { bg: '#E5484D', color: '#F7F6F3' },
-  'premiere pro': { bg: '#9ED8F5', color: '#1A1A1A' },
-  'premiere':     { bg: '#9ED8F5', color: '#1A1A1A' },
-  'davinci resolve': { bg: '#F5C518', color: '#1A1A1A' },
-  'davinci':      { bg: '#F5C518', color: '#1A1A1A' },
-};
 function SoftwareChip({ software }: { software: string }) {
-  const key = (software ?? '').trim().toLowerCase();
-  const style = SOFTWARE_CHIP[key] ?? { bg: '#1A1A1A', color: '#F7F6F3' };
   return (
     <span
       className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
       style={{
-        backgroundColor: style.bg,
-        color: style.color,
+        backgroundColor: '#1A1A1A',
+        color: '#F7F6F3',
         fontSize: '10px',
         letterSpacing: '0.15em',
         padding: '4px 10px',
@@ -524,7 +515,15 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+      <div
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1"
+        style={{
+          background: 'linear-gradient(135deg, #F7F6F3 0%, #EEEDE8 100%)',
+          border: '1px solid #E5E4DF',
+          borderRadius: '6px',
+          padding: '20px 24px',
+        }}
+      >
         {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
@@ -581,10 +580,10 @@ function Pipeline() {
         </Select>
       </div>
 
-      <div className="rounded-[4px] border overflow-hidden" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
-        <table className="w-full text-sm">
-          <thead style={{ backgroundColor: '#EEEDE8' }}>
-            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.15em' }}>
+      <div className="rounded-[4px] border overflow-x-auto" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+        <table className="w-full text-sm" style={{ minWidth: '1100px' }}>
+          <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E8E7E2 100%)', borderBottom: '1px solid #D8D7D2' }}>
+            <tr className="mono uppercase text-[#75726B]" style={{ fontSize: '10px', letterSpacing: '0.12em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal whitespace-nowrap">Role</th>
@@ -592,7 +591,7 @@ function Pipeline() {
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '130px' }}>Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '160px' }}>Task</th>
-              <th className="text-left p-3 font-normal whitespace-nowrap">Applied</th>
+              <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
@@ -604,7 +603,14 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#F7F6F3] group" style={{ borderColor: '#EEEDE8', height: '56px' }} onClick={() => setSelected(app)}>
+                <tr
+                  key={app.id}
+                  className="border-b cursor-pointer group"
+                  style={{ borderColor: '#EEEDE8', height: '56px', transition: 'background 120ms ease' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'linear-gradient(135deg, #F7F6F3 0%, #F2F1EC 100%)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ''; }}
+                  onClick={() => setSelected(app)}
+                >
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
@@ -818,10 +824,16 @@ function Field({ label, value, children }: { label: string; value?: string; chil
 }
 
 function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) {
+  const baseStyle: React.CSSProperties = {
+    fontFamily: "'Inter', sans-serif",
+    fontWeight: 300,
+    fontSize: '12px',
+    color: '#75726B',
+  };
   if (app.trial_email_sent_at) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-foreground dark:text-accent">
-        <MailCheck className="w-3.5 h-3.5" />
+      <span className="inline-flex items-center gap-1" style={baseStyle}>
+        <MailCheck className="w-3.5 h-3.5" style={{ color: '#75726B' }} />
         {verbose ? `Sent ${formatDistanceToNow(new Date(app.trial_email_sent_at), { addSuffix: true })}` : 'Sent'}
       </span>
     );
@@ -830,13 +842,17 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     const due = new Date(app.trial_email_scheduled_for);
     const future = due.getTime() > Date.now();
     return (
-      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-destructive'}`}>
-        <Clock className="w-3.5 h-3.5" />
+      <span className="inline-flex items-center gap-1" style={baseStyle}>
+        <Clock className="w-3.5 h-3.5" style={{ color: '#75726B' }} />
         {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
       </span>
     );
   }
-  return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Mail className="w-3.5 h-3.5" /> Not queued</span>;
+  return (
+    <span className="inline-flex items-center gap-1" style={baseStyle}>
+      <Mail className="w-3.5 h-3.5" style={{ color: '#75726B' }} /> Not queued
+    </span>
+  );
 }
 
 /* ============== SHORTLIST ============== */
