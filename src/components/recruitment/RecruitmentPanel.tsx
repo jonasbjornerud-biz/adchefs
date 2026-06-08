@@ -100,6 +100,32 @@ function StageChip({ stage }: { stage: string }) {
   );
 }
 
+const SOFTWARE_CHIP: Record<string, { bg: string; color: string }> = {
+  'capcut':       { bg: '#E5484D', color: '#F7F6F3' },
+  'premiere pro': { bg: '#9ED8F5', color: '#1A1A1A' },
+  'premiere':     { bg: '#9ED8F5', color: '#1A1A1A' },
+  'davinci resolve': { bg: '#F5C518', color: '#1A1A1A' },
+  'davinci':      { bg: '#F5C518', color: '#1A1A1A' },
+};
+function SoftwareChip({ software }: { software: string }) {
+  const key = (software ?? '').trim().toLowerCase();
+  const style = SOFTWARE_CHIP[key] ?? { bg: '#1A1A1A', color: '#F7F6F3' };
+  return (
+    <span
+      className="inline-flex items-center whitespace-nowrap rounded-[4px] mono uppercase"
+      style={{
+        backgroundColor: style.bg,
+        color: style.color,
+        fontSize: '10px',
+        letterSpacing: '0.15em',
+        padding: '4px 10px',
+      }}
+    >
+      {software}
+    </span>
+  );
+}
+
 /* ---------------- Embed helpers ---------------- */
 function hostOf(url: string) { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } }
 function faviconFor(url: string) {
