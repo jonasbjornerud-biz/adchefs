@@ -603,7 +603,14 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
-                <tr key={app.id} className="border-b cursor-pointer transition-colors hover:bg-[#F7F6F3] group" style={{ borderColor: '#EEEDE8', height: '56px' }} onClick={() => setSelected(app)}>
+                <tr
+                  key={app.id}
+                  className="border-b cursor-pointer group"
+                  style={{ borderColor: '#EEEDE8', height: '56px', transition: 'background 120ms ease' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'linear-gradient(135deg, #F7F6F3 0%, #F2F1EC 100%)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ''; }}
+                  onClick={() => setSelected(app)}
+                >
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => updateApp(app.id, { starred: !app.starred } as any)}
