@@ -824,10 +824,16 @@ function Field({ label, value, children }: { label: string; value?: string; chil
 }
 
 function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) {
+  const baseStyle: React.CSSProperties = {
+    fontFamily: "'Inter', sans-serif",
+    fontWeight: 300,
+    fontSize: '12px',
+    color: '#75726B',
+  };
   if (app.trial_email_sent_at) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-foreground dark:text-accent">
-        <MailCheck className="w-3.5 h-3.5" />
+      <span className="inline-flex items-center gap-1" style={baseStyle}>
+        <MailCheck className="w-3.5 h-3.5" style={{ color: '#75726B' }} />
         {verbose ? `Sent ${formatDistanceToNow(new Date(app.trial_email_sent_at), { addSuffix: true })}` : 'Sent'}
       </span>
     );
@@ -836,13 +842,17 @@ function EmailStatus({ app, verbose }: { app: Application; verbose?: boolean }) 
     const due = new Date(app.trial_email_scheduled_for);
     const future = due.getTime() > Date.now();
     return (
-      <span className={`inline-flex items-center gap-1 text-xs ${future ? 'text-foreground dark:text-foreground' : 'text-destructive'}`}>
-        <Clock className="w-3.5 h-3.5" />
+      <span className="inline-flex items-center gap-1" style={baseStyle}>
+        <Clock className="w-3.5 h-3.5" style={{ color: '#75726B' }} />
         {verbose ? `${future ? 'Scheduled' : 'Overdue'} ${formatDistanceToNow(due, { addSuffix: true })}` : (future ? 'Scheduled' : 'Overdue')}
       </span>
     );
   }
-  return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Mail className="w-3.5 h-3.5" /> Not queued</span>;
+  return (
+    <span className="inline-flex items-center gap-1" style={baseStyle}>
+      <Mail className="w-3.5 h-3.5" style={{ color: '#75726B' }} /> Not queued
+    </span>
+  );
 }
 
 /* ============== SHORTLIST ============== */
