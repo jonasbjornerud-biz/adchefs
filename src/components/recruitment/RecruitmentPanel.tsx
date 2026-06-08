@@ -485,7 +485,7 @@ function Pipeline() {
   return (
     <div className="space-y-8">
       <div>
-        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-[14px] py-[8px]">
+        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-2 py-[3px]">
           PIPELINE
         </span>
         <h2
@@ -498,8 +498,8 @@ function Pipeline() {
       </div>
 
       {/* Stage counters */}
-      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
-        {([['all', 'All', apps.length] as const, ...STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
+      <div className="rounded-[4px] border p-1.5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3' }}>
+        {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
           const active = stageFilter === key;
           return (
             <button
@@ -508,19 +508,31 @@ function Pipeline() {
               className="group relative px-5 py-3 rounded-[4px] text-left transition-all duration-150"
               style={{
                 backgroundColor: active ? '#1A1A1A' : 'transparent',
-                color: active ? '#FAF8F3' : '#1A1A1A',
+                color: active ? '#F7F6F3' : '#1A1A1A',
               }}
               onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
               onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
-              <p className="mono text-[10px] uppercase tracking-[0.15em]" style={{ color: active ? 'rgba(250,248,243,0.65)' : '#75726B' }}>
+              <p
+                className="mono uppercase whitespace-nowrap"
+                style={{
+                  fontSize: '9px',
+                  letterSpacing: '0.12em',
+                  color: active ? 'rgba(247,246,243,0.7)' : '#75726B',
+                }}
+              >
                 {label}
               </p>
               <p
-                className="mt-1 text-[1.75rem] leading-none tracking-[-0.02em]"
-                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                className="mt-1 leading-none tracking-[-0.02em]"
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 600,
+                  fontSize: '2rem',
+                  color: active ? '#F7F6F3' : '#1A1A1A',
+                }}
               >
-                {String(count).padStart(2, '0')}
+                {count}
               </p>
               {active && (
                 <span className="absolute left-3 right-3 -bottom-px h-[2px]" style={{ backgroundColor: '#9ED8F5' }} />
