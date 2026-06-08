@@ -595,7 +595,7 @@ function Pipeline() {
       </div>
 
       <div className="rounded-[4px] border w-full" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3', overflowX: 'auto' }}>
-        <table className="w-full text-sm" style={{ minWidth: '1120px', borderCollapse: 'collapse' }}>
+        <table className="w-full text-sm" style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', borderBottom: '1px solid #D8D7D2' }}>
             <tr style={{ fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', color: '#75726B', fontSize: '10px', letterSpacing: '0.12em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
@@ -605,7 +605,7 @@ function Pipeline() {
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '120px' }}>Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '140px' }}>Email</th>
               <th className="text-left p-3 font-normal whitespace-nowrap" style={{ minWidth: '100px' }}>Task</th>
-              <th className="text-left p-3 font-normal" style={{ minWidth: '190px', width: '190px', whiteSpace: 'nowrap' }}>Applied</th>
+              <th className="text-left p-3 font-normal" style={{ minWidth: '170px', width: '170px', whiteSpace: 'nowrap', paddingRight: '24px' }}>Applied</th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
@@ -663,7 +663,7 @@ function Pipeline() {
                       </a>
                     ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
-                  <td className="p-3 text-xs text-muted-foreground" style={{ minWidth: '190px', width: '190px', whiteSpace: 'nowrap' }}>{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                  <td className="p-3 text-xs text-muted-foreground" style={{ minWidth: '170px', width: '170px', whiteSpace: 'nowrap', paddingRight: '24px' }}>{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost"
