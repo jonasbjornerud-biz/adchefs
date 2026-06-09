@@ -37,13 +37,34 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const accessToken = Deno.env.get('META_ACCESS_TOKEN');
-    const adAccountId = Deno.env.get('META_AD_ACCOUNT_ID');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+    // Resolve credentials: per-client first (based on caller), fall back to project env vars.
+    let accessToken: string | undefined = Deno.env.get('META_ACCESS_TOKEN') || undefined;
+    let adAccountId: string | undefined = Deno.env.get('META_AD_ACCOUNT_ID') || undefined;
+
+    const authHeader = req.headers.get('Authorization');
+    if (authHeader) {
+      try {
+        const callerClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } });
+        const { data: { user } } = await callerClient.auth.getUser();
+        if (user) {
+          const admin = createClient(supabaseUrl, supabaseKey);
+          const { data: clientRow } = await admin
+            .from('clients')
+            .select('meta_access_token, meta_ad_account_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          if (clientRow?.meta_access_token) accessToken = clientRow.meta_access_token;
+          if (clientRow?.meta_ad_account_id) adAccountId = clientRow.meta_ad_account_id;
+        }
+      } catch (_) { /* fall through to env defaults */ }
+    }
 
     if (!accessToken || !adAccountId) {
-      return new Response(JSON.stringify({ error: 'Missing Meta credentials' }), {
+      return new Response(JSON.stringify({ error: 'Meta Ads is not configured for this client yet.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
