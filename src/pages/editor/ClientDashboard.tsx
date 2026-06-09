@@ -6,7 +6,7 @@ import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
 import { LogOut, BarChart3, TrendingUp, ArrowRight, FileSpreadsheet, Zap } from 'lucide-react';
 import { getWeekToDateRange, formatCurrency, formatNumber } from '@/lib/weekToDate';
-import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
+
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -310,21 +310,6 @@ export default function ClientDashboard() {
           })}
         </div>
 
-        {/* Recruitment pipeline */}
-        <section className="mt-16">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 className="font-display text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.02em]">
-              Recruitment{' '}
-              <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
-                pipeline
-              </em>
-            </h2>
-            <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Live</span>
-          </div>
-          <div className="rounded-[4px] border border-[#E2E0D9] bg-white p-6">
-            <RecruitmentPanel />
-          </div>
-        </section>
 
         {/* Footer trust line */}
         <div className="mt-10 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
