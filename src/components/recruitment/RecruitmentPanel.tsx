@@ -790,10 +790,10 @@ function Pipeline() {
                   <td className="p-3">
                     {sub ? (
                       <a
-                        href={sub.submission_url}
+                        href={normalizeSubmissionUrl(sub.submission_url)}
                         target="_blank"
-                        rel="noreferrer"
-                        onClick={e => e.stopPropagation()}
+                        rel="noopener"
+                        onClick={(event) => openSubmissionUrl(sub.submission_url, event)}
                         className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
                         style={{
                           background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
@@ -951,12 +951,13 @@ function Pipeline() {
                       <Label className="text-xs">Trial submission</Label>
                       <EmbeddedSubmission url={sub.submission_url} />
                       <a
-                        href={sub.submission_url}
+                        href={normalizeSubmissionUrl(sub.submission_url)}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener"
+                        onClick={(event) => openSubmissionUrl(sub.submission_url, event)}
                         className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] hover:text-[#1A1A1A] transition-colors"
                       >
-                        <LinkFavicon url={sub.submission_url} /> Open on {hostOf(sub.submission_url) || 'source'} <ExternalLink className="w-3 h-3" />
+                        <LinkFavicon url={normalizeSubmissionUrl(sub.submission_url)} /> Open on {hostOf(sub.submission_url) || 'source'} <ExternalLink className="w-3 h-3" />
                       </a>
                       {sub.notes && <p className="text-xs text-muted-foreground whitespace-pre-wrap">{sub.notes}</p>}
                       <div className="flex gap-2 pt-1">
