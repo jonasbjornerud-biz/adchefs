@@ -5,6 +5,7 @@ export interface Client {
   username: string;
   is_admin: boolean;
   spreadsheet_id: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
