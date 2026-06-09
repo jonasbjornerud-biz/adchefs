@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil, Star, Play, X, ArrowRight } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -438,6 +439,7 @@ function Pipeline() {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [postingFilter, setPostingFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
+  const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc');
   const [config, setConfig] = useState<{ submission_form_url: string }>({ submission_form_url: '' });
 
   async function load() {
@@ -470,6 +472,17 @@ function Pipeline() {
     }
     return true;
   });
+
+  const isSubmittedView = stageFilter === 'trial_submitted';
+  const dateFor = (a: Application) => {
+    if (isSubmittedView) {
+      const s = subs.find(x => x.application_id === a.id) ||
+                subs.find(x => x.email.toLowerCase() === a.email.toLowerCase());
+      return new Date(s?.created_at ?? a.created_at).getTime();
+    }
+    return new Date(a.created_at).getTime();
+  };
+  const sorted = [...filtered].sort((a, b) => sortDir === 'desc' ? dateFor(b) - dateFor(a) : dateFor(a) - dateFor(b));
 
   async function updateApp(id: string, patch: Partial<Application>) {
     const { error } = await (supabase.from('applications' as never) as any).update(patch).eq('id', id);
@@ -616,15 +629,25 @@ function Pipeline() {
               <th className="text-left p-3 font-normal whitespace-nowrap">Stage</th>
               <th className="text-left p-3 font-normal whitespace-nowrap">Email</th>
               <th className="text-left p-3 font-normal whitespace-nowrap">Task</th>
-              <th className="text-left p-3 font-normal" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>Applied</th>
+              <th
+                className="text-left p-3 font-normal select-none cursor-pointer"
+                style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}
+                onClick={() => setSortDir(d => d === 'desc' ? 'asc' : 'desc')}
+                title="Toggle sort"
+              >
+                <span className="inline-flex items-center gap-1">
+                  {isSubmittedView ? 'Submitted' : 'Applied'}
+                  {sortDir === 'desc' ? <ArrowDown className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />}
+                </span>
+              </th>
               <th className="text-left p-3 font-normal w-8"></th>
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 && (
+            {sorted.length === 0 && (
               <tr><td colSpan={9} className="p-10 text-center mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">No applicants {stageFilter !== 'all' ? `in "${STAGE_LABEL[stageFilter]}"` : 'yet'}.</td></tr>
             )}
-            {filtered.map(app => {
+            {sorted.map(app => {
               const sub = subFor(app);
               const posting = postingFor(app);
               return (
@@ -666,15 +689,21 @@ function Pipeline() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="hover:underline transition-colors"
-                        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: '12px', color: '#75726B' }}
-                        title={sub.submission_url}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-[4px] transition-colors hover:opacity-90"
+                        style={{ backgroundColor: '#3B86A8', color: '#FFFFFF' }}
+                        title={`Watch submission · ${sub.submission_url}`}
+                        aria-label="Watch submission"
                       >
-                        {hostOf(sub.submission_url) || 'View'}
+                        <Play className="w-4 h-4" fill="currentColor" strokeWidth={0} />
                       </a>
                     ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
-                  <td className="p-3 text-xs text-muted-foreground" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>{formatDistanceToNow(new Date(app.created_at), { addSuffix: true })}</td>
+                  <td className="p-3 text-xs text-muted-foreground" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>
+                    {(() => {
+                      const ts = isSubmittedView && sub ? sub.created_at : app.created_at;
+                      return formatDistanceToNow(new Date(ts), { addSuffix: true });
+                    })()}
+                  </td>
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
                     <Button
                       variant="ghost"
