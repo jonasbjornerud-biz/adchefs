@@ -80,6 +80,32 @@ serve(async (req) => {
       return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    if (action === "update_client") {
+      const { client_id, brand_name, username, spreadsheet_id, logo_url, new_password } = payload;
+      const updates: any = { updated_at: new Date().toISOString() };
+      if (brand_name !== undefined) updates.brand_name = brand_name;
+      if (username !== undefined) updates.username = username;
+      if (spreadsheet_id !== undefined) updates.spreadsheet_id = spreadsheet_id || null;
+      if (logo_url !== undefined) updates.logo_url = logo_url || null;
+
+      const { data: existing } = await supabase.from("clients").select("user_id, username").eq("id", client_id).single();
+
+      const { error: updErr } = await supabase.from("clients").update(updates).eq("id", client_id);
+      if (updErr) return new Response(JSON.stringify({ error: updErr.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      if (existing?.user_id) {
+        const authUpdate: any = {};
+        if (new_password) authUpdate.password = new_password;
+        if (username && username !== existing.username) authUpdate.email = `${username}@playbook.local`;
+        if (Object.keys(authUpdate).length > 0) {
+          const { error: aErr } = await supabase.auth.admin.updateUserById(existing.user_id, authUpdate);
+          if (aErr) return new Response(JSON.stringify({ error: aErr.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+      }
+
+      return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     return new Response(JSON.stringify({ error: "Unknown action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
