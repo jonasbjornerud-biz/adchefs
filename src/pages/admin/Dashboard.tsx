@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, LogOut, Sparkles, ExternalLink } from 'lucide-react';
+import { Plus, Users, LogOut, Sparkles, ExternalLink, Pencil } from 'lucide-react';
 import { logout } from '@/lib/auth';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
-import { Pencil } from 'lucide-react';
 import ClientEditDialog from '@/components/admin/ClientEditDialog';
 
 type AdminDashboardProps = {
