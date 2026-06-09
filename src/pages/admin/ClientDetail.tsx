@@ -60,8 +60,8 @@ export default function ClientDetail() {
         </div>
       </div>
 
-      {/* Exact client portal view */}
-      <ClientDashboard clientOverride={client} />
+      {/* Exact client portal view (chrome hidden to keep admin's session safe from the Sign-out button) */}
+      <ClientDashboard clientOverride={client} hideChrome />
 
       <ClientEditDialog
         client={client}
