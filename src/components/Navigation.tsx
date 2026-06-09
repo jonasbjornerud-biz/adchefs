@@ -36,7 +36,7 @@ const Navigation = () => {
     >
       <div className="mx-auto max-w-[1200px] px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center" aria-label="AdChefs">
-          <img src={adchefsLogo.url} alt="AdChefs" className="h-5 w-auto" />
+          <img src={adchefsLogo.url} alt="AdChefs" className="h-8 w-auto" />
         </a>
 
         <div className="hidden md:flex items-center gap-9">

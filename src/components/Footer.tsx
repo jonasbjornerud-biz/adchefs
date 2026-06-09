@@ -11,7 +11,7 @@ const Footer = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="grid md:grid-cols-[1.5fr_1fr_1fr] gap-12 mb-16">
           <div>
-            <img src={adchefsLogo.url} alt="AdChefs" className="h-6 w-auto invert" />
+            <img src={adchefsLogo.url} alt="AdChefs" className="h-10 w-auto invert" />
             <p className="mt-4 text-[14px] text-background/60 leading-relaxed max-w-sm">
               A dedicated video editor matched to your e-commerce brand. Pay per video. No retainers, no agency markup, no rotating freelancers.
             </p>
