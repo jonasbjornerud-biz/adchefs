@@ -313,8 +313,11 @@ export default function ClientDashboard() {
         {/* Recruitment pipeline */}
         <section className="mt-16">
           <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-[28px] leading-[1.05] tracking-tight font-semibold">
-              Recruitment <em className="font-display italic font-normal text-[#9ED8F5]">pipeline</em>
+            <h2 className="font-display text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.02em]">
+              Recruitment{' '}
+              <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
+                pipeline
+              </em>
             </h2>
             <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Live</span>
           </div>
