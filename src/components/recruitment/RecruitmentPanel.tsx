@@ -540,9 +540,10 @@ function Pipeline() {
     const p = postingFor(app);
     if (!p) return { subject: '', body: '' };
     const base = config.submission_form_url || `${window.location.origin}/submit-task`;
+    const query = `?email=${encodeURIComponent(app.email)}&app=${encodeURIComponent(app.id)}`;
     const sub = p.submit_slug
-      ? `${base}-${p.submit_slug}?email=${encodeURIComponent(app.email)}`
-      : `${base}?email=${encodeURIComponent(app.email)}`;
+      ? `${base}-${p.submit_slug}${query}`
+      : `${base}${query}`;
     const subject = kind === 'trial' ? p.trial_email_subject : p.followup_email_subject;
     const raw = kind === 'trial' ? p.trial_email_body : p.followup_email_body;
     const body = (raw ?? '')

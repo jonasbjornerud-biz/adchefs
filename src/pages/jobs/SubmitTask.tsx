@@ -19,6 +19,10 @@ export default function SubmitTask() {
   const [params] = useSearchParams();
   const { submitSlug } = useParams<{ submitSlug?: string }>();
   const location = useLocation();
+  const applicationId = params.get('app') || params.get('application_id');
+  const validApplicationId = applicationId && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(applicationId)
+    ? applicationId
+    : null;
   const slugFromPath = location.pathname.startsWith('/submit-task-')
     ? location.pathname.replace('/submit-task-', '').split('/')[0]
     : undefined;
@@ -48,6 +52,7 @@ export default function SubmitTask() {
     if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? 'Check form'); return; }
     setSubmitting(true);
     const { error } = await supabase.from('trial_submissions').insert({
+      application_id: validApplicationId,
       email: parsed.data.email,
       submission_url: parsed.data.submission_url,
       notes: parsed.data.notes || null,
@@ -87,7 +92,7 @@ export default function SubmitTask() {
             Show us what you <em>edited.</em>
           </h2>
           <p className="mt-3 text-[14px] text-muted-foreground">
-            Make sure your link is publicly viewable. Google Drive, WeTransfer, Frame.io all work.
+            Paste the final video or folder link. Google Drive, WeTransfer, Frame.io all work.
           </p>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-5 bg-background border border-border rounded-[4px] p-8">
