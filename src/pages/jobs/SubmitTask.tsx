@@ -36,11 +36,9 @@ export default function SubmitTask() {
   useEffect(() => {
     if (!activeSubmitSlug) { setPosting(null); return; }
     (async () => {
-      const { data } = await (supabase.from('job_postings' as never) as any)
-        .select('title, brand')
-        .eq('submit_slug', activeSubmitSlug)
-        .maybeSingle();
-      if (data) setPosting(data as any);
+      const { data } = await (supabase as any).rpc('get_active_job_posting_by_submit_slug', { _submit_slug: activeSubmitSlug });
+      const row = Array.isArray(data) ? data[0] : data;
+      if (row) setPosting(row as any);
     })();
   }, [activeSubmitSlug]);
 
