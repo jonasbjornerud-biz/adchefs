@@ -220,7 +220,7 @@ export default function ClientDashboard() {
       </section>
 
       {/* Cards */}
-      <main className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+      <main className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {cards.map((card, idx) => {
             const Icon = card.icon;
