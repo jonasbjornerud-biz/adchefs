@@ -45,13 +45,16 @@ serve(async (req) => {
     if (!adminCheck?.is_admin) return new Response(JSON.stringify({ error: "Not an admin" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     if (action === "create_client") {
-      const { username, password, brand_name, spreadsheet_id } = payload;
+      const { username, password, brand_name, spreadsheet_id, meta_access_token, meta_ad_account_id, logo_url } = payload;
       const email = `${username}@playbook.local`;
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({ email, password, email_confirm: true });
       if (authError) return new Response(JSON.stringify({ error: authError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-      const insertData: any = { user_id: authData.user.id, brand_name, username, is_admin: false };
+      const insertData: any = { user_id: authData.user.id, brand_name, username, is_admin: false, current_password: password };
       if (spreadsheet_id) insertData.spreadsheet_id = spreadsheet_id;
+      if (meta_access_token) insertData.meta_access_token = meta_access_token;
+      if (meta_ad_account_id) insertData.meta_ad_account_id = meta_ad_account_id;
+      if (logo_url) insertData.logo_url = logo_url;
 
       const { data: clientData, error: clientError } = await supabase.from("clients").insert(insertData).select().single();
       if (clientError) {
@@ -81,12 +84,15 @@ serve(async (req) => {
     }
 
     if (action === "update_client") {
-      const { client_id, brand_name, username, spreadsheet_id, logo_url, new_password } = payload;
+      const { client_id, brand_name, username, spreadsheet_id, logo_url, new_password, meta_access_token, meta_ad_account_id } = payload;
       const updates: any = { updated_at: new Date().toISOString() };
       if (brand_name !== undefined) updates.brand_name = brand_name;
       if (username !== undefined) updates.username = username;
       if (spreadsheet_id !== undefined) updates.spreadsheet_id = spreadsheet_id || null;
       if (logo_url !== undefined) updates.logo_url = logo_url || null;
+      if (meta_access_token !== undefined) updates.meta_access_token = meta_access_token || null;
+      if (meta_ad_account_id !== undefined) updates.meta_ad_account_id = meta_ad_account_id || null;
+      if (new_password) updates.current_password = new_password;
 
       const { data: existing } = await supabase.from("clients").select("user_id, username").eq("id", client_id).single();
 

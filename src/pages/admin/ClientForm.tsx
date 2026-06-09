@@ -17,6 +17,8 @@ export default function ClientForm() {
   const { toast } = useToast();
   const [brandName, setBrandName] = useState('');
   const [sheetUrl, setSheetUrl] = useState('');
+  const [metaAccessToken, setMetaAccessToken] = useState('');
+  const [metaAdAccountId, setMetaAdAccountId] = useState('');
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState<{ username: string; password: string } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -31,7 +33,15 @@ export default function ClientForm() {
       const spreadsheetId = sheetUrl.trim() ? extractSheetId(sheetUrl.trim()) : null;
 
       const { data, error } = await supabase.functions.invoke('manage-clients', {
-        body: { action: 'create_client', username, password, brand_name: brandName.trim(), spreadsheet_id: spreadsheetId },
+        body: {
+          action: 'create_client',
+          username,
+          password,
+          brand_name: brandName.trim(),
+          spreadsheet_id: spreadsheetId,
+          meta_access_token: metaAccessToken.trim() || null,
+          meta_ad_account_id: metaAdAccountId.trim() || null,
+        },
       });
 
       if (error) throw error;
@@ -100,6 +110,32 @@ export default function ClientForm() {
               {sheetUrl && !extractSheetId(sheetUrl) && (
                 <p className="text-xs text-destructive mt-1">Invalid Google Sheets URL</p>
               )}
+            </div>
+            <div className="pt-2 border-t border-border">
+              <p className="text-sm font-semibold text-foreground mb-3">Meta Ads (optional)</p>
+              <p className="text-xs text-muted-foreground mb-3">
+                Add the client's own Meta access token + ad account ID to power their KPI dashboard. Both can be edited later.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-medium text-foreground mb-1.5 block">Meta Access Token</label>
+                  <Input
+                    value={metaAccessToken}
+                    onChange={(e) => setMetaAccessToken(e.target.value)}
+                    placeholder="EAAB..."
+                    className="max-w-md font-mono text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-foreground mb-1.5 block">Meta Ad Account ID</label>
+                  <Input
+                    value={metaAdAccountId}
+                    onChange={(e) => setMetaAdAccountId(e.target.value)}
+                    placeholder="act_1234567890"
+                    className="max-w-md font-mono text-xs"
+                  />
+                </div>
+              </div>
             </div>
             <Button onClick={handleCreate} disabled={!brandName.trim() || loading} className="bg-foreground hover:bg-foreground/90 text-white">
               {loading ? 'Creating...' : 'Create Client'}

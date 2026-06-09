@@ -113,9 +113,12 @@ export type Database = {
         Row: {
           brand_name: string
           created_at: string
+          current_password: string | null
           id: string
           is_admin: boolean
           logo_url: string | null
+          meta_access_token: string | null
+          meta_ad_account_id: string | null
           spreadsheet_id: string | null
           updated_at: string
           user_id: string | null
@@ -124,9 +127,12 @@ export type Database = {
         Insert: {
           brand_name: string
           created_at?: string
+          current_password?: string | null
           id?: string
           is_admin?: boolean
           logo_url?: string | null
+          meta_access_token?: string | null
+          meta_ad_account_id?: string | null
           spreadsheet_id?: string | null
           updated_at?: string
           user_id?: string | null
@@ -135,9 +141,12 @@ export type Database = {
         Update: {
           brand_name?: string
           created_at?: string
+          current_password?: string | null
           id?: string
           is_admin?: boolean
           logo_url?: string | null
+          meta_access_token?: string | null
+          meta_ad_account_id?: string | null
           spreadsheet_id?: string | null
           updated_at?: string
           user_id?: string | null
