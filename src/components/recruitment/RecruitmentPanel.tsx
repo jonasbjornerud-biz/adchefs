@@ -179,6 +179,30 @@ function LinkFavicon({ url, size = 16 }: { url: string; size?: number }) {
 
 function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
   const e = embedFor(url);
+  // Drive URLs: never render a preview card — only show Open + Copy buttons.
+  if (/drive\.google\.com/.test(url)) {
+    return (
+      <div className="flex items-center gap-2">
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 rounded-[3px] px-3 py-1.5 mono text-[10px] uppercase tracking-[0.15em]"
+          style={{ backgroundColor: '#1A1A1A', color: '#FAF8F3' }}
+        >
+          Open <ExternalLink className="w-3 h-3" />
+        </a>
+        <button
+          type="button"
+          onClick={(event) => { event.stopPropagation(); copySubmissionUrl(url); }}
+          className="inline-flex items-center gap-1 rounded-[3px] border px-3 py-1.5 mono text-[10px] uppercase tracking-[0.15em]"
+          style={{ borderColor: '#D8D7D2', color: '#75726B' }}
+        >
+          Copy <Copy className="w-3 h-3" />
+        </button>
+      </div>
+    );
+  }
   if (e.kind === 'iframe' && e.src) {
     return (
       <div className={`relative w-full overflow-hidden rounded-[4px] border ${compact ? '' : ''}`} style={{ borderColor: '#E2E0D9', backgroundColor: '#000', aspectRatio: '16 / 9' }}>
