@@ -9,6 +9,32 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
 import ClientEditDialog from '@/components/admin/ClientEditDialog';
 
+function ClientAvatar({ client, onClick }: { client: Client; onClick: () => void }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!client.logo_url) { setUrl(null); return; }
+    supabase.storage.from('module-assets').createSignedUrl(client.logo_url, 60 * 60)
+      .then(({ data }) => { if (!cancelled) setUrl(data?.signedUrl || null); });
+    return () => { cancelled = true; };
+  }, [client.logo_url]);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-10 h-10 rounded-[4px] flex items-center justify-center text-background cursor-pointer hover:opacity-90 overflow-hidden"
+      style={{ backgroundColor: '#1A1A1A', fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+      aria-label={`Open ${client.brand_name} portal`}
+    >
+      {url ? (
+        <img src={url} alt={client.brand_name} className="w-full h-full object-cover" />
+      ) : (
+        client.brand_name.charAt(0).toUpperCase()
+      )}
+    </button>
+  );
+}
+
 type AdminDashboardProps = {
   initialTab?: 'clients' | 'recruitment';
 };
@@ -171,15 +197,7 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
                         <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/admin/clients/${client.id}`)}
-                          className="w-10 h-10 rounded-[4px] flex items-center justify-center text-background cursor-pointer hover:opacity-90"
-                          style={{ backgroundColor: '#1A1A1A', fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
-                          aria-label={`Open ${client.brand_name} portal`}
-                        >
-                          {client.brand_name.charAt(0).toUpperCase()}
-                        </button>
+                        <ClientAvatar client={client} onClick={() => navigate(`/admin/clients/${client.id}`)} />
                         <button
                           type="button"
                           onClick={() => navigate(`/admin/clients/${client.id}`)}
