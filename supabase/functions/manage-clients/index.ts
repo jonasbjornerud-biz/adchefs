@@ -50,10 +50,8 @@ serve(async (req) => {
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({ email, password, email_confirm: true });
       if (authError) return new Response(JSON.stringify({ error: authError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-      const insertData: any = { user_id: authData.user.id, brand_name, username, is_admin: false, current_password: password };
+      const insertData: any = { user_id: authData.user.id, brand_name, username, is_admin: false };
       if (spreadsheet_id) insertData.spreadsheet_id = spreadsheet_id;
-      if (meta_access_token) insertData.meta_access_token = meta_access_token;
-      if (meta_ad_account_id) insertData.meta_ad_account_id = meta_ad_account_id;
       if (logo_url) insertData.logo_url = logo_url;
 
       const { data: clientData, error: clientError } = await supabase.from("clients").insert(insertData).select().single();
@@ -61,6 +59,13 @@ serve(async (req) => {
         await supabase.auth.admin.deleteUser(authData.user.id);
         return new Response(JSON.stringify({ error: clientError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
+
+      await supabase.from("client_secrets").insert({
+        client_id: clientData.id,
+        current_password: password ?? null,
+        meta_access_token: meta_access_token || null,
+        meta_ad_account_id: meta_ad_account_id || null,
+      });
 
       return new Response(JSON.stringify({ client_id: clientData.id }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -90,14 +95,22 @@ serve(async (req) => {
       if (username !== undefined) updates.username = username;
       if (spreadsheet_id !== undefined) updates.spreadsheet_id = spreadsheet_id || null;
       if (logo_url !== undefined) updates.logo_url = logo_url || null;
-      if (meta_access_token !== undefined) updates.meta_access_token = meta_access_token || null;
-      if (meta_ad_account_id !== undefined) updates.meta_ad_account_id = meta_ad_account_id || null;
-      if (new_password) updates.current_password = new_password;
 
       const { data: existing } = await supabase.from("clients").select("user_id, username").eq("id", client_id).single();
 
       const { error: updErr } = await supabase.from("clients").update(updates).eq("id", client_id);
       if (updErr) return new Response(JSON.stringify({ error: updErr.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      // Upsert secrets if any of those fields changed
+      const secretsUpdate: any = {};
+      if (meta_access_token !== undefined) secretsUpdate.meta_access_token = meta_access_token || null;
+      if (meta_ad_account_id !== undefined) secretsUpdate.meta_ad_account_id = meta_ad_account_id || null;
+      if (new_password) secretsUpdate.current_password = new_password;
+      if (Object.keys(secretsUpdate).length > 0) {
+        secretsUpdate.client_id = client_id;
+        secretsUpdate.updated_at = new Date().toISOString();
+        await supabase.from("client_secrets").upsert(secretsUpdate, { onConflict: "client_id" });
+      }
 
       if (existing?.user_id) {
         const authUpdate: any = {};
