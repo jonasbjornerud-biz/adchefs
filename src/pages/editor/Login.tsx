@@ -74,17 +74,11 @@ export default function Login() {
       />
 
       <div className="relative w-full max-w-[420px]">
-        {/* Logo */}
-        <div className="flex justify-center mb-10">
-          <img src={adchefsLogo.url} alt="AdChefs" className="h-16 w-auto" />
-        </div>
-
         {/* Card */}
         <div className="relative rounded-[4px] border border-foreground/10 bg-white/70 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(15,40,70,0.18)] p-8">
           <div className="mb-7">
-            <span className="eyebrow eyebrow-accent inline-block mb-4">Client portal</span>
             <h1 className="font-display text-[28px] leading-tight text-foreground font-semibold tracking-tight">
-              Welcome <em>back</em>.
+              Welcome back.
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5">
               Sign in to access your dashboard.
