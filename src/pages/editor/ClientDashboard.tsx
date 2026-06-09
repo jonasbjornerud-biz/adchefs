@@ -6,6 +6,7 @@ import { Client } from '@/types/playbook';
 import { logout } from '@/lib/auth';
 import { LogOut, BarChart3, TrendingUp, ArrowRight, FileSpreadsheet, Zap } from 'lucide-react';
 import { getWeekToDateRange, formatCurrency, formatNumber } from '@/lib/weekToDate';
+import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -190,12 +191,11 @@ export default function ClientDashboard() {
 
       {/* Hero band */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-12">
-        <span className="eyebrow eyebrow-accent">Client Portal — {wtd.label}</span>
-        <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
-          Welcome back, <em>{client.brand_name}</em>.
+        <h1 className="text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
+          Welcome back, <em className="font-display italic font-normal text-[#9ED8F5]">{client.brand_name}</em>.
         </h1>
         <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
-          Two workspaces. Editor output on one side, paid performance on the other. Pick where you want to look.
+          Here's where things stand today.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
       </section>
@@ -290,6 +290,19 @@ export default function ClientDashboard() {
             );
           })}
         </div>
+
+        {/* Recruitment pipeline */}
+        <section className="mt-16">
+          <div className="mb-6 flex items-end justify-between">
+            <h2 className="text-[28px] leading-[1.05] tracking-tight font-semibold">
+              Recruitment <em className="font-display italic font-normal text-[#9ED8F5]">pipeline</em>
+            </h2>
+            <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Live</span>
+          </div>
+          <div className="rounded-[4px] border border-[#E2E0D9] bg-white p-6">
+            <RecruitmentPanel />
+          </div>
+        </section>
 
         {/* Footer trust line */}
         <div className="mt-10 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
