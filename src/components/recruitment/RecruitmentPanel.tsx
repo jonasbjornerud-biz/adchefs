@@ -657,6 +657,8 @@ function Pipeline() {
               const sub = subFor(app);
               const posting = postingFor(app);
               const isRejected = app.stage === 'rejected';
+              const isNotQualified = app.qualifies === false;
+              const isDimmed = isRejected || isNotQualified;
               const isShortlisted = app.starred && app.stage === 'trial_submitted';
               const baseBg = isShortlisted
                 ? 'linear-gradient(90deg, #DCF5E5 0%, #F4FBF6 55%, #FAF8F3 100%)'
@@ -673,10 +675,10 @@ function Pipeline() {
                     height: '56px',
                     transition: 'background 120ms ease',
                     background: baseBg,
-                    opacity: isRejected ? 0.55 : 1,
-                    textDecoration: isRejected ? 'line-through' : 'none',
-                    textDecorationColor: isRejected ? '#9A968D' : undefined,
-                    color: isRejected ? '#9A968D' : undefined,
+                    opacity: isDimmed ? 0.55 : 1,
+                    textDecoration: isDimmed ? 'line-through' : 'none',
+                    textDecorationColor: isDimmed ? '#9A968D' : undefined,
+                    color: isDimmed ? '#9A968D' : undefined,
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = hoverBg; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = baseBg; }}
