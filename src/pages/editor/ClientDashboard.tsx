@@ -189,19 +189,38 @@ export default function ClientDashboard() {
         </div>
       </header>
 
-      {/* Hero band */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-12">
-        <h1 className="text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
-          Welcome back, <em className="font-display italic font-normal text-[#9ED8F5]">{client.brand_name}</em>.
-        </h1>
-        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
-          Here's where things stand today.
-        </p>
-        <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
+      {/* Hero band — dark, matches job detail */}
+      <section className="relative z-10 bg-foreground text-background overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        <div
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 65%)',
+            filter: 'blur(40px)',
+          }}
+        />
+        <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-20">
+          <h1 className="font-display text-[48px] sm:text-[64px] md:text-[76px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
+            Welcome back,{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
+              {client.brand_name}
+            </em>
+            .
+          </h1>
+          <p className="mt-6 text-[15px] text-background/65 max-w-xl leading-relaxed">
+            Here's where things stand today.
+          </p>
+        </div>
       </section>
 
       {/* Cards */}
-      <main className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+      <main className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {cards.map((card, idx) => {
             const Icon = card.icon;
@@ -294,8 +313,11 @@ export default function ClientDashboard() {
         {/* Recruitment pipeline */}
         <section className="mt-16">
           <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-[28px] leading-[1.05] tracking-tight font-semibold">
-              Recruitment <em className="font-display italic font-normal text-[#9ED8F5]">pipeline</em>
+            <h2 className="font-display text-[28px] md:text-[36px] leading-[1.05] tracking-[-0.02em]">
+              Recruitment{' '}
+              <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
+                pipeline
+              </em>
             </h2>
             <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Live</span>
           </div>
