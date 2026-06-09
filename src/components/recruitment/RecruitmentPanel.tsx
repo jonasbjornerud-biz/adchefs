@@ -463,6 +463,13 @@ function Pipeline() {
     acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
   counts['shortlist'] = scopedApps.filter(a => a.starred).length;
+  counts['trial_submitted'] = scopedApps.filter(a => {
+    if (a.stage === 'trial_submitted') return true;
+    if (a.stage === 'rejected') {
+      return subs.some(s => s.application_id === a.id || s.email.toLowerCase() === a.email.toLowerCase());
+    }
+    return false;
+  }).length;
 
   const filtered = scopedApps.filter(a => {
     if (stageFilter === 'shortlist') {
