@@ -467,6 +467,10 @@ function Pipeline() {
   const filtered = scopedApps.filter(a => {
     if (stageFilter === 'shortlist') {
       if (!a.starred) return false;
+    } else if (stageFilter === 'trial_submitted') {
+      // Keep rejected applicants visible in the Submitted view if they have a submission
+      const hasSub = subs.some(s => s.application_id === a.id || s.email.toLowerCase() === a.email.toLowerCase());
+      if (a.stage !== 'trial_submitted' && !(a.stage === 'rejected' && hasSub)) return false;
     } else if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
     if (search) {
       const q = search.toLowerCase();
@@ -652,13 +656,30 @@ function Pipeline() {
             {sorted.map(app => {
               const sub = subFor(app);
               const posting = postingFor(app);
+              const isRejected = app.stage === 'rejected';
+              const isShortlisted = app.starred && app.stage === 'trial_submitted';
+              const baseBg = isShortlisted
+                ? 'linear-gradient(90deg, #DCF5E5 0%, #F4FBF6 55%, #FAF8F3 100%)'
+                : '';
+              const hoverBg = isShortlisted
+                ? 'linear-gradient(90deg, #CFEFDB 0%, #ECF8EF 55%, #F2F1EC 100%)'
+                : 'linear-gradient(135deg, #F7F6F3 0%, #F2F1EC 100%)';
               return (
                 <tr
                   key={app.id}
                   className="border-b cursor-pointer group"
-                  style={{ borderColor: '#EEEDE8', height: '56px', transition: 'background 120ms ease' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = 'linear-gradient(135deg, #F7F6F3 0%, #F2F1EC 100%)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = ''; }}
+                  style={{
+                    borderColor: '#EEEDE8',
+                    height: '56px',
+                    transition: 'background 120ms ease',
+                    background: baseBg,
+                    opacity: isRejected ? 0.55 : 1,
+                    textDecoration: isRejected ? 'line-through' : 'none',
+                    textDecorationColor: isRejected ? '#9A968D' : undefined,
+                    color: isRejected ? '#9A968D' : undefined,
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = hoverBg; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = baseBg; }}
                   onClick={() => setSelected(app)}
                 >
                   <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
