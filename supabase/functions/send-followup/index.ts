@@ -108,9 +108,10 @@ Deno.serve(async (req) => {
   }
 
   const base = cfg?.submission_form_url || ''
+  const query = `?email=${encodeURIComponent(app.email)}&app=${encodeURIComponent(app.id)}`
   const submitUrl = base && posting.submit_slug
-    ? `${base}-${posting.submit_slug}?email=${encodeURIComponent(app.email)}`
-    : (base ? `${base}?email=${encodeURIComponent(app.email)}` : '')
+    ? `${base}-${posting.submit_slug}${query}`
+    : (base ? `${base}${query}` : '')
   const vars = {
     first_name: app.first_name,
     last_name: app.last_name,
