@@ -462,9 +462,12 @@ function Pipeline() {
   const counts = STAGES.reduce<Record<string, number>>((acc, st) => {
     acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
+  counts['shortlist'] = scopedApps.filter(a => a.starred).length;
 
   const filtered = scopedApps.filter(a => {
-    if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
+    if (stageFilter === 'shortlist') {
+      if (!a.starred) return false;
+    } else if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
     if (search) {
       const q = search.toLowerCase();
       if (!`${a.first_name} ${a.last_name} ${a.email}`.toLowerCase().includes(q)) return false;
