@@ -689,12 +689,16 @@ function Pipeline() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-[4px] transition-colors hover:opacity-90"
-                        style={{ backgroundColor: '#3B86A8', color: '#FFFFFF' }}
+                        className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
+                        style={{
+                          background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
+                          color: '#1A4A6B',
+                          padding: '4px 10px',
+                        }}
                         title={`Watch submission · ${sub.submission_url}`}
                         aria-label="Watch submission"
                       >
-                        <Play className="w-4 h-4" fill="currentColor" strokeWidth={0} />
+                        <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
                       </a>
                     ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
