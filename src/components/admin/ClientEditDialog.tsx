@@ -40,6 +40,7 @@ export default function ClientEditDialog({ client, open, onOpenChange, onSaved, 
   const [showMetaToken, setShowMetaToken] = useState(false);
   const [metaAccountId, setMetaAccountId] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [originalPassword, setOriginalPassword] = useState('');
 
   useEffect(() => {
     if (!client || !open) return;
@@ -47,12 +48,24 @@ export default function ClientEditDialog({ client, open, onOpenChange, onSaved, 
     setUsername(client.username);
     setSheetUrl(client.spreadsheet_id || '');
     setLogoPath(client.logo_url || null);
-    setPassword(client.current_password || '');
-    setMetaToken(client.meta_access_token || '');
-    setMetaAccountId(client.meta_ad_account_id || '');
+    setPassword('');
+    setOriginalPassword('');
+    setMetaToken('');
+    setMetaAccountId('');
     setShowPw(false);
     setShowMetaToken(false);
     (async () => {
+      const { data: secrets } = await (supabase as any)
+        .from('client_secrets')
+        .select('current_password, meta_access_token, meta_ad_account_id')
+        .eq('client_id', client.id)
+        .maybeSingle();
+      if (secrets) {
+        setPassword(secrets.current_password || '');
+        setOriginalPassword(secrets.current_password || '');
+        setMetaToken(secrets.meta_access_token || '');
+        setMetaAccountId(secrets.meta_ad_account_id || '');
+      }
       if (client.logo_url) {
         const { data: signed } = await supabase.storage.from('module-assets').createSignedUrl(client.logo_url, 60 * 60);
         setLogoPreview(signed?.signedUrl || null);
@@ -126,7 +139,7 @@ export default function ClientEditDialog({ client, open, onOpenChange, onSaved, 
       meta_access_token: metaToken.trim() || null,
       meta_ad_account_id: metaAccountId.trim() || null,
     };
-    if (password && password !== (client.current_password || '')) {
+    if (password && password !== originalPassword) {
       payload.new_password = password;
     }
     const { data, error } = await supabase.functions.invoke('manage-clients', { body: payload });

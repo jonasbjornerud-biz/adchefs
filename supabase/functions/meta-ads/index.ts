@@ -54,11 +54,18 @@ Deno.serve(async (req) => {
           const admin = createClient(supabaseUrl, supabaseKey);
           const { data: clientRow } = await admin
             .from('clients')
-            .select('meta_access_token, meta_ad_account_id')
+            .select('id')
             .eq('user_id', user.id)
             .maybeSingle();
-          if (clientRow?.meta_access_token) accessToken = clientRow.meta_access_token;
-          if (clientRow?.meta_ad_account_id) adAccountId = clientRow.meta_ad_account_id;
+          if (clientRow?.id) {
+            const { data: secrets } = await admin
+              .from('client_secrets')
+              .select('meta_access_token, meta_ad_account_id')
+              .eq('client_id', clientRow.id)
+              .maybeSingle();
+            if (secrets?.meta_access_token) accessToken = secrets.meta_access_token;
+            if (secrets?.meta_ad_account_id) adAccountId = secrets.meta_ad_account_id;
+          }
         }
       } catch (_) { /* fall through to env defaults */ }
     }

@@ -109,16 +109,45 @@ export type Database = {
           },
         ]
       }
+      client_secrets: {
+        Row: {
+          client_id: string
+          current_password: string | null
+          meta_access_token: string | null
+          meta_ad_account_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          current_password?: string | null
+          meta_access_token?: string | null
+          meta_ad_account_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          current_password?: string | null
+          meta_access_token?: string | null
+          meta_ad_account_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_secrets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           brand_name: string
           created_at: string
-          current_password: string | null
           id: string
           is_admin: boolean
           logo_url: string | null
-          meta_access_token: string | null
-          meta_ad_account_id: string | null
           spreadsheet_id: string | null
           updated_at: string
           user_id: string | null
@@ -127,12 +156,9 @@ export type Database = {
         Insert: {
           brand_name: string
           created_at?: string
-          current_password?: string | null
           id?: string
           is_admin?: boolean
           logo_url?: string | null
-          meta_access_token?: string | null
-          meta_ad_account_id?: string | null
           spreadsheet_id?: string | null
           updated_at?: string
           user_id?: string | null
@@ -141,12 +167,9 @@ export type Database = {
         Update: {
           brand_name?: string
           created_at?: string
-          current_password?: string | null
           id?: string
           is_admin?: boolean
           logo_url?: string | null
-          meta_access_token?: string | null
-          meta_ad_account_id?: string | null
           spreadsheet_id?: string | null
           updated_at?: string
           user_id?: string | null
@@ -397,8 +420,41 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_active_job_posting: {
+        Args: { _slug: string }
+        Returns: {
+          brand: string
+          description: string
+          id: string
+          junior_pay: string
+          senior_pay: string
+          slug: string
+          submit_slug: string
+          title: string
+        }[]
+      }
+      get_active_job_posting_by_submit_slug: {
+        Args: { _submit_slug: string }
+        Returns: {
+          brand: string
+          title: string
+        }[]
+      }
       get_client_id: { Args: { _user_id: string }; Returns: string }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      list_active_job_postings: {
+        Args: never
+        Returns: {
+          brand: string
+          description: string
+          id: string
+          junior_pay: string
+          senior_pay: string
+          slug: string
+          submit_slug: string
+          title: string
+        }[]
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
