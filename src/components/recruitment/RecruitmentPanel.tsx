@@ -782,6 +782,18 @@ function Pipeline() {
                       </Select>
                     </div>
                     <EmailStatus app={selected} verbose />
+                    {selected.stage !== 'rejected' && (
+                      <Button
+                        onClick={() => updateApp(selected.id, { stage: 'rejected', proceed: false, reviewed_at: new Date().toISOString() })}
+                        className="w-full mt-2 rounded-[4px] h-11 text-[13px] font-medium tracking-[-0.01em]"
+                        style={{
+                          background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
+                          color: '#6B1A1A',
+                        }}
+                      >
+                        <XCircle className="w-4 h-4 mr-2" /> Reject applicant
+                      </Button>
+                    )}
                   </div>
 
                   {posting && (
