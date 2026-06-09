@@ -750,7 +750,7 @@ function Pipeline() {
                       <a
                         href={sub.submission_url}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                         className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
                         style={{
@@ -828,7 +828,7 @@ function Pipeline() {
                     <Field label="Software" value={selected.software} />
                     <Field label="Availability" value={selected.availability} />
                   </div>
-                  {selected.portfolio_url && <Field label="Portfolio"><a href={selected.portfolio_url} target="_blank" rel="noreferrer" className="text-primary underline break-all">{selected.portfolio_url}</a></Field>}
+                  {selected.portfolio_url && <Field label="Portfolio"><a href={selected.portfolio_url} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all">{selected.portfolio_url}</a></Field>}
                   {selected.years_experience && <Field label="Experience" value={selected.years_experience} />}
                   {selected.additional_info && <Field label="Notes"><p className="text-sm whitespace-pre-wrap">{selected.additional_info}</p></Field>}
 
@@ -911,7 +911,7 @@ function Pipeline() {
                       <a
                         href={sub.submission_url}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] hover:text-[#1A1A1A] transition-colors"
                       >
                         <LinkFavicon url={sub.submission_url} /> Open on {hostOf(sub.submission_url) || 'source'} <ExternalLink className="w-3 h-3" />
