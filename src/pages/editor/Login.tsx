@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import adchefsLogo from '@/assets/adchefs-logo.png.asset.json';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -52,75 +53,98 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#09090B' }}>
-      {/* Dot grid background */}
-      <div className="fixed inset-0 pointer-events-none" style={{
-        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)',
-        backgroundSize: '24px 24px',
-      }} />
-      {/* Radial glow */}
-      <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at center, rgba(158, 216, 245,0.08) 0%, transparent 60%)',
-      }} />
+    <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-white">
+      {/* Soft blue gradient wash */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(158,216,245,0.55) 0%, transparent 60%), radial-gradient(ellipse 70% 50% at 90% 90%, rgba(158,216,245,0.45) 0%, transparent 60%), linear-gradient(180deg, #ffffff 0%, #f4fbff 100%)',
+        }}
+      />
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.35]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(26,26,26,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,26,26,0.04) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+        }}
+      />
 
-      <div className="relative w-full max-w-sm space-y-8">
+      <div className="relative w-full max-w-[420px]">
         {/* Logo */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-foreground to-foreground flex items-center justify-center text-white text-sm font-bold">A</div>
-            <span className="text-white/80 text-sm font-medium tracking-wide">AdChefs</span>
-          </div>
-          <h1 className="text-2xl font-semibold text-white">Welcome back</h1>
-          <p className="text-sm text-white/40 mt-1">Sign in to your client portal</p>
+        <div className="flex justify-center mb-10">
+          <img src={adchefsLogo.url} alt="AdChefs" className="h-16 w-auto" />
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="text-xs font-medium text-white/60 block mb-1.5">Username</label>
-            <Input
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="Enter your username"
-              autoComplete="username"
-              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-accent/50 focus:ring-accent/30 h-10"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-medium text-white/60 block mb-1.5">Password</label>
-            <Input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              className="bg-white/[0.06] border-white/[0.08] text-white placeholder:text-white/20 focus:border-accent/50 focus:ring-accent/30 h-10"
-            />
+        {/* Card */}
+        <div className="relative rounded-[4px] border border-foreground/10 bg-white/70 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(15,40,70,0.18)] p-8">
+          <div className="mb-7">
+            <span className="eyebrow eyebrow-accent inline-block mb-4">Client portal</span>
+            <h1 className="font-display text-[28px] leading-tight text-foreground font-semibold tracking-tight">
+              Welcome <em>back</em>.
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1.5">
+              Sign in to access your dashboard.
+            </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="remember"
-              checked={rememberMe}
-              onCheckedChange={(checked) => setRememberMe(checked === true)}
-              className="border-white/20 data-[state=checked]:bg-accent data-[state=checked]:border-accent"
-            />
-            <label htmlFor="remember" className="text-xs text-white/40 cursor-pointer select-none">
-              Remember me
-            </label>
-          </div>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
+                Username
+              </label>
+              <Input
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="yourname"
+                autoComplete="username"
+                className="h-11 bg-white border-foreground/15 rounded-[4px] focus-visible:ring-accent focus-visible:border-accent text-foreground placeholder:text-muted-foreground/60"
+              />
+            </div>
+            <div>
+              <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
+                Password
+              </label>
+              <Input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className="h-11 bg-white border-foreground/15 rounded-[4px] focus-visible:ring-accent focus-visible:border-accent text-foreground placeholder:text-muted-foreground/60"
+              />
+            </div>
 
-          <Button
-            type="submit"
-            disabled={loading || !username || !password}
-            className="w-full h-10 bg-gradient-to-r from-foreground to-foreground hover:from-foreground/90 hover:to-foreground/90 text-white border-0 shadow-lg shadow-foreground/20 transition-all duration-200"
-          >
-            <LogIn className="w-4 h-4 mr-2" />
-            {loading ? 'Signing in...' : 'Sign In'}
-          </Button>
-        </form>
+            <div className="flex items-center gap-2 pt-1">
+              <Checkbox
+                id="remember"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked === true)}
+                className="border-foreground/25 data-[state=checked]:bg-foreground data-[state=checked]:border-foreground data-[state=checked]:text-background rounded-[3px]"
+              />
+              <label htmlFor="remember" className="text-xs text-muted-foreground cursor-pointer select-none">
+                Keep me signed in
+              </label>
+            </div>
 
-        <p className="text-center text-[10px] text-white/20">
-          Credentials provided by your account manager
+            <Button
+              type="submit"
+              variant="cta"
+              disabled={loading || !username || !password}
+              className="w-full h-11 rounded-[4px] mt-2 group"
+            >
+              {loading ? 'Signing in…' : 'Sign in'}
+              {!loading && <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-0.5" />}
+            </Button>
+          </form>
+        </div>
+
+        <p className="text-center text-[11px] text-muted-foreground mt-6 font-mono uppercase tracking-[0.15em]">
+          Credentials issued by your account manager
         </p>
       </div>
     </div>
