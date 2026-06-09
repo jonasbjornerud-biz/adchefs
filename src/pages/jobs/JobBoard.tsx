@@ -18,11 +18,7 @@ export default function JobBoard() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from('job_postings')
-        .select('id, slug, title, description, junior_pay, senior_pay')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+      const { data } = await (supabase as any).rpc('list_active_job_postings');
       setPostings((data as Posting[]) ?? []);
       setLoading(false);
     })();
