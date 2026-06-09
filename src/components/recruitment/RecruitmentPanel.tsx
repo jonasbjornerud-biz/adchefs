@@ -67,10 +67,11 @@ const STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview'
 const STAGE_LABEL: Record<string, string> = {
   new: 'New', qualified: 'Qualified', trial_sent: 'Sent',
   trial_submitted: 'Submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
+  shortlist: 'Shortlist',
 };
 
 /** Stages shown in the stat filter bar (Hired & Rejected hidden per brand). */
-const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'rejected'] as const;
+const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'rejected', 'shortlist'] as const;
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
@@ -242,11 +243,9 @@ export function RecruitmentPanel() {
     <Tabs defaultValue="pipeline" className="w-full">
       <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
         <TabsTrigger value="pipeline" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Pipeline</TabsTrigger>
-        <TabsTrigger value="shortlist" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Shortlist</TabsTrigger>
         <TabsTrigger value="postings" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Job Postings</TabsTrigger>
       </TabsList>
       <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
-      <TabsContent value="shortlist" className="mt-8"><Shortlist /></TabsContent>
       <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
@@ -463,9 +462,12 @@ function Pipeline() {
   const counts = STAGES.reduce<Record<string, number>>((acc, st) => {
     acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
+  counts['shortlist'] = scopedApps.filter(a => a.starred).length;
 
   const filtered = scopedApps.filter(a => {
-    if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
+    if (stageFilter === 'shortlist') {
+      if (!a.starred) return false;
+    } else if (stageFilter !== 'all' && a.stage !== stageFilter) return false;
     if (search) {
       const q = search.toLowerCase();
       if (!`${a.first_name} ${a.last_name} ${a.email}`.toLowerCase().includes(q)) return false;
@@ -682,41 +684,25 @@ function Pipeline() {
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3" onClick={e => e.stopPropagation()}>
-                    <div className="inline-flex items-center gap-1.5">
-                      {sub ? (
-                        <a
-                          href={sub.submission_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
-                          style={{
-                            background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
-                            color: '#1A4A6B',
-                            padding: '4px 10px',
-                          }}
-                          title={`Watch submission · ${sub.submission_url}`}
-                          aria-label="Watch submission"
-                        >
-                          <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
-                        </a>
-                      ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
-                      {app.stage === 'trial_submitted' && (
-                        <button
-                          onClick={() => updateApp(app.id, { stage: 'rejected' })}
-                          className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
-                          style={{
-                            background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
-                            color: '#6B1A1A',
-                            padding: '4px 8px',
-                          }}
-                          title="Reject applicant"
-                          aria-label="Reject applicant"
-                        >
-                          <X className="w-3.5 h-3.5" strokeWidth={2.5} />
-                        </button>
-                      )}
-                    </div>
+                  <td className="p-3">
+                    {sub ? (
+                      <a
+                        href={sub.submission_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
+                        style={{
+                          background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
+                          color: '#1A4A6B',
+                          padding: '4px 10px',
+                        }}
+                        title={`Watch submission · ${sub.submission_url}`}
+                        aria-label="Watch submission"
+                      >
+                        <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
+                      </a>
+                    ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
                   </td>
                   <td className="p-3 text-xs text-muted-foreground" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>
                     {(() => {
@@ -796,6 +782,18 @@ function Pipeline() {
                       </Select>
                     </div>
                     <EmailStatus app={selected} verbose />
+                    {selected.stage !== 'rejected' && (
+                      <Button
+                        onClick={() => updateApp(selected.id, { stage: 'rejected', proceed: false, reviewed_at: new Date().toISOString() })}
+                        className="w-full mt-2 rounded-[4px] h-11 text-[13px] font-medium tracking-[-0.01em]"
+                        style={{
+                          background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
+                          color: '#6B1A1A',
+                        }}
+                      >
+                        <XCircle className="w-4 h-4 mr-2" /> Reject applicant
+                      </Button>
+                    )}
                   </div>
 
                   {posting && (
