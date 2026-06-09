@@ -682,42 +682,41 @@ function Pipeline() {
                   </td>
                   <td className="p-3"><StageChip stage={app.stage} /></td>
                   <td className="p-3"><EmailStatus app={app} /></td>
-                  <td className="p-3">
-                    {sub ? (
-                      <a
-                        href={sub.submission_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={e => e.stopPropagation()}
-                        className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
-                        style={{
-                          background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
-                          color: '#1A4A6B',
-                          padding: '4px 10px',
-                        }}
-                        title={`Watch submission · ${sub.submission_url}`}
-                        aria-label="Watch submission"
-                      >
-                        <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
-                      </a>
-                    ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
-                  </td>
-                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
-                    {app.stage === 'trial_submitted' && (
-                      <button
-                        onClick={() => updateApp(app.id, { stage: 'rejected' })}
-                        className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
-                        style={{
-                          background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
-                          color: '#6B1A1A',
-                          padding: '4px 8px',
-                        }}
-                        title="Reject applicant"
-                        aria-label="Reject applicant"
-                      >
-                        <X className="w-3.5 h-3.5" strokeWidth={2.5} />
-                      </button>
-                    )}
+                  <td className="p-3" onClick={e => e.stopPropagation()}>
+                    <div className="inline-flex items-center gap-1.5">
+                      {sub ? (
+                        <a
+                          href={sub.submission_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
+                          style={{
+                            background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)',
+                            color: '#1A4A6B',
+                            padding: '4px 10px',
+                          }}
+                          title={`Watch submission · ${sub.submission_url}`}
+                          aria-label="Watch submission"
+                        >
+                          <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
+                        </a>
+                      ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
+                      {app.stage === 'trial_submitted' && (
+                        <button
+                          onClick={() => updateApp(app.id, { stage: 'rejected' })}
+                          className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
+                          style={{
+                            background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
+                            color: '#6B1A1A',
+                            padding: '4px 8px',
+                          }}
+                          title="Reject applicant"
+                          aria-label="Reject applicant"
+                        >
+                          <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="p-3 text-xs text-muted-foreground" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>
                     {(() => {
