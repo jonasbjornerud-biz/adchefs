@@ -70,7 +70,7 @@ const STAGE_LABEL: Record<string, string> = {
 };
 
 /** Stages shown in the stat filter bar (Hired & Rejected hidden per brand). */
-const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview'] as const;
+const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'rejected'] as const;
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
@@ -543,7 +543,7 @@ function Pipeline() {
 
       {/* Stage counters */}
       <div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1"
+        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-1"
         style={{
           background: 'linear-gradient(135deg, #F7F6F3 0%, #EEEDE8 100%)',
           border: '1px solid #E5E4DF',
@@ -701,6 +701,23 @@ function Pipeline() {
                         <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
                       </a>
                     ) : <span className="mono text-[11px] text-[#75726B]">--</span>}
+                  </td>
+                  <td className="p-3 align-middle" onClick={e => e.stopPropagation()}>
+                    {app.stage === 'trial_submitted' && (
+                      <button
+                        onClick={() => updateApp(app.id, { stage: 'rejected' })}
+                        className="inline-flex items-center justify-center rounded-[4px] transition-opacity hover:opacity-80"
+                        style={{
+                          background: 'linear-gradient(90deg, #F5C5C5 0%, #FCEDED 100%)',
+                          color: '#6B1A1A',
+                          padding: '4px 8px',
+                        }}
+                        title="Reject applicant"
+                        aria-label="Reject applicant"
+                      >
+                        <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+                      </button>
+                    )}
                   </td>
                   <td className="p-3 text-xs text-muted-foreground" style={{ whiteSpace: 'nowrap', paddingRight: '24px' }}>
                     {(() => {
