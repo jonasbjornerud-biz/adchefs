@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowRight } from 'lucide-react';
-import adchefsLogo from '@/assets/adchefs-logo.png.asset.json';
 
 export default function Login() {
   const navigate = useNavigate();
