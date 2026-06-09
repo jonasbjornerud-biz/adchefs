@@ -67,10 +67,11 @@ const STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview'
 const STAGE_LABEL: Record<string, string> = {
   new: 'New', qualified: 'Qualified', trial_sent: 'Sent',
   trial_submitted: 'Submitted', interview: 'Interview', hired: 'Hired', rejected: 'Rejected',
+  shortlist: 'Shortlist',
 };
 
 /** Stages shown in the stat filter bar (Hired & Rejected hidden per brand). */
-const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'interview', 'rejected'] as const;
+const STAT_STAGES = ['new', 'qualified', 'trial_sent', 'trial_submitted', 'rejected', 'shortlist'] as const;
 
 /** Editorial stage chip styles (inline so they survive Tailwind purge). */
 const STAGE_CHIP: Record<string, React.CSSProperties> = {
@@ -242,11 +243,9 @@ export function RecruitmentPanel() {
     <Tabs defaultValue="pipeline" className="w-full">
       <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
         <TabsTrigger value="pipeline" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Pipeline</TabsTrigger>
-        <TabsTrigger value="shortlist" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Shortlist</TabsTrigger>
         <TabsTrigger value="postings" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Job Postings</TabsTrigger>
       </TabsList>
       <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
-      <TabsContent value="shortlist" className="mt-8"><Shortlist /></TabsContent>
       <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
