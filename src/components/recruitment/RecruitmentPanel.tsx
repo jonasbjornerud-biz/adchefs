@@ -156,15 +156,8 @@ function embedFor(url: string): Embed {
   // Vimeo
   m = url.match(/vimeo\.com\/(\d+)/);
   if (m) return { kind: 'iframe', src: `https://player.vimeo.com/video/${m[1]}`, host };
-  // Google Drive file (supports /file/d/ID and ?id=ID)
-  m = url.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
-  if (!m) {
-    const q = url.match(/drive\.google\.com\/(?:open|uc)\?[^#]*\bid=([A-Za-z0-9_-]+)/);
-    if (q) m = q as any;
-  }
-  if (m) return { kind: 'iframe', src: `https://drive.google.com/file/d/${m[1]}/preview`, host };
-  // Google Drive folder — can't iframe, link only
-  if (/drive\.google\.com\/drive\/folders\//.test(url)) return { kind: 'link', host };
+  // Google Drive (files and folders) — never embed; always open in a new tab
+  if (/drive\.google\.com/.test(url)) return { kind: 'link', host };
   // Frame.io / others -> link with favicon
   return { kind: 'link', host };
 }
@@ -199,7 +192,7 @@ function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: b
         <a
           href={url}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 rounded-[3px] bg-black/70 hover:bg-black/85 text-white px-2 py-1 mono text-[10px] uppercase tracking-[0.12em] backdrop-blur"
           title="If the preview is blocked, open in a new tab"
         >
@@ -221,7 +214,7 @@ function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: b
         <a
           href={url}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="inline-flex items-center gap-1 rounded-[3px] px-3 py-1.5 mono text-[10px] uppercase tracking-[0.15em]"
           style={{ backgroundColor: '#1A1A1A', color: '#FAF8F3' }}
         >
