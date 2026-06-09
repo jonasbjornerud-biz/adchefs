@@ -16,10 +16,16 @@ interface WtdState {
   adsStats: { label: string; value: string }[];
 }
 
-export default function ClientDashboard() {
+interface ClientDashboardProps {
+  clientOverride?: Client;
+  hideChrome?: boolean;
+}
+
+export default function ClientDashboard({ clientOverride, hideChrome = false }: ClientDashboardProps = {}) {
   const navigate = useNavigate();
-  const [client, setClient] = useState<Client | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState<Client | null>(clientOverride ?? null);
+  const [loading, setLoading] = useState(!clientOverride);
+  const [logoSrc, setLogoSrc] = useState<string | null>(null);
   const wtd = getWeekToDateRange();
   const [wtdData, setWtdData] = useState<WtdState>({
     loading: true,
@@ -34,6 +40,12 @@ export default function ClientDashboard() {
   });
 
   useEffect(() => {
+    if (clientOverride) {
+      setClient(clientOverride);
+      setLoading(false);
+      loadWtd(clientOverride);
+      return;
+    }
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate('/login'); return; }
@@ -43,7 +55,16 @@ export default function ClientDashboard() {
       setLoading(false);
       loadWtd(clientData as Client);
     })();
-  }, []);
+  }, [clientOverride?.id]);
+
+  useEffect(() => {
+    if (!client?.logo_url) { setLogoSrc(null); return; }
+    if (/^https?:\/\//.test(client.logo_url)) { setLogoSrc(client.logo_url); return; }
+    (async () => {
+      const { data } = await supabase.storage.from('module-assets').createSignedUrl(client.logo_url!, 60 * 60 * 24 * 7);
+      if (data?.signedUrl) setLogoSrc(data.signedUrl);
+    })();
+  }, [client?.logo_url]);
 
   async function loadWtd(c: Client) {
     const currentMonth = MONTHS[new Date().getMonth()];
@@ -104,7 +125,7 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F6F3]">
+      <div className={`${hideChrome ? 'min-h-[400px]' : 'min-h-screen'} flex items-center justify-center bg-[#F7F6F3]`}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[#1A1A1A] border-t-transparent rounded-full animate-spin" />
           <span className="text-xs uppercase tracking-[0.18em] font-mono text-[#75726B]">Loading</span>
@@ -147,7 +168,7 @@ export default function ClientDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+    <div className={`${hideChrome ? '' : 'min-h-screen'} bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden`}>
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
@@ -167,13 +188,16 @@ export default function ClientDashboard() {
       />
 
       {/* Header */}
+      {!hideChrome && (
       <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#1A1A1A] text-xs font-semibold border border-[#1A1A1A]/15 bg-[#9ED8F5]"
-            >
-              {client.brand_name.charAt(0)}
+            <div className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#1A1A1A] text-xs font-semibold border border-[#1A1A1A]/15 bg-[#9ED8F5] overflow-hidden">
+              {logoSrc ? (
+                <img src={logoSrc} alt={client.brand_name} className="w-full h-full object-cover" />
+              ) : (
+                client.brand_name.charAt(0)
+              )}
             </div>
             <span className="text-sm font-medium tracking-tight">
               {client.brand_name}
@@ -188,6 +212,7 @@ export default function ClientDashboard() {
           </button>
         </div>
       </header>
+      )}
 
       {/* Hero band — dark, matches job detail */}
       <section className="relative z-10 bg-foreground text-background overflow-hidden">
@@ -206,6 +231,9 @@ export default function ClientDashboard() {
           }}
         />
         <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-20">
+          {logoSrc && (
+            <img src={logoSrc} alt={client.brand_name} className="w-16 h-16 rounded-[8px] object-cover mb-6 border border-background/20" />
+          )}
           <h1 className="font-display text-[48px] sm:text-[64px] md:text-[76px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
             Welcome back,{' '}
             <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
