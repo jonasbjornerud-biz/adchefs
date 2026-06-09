@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, LogOut, Sparkles, ExternalLink } from 'lucide-react';
+import { Plus, Users, LogOut, Sparkles, ExternalLink, Pencil } from 'lucide-react';
 import { logout } from '@/lib/auth';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { RecruitmentPanel } from '@/components/recruitment/RecruitmentPanel';
+import ClientEditDialog from '@/components/admin/ClientEditDialog';
 
 type AdminDashboardProps = {
   initialTab?: 'clients' | 'recruitment';
@@ -16,6 +17,8 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
   const navigate = useNavigate();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     loadClients();
@@ -164,20 +167,24 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
                 <ul className="border-t" style={{ borderColor: '#E2E0D9' }}>
                   {clients.map((client, i) => (
                     <li key={client.id} className="border-b" style={{ borderColor: '#E2E0D9' }}>
-                      <button
-                        onClick={() => navigate(`/admin/clients/${client.id}`)}
-                        className="group w-full grid grid-cols-[auto_auto_1fr_auto] items-center gap-6 sm:gap-8 py-6 transition-colors hover:bg-[#EEEDE8] px-3 sm:px-5 -mx-3 sm:-mx-5 rounded-[4px] text-left"
-                      >
+                      <div className="group w-full grid grid-cols-[auto_auto_1fr_auto] items-center gap-6 sm:gap-8 py-6 transition-colors hover:bg-[#EEEDE8] px-3 sm:px-5 -mx-3 sm:-mx-5 rounded-[4px]">
                         <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <div
-                          className="w-10 h-10 rounded-[4px] flex items-center justify-center text-background"
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/admin/clients/${client.id}`)}
+                          className="w-10 h-10 rounded-[4px] flex items-center justify-center text-background cursor-pointer hover:opacity-90"
                           style={{ backgroundColor: '#1A1A1A', fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                          aria-label={`Open ${client.brand_name} portal`}
                         >
                           {client.brand_name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/admin/clients/${client.id}`)}
+                          className="min-w-0 text-left"
+                        >
                           <p
                             className="text-[20px] sm:text-[22px] tracking-[-0.02em] text-[#1A1A1A] leading-tight truncate"
                             style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
@@ -187,16 +194,27 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
                           <p className="mt-1 mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
                             @{client.username}
                           </p>
-                        </div>
-                        <span className="flex items-center gap-3">
-                          <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] hidden sm:inline">
-                            Open
-                          </span>
-                          <span className="w-10 h-10 rounded-[4px] border border-[#E2E0D9] flex items-center justify-center text-[#1A1A1A] group-hover:bg-[#1A1A1A] group-hover:text-background group-hover:border-[#1A1A1A] transition-colors">
-                            <ExternalLink className="w-4 h-4" strokeWidth={1.75} />
-                          </span>
+                        </button>
+                        <span className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setEditingClient(client); setEditOpen(true); }}
+                            aria-label={`Edit ${client.brand_name}`}
+                            className="w-10 h-10 rounded-[4px] border border-[#E2E0D9] bg-white flex items-center justify-center text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white hover:border-[#1A1A1A] transition-colors"
+                          >
+                            <Pencil className="w-4 h-4" strokeWidth={1.75} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/admin/clients/${client.id}`)}
+                            aria-label={`Open ${client.brand_name} portal`}
+                            className="hidden sm:flex items-center gap-2 h-10 px-3 rounded-[4px] border border-[#E2E0D9] bg-white text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white hover:border-[#1A1A1A] transition-colors mono text-[11px] uppercase tracking-[0.15em]"
+                          >
+                            Open portal
+                            <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.75} />
+                          </button>
                         </span>
-                      </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -209,6 +227,14 @@ export default function AdminDashboard({ initialTab = 'clients' }: AdminDashboar
           </TabsContent>
         </Tabs>
       </main>
+
+      <ClientEditDialog
+        client={editingClient}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSaved={loadClients}
+        onDeleted={loadClients}
+      />
     </div>
   );
 }
