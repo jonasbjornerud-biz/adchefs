@@ -139,6 +139,43 @@ function faviconFor(url: string) {
   const h = hostOf(url);
   return h ? `https://www.google.com/s2/favicons?domain=${h}&sz=64` : '';
 }
+function normalizeSubmissionUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '');
+    if (host === 'drive.google.com') {
+      const fileMatch = parsed.pathname.match(/\/file\/d\/([^/]+)/);
+      if (fileMatch) return `https://drive.google.com/file/d/${fileMatch[1]}/view`;
+      const folderMatch = parsed.pathname.match(/\/drive\/(?:u\/\d+\/)?folders\/([^/]+)/);
+      if (folderMatch) return `https://drive.google.com/drive/folders/${folderMatch[1]}`;
+      const id = parsed.searchParams.get('id');
+      if (id) return `https://drive.google.com/file/d/${id}/view`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+function copySubmissionUrl(url: string) {
+  const href = normalizeSubmissionUrl(url);
+  void navigator.clipboard.writeText(href)
+    .then(() => toast.success('Link copied'))
+    .catch(() => toast.error('Could not copy link'));
+}
+function openSubmissionUrl(url: string, event?: React.MouseEvent) {
+  event?.preventDefault();
+  event?.stopPropagation();
+  const href = normalizeSubmissionUrl(url);
+  const opened = window.open('about:blank', '_blank');
+  if (opened) {
+    opened.opener = null;
+    opened.location.href = href;
+    return;
+  }
+  void navigator.clipboard.writeText(href)
+    .then(() => toast.error('Pop-up blocked. Link copied.'))
+    .catch(() => toast.error('Pop-up blocked. Copy the link manually.'));
+}
 type Embed = { kind: 'iframe' | 'image' | 'link'; src?: string; thumb?: string; host: string };
 function embedFor(url: string): Embed {
   const host = hostOf(url);
@@ -181,6 +218,7 @@ function LinkFavicon({ url, size = 16 }: { url: string; size?: number }) {
 
 function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
   const e = embedFor(url);
+  const href = normalizeSubmissionUrl(url);
   if (e.kind === 'iframe' && e.src) {
     return (
       <div className={`relative w-full overflow-hidden rounded-[4px] border ${compact ? '' : ''}`} style={{ borderColor: '#E2E0D9', backgroundColor: '#000', aspectRatio: '16 / 9' }}>
@@ -192,10 +230,11 @@ function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: b
           loading="lazy"
         />
         <a
-          href={url}
+          href={href}
           target="_blank"
-          rel="noreferrer"
-          className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-[3px] bg-black/70 hover:bg-black/85 text-white px-2 py-1 mono text-[10px] uppercase tracking-[0.12em] backdrop-blur"
+          rel="noopener"
+          onClick={(event) => openSubmissionUrl(url, event)}
+          className="absolute top-2 right-2 z-10 inline-flex items-center gap-1 rounded-[3px] bg-black/70 hover:bg-black/85 text-white px-2 py-1 mono text-[10px] uppercase tracking-[0.12em] backdrop-blur"
           title="If the preview is blocked, open in a new tab"
         >
           Open <ExternalLink className="w-3 h-3" />
@@ -204,17 +243,35 @@ function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: b
     );
   }
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      className="flex items-center justify-center gap-2 w-full rounded-[4px] border px-4 py-10"
+    <div
+      className="flex flex-col items-center justify-center gap-3 w-full rounded-[4px] border px-4 py-10"
       style={{ borderColor: '#E2E0D9', backgroundColor: '#EEEDE8' }}
     >
-      <LinkFavicon url={url} size={20} />
-      <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#1A1A1A]">{e.host || 'Open submission'}</span>
-      <ExternalLink className="w-3.5 h-3.5 text-[#75726B]" />
-    </a>
+      <div className="flex items-center justify-center gap-2">
+        <LinkFavicon url={href} size={20} />
+        <span className="mono text-[11px] uppercase tracking-[0.15em] text-[#1A1A1A]">{e.host || 'Open submission'}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          onClick={(event) => openSubmissionUrl(url, event)}
+          className="inline-flex items-center gap-1 rounded-[3px] px-3 py-1.5 mono text-[10px] uppercase tracking-[0.15em]"
+          style={{ backgroundColor: '#1A1A1A', color: '#FAF8F3' }}
+        >
+          Open <ExternalLink className="w-3 h-3" />
+        </a>
+        <button
+          type="button"
+          onClick={(event) => { event.stopPropagation(); copySubmissionUrl(url); }}
+          className="inline-flex items-center gap-1 rounded-[3px] border px-3 py-1.5 mono text-[10px] uppercase tracking-[0.15em]"
+          style={{ borderColor: '#D8D7D2', color: '#75726B' }}
+        >
+          Copy <Copy className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
   );
 }
 
