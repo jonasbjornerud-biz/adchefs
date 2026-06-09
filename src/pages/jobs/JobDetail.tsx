@@ -42,13 +42,9 @@ export default function JobDetail() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from('job_postings')
-        .select('id, title, description, junior_pay, senior_pay')
-        .eq('slug', slug!)
-        .eq('is_active', true)
-        .maybeSingle();
-      setPosting(data as Posting | null);
+      const { data } = await (supabase as any).rpc('get_active_job_posting', { _slug: slug! });
+      const row = Array.isArray(data) ? data[0] : data;
+      setPosting((row as Posting) ?? null);
       setLoading(false);
     })();
   }, [slug]);
