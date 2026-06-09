@@ -16,7 +16,7 @@ const CalendlyBooking = () => {
               <div>
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">Book a call if</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
-                  <li>· You spend €5K+/month on ads and need more creative</li>
+                  <li>· You spend $5K+/month on ads and need more creative</li>
                   <li>· You want a dedicated editor without hiring in-house</li>
                   <li>· You care about what converts, not just what gets delivered</li>
                 </ul>

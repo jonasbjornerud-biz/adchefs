@@ -25,7 +25,7 @@ const principles = [
     icon: Wallet,
     title: "You only pay per video",
     body: "No retainers. No minimums. No long contracts. You pay for videos delivered, nothing else. The dashboard, the oversight, the editor management is on me.",
-    stat: "FROM €100 / VIDEO",
+    stat: "FROM $100 / VIDEO",
   },
 ];
 

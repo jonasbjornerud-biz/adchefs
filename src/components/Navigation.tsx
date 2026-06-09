@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import adchefsLogo from "@/assets/adchefs-logo.png.asset.json";
 
 const navLinks = [
   { label: "How it works", id: "how-it-works" },
@@ -34,8 +35,8 @@ const Navigation = () => {
       }`}
     >
       <div className="mx-auto max-w-[1200px] px-6 h-16 flex items-center justify-between">
-        <a href="/" className="font-display text-[20px] font-semibold tracking-tight text-foreground">
-          AdChefs<span className="text-accent">.</span>
+        <a href="/" className="flex items-center" aria-label="AdChefs">
+          <img src={adchefsLogo.url} alt="AdChefs" className="h-5 w-auto" />
         </a>
 
         <div className="hidden md:flex items-center gap-9">

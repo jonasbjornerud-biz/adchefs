@@ -400,8 +400,8 @@ function Postings() {
               </div>
               <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} value={editing.description ?? ''} onChange={e => setEditing({ ...editing, description: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5"><Label>Junior pay</Label><Input value={editing.junior_pay ?? ''} onChange={e => setEditing({ ...editing, junior_pay: e.target.value })} placeholder="€30–60 per ad" /></div>
-                <div className="space-y-1.5"><Label>Senior pay</Label><Input value={editing.senior_pay ?? ''} onChange={e => setEditing({ ...editing, senior_pay: e.target.value })} placeholder="€80–150 per ad" /></div>
+                <div className="space-y-1.5"><Label>Junior pay</Label><Input value={editing.junior_pay ?? ''} onChange={e => setEditing({ ...editing, junior_pay: e.target.value })} placeholder="$30–60 per ad" /></div>
+                <div className="space-y-1.5"><Label>Senior pay</Label><Input value={editing.senior_pay ?? ''} onChange={e => setEditing({ ...editing, senior_pay: e.target.value })} placeholder="$80–150 per ad" /></div>
               </div>
               <div className="space-y-1.5"><Label>Skill task URL (Notion)</Label><Input value={editing.notion_task_url ?? ''} onChange={e => setEditing({ ...editing, notion_task_url: e.target.value })} placeholder="https://notion.so/…" /></div>
               <div className="space-y-1.5"><Label>Trial email subject</Label><Input value={editing.trial_email_subject ?? ''} onChange={e => setEditing({ ...editing, trial_email_subject: e.target.value })} /></div>
