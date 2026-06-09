@@ -44,7 +44,7 @@ const Pricing = () => {
               Typical creative agency
             </span>
             <div className="mb-6">
-              <div className="font-display text-[52px] leading-none tracking-tight text-foreground/70">€4,500</div>
+              <div className="font-display text-[52px] leading-none tracking-tight text-foreground/70">$4,500</div>
               <p className="mt-2 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">/ month retainer</p>
             </div>
             <div className="h-px w-full bg-foreground/10 mb-6" />
@@ -71,7 +71,7 @@ const Pricing = () => {
             </span>
             <div className="mb-6">
               <div className="font-display text-[52px] leading-none tracking-tight text-foreground">
-                From €100
+                From $100
               </div>
               <p className="mt-2 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">/ delivered video</p>
             </div>

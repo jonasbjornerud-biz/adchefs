@@ -8,7 +8,7 @@ import {
 const faqs = [
   {
     q: "How does the pay-per-video model work?",
-    a: "Flat rate per delivered video, starting at €100. You request cuts when you need them, the editor delivers, and you pay for what is approved. Most brands get 15 - 40 videos per month.",
+    a: "Flat rate per delivered video, starting at $100. You request cuts when you need them, the editor delivers, and you pay for what is approved. Most brands get 15 - 40 videos per month.",
   },
   {
     q: "What's included in the price?",

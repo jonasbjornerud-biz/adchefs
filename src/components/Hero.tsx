@@ -69,7 +69,7 @@ const Hero = () => {
           <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
 
           <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-            <span>From €100 / video</span>
+            <span>From $100 / video</span>
             <span className="h-3 w-px bg-border" />
             <span>Cancel anytime</span>
           </div>
