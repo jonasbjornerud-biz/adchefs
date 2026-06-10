@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import HeroBackground from "./HeroBackground";
 
 const mediaSources = [
   "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
@@ -25,6 +26,7 @@ const Hero = () => {
 
   return (
     <section className="relative pt-24 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+      <HeroBackground />
       {/* Subtle noise texture overlay */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none z-[1]"
