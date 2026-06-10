@@ -1,86 +1,42 @@
 const HeroBackground = () => {
+  // 6×6 tile with two 1px dots (ink + accent), URL-encoded inline SVG.
+  // Tile size chosen to avoid moiré at 1280–1920px widths.
+  const weaveTile =
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.025'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.02'/></svg>\")";
+
   return (
     <div
       aria-hidden
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
       <style>{`
-        @keyframes arcSpin    { from { transform: rotate(0deg);  } to { transform: rotate(360deg);  } }
-        @keyframes arcSpinRev { from { transform: rotate(0deg);  } to { transform: rotate(-360deg); } }
-        .arc-1 { transform-box: view-box; transform-origin: 1750px -100px; animation: arcSpin    200s linear infinite; }
-        .arc-2 { transform-box: view-box; transform-origin: 1400px 950px;  animation: arcSpinRev 320s linear infinite; }
-        .arc-3 { transform-box: view-box; transform-origin: -200px 700px;  animation: arcSpin    260s linear infinite; }
+        @keyframes heroGradientDrift {
+          from { background-position: 100% 0%;  }
+          to   { background-position: 92%  8%;  }
+        }
+        .hero-base-gradient {
+          background: radial-gradient(circle at 100% 0%, rgba(158, 216, 245, 0.12) 0%, transparent 60%);
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          animation: heroGradientDrift 40s ease-in-out infinite alternate;
+        }
         @media (prefers-reduced-motion: reduce) {
-          .arc-1, .arc-2, .arc-3 { animation: none; }
+          .hero-base-gradient { animation: none; }
         }
       `}</style>
 
-      {/* Base static gradient (top-right wash) */}
+      {/* Base radial gradient (gentle drift) */}
+      <div className="hero-base-gradient absolute inset-0" />
+
+      {/* Fine paper/linen weave texture */}
       <div
         className="absolute inset-0"
         style={{
-          background:
-            "radial-gradient(circle at 100% 0%, rgba(158, 216, 245, 0.10) 0%, transparent 60%)",
+          backgroundImage: weaveTile,
+          backgroundRepeat: "repeat",
+          backgroundSize: "6px 6px",
         }}
       />
-
-      {/* Asymmetric arc composition */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 1600 900"
-        preserveAspectRatio="xMidYMid slice"
-        style={{ pointerEvents: "none", zIndex: 1 }}
-      >
-        {/* Arc 1 — anchor: r=900, ~200° sweep, center off top-right */}
-        <g className="arc-1">
-          <circle
-            cx="1750"
-            cy="-100"
-            r="900"
-            fill="none"
-            stroke="#9ED8F5"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            opacity="0.5"
-            pathLength="360"
-            strokeDasharray="200 360"
-            strokeDashoffset="90"
-          />
-        </g>
-
-        {/* Arc 2 — heavy short: r=500, ~70° sweep, center below bottom-right */}
-        <g className="arc-2">
-          <circle
-            cx="1400"
-            cy="950"
-            r="500"
-            fill="none"
-            stroke="#9ED8F5"
-            strokeWidth="40"
-            opacity="0.07"
-            pathLength="360"
-            strokeDasharray="70 360"
-            strokeDashoffset="220"
-            style={{ filter: "blur(3px)" }}
-          />
-        </g>
-
-        {/* Arc 3 — ink whisper: r=650, ~140° sweep, center off left */}
-        <g className="arc-3">
-          <circle
-            cx="-200"
-            cy="700"
-            r="650"
-            fill="none"
-            stroke="#1A1A1A"
-            strokeWidth="1"
-            opacity="0.07"
-            pathLength="360"
-            strokeDasharray="140 360"
-            strokeDashoffset="320"
-          />
-        </g>
-      </svg>
 
       {/* Static film grain overlay (unchanged) */}
       <div
