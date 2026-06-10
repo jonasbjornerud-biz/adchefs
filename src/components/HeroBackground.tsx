@@ -5,24 +5,15 @@ const HeroBackground = () => {
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
       <style>{`
-        @keyframes ringDrift1 {
-          from { transform: translate(0, 0) rotate(-4deg); }
-          to   { transform: translate(30px, -20px) rotate(4deg); }
-        }
         @keyframes ringDrift2 {
           from { transform: translate(0, 0) rotate(4deg); }
           to   { transform: translate(-30px, 20px) rotate(-4deg); }
-        }
-        .hero-ring-1 {
-          transform-origin: center center;
-          animation: ringDrift1 50s ease-in-out infinite alternate;
         }
         .hero-ring-2 {
           transform-origin: center center;
           animation: ringDrift2 65s ease-in-out infinite alternate;
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero-ring-1,
           .hero-ring-2 {
             animation: none;
           }
@@ -38,6 +29,15 @@ const HeroBackground = () => {
         }}
       />
 
+      {/* Soft corner wash — lower-left tint to rebalance empty space */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at bottom left, rgba(232, 244, 251, 0.5) 0%, transparent 50%)",
+        }}
+      />
+
       {/* Ring layer — masked to fade out over the bottom 280px */}
       <div
         className="absolute inset-0"
@@ -48,32 +48,6 @@ const HeroBackground = () => {
             "linear-gradient(to bottom, #000 0, #000 calc(100% - 280px), transparent 100%)",
         }}
       >
-      {/* Ring 1 — sweeps up through left third from beyond bottom-left */}
-      <svg
-        className="hero-ring-1 absolute"
-        style={{
-          left: "-700px",
-          top: "-650px",
-          width: "1600px",
-          height: "1100px",
-          filter: "blur(16px)",
-          overflow: "visible",
-        }}
-        viewBox="0 0 1600 1100"
-        preserveAspectRatio="none"
-      >
-        <g transform="rotate(-15 800 550)">
-          <ellipse
-            cx="800"
-            cy="550"
-            rx="720"
-            ry="470"
-            fill="none"
-            stroke="#CDE9F8"
-            strokeWidth="150"
-          />
-        </g>
-      </svg>
 
       {/* Ring 2 — curves down through right side from beyond top-right */}
       <svg
