@@ -1,48 +1,90 @@
 const HeroBackground = () => {
-  // 6×6 tile with two 1px dots (ink + accent), URL-encoded inline SVG.
-  // Tile size chosen to avoid moiré at 1280–1920px widths.
-  const weaveTile =
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.12'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.08'/></svg>\")";
-
   return (
     <div
       aria-hidden
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
       <style>{`
-        @keyframes heroGradientDrift {
-          from { background-position: 100% 0%;  }
-          to   { background-position: 92%  8%;  }
+        @keyframes orbDrift1 {
+          from { transform: translate(0, 0); }
+          to   { transform: translate(40px, 30px); }
         }
-        .hero-base-gradient {
-          background: radial-gradient(circle at 100% 0%, rgba(158, 216, 245, 0.12) 0%, transparent 60%);
-          background-size: 100% 100%;
-          background-repeat: no-repeat;
-          animation: heroGradientDrift 40s ease-in-out infinite alternate;
+        @keyframes orbDrift2 {
+          from { transform: translate(0, 0); }
+          to   { transform: translate(-30px, 50px); }
+        }
+        @keyframes orbDrift3 {
+          from { transform: translate(0, 0); }
+          to   { transform: translate(50px, -40px); }
+        }
+        .hero-orb-1 {
+          animation: orbDrift1 60s ease-in-out infinite alternate;
+          animation-delay: 0s;
+        }
+        .hero-orb-2 {
+          animation: orbDrift2 80s ease-in-out infinite alternate;
+          animation-delay: -30s;
+        }
+        .hero-orb-3 {
+          animation: orbDrift3 50s ease-in-out infinite alternate;
+          animation-delay: -15s;
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero-base-gradient { animation: none; }
+          .hero-orb-1,
+          .hero-orb-2,
+          .hero-orb-3 {
+            animation: none;
+          }
         }
       `}</style>
 
-      {/* Base radial gradient (gentle drift) */}
-      <div className="hero-base-gradient absolute inset-0" />
-
-      {/* Fine paper/linen weave texture */}
+      {/* Orb 1 — top right */}
       <div
-        className="absolute inset-0"
+        className="hero-orb-1 absolute"
         style={{
-          backgroundImage: weaveTile,
-          backgroundRepeat: "repeat",
-          backgroundSize: "6px 6px",
+          top: "-150px",
+          right: "-200px",
+          width: "1000px",
+          height: "800px",
+          background:
+            "radial-gradient(ellipse, rgba(158, 216, 245, 0.20) 0%, transparent 65%)",
+          filter: "blur(70px)",
         }}
       />
 
-      {/* Static film grain overlay (unchanged) */}
+      {/* Orb 2 — left of center */}
+      <div
+        className="hero-orb-2 absolute"
+        style={{
+          top: "30%",
+          left: "-250px",
+          width: "800px",
+          height: "700px",
+          background:
+            "radial-gradient(ellipse, rgba(158, 216, 245, 0.12) 0%, transparent 65%)",
+          filter: "blur(70px)",
+        }}
+      />
+
+      {/* Orb 3 — bottom center-right */}
+      <div
+        className="hero-orb-3 absolute"
+        style={{
+          bottom: "-100px",
+          left: "55%",
+          width: "600px",
+          height: "500px",
+          background:
+            "radial-gradient(ellipse, rgba(158, 216, 245, 0.10) 0%, transparent 60%)",
+          filter: "blur(60px)",
+        }}
+      />
+
+      {/* Static film grain overlay */}
       <div
         className="absolute inset-0"
         style={{
-          opacity: 0.05,
+          opacity: 0.04,
           mixBlendMode: "overlay",
           backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundRepeat: "repeat",
