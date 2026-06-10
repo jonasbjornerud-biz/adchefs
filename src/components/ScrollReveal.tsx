@@ -39,7 +39,7 @@ const ScrollReveal = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <div ref={ref} className="sr-root contents">
+    <div ref={ref} className="sr-root">
       {children}
     </div>
   );
