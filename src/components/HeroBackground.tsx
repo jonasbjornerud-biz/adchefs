@@ -61,21 +61,18 @@ const HeroBackground = () => {
       rect = r;
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
-      pointerInside = x >= 0 && y >= 0 && x <= r.width && y <= r.height;
-      if (pointerInside) {
+      const inside = x >= 0 && y >= 0 && x <= r.width && y <= r.height;
+      pointerInside = inside;
+      if (inside) {
         tx = x;
         ty = y;
       }
-    };
-    const onPointerLeave = () => {
-      pointerInside = false;
     };
     const onResize = () => {
       rect = root.getBoundingClientRect();
     };
 
-    root.addEventListener("pointermove", onPointerMove);
-    root.addEventListener("pointerleave", onPointerLeave);
+    window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("resize", onResize);
 
     // Autonomous drift points (mobile / no-cursor fallback)
