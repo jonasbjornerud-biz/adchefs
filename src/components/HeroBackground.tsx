@@ -2,7 +2,7 @@ const HeroBackground = () => {
   // 6×6 tile with two 1px dots (ink + accent), URL-encoded inline SVG.
   // Tile size chosen to avoid moiré at 1280–1920px widths.
   const weaveTile =
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.06'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.04'/></svg>\")";
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.12'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.08'/></svg>\")";
 
   return (
     <div
