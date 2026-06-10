@@ -5,80 +5,92 @@ const HeroBackground = () => {
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
       <style>{`
-        @keyframes orbDrift1 {
-          from { transform: translate(0, 0); }
-          to   { transform: translate(40px, 30px); }
+        @keyframes ringDrift1 {
+          from { transform: translate(0, 0) rotate(-4deg); }
+          to   { transform: translate(30px, -20px) rotate(4deg); }
         }
-        @keyframes orbDrift2 {
-          from { transform: translate(0, 0); }
-          to   { transform: translate(-30px, 50px); }
+        @keyframes ringDrift2 {
+          from { transform: translate(0, 0) rotate(4deg); }
+          to   { transform: translate(-30px, 20px) rotate(-4deg); }
         }
-        @keyframes orbDrift3 {
-          from { transform: translate(0, 0); }
-          to   { transform: translate(50px, -40px); }
+        .hero-ring-1 {
+          transform-origin: center center;
+          animation: ringDrift1 50s ease-in-out infinite alternate;
         }
-        .hero-orb-1 {
-          animation: orbDrift1 60s ease-in-out infinite alternate;
-          animation-delay: 0s;
-        }
-        .hero-orb-2 {
-          animation: orbDrift2 80s ease-in-out infinite alternate;
-          animation-delay: -30s;
-        }
-        .hero-orb-3 {
-          animation: orbDrift3 50s ease-in-out infinite alternate;
-          animation-delay: -15s;
+        .hero-ring-2 {
+          transform-origin: center center;
+          animation: ringDrift2 65s ease-in-out infinite alternate;
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero-orb-1,
-          .hero-orb-2,
-          .hero-orb-3 {
+          .hero-ring-1,
+          .hero-ring-2 {
             animation: none;
           }
         }
       `}</style>
 
-      {/* Orb 1 — top right */}
+      {/* Base soft linear gradient — top-right blue tint to Paper */}
       <div
-        className="hero-orb-1 absolute"
+        className="absolute inset-0"
         style={{
-          top: "-150px",
-          right: "-200px",
-          width: "1000px",
-          height: "800px",
           background:
-            "radial-gradient(ellipse, rgba(158, 216, 245, 0.20) 0%, transparent 65%)",
-          filter: "blur(70px)",
+            "linear-gradient(to bottom left, #E8F4FB 0%, #F7F6F3 65%)",
         }}
       />
 
-      {/* Orb 2 — left of center */}
-      <div
-        className="hero-orb-2 absolute"
+      {/* Ring 1 — sweeps up through left third from beyond bottom-left */}
+      <svg
+        className="hero-ring-1 absolute"
         style={{
-          top: "30%",
-          left: "-250px",
-          width: "800px",
-          height: "700px",
-          background:
-            "radial-gradient(ellipse, rgba(158, 216, 245, 0.12) 0%, transparent 65%)",
-          filter: "blur(70px)",
+          left: "-700px",
+          bottom: "-650px",
+          width: "1600px",
+          height: "1100px",
+          filter: "blur(10px)",
+          overflow: "visible",
         }}
-      />
+        viewBox="0 0 1600 1100"
+        preserveAspectRatio="none"
+      >
+        <g transform="rotate(-15 800 550)">
+          <ellipse
+            cx="800"
+            cy="550"
+            rx="720"
+            ry="470"
+            fill="none"
+            stroke="#CDE9F8"
+            strokeWidth="150"
+          />
+        </g>
+      </svg>
 
-      {/* Orb 3 — bottom center-right */}
-      <div
-        className="hero-orb-3 absolute"
+      {/* Ring 2 — curves down through right side from beyond top-right */}
+      <svg
+        className="hero-ring-2 absolute"
         style={{
-          bottom: "-100px",
-          left: "55%",
-          width: "600px",
-          height: "500px",
-          background:
-            "radial-gradient(ellipse, rgba(158, 216, 245, 0.10) 0%, transparent 60%)",
-          filter: "blur(60px)",
+          right: "-650px",
+          top: "-600px",
+          width: "1400px",
+          height: "1000px",
+          filter: "blur(10px)",
+          overflow: "visible",
         }}
-      />
+        viewBox="0 0 1400 1000"
+        preserveAspectRatio="none"
+      >
+        <g transform="rotate(20 700 500)">
+          <ellipse
+            cx="700"
+            cy="500"
+            rx="620"
+            ry="420"
+            fill="none"
+            stroke="#CDE9F8"
+            strokeWidth="140"
+          />
+        </g>
+      </svg>
 
       {/* Static film grain overlay */}
       <div
