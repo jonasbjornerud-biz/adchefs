@@ -38,15 +38,25 @@ const HeroBackground = () => {
         }}
       />
 
+      {/* Ring layer — masked to fade out over the bottom 280px */}
+      <div
+        className="absolute inset-0"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to bottom, #000 0, #000 calc(100% - 280px), transparent 100%)",
+          maskImage:
+            "linear-gradient(to bottom, #000 0, #000 calc(100% - 280px), transparent 100%)",
+        }}
+      >
       {/* Ring 1 — sweeps up through left third from beyond bottom-left */}
       <svg
         className="hero-ring-1 absolute"
         style={{
           left: "-700px",
-          bottom: "-650px",
+          top: "-650px",
           width: "1600px",
           height: "1100px",
-          filter: "blur(10px)",
+          filter: "blur(16px)",
           overflow: "visible",
         }}
         viewBox="0 0 1600 1100"
@@ -73,7 +83,7 @@ const HeroBackground = () => {
           top: "-600px",
           width: "1400px",
           height: "1000px",
-          filter: "blur(10px)",
+          filter: "blur(16px)",
           overflow: "visible",
         }}
         viewBox="0 0 1400 1000"
@@ -91,6 +101,7 @@ const HeroBackground = () => {
           />
         </g>
       </svg>
+      </div>
 
       {/* Static film grain overlay */}
       <div
