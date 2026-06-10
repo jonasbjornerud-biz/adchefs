@@ -3,7 +3,7 @@ import jonasSignature from "@/assets/jonas-signature.png";
 
 const WhyAdChefs = () => {
   return (
-    <section className="py-24 sm:py-32 bg-secondary border-y border-foreground/5">
+    <section className="py-16 sm:py-32 bg-secondary border-y border-foreground/5">
       <div className="mx-auto max-w-[1100px] px-6">
         <div className="grid md:grid-cols-[220px_1fr] gap-10 md:gap-16 items-start">
           <div className="flex justify-start">

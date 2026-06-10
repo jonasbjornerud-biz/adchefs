@@ -24,7 +24,7 @@ const Hero = () => {
   const doubled = [...mediaSources, ...mediaSources];
 
   return (
-    <section className="relative pt-32 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+    <section className="relative pt-24 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
       {/* Subtle noise texture overlay */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none z-[1]"
@@ -44,12 +44,12 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10">
-        <div className="max-w-[1200px] -ml-4">
+        <div className="max-w-[1200px] md:-ml-4">
           <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
-          <h1 className="mt-4 font-display text-[40px] sm:text-[56px] md:text-[68px] leading-[0.95] tracking-[-0.03em] text-foreground whitespace-nowrap">
-            Your <em>dedicated</em> video editor<br />
-            without the additional cost
+          <h1 className="mt-4 font-display text-[34px] sm:text-[56px] md:text-[68px] leading-[1.02] sm:leading-[0.95] tracking-[-0.03em] text-foreground sm:whitespace-nowrap">
+            Your <em>dedicated</em> video editor<br className="hidden sm:inline" />
+            {" "}without the additional cost
           </h1>
 
           <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
@@ -78,7 +78,7 @@ const Hero = () => {
 
       {/* Recent work marquee */}
       <div className="relative mt-20 sm:mt-24">
-        <div className="mx-auto max-w-[1200px] px-6 mb-6 flex items-end justify-between">
+        <div className="mx-auto max-w-[1200px] px-6 mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <span className="eyebrow">Recent work</span>
           <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             Live cuts shipping for clients

@@ -1,6 +1,6 @@
 const CalendlyBooking = () => {
   return (
-    <section id="booking" className="py-24 sm:py-32 bg-secondary border-y border-foreground/10">
+    <section id="booking" className="py-16 sm:py-32 bg-secondary border-y border-foreground/10">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
           <div>
