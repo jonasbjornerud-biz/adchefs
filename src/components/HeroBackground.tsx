@@ -1,3 +1,5 @@
+import HeroTimeline from "./HeroTimeline";
+
 const HeroBackground = () => {
   return (
     <div
@@ -22,26 +24,6 @@ const HeroBackground = () => {
         .aurora-orb-c { animation: auroraOrbC 55s ease-in-out infinite alternate; }
         @media (prefers-reduced-motion: reduce) {
           .aurora-orb-a, .aurora-orb-b, .aurora-orb-c { animation: none; }
-        }
-        @keyframes curveDraw  { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
-        @keyframes curvePulse {
-          0%    { stroke-dashoffset: 60; }
-          31.25%{ stroke-dashoffset: -1000; }
-          100%  { stroke-dashoffset: -1000; }
-        }
-        .curve-line, .curve-glow {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 1000;
-          animation: curveDraw 3.5s ease-out forwards;
-        }
-        .curve-pulse {
-          stroke-dasharray: 60 9999;
-          stroke-dashoffset: 60;
-          animation: curvePulse 8s linear 3.5s infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .curve-line, .curve-glow { animation: none; stroke-dashoffset: 0; }
-          .curve-pulse { animation: none; opacity: 0; }
         }
       `}</style>
 
@@ -99,62 +81,8 @@ const HeroBackground = () => {
         }}
       />
 
-      {/* Performance curve */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 1000 600"
-        preserveAspectRatio="none"
-        style={{ pointerEvents: 'none', zIndex: 1 }}
-      >
-        <defs>
-          <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#9ED8F5" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="#9ED8F5" stopOpacity="0.42" />
-            <stop offset="100%" stopColor="#9ED8F5" stopOpacity="0.7" />
-          </linearGradient>
-        </defs>
-        {/* Soft glow underlay */}
-        <path
-          className="curve-glow"
-          d="M 0 450 C 240 475, 430 445, 600 330 S 880 185, 1000 150"
-          fill="none"
-          stroke="#9ED8F5"
-          strokeWidth="6"
-          strokeLinecap="round"
-          opacity="0.12"
-          pathLength="1000"
-          style={{ filter: 'blur(6px)' }}
-        />
-        {/* Main line */}
-        <path
-          className="curve-line"
-          d="M 0 450 C 240 475, 430 445, 600 330 S 880 185, 1000 150"
-          fill="none"
-          stroke="url(#curveGrad)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          pathLength="1000"
-        />
-        {/* Traveling pulse */}
-        <path
-          className="curve-pulse"
-          d="M 0 450 C 240 475, 430 445, 600 330 S 880 185, 1000 150"
-          fill="none"
-          stroke="#D6EEFB"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          opacity="0.9"
-          pathLength="1000"
-        />
-        {/* Tick marks (static) */}
-        <g stroke="#1A1A1A" strokeWidth="1" opacity="0.2" strokeLinecap="round">
-          <line x1="120" y1="463" x2="120" y2="471" />
-          <line x1="310" y1="455" x2="310" y2="463" />
-          <line x1="520" y1="378" x2="520" y2="386" />
-          <line x1="760" y1="232" x2="760" y2="240" />
-          <line x1="920" y1="172" x2="920" y2="180" />
-        </g>
-      </svg>
+      {/* Ghost editing timeline */}
+      <HeroTimeline />
     </div>
   );
 };
