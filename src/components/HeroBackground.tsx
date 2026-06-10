@@ -118,8 +118,7 @@ const HeroBackground = () => {
 
     return () => {
       cancelAnimationFrame(raf);
-      root.removeEventListener("pointermove", onPointerMove);
-      root.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("resize", onResize);
     };
   }, []);
