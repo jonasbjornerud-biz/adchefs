@@ -23,6 +23,17 @@ const HeroBackground = () => {
         @media (prefers-reduced-motion: reduce) {
           .aurora-orb-a, .aurora-orb-b, .aurora-orb-c { animation: none; }
         }
+        @keyframes orbitSpin       { from { transform: rotate(0deg);   } to { transform: rotate(360deg);   } }
+        @keyframes orbitSpinRev    { from { transform: rotate(0deg);   } to { transform: rotate(-360deg);  } }
+        @keyframes orbitDot1       { from { transform: rotate(0deg);   } to { transform: rotate(360deg);   } }
+        @keyframes orbitDot2       { from { transform: rotate(120deg); } to { transform: rotate(480deg);   } }
+        .orbit-spin       { animation: orbitSpin 240s linear infinite;    transform-origin: 800px 800px; transform-box: fill-box; }
+        .orbit-spin-rev   { animation: orbitSpinRev 180s linear infinite; transform-origin: 800px 800px; transform-box: fill-box; }
+        .orbit-dot-1      { animation: orbitDot1 45s linear infinite;     transform-origin: 800px 800px; transform-box: fill-box; }
+        .orbit-dot-2      { animation: orbitDot2 70s linear infinite;     transform-origin: 800px 800px; transform-box: fill-box; }
+        @media (prefers-reduced-motion: reduce) {
+          .orbit-spin, .orbit-spin-rev, .orbit-dot-1, .orbit-dot-2 { animation: none; }
+        }
       `}</style>
 
       {/* Orb 1 — top-left */}
@@ -78,6 +89,49 @@ const HeroBackground = () => {
           backgroundSize: '240px 240px',
         }}
       />
+
+      {/* Orbital line system */}
+      <svg
+        width="1600"
+        height="1600"
+        viewBox="0 0 1600 1600"
+        className="absolute"
+        style={{
+          top: '50%',
+          right: 0,
+          transform: 'translate(35%, -50%)',
+          pointerEvents: 'none',
+          WebkitMaskImage:
+            'radial-gradient(ellipse 60% 60% at 70% 50%, #000 40%, rgba(0,0,0,0.35) 65%, transparent 85%), linear-gradient(to bottom, #000 calc(100% - 200px), transparent 100%)',
+          maskImage:
+            'radial-gradient(ellipse 60% 60% at 70% 50%, #000 40%, rgba(0,0,0,0.35) 65%, transparent 85%), linear-gradient(to bottom, #000 calc(100% - 200px), transparent 100%)',
+          WebkitMaskComposite: 'source-in',
+          maskComposite: 'intersect',
+        }}
+      >
+        <g className="orbit-spin">
+          <circle cx="800" cy="800" r="380" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.08" />
+          <circle cx="800" cy="800" r="740" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.06" />
+        </g>
+        <g className="orbit-spin-rev">
+          <circle
+            cx="800"
+            cy="800"
+            r="560"
+            fill="none"
+            stroke="#9ED8F5"
+            strokeWidth="1"
+            opacity="0.35"
+            strokeDasharray="4 8"
+          />
+        </g>
+        <g className="orbit-dot-1">
+          <circle cx="1360" cy="800" r="3" fill="#9ED8F5" />
+        </g>
+        <g className="orbit-dot-2">
+          <circle cx="1180" cy="800" r="2" fill="#1A1A1A" opacity="0.4" />
+        </g>
+      </svg>
     </div>
   );
 };
