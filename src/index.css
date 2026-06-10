@@ -713,3 +713,29 @@
 .animate-checkmark-pop {
   animation: checkmark-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* ScrollReveal — fade & rise direct children of a section on first viewport entry */
+.sr-root > * > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+.sr-root.sr-visible > * > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.sr-root.sr-visible > * > *:nth-child(1) { transition-delay: 0ms; }
+.sr-root.sr-visible > * > *:nth-child(2) { transition-delay: 90ms; }
+.sr-root.sr-visible > * > *:nth-child(3) { transition-delay: 180ms; }
+.sr-root.sr-visible > * > *:nth-child(4) { transition-delay: 270ms; }
+.sr-root.sr-visible > * > *:nth-child(5) { transition-delay: 360ms; }
+.sr-root.sr-visible > * > *:nth-child(6) { transition-delay: 450ms; }
+.sr-root.sr-visible > * > *:nth-child(7) { transition-delay: 540ms; }
+.sr-root.sr-visible > * > *:nth-child(8) { transition-delay: 630ms; }
+@media (prefers-reduced-motion: reduce) {
+  .sr-root > * > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
