@@ -97,21 +97,20 @@ const HeroBackground = () => {
         viewBox="0 0 1600 1600"
         className="absolute"
         style={{
-          top: '50%',
-          right: 0,
-          transform: 'translate(35%, -50%)',
+          top: '45%',
+          left: '85%',
+          transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
+          zIndex: 1,
           WebkitMaskImage:
-            'radial-gradient(ellipse 60% 60% at 70% 50%, #000 40%, rgba(0,0,0,0.35) 65%, transparent 85%), linear-gradient(to bottom, #000 calc(100% - 200px), transparent 100%)',
+            'linear-gradient(to right, transparent 0%, #000 30%, #000 100%)',
           maskImage:
-            'radial-gradient(ellipse 60% 60% at 70% 50%, #000 40%, rgba(0,0,0,0.35) 65%, transparent 85%), linear-gradient(to bottom, #000 calc(100% - 200px), transparent 100%)',
-          WebkitMaskComposite: 'source-in',
-          maskComposite: 'intersect',
+            'linear-gradient(to right, transparent 0%, #000 30%, #000 100%)',
         }}
       >
         <g className="orbit-spin">
-          <circle cx="800" cy="800" r="380" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.08" />
-          <circle cx="800" cy="800" r="740" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.06" />
+          <circle cx="800" cy="800" r="380" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.15" />
+          <circle cx="800" cy="800" r="740" fill="none" stroke="#1A1A1A" strokeWidth="1" opacity="0.12" />
         </g>
         <g className="orbit-spin-rev">
           <circle
@@ -120,16 +119,16 @@ const HeroBackground = () => {
             r="560"
             fill="none"
             stroke="#9ED8F5"
-            strokeWidth="1"
-            opacity="0.35"
+            strokeWidth="1.5"
+            opacity="0.6"
             strokeDasharray="4 8"
           />
         </g>
         <g className="orbit-dot-1">
-          <circle cx="1360" cy="800" r="3" fill="#9ED8F5" />
+          <circle cx="1360" cy="800" r="5" fill="#9ED8F5" />
         </g>
         <g className="orbit-dot-2">
-          <circle cx="1180" cy="800" r="2" fill="#1A1A1A" opacity="0.4" />
+          <circle cx="1180" cy="800" r="4" fill="#1A1A1A" opacity="0.5" />
         </g>
       </svg>
     </div>
