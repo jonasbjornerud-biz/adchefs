@@ -7,18 +7,19 @@ import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <Hero />
-      <WhyAdChefs />
-      <HowItWorks />
-      <EditorEdge />
-      <Pricing />
-      <CalendlyBooking />
-      <FAQ />
+      <ScrollReveal><WhyAdChefs /></ScrollReveal>
+      <ScrollReveal><HowItWorks /></ScrollReveal>
+      <ScrollReveal><EditorEdge /></ScrollReveal>
+      <ScrollReveal><Pricing /></ScrollReveal>
+      <ScrollReveal><CalendlyBooking /></ScrollReveal>
+      <ScrollReveal><FAQ /></ScrollReveal>
       <Footer />
     </div>
   );
