@@ -42,12 +42,12 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="py-24 sm:py-32 bg-background">
+    <section id="faq" className="py-16 sm:py-32 bg-background">
       <div className="mx-auto max-w-[1100px] px-6">
-        <div className="grid md:grid-cols-[1fr_1.6fr] gap-12">
+        <div className="grid md:grid-cols-[1fr_1.6fr] gap-8 md:gap-12">
           <div>
             <span className="eyebrow">FAQ</span>
-            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground whitespace-nowrap">
+            <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground md:whitespace-nowrap">
               Things people <em>actually</em> ask.
             </h2>
             <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">

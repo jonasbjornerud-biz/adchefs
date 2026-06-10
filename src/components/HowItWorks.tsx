@@ -23,7 +23,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="py-24 sm:py-32 bg-background">
+    <section id="how-it-works" className="py-16 sm:py-32 bg-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow">How it works</span>
