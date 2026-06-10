@@ -6,17 +6,28 @@ const HeroBackground = () => {
     >
       <style>{`
         @keyframes heroRingDriftA {
-          0%, 100% { transform: translate(-12%, -8%) rotate(14deg); }
-          50%      { transform: translate(-9%, -5%) rotate(18deg); }
+          0%   { transform: translate(0px, 0px) rotate(14deg); }
+          100% { transform: translate(-50px, 30px) rotate(20deg); }
         }
         @keyframes heroRingDriftB {
-          0%, 100% { transform: translate(18%, 22%) rotate(-12deg); }
-          50%      { transform: translate(15%, 19%) rotate(-8deg); }
+          0%   { transform: translate(0px, 0px) rotate(-12deg); }
+          100% { transform: translate(40px, -40px) rotate(-20deg); }
         }
-        .hero-ring-a { animation: heroRingDriftA 75s ease-in-out infinite alternate; transform-origin: center; will-change: transform; }
-        .hero-ring-b { animation: heroRingDriftB 90s ease-in-out infinite alternate; transform-origin: center; will-change: transform; }
+        @keyframes heroRingBreatheA {
+          0%, 100% { stroke-opacity: 0.11; }
+          50%      { stroke-opacity: 0.15; }
+        }
+        @keyframes heroRingBreatheB {
+          0%, 100% { stroke-opacity: 0.11; }
+          50%      { stroke-opacity: 0.15; }
+        }
+        .hero-ring-a { animation: heroRingDriftA 45s ease-in-out infinite alternate; transform-origin: center; will-change: transform; }
+        .hero-ring-b { animation: heroRingDriftB 60s ease-in-out infinite alternate; transform-origin: center; will-change: transform; }
+        .hero-ring-a > ellipse { animation: heroRingBreatheA 45s ease-in-out infinite alternate; }
+        .hero-ring-b > ellipse { animation: heroRingBreatheB 60s ease-in-out infinite alternate; }
         @media (prefers-reduced-motion: reduce) {
-          .hero-ring-a, .hero-ring-b { animation: none; }
+          .hero-ring-a, .hero-ring-b,
+          .hero-ring-a > ellipse, .hero-ring-b > ellipse { animation: none; }
         }
       `}</style>
 
@@ -29,7 +40,6 @@ const HeroBackground = () => {
         }}
       />
 
-      {/* Left ring behind headline */}
       <svg
         className="hero-ring-a absolute"
         style={{ left: '-30%', top: '-10%', width: 1600, height: 1600, filter: 'blur(2px)' }}
@@ -43,8 +53,8 @@ const HeroBackground = () => {
           ry="540"
           fill="none"
           stroke="#9ED8F5"
-          strokeOpacity="0.07"
-          strokeWidth="80"
+          strokeOpacity="0.11"
+          strokeWidth="110"
         />
       </svg>
 
@@ -62,10 +72,22 @@ const HeroBackground = () => {
           ry="600"
           fill="none"
           stroke="#9ED8F5"
-          strokeOpacity="0.07"
-          strokeWidth="70"
+          strokeOpacity="0.11"
+          strokeWidth="100"
         />
       </svg>
+
+      {/* Static film grain overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          opacity: 0.045,
+          mixBlendMode: 'overlay',
+          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '240px 240px',
+        }}
+      />
     </div>
   );
 };
