@@ -2,7 +2,7 @@ const HeroBackground = () => {
   // 6×6 tile with two 1px dots (ink + accent), URL-encoded inline SVG.
   // Tile size chosen to avoid moiré at 1280–1920px widths.
   const weaveTile =
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.025'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.02'/></svg>\")";
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><rect x='0' y='0' width='1' height='1' fill='%231A1A1A' fill-opacity='0.12'/><rect x='3' y='3' width='1' height='1' fill='%239ED8F5' fill-opacity='0.08'/></svg>\")";
 
   return (
     <div
@@ -42,7 +42,7 @@ const HeroBackground = () => {
       <div
         className="absolute inset-0"
         style={{
-          opacity: 0.045,
+          opacity: 0.05,
           mixBlendMode: "overlay",
           backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundRepeat: "repeat",
