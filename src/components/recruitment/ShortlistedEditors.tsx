@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Star, Send, Mail, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { EmbeddedSubmission } from './RecruitmentPanel';
 
 type Posting = {
   id: string; slug: string; title: string; brand: string; submit_slug: string;
@@ -18,6 +19,10 @@ type Application = {
   first_name: string; last_name: string; email: string;
   software: string; stage: string; starred?: boolean | null;
   portfolio_url: string | null;
+};
+type Submission = {
+  id: string; application_id: string | null; email: string;
+  submission_url: string; notes: string | null; created_at: string;
 };
 
 /* ---------------- Gravatar ---------------- */
@@ -78,6 +83,7 @@ Jonas`;
 export function ShortlistedEditors() {
   const [apps, setApps] = useState<Application[]>([]);
   const [postings, setPostings] = useState<Posting[]>([]);
+  const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -89,14 +95,16 @@ export function ShortlistedEditors() {
 
   async function load() {
     setLoading(true);
-    const [{ data: a }, { data: p }] = await Promise.all([
+    const [{ data: a }, { data: p }, { data: s }] = await Promise.all([
       (supabase.from('applications' as never) as any)
         .select('id,job_posting_id,first_name,last_name,email,software,stage,starred,portfolio_url')
         .eq('starred', true).order('created_at', { ascending: false }),
       (supabase.from('job_postings' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('trial_submissions' as never) as any).select('*').order('created_at', { ascending: false }),
     ]);
     setApps((a as Application[]) ?? []);
     setPostings((p as Posting[]) ?? []);
+    setSubs((s as Submission[]) ?? []);
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
@@ -104,6 +112,10 @@ export function ShortlistedEditors() {
   const postingById = useMemo(() => {
     const m = new Map<string, Posting>(); postings.forEach(p => m.set(p.id, p)); return m;
   }, [postings]);
+  function subFor(app: Application) {
+    return subs.find(s => s.application_id === app.id) ||
+      subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
+  }
   const activePostings = postings.filter(p => p.is_active);
   const targetPosting = postings.find(p => p.id === targetPostingId);
 
@@ -238,45 +250,77 @@ export function ShortlistedEditors() {
           </p>
         </div>
       ) : (
-        <ul className="border-t" style={{ borderColor: '#E2E0D9' }}>
+        <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {apps.map(app => {
             const posting = app.job_posting_id ? postingById.get(app.job_posting_id) : null;
+            const sub = subFor(app);
             const checked = selected.has(app.id);
             return (
-              <li key={app.id} className="border-b" style={{ borderColor: '#E2E0D9' }}>
-                <label
-                  className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center gap-5 py-4 px-3 sm:px-5 -mx-3 sm:-mx-5 rounded-[4px] hover:bg-[#EEEDE8] transition-colors cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggle(app.id)}
-                    className="accent-[#1A1A1A] w-4 h-4 rounded-[2px]"
-                  />
-                  <EditorAvatar email={app.email} name={`${app.first_name} ${app.last_name}`} />
-                  <div className="min-w-0">
-                    <p className="text-[17px] tracking-[-0.02em] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
-                      {app.first_name} {app.last_name}
-                    </p>
-                    <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B] truncate">
-                      {app.email}
-                    </p>
+              <article
+                key={app.id}
+                className="relative rounded-[6px] border overflow-hidden flex flex-col transition-colors"
+                style={{
+                  borderColor: checked ? '#1A1A1A' : '#E2E0D9',
+                  backgroundColor: '#FAF8F3',
+                  boxShadow: checked ? '0 0 0 1px #1A1A1A inset' : 'none',
+                }}
+              >
+                {/* Square trial preview */}
+                <div className="relative w-full flex items-center justify-center" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#000' : '#EEEDE8' }}>
+                  {sub ? (
+                    <div className="w-full">
+                      <EmbeddedSubmission url={sub.submission_url} />
+                    </div>
+                  ) : (
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
+                  )}
+                  {/* Selection checkbox overlay */}
+                  <label
+                    className="absolute top-2 left-2 z-20 flex items-center gap-1.5 cursor-pointer rounded-[3px] px-2 py-1 backdrop-blur"
+                    style={{ backgroundColor: 'rgba(26,26,26,0.7)' }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggle(app.id)}
+                      className="accent-white w-3.5 h-3.5 rounded-[2px]"
+                    />
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-white">
+                      {checked ? 'Selected' : 'Select'}
+                    </span>
+                  </label>
+                </div>
+
+                {/* Candidate meta */}
+                <div className="p-4 flex flex-col gap-3">
+                  <div className="flex items-start gap-3">
+                    <EditorAvatar email={app.email} name={`${app.first_name} ${app.last_name}`} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[16px] tracking-[-0.02em] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                        {app.first_name} {app.last_name}
+                      </p>
+                      <p className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B] truncate">
+                        {app.email}
+                      </p>
+                    </div>
+                    <Star className="w-4 h-4 shrink-0 mt-1" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
                   </div>
-                  <div className="hidden sm:flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">Applied for</span>
                     <span
-                      className="inline-flex items-center rounded-[4px] px-2.5 py-1 mono text-[10px] uppercase tracking-[0.15em]"
+                      className="inline-flex items-center rounded-[4px] px-2 py-0.5 mono text-[10px] uppercase tracking-[0.15em]"
                       style={{ background: 'linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%)', color: '#1A4A6B' }}
                     >
                       {posting?.brand ?? '—'}
                     </span>
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">·</span>
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">{app.software}</span>
                   </div>
-                  <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
-                </label>
-              </li>
+                </div>
+              </article>
             );
           })}
-        </ul>
+        </div>
       )}
 
       {/* Invite dialog */}

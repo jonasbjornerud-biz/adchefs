@@ -178,7 +178,7 @@ function LinkFavicon({ url, size = 16 }: { url: string; size?: number }) {
   );
 }
 
-function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
+export function EmbeddedSubmission({ url, compact = false }: { url: string; compact?: boolean }) {
   const e = embedFor(url);
   // Drive URLs: never render a preview card — only show Open + Copy buttons.
   if (/drive\.google\.com/.test(url)) {
