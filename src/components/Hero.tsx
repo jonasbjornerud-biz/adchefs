@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon } from "lucide-react";
+import { ArrowRight, X as XIcon, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
@@ -178,14 +178,25 @@ const DriftTrack = ({ loopSeconds, axis, direction, pausedRef, className, childr
 
 const Lightbox = ({ src, onClose }: LightboxProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!src) return;
+    setMounted(false);
+    const id = requestAnimationFrame(() => setMounted(true));
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => {
+      cancelAnimationFrame(id);
+      document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
       const v = videoRef.current;
       if (v) {
@@ -198,40 +209,119 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 
   if (!src) return null;
 
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play().catch(() => {}); setPlaying(true); }
+    else { v.pause(); setPlaying(false); }
+  };
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  };
+  const onTimeUpdate = () => {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    setProgress(v.currentTime / v.duration);
+  };
+  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const v = videoRef.current;
+    const bar = barRef.current;
+    if (!v || !bar || !v.duration) return;
+    const rect = bar.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    v.currentTime = ratio * v.duration;
+    setProgress(ratio);
+  };
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center animate-in fade-in duration-200"
-      style={{ background: "rgba(26,26,26,0.90)" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center"
+      style={{
+        background: "rgba(26,26,26,0.92)",
+        opacity: mounted ? 1 : 0,
+        transition: "opacity 250ms ease",
+      }}
     >
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-        aria-label="Close"
-        className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
-        style={{ color: "#F7F6F3" }}
-      >
-        <XIcon className="h-6 w-6" />
-      </button>
-      <video
-        ref={videoRef}
-        src={src}
-        controls
-        autoPlay
-        preload="none"
+      <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: "90vw",
+          position: "relative",
+          aspectRatio: "9 / 16",
           maxHeight: "85vh",
-          width: "auto",
-          height: "auto",
+          height: "85vh",
+          borderRadius: "4px",
+          overflow: "hidden",
+          transform: mounted ? "scale(1)" : "scale(0.96)",
+          opacity: mounted ? 1 : 0,
+          transition: "transform 250ms ease, opacity 250ms ease",
         }}
-      />
+      >
+        <video
+          ref={videoRef}
+          src={src}
+          autoPlay
+          loop
+          playsInline
+          preload="auto"
+          onClick={togglePlay}
+          onTimeUpdate={onTimeUpdate}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", cursor: "pointer", background: "#000" }}
+        />
+        {!playing && (
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label="Play"
+            style={{
+              position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+              width: 64, height: 64, borderRadius: "9999px", background: "#F7F6F3",
+              display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: "pointer",
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden>
+              <polygon points="5,3 19,11 5,19" fill="#1A1A1A" />
+            </svg>
+          </button>
+        )}
+        {/* Top-right chrome */}
+        <div style={{ position: "absolute", top: 8, right: 8, display: "flex", gap: 4, zIndex: 2 }}>
+          <button
+            type="button"
+            onClick={toggleMute}
+            aria-label={muted ? "Unmute" : "Mute"}
+            className="hero-lb-chrome"
+          >
+            {muted ? <VolumeX className="h-[18px] w-[18px]" /> : <Volume2 className="h-[18px] w-[18px]" />}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="hero-lb-chrome"
+          >
+            <XIcon className="h-[18px] w-[18px]" />
+          </button>
+        </div>
+        {/* Progress bar */}
+        <div
+          ref={barRef}
+          onClick={seek}
+          style={{
+            position: "absolute", left: 0, right: 0, bottom: 0, height: 2,
+            background: "rgba(247,246,243,0.25)", cursor: "pointer", zIndex: 2,
+          }}
+        >
+          <div style={{ height: "100%", width: `${progress * 100}%`, background: "#F7F6F3" }} />
+        </div>
+      </div>
     </div>
   );
 };
@@ -337,6 +427,7 @@ const Hero = () => {
                 onMouseEnter={() => { wallPausedRef.current = true; }}
                 onMouseLeave={() => { wallPausedRef.current = false; }}
               >
+                <div className="hero-wall-plane">
                 <div className="hero-wall-cols">
                   <div className="hero-wall-col">
                     <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
@@ -376,6 +467,7 @@ const Hero = () => {
                       ))}
                     </DriftTrack>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -488,7 +580,62 @@ const Hero = () => {
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
                   mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+          perspective: 1600px;
         }
+        .hero-wall-plane {
+          height: 100%;
+          width: 100%;
+          transform-style: preserve-3d;
+          transform: rotateY(-4deg) rotateX(1deg);
+          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+          will-change: transform;
+        }
+        @media (min-width: 1024px) {
+          .hero-wall-vertical:hover .hero-wall-plane {
+            transform: rotateY(-1.5deg) rotateX(1deg);
+          }
+        }
+        @media (max-width: 1023px) {
+          .hero-wall-vertical { perspective: none; }
+          .hero-wall-plane { transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-wall-plane { transition: none; }
+        }
+
+        /* Focus-hover: dim & blur siblings when any card is hovered */
+        .hero-wall-vertical:has(.hero-wall-card:hover) .hero-wall-card,
+        .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
+          filter: blur(3px);
+          opacity: 0.45;
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+        }
+        .hero-wall-vertical .hero-wall-card,
+        .hero-wall-horizontal .hero-wall-card {
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+        }
+        .hero-wall-vertical .hero-wall-card:hover,
+        .hero-wall-horizontal .hero-wall-card:hover {
+          filter: none !important;
+          opacity: 1 !important;
+          border-color: rgba(26,26,26,0.25);
+        }
+
+        /* Lightbox chrome buttons */
+        .hero-lb-chrome {
+          width: 36px;
+          height: 36px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          color: #F7F6F3;
+          opacity: 0.6;
+          cursor: pointer;
+          transition: opacity 150ms ease;
+        }
+        .hero-lb-chrome:hover { opacity: 1; }
         .hero-wall-cols, .hero-wall-cols-2 {
           display: none;
           gap: 16px;
