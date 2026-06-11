@@ -13,6 +13,7 @@ import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
+import { ShortlistedEditors } from './ShortlistedEditors';
 
 type Posting = {
   id: string;
@@ -300,9 +301,11 @@ export function RecruitmentPanel() {
     <Tabs defaultValue="pipeline" className="w-full">
       <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
         <TabsTrigger value="pipeline" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Pipeline</TabsTrigger>
+        <TabsTrigger value="shortlisted" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Shortlisted editors</TabsTrigger>
         <TabsTrigger value="postings" className="rounded-[3px] mono text-[10px] uppercase tracking-[0.15em] data-[state=active]:bg-[#1A1A1A] data-[state=active]:text-[#FAF8F3]">Job Postings</TabsTrigger>
       </TabsList>
       <TabsContent value="pipeline" className="mt-8"><Pipeline /></TabsContent>
+      <TabsContent value="shortlisted" className="mt-8"><ShortlistedEditors /></TabsContent>
       <TabsContent value="postings" className="mt-8"><Postings /></TabsContent>
     </Tabs>
   );
