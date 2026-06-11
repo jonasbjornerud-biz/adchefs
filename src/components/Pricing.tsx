@@ -72,12 +72,12 @@ const Pricing = () => {
           100% { transform: translateY(0); }
         }
         @keyframes sheetBreathe {
-          0%, 100% { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
-          50%      { transform: rotateX(7.5deg) rotateY(-5deg) rotateZ(0.2deg); }
+          0%, 100% { transform: rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg); }
+          50%      { transform: rotateX(15.5deg) rotateY(-9deg) rotateZ(0.3deg); }
         }
         @keyframes shadowBreathe {
-          0%, 100% { opacity: 0.18; }
-          50%      { opacity: 0.14; }
+          0%, 100% { opacity: 0.32; }
+          50%      { opacity: 0.26; }
         }
         .receipt-sheet {
           animation: sheetBreathe 10s ease-in-out infinite;
@@ -197,16 +197,17 @@ const Pricing = () => {
                       className="receipt-cast-shadow"
                       style={{
                         position: "absolute",
-                        top: "28px",
-                        left: "14px",
+                        top: "40px",
+                        left: "22px",
                         width: "100%",
-                        height: "85%",
-                        background: "rgba(26,26,26,0.18)",
-                        borderRadius: "12px",
-                        filter: "blur(26px)",
-                        transform: "rotateX(6deg) skewX(-4deg)",
+                        height: "92%",
+                        background:
+                          "radial-gradient(60% 70% at 50% 60%, rgba(26,26,26,0.45) 0%, rgba(26,26,26,0.18) 55%, rgba(26,26,26,0) 100%)",
+                        borderRadius: "20px",
+                        filter: "blur(32px)",
+                        transform: "rotateX(14deg) skewX(-6deg) scaleY(1.05)",
                         transformOrigin: "top center",
-                        opacity: 0.18,
+                        opacity: 0.32,
                         zIndex: 0,
                         pointerEvents: "none",
                       }}
@@ -219,7 +220,7 @@ const Pricing = () => {
                         background: "#FDFCFA",
                         borderRadius: 0,
                         transform:
-                          "rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg)",
+                          "rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg)",
                         transformStyle: "preserve-3d",
                         transformOrigin: "top center",
                         zIndex: 1,
@@ -326,8 +327,22 @@ const Pricing = () => {
                           pointerEvents: "none",
                           borderRadius: "inherit",
                           background:
-                            "linear-gradient(100deg, rgba(26,26,26,0.10) 0%, rgba(26,26,26,0.02) 18%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.35) 62%, rgba(26,26,26,0.04) 85%, rgba(26,26,26,0.10) 100%), linear-gradient(180deg, rgba(26,26,26,0.06) 0%, transparent 12%)",
-                          mixBlendMode: "soft-light",
+                            "linear-gradient(95deg, rgba(26,26,26,0.18) 0%, rgba(26,26,26,0.04) 14%, rgba(255,255,255,0) 38%, rgba(255,255,255,0.55) 60%, rgba(26,26,26,0.05) 82%, rgba(26,26,26,0.16) 100%), linear-gradient(180deg, rgba(26,26,26,0.12) 0%, transparent 14%, transparent 78%, rgba(26,26,26,0.18) 100%)",
+                          mixBlendMode: "multiply",
+                        }}
+                      />
+
+                      {/* Highlight sheen — adds a soft specular for paper sheen */}
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          background:
+                            "linear-gradient(95deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0) 78%)",
+                          mixBlendMode: "screen",
+                          opacity: 0.5,
                         }}
                       />
                     </div>
