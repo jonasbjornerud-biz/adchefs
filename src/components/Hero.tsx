@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, X as XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
@@ -33,7 +33,22 @@ const FEATURED_FULL = CLIPS.map((c) => ({
   ...buildUrls(c.id, c.mov),
   label: c.label.slice(0, 14).toUpperCase(),
 }));
-const TOTAL = FEATURED_FULL.length;
+
+// Distribute videos across N columns; ensure each column has at least `min` items
+// by repeating, then double for seamless loop.
+const buildColumns = (n: number, min: number) => {
+  const cols: typeof FEATURED_FULL[] = Array.from({ length: n }, () => []);
+  FEATURED_FULL.forEach((c, i) => cols[i % n].push(c));
+  return cols.map((col) => {
+    let filled = [...col];
+    while (filled.length < min) filled = filled.concat(col);
+    return [...filled, ...filled];
+  });
+};
+const COLS_3 = buildColumns(3, 4);
+const COLS_2 = buildColumns(2, 4);
+// Single row for mobile: all videos doubled for seamless loop
+const ROW_M = [...FEATURED_FULL, ...FEATURED_FULL];
 
 interface LightboxProps {
   src: string | null;
