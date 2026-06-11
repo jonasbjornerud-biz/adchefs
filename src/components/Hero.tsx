@@ -575,49 +575,53 @@ const Hero = () => {
         .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
 
         /* === Vertical multi-column wall (desktop + tablet) === */
-        .hero-wall-vertical {
-          position: relative;
+        /* 1) perspective only */
+        .wall-perspective {
+          perspective: 1200px;
           height: 85vh;
           max-height: 760px;
-          perspective: 1600px;
+          position: relative;
         }
-        .hero-wall-plane {
+        /* 2) rotation only — no mask, no overflow, no filter, no will-change */
+        .wall-rotated {
           height: 100%;
           width: 100%;
-          position: relative;
+          transform: rotateY(-6deg) rotateX(1deg);
+          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* 3) clip + mask live here, not on the rotated element */
+        .wall-clip {
+          height: 100%;
+          width: 100%;
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
                   mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
-          transform-style: preserve-3d;
-          transform: rotateY(-4deg) rotateX(1deg);
-          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-          will-change: transform;
         }
         @media (min-width: 1024px) {
-          .hero-wall-plane:hover {
+          .wall-perspective:hover .wall-rotated {
             transform: rotateY(-1.5deg) rotateX(1deg);
           }
         }
         @media (max-width: 1023px) {
-          .hero-wall-vertical { perspective: none; }
-          .hero-wall-plane { transform: none; transform-style: flat; }
+          .wall-perspective { perspective: none; }
+          .wall-rotated { transform: none; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero-wall-plane { transition: none; }
+          .wall-rotated { transition: none; }
         }
 
         /* Focus-hover: dim & blur siblings when any card is hovered */
-        .hero-wall-plane:has(.hero-wall-card:hover) .hero-wall-card,
+        .wall-clip:has(.hero-wall-card:hover) .hero-wall-card,
         .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
           filter: blur(3px);
           opacity: 0.45;
           transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
         }
-        .hero-wall-plane .hero-wall-card,
+        .wall-clip .hero-wall-card,
         .hero-wall-horizontal .hero-wall-card {
           transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
         }
-        .hero-wall-plane .hero-wall-card:hover,
+        .wall-clip .hero-wall-card:hover,
         .hero-wall-horizontal .hero-wall-card:hover {
           filter: none !important;
           opacity: 1 !important;
@@ -677,7 +681,7 @@ const Hero = () => {
           aspect-ratio: 9 / 16;
         }
         @media (max-width: 767px) {
-          .hero-wall-vertical { display: none; }
+          .wall-perspective { display: none; }
           .hero-wall-horizontal { display: block; }
         }
       `}</style>
