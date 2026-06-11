@@ -423,11 +423,12 @@ const Hero = () => {
 
               {/* Desktop / tablet: vertical multi-column wall */}
               <div
-                className="hero-wall-vertical"
+                className="wall-perspective"
                 onMouseEnter={() => { wallPausedRef.current = true; }}
                 onMouseLeave={() => { wallPausedRef.current = false; }}
               >
-                <div className="hero-wall-plane">
+                <div className="wall-rotated">
+                <div className="wall-clip">
                 <div className="hero-wall-cols">
                   <div className="hero-wall-col">
                     <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
@@ -467,6 +468,7 @@ const Hero = () => {
                       ))}
                     </DriftTrack>
                   </div>
+                </div>
                 </div>
                 </div>
               </div>
