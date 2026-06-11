@@ -760,10 +760,7 @@ function Pipeline() {
                       aria-label={app.starred ? 'Unstar' : 'Shortlist'}
                       title={app.starred ? 'Remove from shortlist' : 'Add to shortlist'}
                     >
-                      <Star
-                        className="w-4 h-4"
-                        style={{ color: app.starred ? '#1A1A1A' : '#C8C5BC', fill: app.starred ? '#9ED8F5' : 'transparent' }}
-                      />
+                      <BrandStar active={!!app.starred} size={16} />
                     </button>
                   </td>
                   <td className="p-3">
@@ -849,7 +846,7 @@ function Pipeline() {
                       style={{ borderColor: '#E2E0D9' }}
                       title={selected.starred ? 'Remove from shortlist' : 'Add to shortlist'}
                     >
-                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: selected.starred ? '#9ED8F5' : 'transparent' }} />
+                      <BrandStar active={!!selected.starred} size={16} />
                     </button>
                   </div>
                 </SheetHeader>
@@ -1092,7 +1089,7 @@ function Shortlist() {
 
       {apps.length === 0 ? (
         <div className="rounded-[4px] px-8 py-16 text-center" style={{ backgroundColor: '#EEEDE8' }}>
-          <Star className="w-5 h-5 mx-auto mb-3" style={{ color: '#75726B' }} />
+          <BrandStar size={20} className="mx-auto mb-3" />
           <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
             No shortlisted candidates yet. Tap the star on any applicant in the pipeline.
           </p>
@@ -1131,7 +1128,7 @@ function Shortlist() {
                       className="p-1 rounded-[3px] hover:bg-[#EEEDE8] transition-colors"
                       title="Remove from shortlist"
                     >
-                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
+                      <BrandStar active size={16} />
                     </button>
                   </div>
 
