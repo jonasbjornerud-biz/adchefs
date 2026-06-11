@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, X as XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
@@ -33,12 +33,85 @@ const FEATURED_FULL = CLIPS.map((c) => ({
   ...buildUrls(c.id, c.mov),
   label: c.label.slice(0, 14).toUpperCase(),
 }));
-const TOTAL = FEATURED_FULL.length;
+
+// Distribute videos across N columns; ensure each column has at least `min` items
+// by repeating, then double for seamless loop.
+const buildColumns = (n: number, min: number) => {
+  const cols: typeof FEATURED_FULL[] = Array.from({ length: n }, () => []);
+  FEATURED_FULL.forEach((c, i) => cols[i % n].push(c));
+  return cols.map((col) => {
+    let filled = [...col];
+    while (filled.length < min) filled = filled.concat(col);
+    return [...filled, ...filled];
+  });
+};
+const COLS_3 = buildColumns(3, 4);
+const COLS_2 = buildColumns(2, 4);
+// Single row for mobile: all videos doubled for seamless loop
+const ROW_M = [...FEATURED_FULL, ...FEATURED_FULL];
 
 interface LightboxProps {
   src: string | null;
   onClose: () => void;
 }
+
+interface WallCardProps {
+  clip: typeof FEATURED_FULL[number];
+  onOpen: (full: string) => void;
+  horizontal?: boolean;
+}
+
+const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        const v = videoRef.current;
+        if (!v) return;
+        if (entry.isIntersecting) {
+          if (v.preload === "none") v.preload = "metadata";
+          v.play().catch(() => {});
+        } else {
+          v.pause();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => onOpen(clip.full)}
+      className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
+      aria-label={`Play ${clip.label}`}
+      style={{
+        backgroundImage: `url("${clip.poster}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <video
+        ref={videoRef}
+        src={clip.preview}
+        poster={clip.poster}
+        muted
+        autoPlay
+        loop
+        playsInline
+        preload="none"
+        className="w-full h-full object-cover block"
+      />
+    </button>
+  );
+};
 
 const Lightbox = ({ src, onClose }: LightboxProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -102,10 +175,6 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 
 const Hero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [hoverPause, setHoverPause] = useState(false);
-  const [manualPauseUntil, setManualPauseUntil] = useState(0);
-  const dragRef = useRef<{ startX: number; active: boolean }>({ startX: 0, active: false });
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -114,38 +183,6 @@ const Hero = () => {
 
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
-
-  const goTo = useCallback((idx: number) => {
-    setActiveIdx(((idx % TOTAL) + TOTAL) % TOTAL);
-  }, []);
-
-  const markManual = useCallback(() => {
-    setManualPauseUntil(Date.now() + 15000);
-  }, []);
-
-  // Auto-advance every 7s unless hovered or recently interacted with
-  useEffect(() => {
-    const t = setInterval(() => {
-      if (hoverPause) return;
-      if (Date.now() < manualPauseUntil) return;
-      setActiveIdx((i) => (i + 1) % TOTAL);
-    }, 7000);
-    return () => clearInterval(t);
-  }, [hoverPause, manualPauseUntil]);
-
-  // Drag / swipe
-  const onPointerDown = (e: React.PointerEvent) => {
-    dragRef.current = { startX: e.clientX, active: true };
-  };
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!dragRef.current.active) return;
-    const dx = e.clientX - dragRef.current.startX;
-    dragRef.current.active = false;
-    if (Math.abs(dx) > 40) {
-      markManual();
-      goTo(activeIdx + (dx < 0 ? 1 : -1));
-    }
-  };
 
   return (
     <section className="relative min-h-screen lg:h-screen overflow-hidden bg-background pt-24 pb-12 lg:pt-0 lg:pb-0">
@@ -220,135 +257,73 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: horizontal video carousel */}
-          <div
-            className="hero-carousel-col flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8"
-            onMouseEnter={() => setHoverPause(true)}
-            onMouseLeave={() => setHoverPause(false)}
-          >
-            <div className="hero-carousel mx-auto flex flex-col w-full">
-              {/* Top label, flush with active slide's left edge */}
-              <div className="hero-carousel-edge">
-                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-                  Live cuts shipping for clients
-                </span>
-              </div>
+          {/* RIGHT: scrolling video wall (3 cols desktop, 2 cols tablet, 1 row mobile) */}
+          <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
+            <div className="hero-wall flex flex-col w-full">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4 hero-wall-edge">
+                Live cuts shipping for clients
+              </span>
 
-              {/* Track */}
-              <div
-                className="hero-carousel-track relative mt-4"
-                onPointerDown={onPointerDown}
-                onPointerUp={onPointerUp}
-                onPointerCancel={() => (dragRef.current.active = false)}
-                style={{ touchAction: "pan-y" }}
-              >
-                {FEATURED_FULL.map((c, i) => {
-                  // shortest signed distance accounting for wrap
-                  let offset = i - activeIdx;
-                  if (offset > TOTAL / 2) offset -= TOTAL;
-                  if (offset < -TOTAL / 2) offset += TOTAL;
-                  const isActive = offset === 0;
-                  const isPeek = Math.abs(offset) === 1;
-                  const visible = isActive || isPeek;
-                  // X position: center + offset * (activeW/2 + gap + peekW/2)
-                  // peekW = 0.85 * activeW. so spacing = activeW*0.5 + 20 + 0.85*activeW*0.5 = 0.925W + 20
-                  const translate = `calc(-50% + ${offset} * (var(--slide-w) * 0.925 + 20px))`;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      aria-label={isActive ? `Open ${c.label}` : `Show ${c.label}`}
-                      onClick={() => {
-                        markManual();
-                        if (isActive) openLightbox(c.full);
-                        else goTo(i);
-                      }}
-                      className="hero-slide absolute top-1/2 left-1/2 rounded-[4px] overflow-hidden bg-secondary p-0"
-                      style={{
-                        width: isActive
-                          ? "var(--slide-w)"
-                          : "calc(var(--slide-w) * 0.85)",
-                        height: isActive
-                          ? "var(--slide-h)"
-                          : "calc(var(--slide-h) * 0.85)",
-                        transform: `translate(${translate}, -50%)`,
-                        opacity: visible ? (isActive ? 1 : 0.5) : 0,
-                        pointerEvents: visible ? "auto" : "none",
-                        zIndex: isActive ? 2 : 1,
-                        border: "1px solid rgba(26,26,26,0.08)",
-                        boxShadow: isActive
-                          ? "0 24px 60px rgba(26,26,26,0.18)"
-                          : "0 12px 28px rgba(26,26,26,0.10)",
-                        transition:
-                          "transform 450ms cubic-bezier(0.22, 1, 0.36, 1), opacity 450ms cubic-bezier(0.22, 1, 0.36, 1), width 450ms cubic-bezier(0.22, 1, 0.36, 1), height 450ms cubic-bezier(0.22, 1, 0.36, 1)",
-                        backgroundImage: `url("${c.poster}")`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        cursor: isActive ? "pointer" : "pointer",
-                      }}
-                    >
-                      {isActive && (
-                        <video
-                          key={`v-${i}`}
-                          src={c.preview}
-                          poster={c.poster}
-                          muted
-                          autoPlay
-                          loop
-                          playsInline
-                          preload="auto"
-                          className="w-full h-full object-cover block"
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Desktop / tablet: vertical multi-column wall */}
+              <div className="hero-wall-vertical">
+                <div className="hero-wall-cols">
+                  {/* col 1 — up */}
+                  <div className="hero-wall-col">
+                    <div className="hero-wall-track hero-wall-up-1">
+                      {COLS_3[0].map((c, i) => (
+                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  {/* col 2 — down */}
+                  <div className="hero-wall-col hero-wall-col-2">
+                    <div className="hero-wall-track hero-wall-down-2">
+                      {COLS_3[1].map((c, i) => (
+                        <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  {/* col 3 — up */}
+                  <div className="hero-wall-col hero-wall-col-3">
+                    <div className="hero-wall-track hero-wall-up-3">
+                      {COLS_3[2].map((c, i) => (
+                        <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-              {/* Footer: counter + arrows, left-aligned with active slide */}
-              <div className="hero-carousel-edge mt-5 flex items-center gap-4">
-                <span
-                  className="mono uppercase select-none"
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                    color: "#75726B",
-                  }}
-                >
-                  {String(activeIdx + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    aria-label="Previous slide"
-                    onClick={() => {
-                      markManual();
-                      goTo(activeIdx - 1);
-                    }}
-                    className="hero-arrow flex items-center justify-center"
-                  >
-                    <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Next slide"
-                    onClick={() => {
-                      markManual();
-                      goTo(activeIdx + 1);
-                    }}
-                    className="hero-arrow flex items-center justify-center"
-                  >
-                    <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
+                {/* Tablet two-column variant */}
+                <div className="hero-wall-cols-2">
+                  <div className="hero-wall-col">
+                    <div className="hero-wall-track hero-wall-up-1">
+                      {COLS_2[0].map((c, i) => (
+                        <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="hero-wall-col hero-wall-col-2">
+                    <div className="hero-wall-track hero-wall-down-2">
+                      {COLS_2[1].map((c, i) => (
+                        <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Disclaimer */}
-              <div className="hero-carousel-edge mt-3">
-                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70">
-                  Video editing only. Brand ownership belongs to respective clients.
-                </span>
+              {/* Mobile: single horizontal row */}
+              <div className="hero-wall-horizontal">
+                <div className="hero-wall-row-track">
+                  {ROW_M.map((c, i) => (
+                    <WallCard key={`r-${i}`} clip={c} onOpen={openLightbox} horizontal />
+                  ))}
+                </div>
               </div>
+
+              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-4 hero-wall-edge leading-[1.6]">
+                Video editing only. Brand ownership belongs to respective clients.
+              </span>
             </div>
           </div>
         </div>
@@ -357,50 +332,92 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
-        .hero-carousel {
-          --slide-h: min(65vh, 600px);
-          --slide-w: calc(var(--slide-h) * 9 / 16);
-        }
-        @media (max-width: 1023px) {
-          .hero-carousel { --slide-h: 55vh; }
-        }
-        @media (max-width: 767px) {
-          .hero-carousel {
-            --slide-h: 60vh;
-            --slide-w: 100%;
-          }
-        }
-        .hero-carousel-track {
-          height: var(--slide-h);
-          overflow: hidden;
-          user-select: none;
-        }
-        /* Left-edge aligned blocks: width = active slide, centered in the column */
-        .hero-carousel-edge {
-          width: var(--slide-w);
-          margin-left: auto;
-          margin-right: auto;
-        }
-        .hero-arrow {
-          width: 40px;
-          height: 40px;
+        .hero-wall { width: 100%; }
+        .hero-wall-edge { display: block; }
+
+        .hero-wall-card {
+          display: block;
+          width: 100%;
+          aspect-ratio: 9 / 16;
           border-radius: 4px;
-          border: 1px solid rgba(26,26,26,0.15);
-          background: transparent;
-          color: #1A1A1A;
-          transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+          overflow: hidden;
+          background-color: hsl(var(--secondary));
+          border: 1px solid rgba(26,26,26,0.08);
+          padding: 0;
+          cursor: pointer;
         }
-        .hero-arrow:hover {
-          background: #1A1A1A;
-          color: #F7F6F3;
-          border-color: #1A1A1A;
+        .hero-wall-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* === Vertical multi-column wall (desktop + tablet) === */
+        .hero-wall-vertical {
+          position: relative;
+          height: 85vh;
+          max-height: 760px;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+                  mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
         }
-        /* Mobile: single full-width slide, no peek */
+        .hero-wall-cols, .hero-wall-cols-2 {
+          display: none;
+          gap: 16px;
+          height: 100%;
+        }
+        .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
+        .hero-wall-track { display: flex; flex-direction: column; gap: 16px; will-change: transform; }
+
+        /* Desktop: 3 cols */
+        @media (min-width: 1024px) {
+          .hero-wall-cols { display: flex; }
+        }
+        /* Tablet: 2 cols */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .hero-wall-cols-2 { display: flex; }
+        }
+
+        @keyframes hero-wall-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+        @keyframes hero-wall-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+
+        .hero-wall-up-1   { animation: hero-wall-up 28s linear infinite; }
+        .hero-wall-down-2 { animation: hero-wall-down 36s linear infinite; }
+        .hero-wall-up-3   { animation: hero-wall-up 32s linear infinite; }
+
+        /* Pause when cursor is over the wall */
+        .hero-wall-vertical:hover .hero-wall-track,
+        .hero-wall-horizontal:hover .hero-wall-row-track {
+          animation-play-state: paused;
+        }
+
+        /* === Mobile horizontal row === */
+        .hero-wall-horizontal {
+          display: none;
+          position: relative;
+          height: 40vh;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+                  mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+        }
+        .hero-wall-row-track {
+          display: flex;
+          gap: 16px;
+          height: 100%;
+          width: max-content;
+          animation: hero-wall-left 30s linear infinite;
+          will-change: transform;
+        }
+        .hero-wall-card-h {
+          height: 100%;
+          width: auto;
+          aspect-ratio: 9 / 16;
+        }
+        @keyframes hero-wall-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
         @media (max-width: 767px) {
-          .hero-slide {
-            width: 100% !important;
-            height: var(--slide-h) !important;
-          }
+          .hero-wall-vertical { display: none; }
+          .hero-wall-horizontal { display: block; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-wall-track, .hero-wall-row-track { animation: none; }
         }
       `}</style>
     </section>
