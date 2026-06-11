@@ -425,8 +425,18 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
+        /* Right column escapes the container and bleeds off the viewport's right edge */
+        .hero-wall-col-wrap {
+          min-width: 0;
+        }
+        @media (min-width: 1024px) {
+          .hero-wall-col-wrap {
+            /* Cancel parent container's right padding (24px) and extend to the viewport edge */
+            margin-right: calc(-1 * (50vw - 50%) - 24px);
+            padding-right: 0;
+          }
+        }
         .hero-wall { width: 100%; }
-        .hero-wall-edge { display: block; }
 
         /* Label row with pulsing live dot */
         .hero-wall-label {
@@ -485,6 +495,10 @@ const Hero = () => {
           padding: 0;
           cursor: pointer;
         }
+        /* Size variants — all still 9/16-cropped via object-fit cover */
+        .hero-wall-card--standard { aspect-ratio: 9 / 16; }
+        .hero-wall-card--small    { aspect-ratio: 9 / 11; }   /* ~70% height of standard */
+        .hero-wall-card--feature  { aspect-ratio: 9 / 32; }   /* spans 2 rows visually */
         .hero-wall-card video {
           width: 100%;
           height: 100%;
@@ -502,30 +516,38 @@ const Hero = () => {
         }
         .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
 
-        /* === Vertical multi-column wall (desktop + tablet) === */
+        /* === Broken-grid multi-column wall === */
         .hero-wall-vertical {
           position: relative;
-          height: 85vh;
-          max-height: 760px;
+          height: 95vh;
+          max-height: 860px;
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
                   mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
         }
-        .hero-wall-cols, .hero-wall-cols-2 {
-          display: none;
-          gap: 16px;
-          height: 100%;
-        }
-        .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
+        .hero-wall-cols { display: none; gap: 20px; height: 100%; }
+        .hero-wall-col { min-width: 0; overflow: hidden; }
         .hero-wall-track {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 20px;
           will-change: transform;
         }
 
-        @media (min-width: 1024px) { .hero-wall-cols { display: flex; } }
-        @media (min-width: 768px) and (max-width: 1023px) { .hero-wall-cols-2 { display: flex; } }
+        /* Desktop: 3 unequal columns (1.6fr / 1fr / 1.2fr) with staggered vertical offsets */
+        @media (min-width: 1024px) {
+          .hero-wall-cols--3 { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr; }
+          .hero-wall-cols--3 .hero-wall-col--a .hero-wall-track { margin-top: 0; }
+          .hero-wall-cols--3 .hero-wall-col--b .hero-wall-track { margin-top: -80px; }
+          .hero-wall-cols--3 .hero-wall-col--c .hero-wall-track { margin-top: -40px; }
+        }
+        /* Tablet: 2 unequal columns (1.4fr / 1fr), shorter wall */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .hero-wall-vertical { height: 70vh; max-height: 720px; }
+          .hero-wall-cols--2 { display: grid; grid-template-columns: 1.4fr 1fr; }
+          .hero-wall-cols--2 .hero-wall-col--a .hero-wall-track { margin-top: 0; }
+          .hero-wall-cols--2 .hero-wall-col--b .hero-wall-track { margin-top: -60px; }
+        }
 
         /* === Mobile horizontal row === */
         .hero-wall-horizontal {
