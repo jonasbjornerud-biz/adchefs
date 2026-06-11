@@ -127,18 +127,10 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
       />
       <span aria-hidden className="hero-wall-card-ring" />
       <span aria-hidden className="hero-wall-card-play">
-        <span className="hero-wall-card-play-ring" />
-        <span className="hero-wall-card-play-chip">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M7 4.5 L20 12 L7 19.5 Z" fill="#1A1A1A" />
-          </svg>
-        </span>
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 1.5 L9 6 L0 10.5 Z" fill="#F7F6F3" />
+        </svg>
+        <span>PLAY</span>
       </span>
     </button>
   );
@@ -591,36 +583,28 @@ const Hero = () => {
         /* Branded play overlay — only on hovered (sharp) card */
         .hero-wall-card-play {
           position: absolute;
-          inset: 0;
-          display: flex;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          display: inline-flex;
           align-items: center;
-          justify-content: center;
+          gap: 10px;
+          padding: 12px 18px;
+          border-radius: 4px;
+          background: #1A1A1A;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-weight: 500;
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #F7F6F3;
           pointer-events: none;
           opacity: 0;
           transition: opacity 250ms ease;
         }
-        .hero-wall-card-play-ring {
-          position: absolute;
-          width: 88px;
-          height: 88px;
-          border-radius: 9999px;
-          border: 1px solid rgba(247,246,243,0.4);
-        }
-        .hero-wall-card-play-chip {
-          position: relative;
-          width: 72px;
-          height: 72px;
-          border-radius: 9999px;
-          background: rgba(247,246,243,0.95);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .hero-wall-card-play-chip svg {
-          transform: translateX(2px);
+        .hero-wall-card-play svg {
           display: block;
+          flex-shrink: 0;
         }
         .hero-wall-card:hover .hero-wall-card-play { opacity: 1; }
 
