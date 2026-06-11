@@ -72,19 +72,23 @@ const Pricing = () => {
           100% { transform: translateY(0); }
         }
         @keyframes sheetBreathe {
-          0%   { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
-          50%  { transform: rotateX(7.5deg) rotateY(-5deg) rotateZ(0.2deg); }
-          100% { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
+          0%, 100% { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
+          50%      { transform: rotateX(7.5deg) rotateY(-5deg) rotateZ(0.2deg); }
         }
         @keyframes shadowBreathe {
           0%, 100% { opacity: 0.18; }
           50%      { opacity: 0.14; }
         }
-        @media (prefers-reduced-motion: no-preference) {
-          .sheet-breathe { animation: sheetBreathe 10s ease-in-out infinite; }
-          .shadow-breathe { animation: shadowBreathe 10s ease-in-out infinite; }
+        .receipt-sheet {
+          animation: sheetBreathe 10s ease-in-out infinite;
         }
-        .receipt-paper { position: relative; }
+        .receipt-cast-shadow {
+          animation: shadowBreathe 10s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .receipt-sheet,
+          .receipt-cast-shadow { animation: none !important; }
+        }
       `}</style>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
