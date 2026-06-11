@@ -239,9 +239,9 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[1fr_38%] gap-10 lg:gap-16 items-stretch lg:h-full">
+        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
-          <div className="flex flex-col justify-center lg:pt-28 lg:pb-16">
+          <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
             <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
@@ -290,56 +290,70 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: video wall, sits below navbar with labels above/below */}
-          <div className="flex flex-col h-[640px] lg:h-full lg:pt-28 lg:pb-8">
-            {/* Top label on its own line above the wall */}
-            <div className="text-center mb-3">
-              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-                Live cuts shipping for clients
-              </span>
-            </div>
-
+          {/* RIGHT: video wall column. Wall is right-aligned, capped width, with breathing room. */}
+          <div className="flex flex-col items-end justify-center min-w-0 h-[640px] lg:h-full lg:pt-28 lg:pb-8">
             <div
-              className="video-wall relative flex-1 min-h-0 overflow-hidden"
-              style={{
-                WebkitMaskImage:
-                  "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
-                maskImage:
-                  "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
-              }}
+              className="flex flex-col w-full max-w-[420px]"
+              style={{ height: "80vh", maxHeight: "calc(100vh - 160px)", marginRight: "48px" }}
             >
-              <div className="grid grid-cols-2 gap-3 h-full">
-                <div className="video-col video-col-up overflow-hidden">
-                  <div className="video-track-up flex flex-col gap-3">
-                    {colADoubled.map((urls, i) => (
-                      <RecentWorkCard
-                        key={`a-${i}`}
-                        urls={urls}
-                        onOpen={openLightbox}
-                        className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block"
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="video-col video-col-down overflow-hidden">
-                  <div className="video-track-down flex flex-col gap-3">
-                    {colBDoubled.map((urls, i) => (
-                      <RecentWorkCard
-                        key={`b-${i}`}
-                        urls={urls}
-                        onOpen={openLightbox}
-                        className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block"
-                      />
-                    ))}
+              {/* Top label */}
+              <div className="text-center mb-3">
+                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
+                  Live cuts shipping for clients
+                </span>
+              </div>
+
+              {/* Tilted wall */}
+              <div
+                className="video-wall-perspective relative flex-1 min-h-0"
+                style={{ perspective: "1200px" }}
+              >
+                <div
+                  className="video-wall-tilt absolute inset-0 overflow-hidden"
+                  style={{
+                    transform: "rotateX(8deg) rotateY(-12deg) rotateZ(2deg)",
+                    transformStyle: "preserve-3d",
+                    transformOrigin: "center center",
+                    WebkitMaskImage:
+                      "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
+                    maskImage:
+                      "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-3 h-full">
+                    <div className="video-col video-col-up overflow-hidden">
+                      <div className="video-track-up flex flex-col gap-3">
+                        {colADoubled.map((urls, i) => (
+                          <RecentWorkCard
+                            key={`a-${i}`}
+                            urls={urls}
+                            onOpen={openLightbox}
+                            className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block shadow-[0_12px_32px_rgba(26,26,26,0.12)]"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="video-col video-col-down overflow-hidden">
+                      <div className="video-track-down flex flex-col gap-3">
+                        {colBDoubled.map((urls, i) => (
+                          <RecentWorkCard
+                            key={`b-${i}`}
+                            urls={urls}
+                            onOpen={openLightbox}
+                            className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block shadow-[0_12px_32px_rgba(26,26,26,0.12)]"
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Disclaimer on its own line below the wall */}
-            <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4 mt-3">
-              Video editing only. Brand ownership belongs to respective clients.
-            </p>
+              {/* Disclaimer */}
+              <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4 mt-3">
+                Video editing only. Brand ownership belongs to respective clients.
+              </p>
+            </div>
           </div>
         </div>
       </div>
