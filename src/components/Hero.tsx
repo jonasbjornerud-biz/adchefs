@@ -370,14 +370,14 @@ const Hero = () => {
         <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
+            <span className="eyebrow self-start w-fit">BUILT FOR E-COM BRANDS · PAY PER VIDEO</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
-              Your <em>dedicated</em> video editor without the additional cost
+              Your <em>dedicated</em> editor, without the overhead.
             </h1>
 
             <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-              I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
+              I place one vetted editor inside your team. They learn your product, your voice, and your winners, then ship new cuts in 24 to 48 hours. You pay per video. Tools, training, and editor management are on me.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -393,9 +393,11 @@ const Hero = () => {
             <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
 
             <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              <span>From $100 / video</span>
+              <span>FROM $100 / VIDEO</span>
               <span className="h-3 w-px bg-border" />
-              <span>Cancel anytime</span>
+              <span>24-48H TURNAROUND</span>
+              <span className="h-3 w-px bg-border" />
+              <span>CANCEL ANYTIME</span>
             </div>
 
             {/* Founder row */}

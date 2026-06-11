@@ -3,9 +3,10 @@ import { ArrowRight, Check, X } from "lucide-react";
 
 const usBullets = [
   "Dedicated editor matched to your brand",
+  "All tools included: Higgsfield, ElevenLabs, editing software",
+  "24 to 48 hour standard turnaround",
   "Private performance dashboard, free",
   "Direct Slack or Notion communication",
-  "Unlimited revisions until approved",
   "No retainer, no minimum, no long contracts",
 ];
 
@@ -28,7 +29,7 @@ const Pricing = () => {
     <section id="pricing" className="py-16 sm:py-32 bg-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
-          <span className="eyebrow">Pricing</span>
+          <span className="eyebrow">PRICING</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
             Simple pricing. <em>Pay per video.</em>
           </h2>
@@ -92,7 +93,7 @@ const Pricing = () => {
         </div>
 
         <p className="max-w-2xl text-[14px] text-muted-foreground leading-relaxed mt-10">
-          Complex edits and longer-form priced on the call. Cancel anytime.
+          Complex edits and longer form priced on the call. Cancel anytime.
         </p>
       </div>
     </section>

@@ -6,26 +6,26 @@ const principles = [
   {
     icon: Eye,
     title: "Trained on your KPIs",
-    body: "Your editor studies your hook rates, hold curves, CPA and ROAS every week. They learn what your winners share, then engineer more of them. Creative informed by data, not taste.",
+    body: "Your editor studies your hook rates, hold curves, CPA, and ROAS every week. They learn what your winners share, then engineer more of them.",
     stat: "HOOK · HOLD · ROAS",
   },
   {
     icon: Gauge,
     title: "Delivery you can track",
-    body: "See exactly how many videos were delivered and approved per editor, week by week. No more chasing status updates or wondering what's in the pipeline.",
-    stat: "WEEKLY DELIVERY",
+    body: "See exactly how many videos were delivered and approved, week by week. Standard turnaround is 24 to 48 hours. No chasing status updates.",
+    stat: "24-48H STANDARD",
   },
   {
     icon: LineChart,
-    title: "Live KPI Dashboard",
-    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate streaming alongside. One live view of what every editor on your account is moving.",
+    title: "Live KPI dashboard",
+    body: "ROAS front and centre. CPA, CTR, hook rate, and hold rate alongside. One live view of what your editor is moving.",
     stat: "INCLUDED FREE",
   },
   {
     icon: Wallet,
-    title: "You only pay per video",
-    body: "No retainers. No minimums. No long contracts. You pay for videos delivered, nothing else. The dashboard, the oversight, the editor management is on me.",
-    stat: "FROM $100 / VIDEO",
+    title: "The full stack, covered",
+    body: "Higgsfield, ElevenLabs, and professional editing software subscriptions are part of the price. Your editor shows up fully equipped. You never buy a license.",
+    stat: "ALL TOOLS INCLUDED",
   },
 ];
 
@@ -36,13 +36,13 @@ const EditorEdge = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
-            See how it works
+            SEE HOW IT WORKS
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] md:whitespace-nowrap">
             Editors who understand <em style={{ color: "hsl(var(--accent))" }}>why ads work.</em>
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
-            Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, delivery, all in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions are driven by data, not guesses.
+            Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, and delivery in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions come from data, not guesses.
           </p>
         </div>
 
