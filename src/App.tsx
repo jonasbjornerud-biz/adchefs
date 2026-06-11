@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import { AuthGuard } from "@/components/AuthGuard";
+// TEMPORARY: site-wide geo-block for Norway. Remove this import and the <GeoGate> wrapper below to lift.
+import GeoGate from "@/components/GeoGate";
 
 // Pages
 import Index from "./pages/Index";
@@ -42,6 +44,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <GeoGate>
           <Routes>
             {/* Public */}
             <Route path="/" element={<Index />} />
@@ -69,6 +72,7 @@ const App = () => (
 
             <Route path="*" element={<SubmitTaskSlugRoute />} />
           </Routes>
+          </GeoGate>
         </BrowserRouter>
       </TooltipProvider>
   </QueryClientProvider>
