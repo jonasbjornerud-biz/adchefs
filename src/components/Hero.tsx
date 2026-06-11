@@ -117,10 +117,6 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 
 const Hero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [hoverPause, setHoverPause] = useState(false);
-  const [manualPauseUntil, setManualPauseUntil] = useState(0);
-  const dragRef = useRef<{ startX: number; active: boolean }>({ startX: 0, active: false });
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -129,38 +125,6 @@ const Hero = () => {
 
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
-
-  const goTo = useCallback((idx: number) => {
-    setActiveIdx(((idx % TOTAL) + TOTAL) % TOTAL);
-  }, []);
-
-  const markManual = useCallback(() => {
-    setManualPauseUntil(Date.now() + 15000);
-  }, []);
-
-  // Auto-advance every 7s unless hovered or recently interacted with
-  useEffect(() => {
-    const t = setInterval(() => {
-      if (hoverPause) return;
-      if (Date.now() < manualPauseUntil) return;
-      setActiveIdx((i) => (i + 1) % TOTAL);
-    }, 7000);
-    return () => clearInterval(t);
-  }, [hoverPause, manualPauseUntil]);
-
-  // Drag / swipe
-  const onPointerDown = (e: React.PointerEvent) => {
-    dragRef.current = { startX: e.clientX, active: true };
-  };
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!dragRef.current.active) return;
-    const dx = e.clientX - dragRef.current.startX;
-    dragRef.current.active = false;
-    if (Math.abs(dx) > 40) {
-      markManual();
-      goTo(activeIdx + (dx < 0 ? 1 : -1));
-    }
-  };
 
   return (
     <section className="relative min-h-screen lg:h-screen overflow-hidden bg-background pt-24 pb-12 lg:pt-0 lg:pb-0">
