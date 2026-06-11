@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, X as XIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
@@ -30,15 +29,10 @@ const buildUrls = (id: string, mov?: boolean): ClipUrls => {
   };
 };
 
-const CLIP_URLS: ClipUrls[] = CLIPS.map((c) => buildUrls(c.id, c.mov));
 const FEATURED_FULL = CLIPS.map((c) => ({
   ...buildUrls(c.id, c.mov),
   label: c.label.slice(0, 14).toUpperCase(),
 }));
-
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 interface LightboxProps {
   src: string | null;
@@ -106,7 +100,6 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 };
 
 const Hero = () => {
-  const navigate = useNavigate();
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
   const [topLayer, setTopLayer] = useState(0); // which stacked video is visible (0 or 1)
