@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil, Star, Play, X, ArrowRight } from 'lucide-react';
+import { Plus, Mail, MailCheck, Clock, CheckCircle2, XCircle, Copy, ExternalLink, Send, Trash2, Pencil, Play, X, ArrowRight } from 'lucide-react';
+import { BrandStar } from '@/components/brand/BrandStar';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -296,7 +297,10 @@ Let me know if you have any questions.
   is_active: true,
 };
 
-export function RecruitmentPanel() {
+export function RecruitmentPanel({ section }: { section?: 'pipeline' | 'shortlist' | 'jobs' } = {}) {
+  if (section === 'pipeline') return <Pipeline />;
+  if (section === 'shortlist') return <ShortlistedEditors />;
+  if (section === 'jobs') return <Postings />;
   return (
     <Tabs defaultValue="pipeline" className="w-full">
       <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
@@ -523,6 +527,9 @@ function Pipeline() {
     acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
   counts['shortlist'] = scopedApps.filter(a => a.starred).length;
+  // "Qualified" = anyone who ever passed qualification, regardless of current stage
+  // (Sent, Submitted, Interview, Hired, Rejected, Shortlist all stay counted)
+  counts['qualified'] = scopedApps.filter(a => a.qualifies === true).length;
   counts['trial_submitted'] = scopedApps.filter(a => {
     if (a.stage === 'trial_submitted') return true;
     if (a.stage === 'rejected') {
@@ -759,10 +766,7 @@ function Pipeline() {
                       aria-label={app.starred ? 'Unstar' : 'Shortlist'}
                       title={app.starred ? 'Remove from shortlist' : 'Add to shortlist'}
                     >
-                      <Star
-                        className="w-4 h-4"
-                        style={{ color: app.starred ? '#1A1A1A' : '#C8C5BC', fill: app.starred ? '#9ED8F5' : 'transparent' }}
-                      />
+                      <BrandStar active={!!app.starred} size={16} />
                     </button>
                   </td>
                   <td className="p-3">
@@ -848,7 +852,7 @@ function Pipeline() {
                       style={{ borderColor: '#E2E0D9' }}
                       title={selected.starred ? 'Remove from shortlist' : 'Add to shortlist'}
                     >
-                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: selected.starred ? '#9ED8F5' : 'transparent' }} />
+                      <BrandStar active={!!selected.starred} size={16} />
                     </button>
                   </div>
                 </SheetHeader>
@@ -1091,7 +1095,7 @@ function Shortlist() {
 
       {apps.length === 0 ? (
         <div className="rounded-[4px] px-8 py-16 text-center" style={{ backgroundColor: '#EEEDE8' }}>
-          <Star className="w-5 h-5 mx-auto mb-3" style={{ color: '#75726B' }} />
+          <BrandStar size={20} className="mx-auto mb-3" />
           <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
             No shortlisted candidates yet. Tap the star on any applicant in the pipeline.
           </p>
@@ -1130,7 +1134,7 @@ function Shortlist() {
                       className="p-1 rounded-[3px] hover:bg-[#EEEDE8] transition-colors"
                       title="Remove from shortlist"
                     >
-                      <Star className="w-4 h-4" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
+                      <BrandStar active size={16} />
                     </button>
                   </div>
 

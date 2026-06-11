@@ -133,6 +133,26 @@
 }
 
 @layer utilities {
+  /* ── Brand admin shell ── */
+  .admin-bg {
+    background-color: #F7F6F3;
+    background-image:
+      radial-gradient(ellipse 1100px 700px at 100% 0%, rgba(158, 216, 245, 0.55) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 600px at 0% 100%, rgba(158, 216, 245, 0.28) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 500px at 50% 40%, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+  .admin-paper { background-color: #FAF8F3; }
+  .admin-hairline { border-color: #E2E0D9; }
+  .brand-wash {
+    background: linear-gradient(90deg, #ECF7FD 0%, #FAF8F3 100%);
+  }
+  .brand-wash-strong {
+    background: linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%);
+  }
+}
+
+@layer utilities {
   /* ── Premium design system ── */
   .text-gradient {
     background: linear-gradient(135deg, #9ED8F5, #9ED8F5, #F7F6F3);

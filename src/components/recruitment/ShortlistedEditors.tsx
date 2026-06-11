@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Star, Send, Mail, CheckCircle2, Play, ExternalLink } from 'lucide-react';
+import { Send, Mail, CheckCircle2, Play, ExternalLink } from 'lucide-react';
+import { BrandStar } from '@/components/brand/BrandStar';
 import { toast } from 'sonner';
 
 type Posting = {
@@ -264,7 +265,7 @@ export function ShortlistedEditors() {
         <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">Loading…</p>
       ) : apps.length === 0 ? (
         <div className="rounded-[4px] px-8 py-16 text-center" style={{ backgroundColor: '#EEEDE8' }}>
-          <Star className="w-5 h-5 mx-auto mb-3" style={{ color: '#75726B' }} />
+          <BrandStar size={20} className="mx-auto mb-3" />
           <p className="mono text-[11px] uppercase tracking-[0.15em] text-[#75726B]">
             No shortlisted editors yet. Star applicants in the pipeline to build your shortlist.
           </p>
@@ -330,7 +331,7 @@ export function ShortlistedEditors() {
                         {app.email}
                       </p>
                     </div>
-                    <Star className="w-4 h-4 shrink-0 mt-1" style={{ color: '#1A1A1A', fill: '#9ED8F5' }} />
+                    <BrandStar active size={16} className="shrink-0 mt-1" />
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">Applied for</span>
