@@ -372,11 +372,24 @@ const Hero = () => {
       <style>{`
         @media (hover: hover) and (pointer: fine) {
           .recent-work-card {
-            transition: transform 250ms ease-out, box-shadow 250ms ease-out;
+            transform: translateZ(0) scale(1);
+            opacity: 1;
+            transition:
+              transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
           }
-          .recent-work-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 24px rgba(26,26,26,0.10);
+          /* Sibling dim when any card in the wall is hovered */
+          .video-wall-tilt:hover .recent-work-card {
+            opacity: 0.55;
+            transform: scale(0.99);
+          }
+          /* Hovered card: lift in 3D plane */
+          .video-wall-tilt .recent-work-card:hover {
+            opacity: 1;
+            transform: translateZ(24px) scale(1.04);
+            box-shadow: 0 24px 48px rgba(26,26,26,0.18);
+            z-index: 2;
           }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -400,9 +413,11 @@ const Hero = () => {
           animation-delay: -30s;
           will-change: transform;
         }
-        .video-col-up:hover .video-track-up,
-        .video-col-down:hover .video-track-down {
+        /* Ease wall scroll to a halt when hovering anywhere on the tilted wall */
+        .video-wall-tilt:hover .video-track-up,
+        .video-wall-tilt:hover .video-track-down {
           animation-play-state: paused;
+          transition: animation-play-state 400ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         @media (prefers-reduced-motion: reduce) {
           .video-track-up, .video-track-down { animation: none; }
