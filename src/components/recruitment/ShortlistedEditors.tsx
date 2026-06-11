@@ -168,7 +168,7 @@ export function ShortlistedEditors() {
         .split('{{previous_brand}}').join(previousBrand || 'a previous')
         .split('{{new_brand}}').join(targetPosting.brand)
         .split('{{notion_task_url}}').join(targetPosting.notion_task_url || '')
-        .split('{{submission_form_url}}', `${window.location.origin}/submit-task-${targetPosting.submit_slug}`);
+        .split('{{submission_form_url}}').join(`${window.location.origin}/submit-task-${targetPosting.submit_slug}`);
       try {
         const { error } = await supabase.functions.invoke('send-transactional-email', {
           body: {
