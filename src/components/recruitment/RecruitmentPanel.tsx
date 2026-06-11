@@ -524,6 +524,9 @@ function Pipeline() {
     acc[st] = scopedApps.filter(a => a.stage === st).length; return acc;
   }, {});
   counts['shortlist'] = scopedApps.filter(a => a.starred).length;
+  // "Qualified" = anyone who ever passed qualification, regardless of current stage
+  // (Sent, Submitted, Interview, Hired, Rejected, Shortlist all stay counted)
+  counts['qualified'] = scopedApps.filter(a => a.qualifies === true).length;
   counts['trial_submitted'] = scopedApps.filter(a => {
     if (a.stage === 'trial_submitted') return true;
     if (a.stage === 'rejected') {
