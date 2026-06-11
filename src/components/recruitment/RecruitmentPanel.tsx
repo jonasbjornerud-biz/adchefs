@@ -610,75 +610,93 @@ function Pipeline() {
   return (
     <div className="space-y-8">
       <div>
-        <span className="inline-block mono text-[10px] uppercase tracking-[0.15em] text-[#1A1A1A] border border-[#1A1A1A] rounded-[4px] px-2 py-[3px]">
-          PIPELINE
+        <span className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.2em] text-[#3B86A8] bg-white/60 backdrop-blur-sm border border-[#3B86A8]/30 rounded-full px-3 py-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3B86A8]" /> Pipeline · live
         </span>
         <h2
-          className="mt-5 text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.02em] text-[#1A1A1A]"
-          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+          className="mt-5 text-[28px] md:text-[36px] leading-[1.02] tracking-[-0.025em] text-[#1A1A1A]"
+          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
         >
           Editor{' '}
           <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>applicants.</em>
         </h2>
+        <p className="mt-2 text-[13px] text-[#75726B] max-w-xl">
+          Every applicant across every brand. Filter, qualify, send trials and shortlist.
+        </p>
       </div>
 
       {/* Stage counters */}
       <div
-        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-1"
+        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 rounded-[10px] overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #F7F6F3 0%, #EEEDE8 100%)',
-          border: '1px solid #E5E4DF',
-          borderRadius: '6px',
-          padding: '20px 24px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(250,248,243,0.6) 100%)',
+          border: '1px solid #E5E3DC',
+          boxShadow: '0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 24px -16px rgba(26,26,26,0.12)',
+          backdropFilter: 'blur(10px)',
         }}
       >
-        {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count]) => {
+        {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count], idx, arr) => {
           const active = stageFilter === key;
+          const last = idx === arr.length - 1;
           return (
             <button
               key={key}
               onClick={() => setStageFilter(key)}
-              className="group relative px-5 py-3 rounded-[4px] text-left transition-all duration-150"
+              className="group relative text-left px-5 py-4 transition-all duration-200"
               style={{
-                backgroundColor: active ? '#1A1A1A' : 'transparent',
-                color: active ? '#F7F6F3' : '#1A1A1A',
+                borderRight: !last ? '1px solid #EEEDE8' : 'none',
+                background: active
+                  ? 'linear-gradient(180deg, #ECF7FD 0%, #FFFFFF 100%)'
+                  : 'transparent',
               }}
-              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#EEEDE8'; }}
-              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(158,216,245,0.06)'; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
             >
+              {active && (
+                <span
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{
+                    background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 100%)',
+                    boxShadow: '0 0 8px rgba(158,216,245,0.5)',
+                  }}
+                />
+              )}
               <p
                 className="mono uppercase whitespace-nowrap"
                 style={{
                   fontSize: '9px',
-                  letterSpacing: '0.12em',
-                  color: active ? 'rgba(247,246,243,0.7)' : '#75726B',
+                  letterSpacing: '0.2em',
+                  color: active ? '#3B86A8' : '#8A8780',
+                  fontWeight: 500,
                 }}
               >
                 {label}
               </p>
               <p
-                className="mt-1 leading-none tracking-[-0.02em]"
+                className="mt-2 leading-none tracking-[-0.03em] tabular-nums"
                 style={{
                   fontFamily: "'Inter Tight', sans-serif",
                   fontWeight: 600,
-                  fontSize: '2rem',
-                  color: active ? '#F7F6F3' : '#1A1A1A',
+                  fontSize: '32px',
+                  color: '#0F0F0F',
                 }}
               >
                 {count}
               </p>
-              {active && (
-                <span className="absolute left-3 right-3 -bottom-px h-[2px]" style={{ backgroundColor: '#9ED8F5' }} />
-              )}
             </button>
           );
         })}
       </div>
 
-      <div className="flex gap-2">
-        <Input placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs rounded-[4px]" />
+      <div className="flex gap-2 items-center">
+        <Input
+          placeholder="Search by name or email…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="max-w-xs rounded-[8px] h-10 bg-white/70 backdrop-blur-sm border-[#E2E0D9] focus-visible:ring-[#9ED8F5]/40 focus-visible:border-[#9ED8F5]"
+        />
         <Select value={postingFilter} onValueChange={setPostingFilter}>
-          <SelectTrigger className="w-56 rounded-[4px]"><SelectValue placeholder="All roles" /></SelectTrigger>
+          <SelectTrigger className="w-56 rounded-[8px] h-10 bg-white/70 backdrop-blur-sm border-[#E2E0D9]"><SelectValue placeholder="All roles" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All roles</SelectItem>
             {postings.map(p => (
@@ -686,9 +704,20 @@ function Pipeline() {
             ))}
           </SelectContent>
         </Select>
+        <span className="ml-auto mono text-[10px] uppercase tracking-[0.2em] text-[#8A8780]">
+          {sorted.length} {sorted.length === 1 ? 'result' : 'results'}
+        </span>
       </div>
 
-      <div className="rounded-[4px] border w-full" style={{ borderColor: '#E2E0D9', backgroundColor: '#FAF8F3', overflowX: 'auto' }}>
+      <div
+        className="rounded-[10px] border w-full overflow-hidden"
+        style={{
+          borderColor: '#E5E3DC',
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)',
+          boxShadow: '0 1px 0 rgba(255,255,255,0.8) inset, 0 12px 32px -20px rgba(26,26,26,0.14)',
+          overflowX: 'auto',
+        }}
+      >
         <table className="w-full text-sm" style={{ minWidth: '1052px', width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse' }}>
           <colgroup>
             <col style={{ width: '40px' }} />
@@ -701,8 +730,8 @@ function Pipeline() {
             <col style={{ width: '150px' }} />
             <col style={{ width: '42px' }} />
           </colgroup>
-          <thead style={{ background: 'linear-gradient(135deg, #EEEDE8 0%, #E5E4DF 100%)', borderBottom: '1px solid #D8D7D2' }}>
-            <tr style={{ fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', color: '#75726B', fontSize: '10px', letterSpacing: '0.12em' }}>
+          <thead style={{ background: '#FAF8F3', borderBottom: '1px solid #EEEDE8' }}>
+            <tr style={{ fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', color: '#8A8780', fontSize: '9px', letterSpacing: '0.2em' }}>
               <th className="text-left p-3 font-normal w-8"></th>
               <th className="text-left p-3 font-normal">Applicant</th>
               <th className="text-left p-3 font-normal whitespace-nowrap">Role</th>
@@ -716,7 +745,7 @@ function Pipeline() {
                 onClick={() => setSortDir(d => d === 'desc' ? 'asc' : 'desc')}
                 title="Toggle sort"
               >
-                <span className="inline-flex items-center gap-1">
+                <span className="inline-flex items-center gap-1 hover:text-[#1A1A1A] transition-colors">
                   {isSubmittedView ? 'Submitted' : 'Applied'}
                   {sortDir === 'desc' ? <ArrowDown className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />}
                 </span>
@@ -736,19 +765,19 @@ function Pipeline() {
               const isDimmed = isRejected || isNotQualified;
               const isShortlisted = app.starred && app.stage === 'trial_submitted';
               const baseBg = isShortlisted
-                ? 'linear-gradient(90deg, #DCF5E5 0%, #F4FBF6 55%, #FAF8F3 100%)'
+                ? 'linear-gradient(90deg, rgba(220,245,229,0.55) 0%, rgba(244,251,246,0.4) 55%, transparent 100%)'
                 : '';
               const hoverBg = isShortlisted
-                ? 'linear-gradient(90deg, #CFEFDB 0%, #ECF8EF 55%, #F2F1EC 100%)'
-                : 'linear-gradient(135deg, #F7F6F3 0%, #F2F1EC 100%)';
+                ? 'linear-gradient(90deg, rgba(207,239,219,0.7) 0%, rgba(236,248,239,0.5) 55%, rgba(242,241,236,0.3) 100%)'
+                : 'linear-gradient(90deg, rgba(158,216,245,0.06) 0%, rgba(158,216,245,0.02) 100%)';
               return (
                 <tr
                   key={app.id}
                   className="border-b cursor-pointer group"
                   style={{
-                    borderColor: '#EEEDE8',
-                    height: '56px',
-                    transition: 'background 120ms ease',
+                    borderColor: '#F1EFE8',
+                    height: '60px',
+                    transition: 'background 160ms ease',
                     background: baseBg,
                     opacity: isDimmed ? 0.55 : 1,
                     textDecoration: isDimmed ? 'line-through' : 'none',
