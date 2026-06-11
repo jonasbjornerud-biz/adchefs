@@ -199,135 +199,73 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: horizontal video carousel */}
-          <div
-            className="hero-carousel-col flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8"
-            onMouseEnter={() => setHoverPause(true)}
-            onMouseLeave={() => setHoverPause(false)}
-          >
-            <div className="hero-carousel mx-auto flex flex-col w-full">
-              {/* Top label, flush with active slide's left edge */}
-              <div className="hero-carousel-edge">
-                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-                  Live cuts shipping for clients
-                </span>
-              </div>
+          {/* RIGHT: scrolling video wall (3 cols desktop, 2 cols tablet, 1 row mobile) */}
+          <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
+            <div className="hero-wall flex flex-col w-full">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4 hero-wall-edge">
+                Live cuts shipping for clients
+              </span>
 
-              {/* Track */}
-              <div
-                className="hero-carousel-track relative mt-4"
-                onPointerDown={onPointerDown}
-                onPointerUp={onPointerUp}
-                onPointerCancel={() => (dragRef.current.active = false)}
-                style={{ touchAction: "pan-y" }}
-              >
-                {FEATURED_FULL.map((c, i) => {
-                  // shortest signed distance accounting for wrap
-                  let offset = i - activeIdx;
-                  if (offset > TOTAL / 2) offset -= TOTAL;
-                  if (offset < -TOTAL / 2) offset += TOTAL;
-                  const isActive = offset === 0;
-                  const isPeek = Math.abs(offset) === 1;
-                  const visible = isActive || isPeek;
-                  // X position: center + offset * (activeW/2 + gap + peekW/2)
-                  // peekW = 0.85 * activeW. so spacing = activeW*0.5 + 20 + 0.85*activeW*0.5 = 0.925W + 20
-                  const translate = `calc(-50% + ${offset} * (var(--slide-w) * 0.925 + 20px))`;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      aria-label={isActive ? `Open ${c.label}` : `Show ${c.label}`}
-                      onClick={() => {
-                        markManual();
-                        if (isActive) openLightbox(c.full);
-                        else goTo(i);
-                      }}
-                      className="hero-slide absolute top-1/2 left-1/2 rounded-[4px] overflow-hidden bg-secondary p-0"
-                      style={{
-                        width: isActive
-                          ? "var(--slide-w)"
-                          : "calc(var(--slide-w) * 0.85)",
-                        height: isActive
-                          ? "var(--slide-h)"
-                          : "calc(var(--slide-h) * 0.85)",
-                        transform: `translate(${translate}, -50%)`,
-                        opacity: visible ? (isActive ? 1 : 0.5) : 0,
-                        pointerEvents: visible ? "auto" : "none",
-                        zIndex: isActive ? 2 : 1,
-                        border: "1px solid rgba(26,26,26,0.08)",
-                        boxShadow: isActive
-                          ? "0 24px 60px rgba(26,26,26,0.18)"
-                          : "0 12px 28px rgba(26,26,26,0.10)",
-                        transition:
-                          "transform 450ms cubic-bezier(0.22, 1, 0.36, 1), opacity 450ms cubic-bezier(0.22, 1, 0.36, 1), width 450ms cubic-bezier(0.22, 1, 0.36, 1), height 450ms cubic-bezier(0.22, 1, 0.36, 1)",
-                        backgroundImage: `url("${c.poster}")`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        cursor: isActive ? "pointer" : "pointer",
-                      }}
-                    >
-                      {isActive && (
-                        <video
-                          key={`v-${i}`}
-                          src={c.preview}
-                          poster={c.poster}
-                          muted
-                          autoPlay
-                          loop
-                          playsInline
-                          preload="auto"
-                          className="w-full h-full object-cover block"
-                        />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Desktop / tablet: vertical multi-column wall */}
+              <div className="hero-wall-vertical">
+                <div className="hero-wall-cols">
+                  {/* col 1 — up */}
+                  <div className="hero-wall-col">
+                    <div className="hero-wall-track hero-wall-up-1">
+                      {COLS_3[0].map((c, i) => (
+                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  {/* col 2 — down */}
+                  <div className="hero-wall-col hero-wall-col-2">
+                    <div className="hero-wall-track hero-wall-down-2">
+                      {COLS_3[1].map((c, i) => (
+                        <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  {/* col 3 — up */}
+                  <div className="hero-wall-col hero-wall-col-3">
+                    <div className="hero-wall-track hero-wall-up-3">
+                      {COLS_3[2].map((c, i) => (
+                        <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-              {/* Footer: counter + arrows, left-aligned with active slide */}
-              <div className="hero-carousel-edge mt-5 flex items-center gap-4">
-                <span
-                  className="mono uppercase select-none"
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                    color: "#75726B",
-                  }}
-                >
-                  {String(activeIdx + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    aria-label="Previous slide"
-                    onClick={() => {
-                      markManual();
-                      goTo(activeIdx - 1);
-                    }}
-                    className="hero-arrow flex items-center justify-center"
-                  >
-                    <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Next slide"
-                    onClick={() => {
-                      markManual();
-                      goTo(activeIdx + 1);
-                    }}
-                    className="hero-arrow flex items-center justify-center"
-                  >
-                    <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
-                  </button>
+                {/* Tablet two-column variant */}
+                <div className="hero-wall-cols-2">
+                  <div className="hero-wall-col">
+                    <div className="hero-wall-track hero-wall-up-1">
+                      {COLS_2[0].map((c, i) => (
+                        <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="hero-wall-col hero-wall-col-2">
+                    <div className="hero-wall-track hero-wall-down-2">
+                      {COLS_2[1].map((c, i) => (
+                        <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Disclaimer */}
-              <div className="hero-carousel-edge mt-3">
-                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70">
-                  Video editing only. Brand ownership belongs to respective clients.
-                </span>
+              {/* Mobile: single horizontal row */}
+              <div className="hero-wall-horizontal">
+                <div className="hero-wall-row-track">
+                  {ROW_M.map((c, i) => (
+                    <WallCard key={`r-${i}`} clip={c} onOpen={openLightbox} horizontal />
+                  ))}
+                </div>
               </div>
+
+              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-4 hero-wall-edge leading-[1.6]">
+                Video editing only. Brand ownership belongs to respective clients.
+              </span>
             </div>
           </div>
         </div>
