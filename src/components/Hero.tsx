@@ -34,19 +34,38 @@ const FEATURED_FULL = CLIPS.map((c) => ({
   label: c.label.slice(0, 14).toUpperCase(),
 }));
 
-// Distribute videos across N columns; ensure each column has at least `min` items
-// by repeating, then double for seamless loop.
-const buildColumns = (n: number, min: number) => {
-  const cols: typeof FEATURED_FULL[] = Array.from({ length: n }, () => []);
-  FEATURED_FULL.forEach((c, i) => cols[i % n].push(c));
+// Card sizing pattern for the broken-grid wall.
+type CardSize = "standard" | "small" | "feature";
+
+// Per-column size patterns. Repeats deterministically so the doubled-loop is seamless.
+const PATTERNS_3: CardSize[][] = [
+  ["feature", "standard", "small", "standard", "small", "standard"],
+  ["small", "standard", "small", "standard", "small", "standard"],
+  ["standard", "small", "standard", "small", "standard", "small"],
+];
+const PATTERNS_2: CardSize[][] = [
+  ["feature", "standard", "small", "standard", "small"],
+  ["small", "standard", "small", "standard", "small", "standard"],
+];
+
+type WallItem = { clip: typeof FEATURED_FULL[number]; size: CardSize };
+
+const buildPatternedColumns = (patterns: CardSize[][], min: number): WallItem[][] => {
+  const n = patterns.length;
+  const cols: WallItem[][] = Array.from({ length: n }, () => []);
+  FEATURED_FULL.forEach((c, i) => {
+    const ci = i % n;
+    const pat = patterns[ci];
+    cols[ci].push({ clip: c, size: pat[cols[ci].length % pat.length] });
+  });
   return cols.map((col) => {
     let filled = [...col];
     while (filled.length < min) filled = filled.concat(col);
     return [...filled, ...filled];
   });
 };
-const COLS_3 = buildColumns(3, 4);
-const COLS_2 = buildColumns(2, 4);
+const COLS_3 = buildPatternedColumns(PATTERNS_3, 4);
+const COLS_2 = buildPatternedColumns(PATTERNS_2, 4);
 // Single row for mobile: all videos doubled for seamless loop
 const ROW_M = [...FEATURED_FULL, ...FEATURED_FULL];
 
