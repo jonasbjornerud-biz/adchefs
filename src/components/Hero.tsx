@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon, Play } from "lucide-react";
+import { ArrowRight, X as XIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
@@ -343,7 +343,6 @@ const Hero = () => {
                 style={{
                   height: "min(80vh, 720px)",
                   aspectRatio: "9 / 16",
-                  marginRight: "calc(-7% * (min(80vh, 720px) * 9 / 16) / 100% * 100%)",
                   transform: "translateX(7%)",
                   cursor: "none",
                   boxShadow: "0 24px 60px rgba(26,26,26,0.18)",
