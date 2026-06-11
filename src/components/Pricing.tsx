@@ -16,15 +16,24 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-16 sm:py-32" style={{ background: "#F7F6F3" }}>
+    <section id="pricing" className="py-20 md:py-28" style={{ background: "#1A1A1A" }}>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
           <div className="md:w-[55%] flex-shrink-0">
-            <span className="eyebrow">PRICING</span>
+            <span
+              className="mono inline-block text-[11px] uppercase tracking-[0.15em] px-2.5 py-1 rounded-[2px]"
+              style={{
+                color: "#9ED8F5",
+                border: "1px solid #9ED8F5",
+                background: "transparent",
+              }}
+            >
+              PRICING
+            </span>
             <h2
               className="mt-5 text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] font-semibold"
-              style={{ fontFamily: "'Inter Tight', sans-serif", color: "#1A1A1A" }}
+              style={{ fontFamily: "'Inter Tight', sans-serif", color: "#F7F6F3" }}
             >
               Stop paying for the month. Pay for the{" "}
               <em
@@ -37,7 +46,7 @@ const Pricing = () => {
             </h2>
             <p
               className="mt-5 text-[15px] leading-relaxed max-w-md"
-              style={{ color: "#75726B" }}
+              style={{ color: "rgba(247,246,243,0.60)" }}
             >
               Retainers bill you whether anything ships or not. Here, the only line item is the work. Hook variations, both placement formats, tools, and management come with it.
             </p>
@@ -45,36 +54,65 @@ const Pricing = () => {
               href="#booking"
               onClick={scrollToBooking}
               className="mt-8 inline-flex items-center justify-center rounded-[4px] px-6 py-3.5 text-[14px] font-medium transition-opacity hover:opacity-90"
-              style={{ background: "#1A1A1A", color: "#F7F6F3" }}
+              style={{ background: "#F7F6F3", color: "#1A1A1A" }}
             >
               Book a 15 minute call
               <ArrowRight className="ml-1.5 h-4 w-4" />
             </a>
             <p
               className="mt-4 text-[14px]"
-              style={{ color: "#75726B" }}
+              style={{ color: "rgba(247,246,243,0.50)" }}
             >
               Unlimited revisions until you approve. Cancel anytime.
             </p>
           </div>
 
           {/* Right column — receipt */}
-          <div className="md:w-[45%] flex justify-start md:justify-end">
+          <div className="md:w-[45%] flex justify-center md:justify-end">
             <div
-              className="w-full max-w-sm p-7"
+              className="relative w-full flex justify-center md:justify-end"
+              style={{ maxWidth: "360px" }}
+            >
+              {/* Ambient glow — desktop only */}
+              <div
+                aria-hidden="true"
+                className="hidden md:block pointer-events-none"
+                style={{
+                  position: "absolute",
+                  inset: "-60px",
+                  background:
+                    "radial-gradient(ellipse 60% 50% at center, rgba(158,216,245,0.07), transparent 70%)",
+                  zIndex: 0,
+                }}
+              />
+            <div
+              className="relative w-full p-7"
               style={{
                 position: "relative",
                 overflow: "visible",
                 background: "#FDFCFA",
-                borderTopLeftRadius: "4px",
-                borderTopRightRadius: "4px",
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
                 borderBottomLeftRadius: 0,
                 borderBottomRightRadius: 0,
                 boxShadow:
-                  "0 1px 2px rgba(26,26,26,0.06), 0 12px 32px rgba(26,26,26,0.10)",
+                  "0 1px 2px rgba(0,0,0,0.3), 0 24px 64px rgba(0,0,0,0.45)",
                 transform: "rotate(0.5deg)",
+                zIndex: 1,
               }}
             >
+              {/* Top accent strip */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: "4px",
+                  background: "#9ED8F5",
+                }}
+              />
               {/* Wordmark */}
               <div
                 className="text-center font-bold text-[18px] tracking-tight"
@@ -188,6 +226,7 @@ const Pricing = () => {
                 }}
               />
             </div>
+          </div>
           </div>
         </div>
       </div>
