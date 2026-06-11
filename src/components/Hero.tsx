@@ -427,6 +427,7 @@ const Hero = () => {
                 onMouseEnter={() => { wallPausedRef.current = true; }}
                 onMouseLeave={() => { wallPausedRef.current = false; }}
               >
+                <div className="hero-wall-plane">
                 <div className="hero-wall-cols">
                   <div className="hero-wall-col">
                     <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
@@ -466,6 +467,7 @@ const Hero = () => {
                       ))}
                     </DriftTrack>
                   </div>
+                </div>
                 </div>
               </div>
 
