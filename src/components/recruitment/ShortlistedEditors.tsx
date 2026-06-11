@@ -278,14 +278,22 @@ export function ShortlistedEditors() {
                   boxShadow: checked ? '0 0 0 1px #1A1A1A inset' : 'none',
                 }}
               >
-                {/* Square trial preview */}
-                <div className="relative w-full" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#0c0c0c' : '#EEEDE8' }}>
-                  {sub ? (
-                    <SubmissionThumb url={sub.submission_url} />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
-                    </div>
+                {/* Square profile photo */}
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', backgroundColor: '#1A1A1A' }}>
+                  <ProfilePhoto email={app.email} name={`${app.first_name} ${app.last_name}`} />
+                  {/* Open trial button overlay */}
+                  {sub && (
+                    <a
+                      href={sub.submission_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1 rounded-[3px] px-2.5 py-1.5 mono text-[10px] uppercase tracking-[0.15em] backdrop-blur transition-colors"
+                      style={{ backgroundColor: 'rgba(26,26,26,0.78)', color: '#FAF8F3' }}
+                      title="Open trial submission"
+                    >
+                      <Play className="w-3 h-3" /> View trial <ExternalLink className="w-3 h-3 opacity-70" />
+                    </a>
                   )}
                   {/* Selection checkbox overlay */}
                   <label
@@ -307,7 +315,6 @@ export function ShortlistedEditors() {
                 {/* Candidate meta */}
                 <div className="p-4 flex flex-col gap-3">
                   <div className="flex items-start gap-3">
-                    <EditorAvatar email={app.email} name={`${app.first_name} ${app.last_name}`} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[16px] tracking-[-0.02em] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
                         {app.first_name} {app.last_name}
