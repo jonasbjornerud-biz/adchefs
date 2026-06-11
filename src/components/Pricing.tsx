@@ -5,8 +5,10 @@ const receiptLines: { label: string; value: string; ink?: boolean }[] = [
   { label: "VIDEOS × 20", value: "$2,000", ink: true },
   { label: "HOOK VARIATIONS + 2 FORMATS", value: "$0" },
   { label: "EDITING TOOLS", value: "$0" },
+  { label: "HIGGSFIELD + ELEVENLABS", value: "$0" },
   { label: "ONGOING MANAGEMENT", value: "$0" },
-  { label: "CLIENT DASHBOARD", value: "$0" },
+  { label: "AD KPI DASHBOARD", value: "$0" },
+  { label: "EDITOR DELIVERY TRACKING", value: "$0" },
 ];
 
 const Pricing = () => {
@@ -18,6 +20,7 @@ const Pricing = () => {
 
   const triggerRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<"idle" | "armed" | "printed">("idle");
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
     const el = triggerRef.current;
@@ -25,6 +28,7 @@ const Pricing = () => {
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setReduceMotion(reduce);
     if (reduce || typeof IntersectionObserver === "undefined") {
       setPhase("printed");
       return;
@@ -66,6 +70,11 @@ const Pricing = () => {
           0% { transform: translateY(0); }
           50% { transform: translateY(-2px); }
           100% { transform: translateY(0); }
+        }
+        @keyframes pricing-sway {
+          0%   { transform: rotate(0.5deg) translateY(0); }
+          50%  { transform: rotate(-0.3deg) translateY(2px); }
+          100% { transform: rotate(0.5deg) translateY(0); }
         }
       `}</style>
       <div className="mx-auto max-w-[1200px] px-6">
@@ -115,49 +124,68 @@ const Pricing = () => {
             className="md:w-[45%] flex flex-col items-center md:items-end"
           >
             <div className="w-full" style={{ maxWidth: "360px" }}>
-              {/* Printer slot bar */}
+              {/* Thermal printer bar */}
               <div
                 className="relative mx-auto"
                 style={{
                   width: "calc(100% + 64px)",
                   marginLeft: "-32px",
                   marginRight: "-32px",
-                  height: "14px",
+                  height: "22px",
                   background: "#1A1A1A",
                   borderRadius: "4px",
                   zIndex: 2,
                 }}
               >
-                {/* Inner slot line */}
+                {/* Recessed slot */}
                 <div
                   style={{
                     position: "absolute",
                     top: "50%",
-                    left: "12px",
-                    right: "12px",
-                    height: "2px",
+                    left: "14px",
+                    right: "14px",
+                    height: "4px",
                     transform: "translateY(-50%)",
-                    background: "rgba(247,246,243,0.15)",
+                    background: "#0D0D0D",
+                    borderRadius: "1px",
                   }}
                 />
-                {/* Label */}
+                {/* Highlight line above slot */}
                 <div
-                  className="mono"
                   style={{
                     position: "absolute",
-                    right: "10px",
+                    top: "calc(50% - 3px)",
+                    left: "14px",
+                    right: "14px",
+                    height: "1px",
+                    background: "rgba(247,246,243,0.12)",
+                  }}
+                />
+                {/* Screw dots */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "6px",
                     top: "50%",
                     transform: "translateY(-50%)",
-                    fontSize: "8px",
-                    letterSpacing: "0.15em",
-                    color: "rgba(247,246,243,0.4)",
-                    textTransform: "uppercase",
-                    background: "#1A1A1A",
-                    paddingLeft: "4px",
+                    width: "4px",
+                    height: "4px",
+                    borderRadius: "9999px",
+                    background: "rgba(247,246,243,0.2)",
                   }}
-                >
-                  ADCHEFS POS
-                </div>
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    right: "6px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "4px",
+                    height: "4px",
+                    borderRadius: "9999px",
+                    background: "rgba(247,246,243,0.2)",
+                  }}
+                />
               </div>
 
               {/* Clipping container — receipt slides out from under the slot */}
@@ -167,6 +195,7 @@ const Pricing = () => {
                   paddingBottom: "14px",
                   position: "relative",
                   zIndex: 1,
+                  marginTop: "-6px",
                 }}
               >
                 {/* Translate wrapper */}
@@ -181,7 +210,16 @@ const Pricing = () => {
                   }}
                 >
                   {/* Rotation wrapper — keeps 0.5deg rotation isolated from translate */}
-                  <div style={{ transform: "rotate(0.5deg)" }}>
+                  <div
+                    style={{
+                      transform: "rotate(0.5deg)",
+                      animation:
+                        printed && !reduceMotion
+                          ? "pricing-sway 6s ease-in-out 2.1s infinite"
+                          : undefined,
+                      transformOrigin: "center top",
+                    }}
+                  >
                     <div
                       className="relative w-full p-7"
                       style={{
@@ -189,7 +227,7 @@ const Pricing = () => {
                         background: "#FDFCFA",
                         borderRadius: 0,
                         boxShadow:
-                          "0 1px 2px rgba(26,26,26,0.06), 0 12px 32px rgba(26,26,26,0.10)",
+                          "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
                       }}
                     >
                       {/* Wordmark */}
@@ -204,24 +242,14 @@ const Pricing = () => {
                           className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-1.5"
                           style={{ color: "#75726B" }}
                         >
-                          A MONTH OF CREATIVE, ITEMIZED
+                          ONE MONTH, ITEMIZED
                         </div>
-                      </div>
-
-                      {/* Metadata row */}
-                      <div
-                        className="mono flex justify-between text-[9px] uppercase tracking-[0.15em] mt-2"
-                        style={{ color: "#75726B", ...rowStyle(1) }}
-                      >
-                        <span>NO. 001</span>
-                        <span>QTY 20</span>
-                        <span>DEDICATED EDITOR</span>
                       </div>
 
                       {/* Divider */}
                       <div
                         className="mt-4 w-full"
-                        style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)", ...rowStyle(2) }}
+                        style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)", ...rowStyle(1) }}
                       />
 
                       {/* Line items */}
@@ -232,7 +260,7 @@ const Pricing = () => {
                             className="mono flex justify-between text-[12px] py-1.5"
                             style={{
                               color: line.ink ? "#1A1A1A" : "#75726B",
-                              ...rowStyle(3 + i),
+                              ...rowStyle(2 + i),
                             }}
                           >
                             <span>{line.label}</span>
@@ -247,7 +275,7 @@ const Pricing = () => {
                         style={{
                           color: "#1A1A1A",
                           borderTop: "2px solid #1A1A1A",
-                          ...rowStyle(3 + receiptLines.length),
+                          ...rowStyle(2 + receiptLines.length),
                         }}
                       >
                         <span>TOTAL</span>
@@ -257,7 +285,7 @@ const Pricing = () => {
                       {/* Per video */}
                       <div
                         className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3"
-                        style={{ color: "#75726B", ...rowStyle(4 + receiptLines.length) }}
+                        style={{ color: "#75726B", ...rowStyle(3 + receiptLines.length) }}
                       >
                         FROM $100 / DELIVERED VIDEO
                       </div>
@@ -267,45 +295,34 @@ const Pricing = () => {
                         className="mt-3 w-full"
                         style={{
                           borderTop: "1.5px dashed rgba(26,26,26,0.25)",
-                          ...rowStyle(5 + receiptLines.length),
+                          ...rowStyle(4 + receiptLines.length),
                         }}
                       />
 
                       {/* Footer */}
                       <div
                         className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3 leading-relaxed"
-                        style={{ color: "#B0552F", ...rowStyle(6 + receiptLines.length) }}
+                        style={{ color: "#B0552F", ...rowStyle(5 + receiptLines.length) }}
                       >
                         AN AGENCY BILLS $4,500 THIS MONTH<br />
                         WHETHER ANYTHING SHIPS OR NOT
                       </div>
 
-                      {/* Stamp */}
+                      {/* Paper curl — bottom-left corner */}
                       <div
-                        className="mono"
+                        aria-hidden="true"
                         style={{
                           position: "absolute",
-                          right: "18px",
-                          bottom: "44px",
-                          fontSize: "11px",
-                          letterSpacing: "0.15em",
-                          color: "#4A7A96",
-                          border: "2px solid #4A7A96",
-                          padding: "6px 12px",
-                          borderRadius: "4px",
-                          transform: "rotate(-8deg)",
-                          opacity: hidden ? 0 : 0.85,
-                          background: "transparent",
-                          textTransform: "uppercase",
-                          pointerEvents: "none",
-                          transition: "opacity 0.3s ease-out",
-                          transitionDelay: printed
-                            ? `${400 + (7 + receiptLines.length) * 80}ms`
-                            : "0ms",
+                          left: 0,
+                          bottom: 0,
+                          width: "28px",
+                          height: "28px",
+                          background:
+                            "linear-gradient(135deg, #E8E6E0 0%, #F3F1EC 50%, transparent 50%)",
+                          boxShadow: "-2px 2px 4px rgba(26,26,26,0.08)",
+                          zIndex: 2,
                         }}
-                      >
-                        PAY PER VIDEO
-                      </div>
+                      />
 
                       {/* Torn bottom edge */}
                       <div
