@@ -5,19 +5,19 @@ const steps = [
     n: "01",
     icon: Search,
     title: "Vetted through a real funnel",
-    body: "I screen hundreds of editors every month through a structured evaluation: skills tests, brand-voice trials, paid trial tasks. Only editors who pass every stage work with brands. No \"matching\" based on a portfolio. Every editor proves they can ship before they ever touch your account.",
+    body: "I screen hundreds of editors every month through skills tests, brand voice trials, and paid trial tasks. No matching based on a portfolio. Every editor proves they can ship before they touch your account.",
   },
   {
     n: "02",
     icon: GraduationCap,
-    title: "Trained on what actually wins",
-    body: "Every editor goes through my direct response masterclass: hook engineering, hold-curve retention, brand voice, sound design. They keep training while they work for you, so quality compounds over time instead of plateauing.",
+    title: "Trained on what wins",
+    body: "Every editor goes through my direct response masterclass. Hook engineering, hold curve retention, brand voice, sound design. Training continues while they work for you, so quality compounds instead of plateauing.",
   },
   {
     n: "03",
     icon: Rocket,
     title: "Embedded in your workflow",
-    body: "Your editor gets added to your Slack, your Notion, your brand folder, and works only on your account. You treat them like an in-house hire. I stay in the background, managing performance, quality, and any issues before they become your problem.",
+    body: "Your editor joins your Slack, your Notion, your brand folder, and works only on your account. Standard turnaround is 24 to 48 hours per video. I stay in the background handling quality and performance before anything becomes your problem.",
   },
 ];
 
@@ -26,12 +26,12 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-16 sm:py-32 bg-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
-          <span className="eyebrow">How it works</span>
+          <span className="eyebrow">HOW IT WORKS</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
             An <em>in-house editor</em>, handled for you.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
-            Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team, like a contractor you never had to recruit. They learn your brand, sit in your Slack, and grow with your account. I handle the recruiting, the mentoring, and the performance management, so you don't have to.
+            Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team like a contractor you never had to recruit. They sit in your Slack, learn your brand, and grow with your account. The recruiting, the mentoring, and the performance management stay with me.
           </p>
         </div>
 
