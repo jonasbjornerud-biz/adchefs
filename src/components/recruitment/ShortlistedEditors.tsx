@@ -8,7 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Star, Send, Mail, CheckCircle2, Play, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
-import { EmbeddedSubmission } from './RecruitmentPanel';
 
 type Posting = {
   id: string; slug: string; title: string; brand: string; submit_slug: string;
@@ -26,8 +25,9 @@ type Submission = {
 };
 
 /* ---------------- Profile photo ----------------
- * unavatar.io aggregates public avatars from Google, Gravatar, Twitter, etc.
- * by email. Falls back to initials on failure.
+ * Gmail's contact photo endpoint can show the same Google profile photo the admin
+ * sees in Gmail, as long as they are signed into that Google account in the browser.
+ * Public avatar services stay as fallbacks for emails without an accessible photo.
  */
 function initialsOf(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('') || '?';
@@ -35,9 +35,15 @@ function initialsOf(name: string) {
 
 function ProfilePhoto({ email, name, size = 'lg' }: { email: string; name: string; size?: 'sm' | 'lg' }) {
   const [idx, setIdx] = useState(0);
+  useEffect(() => { setIdx(0); }, [email]);
+
+  const encodedEmail = encodeURIComponent(email.trim().toLowerCase());
   const sources = [
-    `https://unavatar.io/google/${encodeURIComponent(email)}?fallback=false`,
-    `https://unavatar.io/${encodeURIComponent(email)}?fallback=false`,
+    `https://mail.google.com/mail/u/0/photos/images/${encodedEmail}?sz=512`,
+    `https://mail.google.com/mail/u/0/photos/thumb/${encodedEmail}?sz=512`,
+    `https://profiles.google.com/s2/photos/profile/${encodedEmail}?sz=512`,
+    `https://unavatar.io/google/${encodedEmail}?fallback=false`,
+    `https://unavatar.io/${encodedEmail}?fallback=false`,
   ];
   const failed = idx >= sources.length;
   const cls = size === 'lg'
@@ -66,6 +72,7 @@ function ProfilePhoto({ email, name, size = 'lg' }: { email: string; name: strin
       src={sources[idx]}
       alt={name}
       loading="lazy"
+      referrerPolicy="no-referrer"
       className={cls}
       onError={() => setIdx(i => i + 1)}
     />
