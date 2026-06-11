@@ -64,6 +64,7 @@ interface WallCardProps {
 const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const inViewRef = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -72,24 +73,40 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
       ([entry]) => {
         const v = videoRef.current;
         if (!v) return;
-        if (entry.isIntersecting) {
-          if (v.preload === "none") v.preload = "metadata";
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        inViewRef.current = visible;
+        if (visible) {
           v.play().catch(() => {});
         } else {
           v.pause();
         }
       },
-      { rootMargin: "200px" }
+      { threshold: [0, 0.5, 1] }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  const handleEnter = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = false;
+    v.play().catch(() => {});
+  };
+  const handleLeave = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    if (!inViewRef.current) v.pause();
+  };
 
   return (
     <button
       ref={ref}
       type="button"
       onClick={() => onOpen(clip.full)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
       aria-label={`Play ${clip.label}`}
       style={{
@@ -103,14 +120,60 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
         src={clip.preview}
         poster={clip.poster}
         muted
-        autoPlay
         loop
         playsInline
-        preload="none"
+        preload="metadata"
         className="w-full h-full object-cover block"
       />
+      <span aria-hidden className="hero-wall-card-ring" />
     </button>
   );
+};
+
+/* JS-driven drift track: eases speed multiplier 0↔1 over ~600ms on hover. */
+interface DriftTrackProps {
+  loopSeconds: number;
+  axis: "y" | "x";
+  direction: 1 | -1;
+  pausedRef: React.MutableRefObject<boolean>;
+  className?: string;
+  children: React.ReactNode;
+}
+const DriftTrack = ({ loopSeconds, axis, direction, pausedRef, className, children }: DriftTrackProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    let pos = direction < 0 ? 0 : -0.0001; // tiny offset so wrap math is symmetric
+    let mult = 1;
+    const tick = (t: number) => {
+      if (!last) last = t;
+      const dt = Math.min((t - last) / 1000, 0.05);
+      last = t;
+      const target = pausedRef.current ? 0 : 1;
+      // exponential easing — ~600ms time-constant => k ≈ 1 - exp(-dt * 5)
+      mult += (target - mult) * (1 - Math.exp(-dt * 5));
+      const el = ref.current;
+      if (el) {
+        const half = axis === "y" ? el.scrollHeight / 2 : el.scrollWidth / 2;
+        if (half > 0) {
+          const v = (half / loopSeconds) * direction * mult;
+          pos += v * dt;
+          if (pos <= -half) pos += half;
+          if (pos >= 0) pos -= half;
+          el.style.transform = axis === "y"
+            ? `translate3d(0, ${pos}px, 0)`
+            : `translate3d(${pos}px, 0, 0)`;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [loopSeconds, axis, direction, pausedRef]);
+
+  return <div ref={ref} className={className}>{children}</div>;
 };
 
 const Lightbox = ({ src, onClose }: LightboxProps) => {
@@ -175,6 +238,7 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 
 const Hero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const wallPausedRef = useRef(false);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -194,14 +258,15 @@ const Hero = () => {
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
           backgroundSize: '200px 200px',
+          mixBlendMode: 'multiply',
         }}
       />
 
-      {/* Top-right radial gradient accent */}
+      {/* Top-right radial gradient accent — desaturated, never touches pure white */}
       <div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          background: 'radial-gradient(ellipse at 85% 10%, rgba(158, 216, 245, 0.35) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 85% 10%, rgba(180, 214, 232, 0.28) 0%, transparent 60%)',
         }}
       />
 
@@ -257,71 +322,77 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: scrolling video wall (3 cols desktop, 2 cols tablet, 1 row mobile) */}
+          {/* RIGHT: scrolling video wall */}
           <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
             <div className="hero-wall flex flex-col w-full">
-              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4 hero-wall-edge">
-                Live cuts shipping for clients
+              <span className="hero-wall-label hero-wall-edge">
+                <span aria-hidden className="hero-wall-dot" />
+                <span>Live cuts shipping for clients</span>
               </span>
+              <span aria-hidden className="hero-wall-rule hero-wall-edge" />
 
               {/* Desktop / tablet: vertical multi-column wall */}
-              <div className="hero-wall-vertical">
+              <div
+                className="hero-wall-vertical"
+                onMouseEnter={() => { wallPausedRef.current = true; }}
+                onMouseLeave={() => { wallPausedRef.current = false; }}
+              >
                 <div className="hero-wall-cols">
-                  {/* col 1 — up */}
                   <div className="hero-wall-col">
-                    <div className="hero-wall-track hero-wall-up-1">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[0].map((c, i) => (
                         <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  {/* col 2 — down */}
-                  <div className="hero-wall-col hero-wall-col-2">
-                    <div className="hero-wall-track hero-wall-down-2">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
                       {COLS_3[1].map((c, i) => (
                         <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  {/* col 3 — up */}
-                  <div className="hero-wall-col hero-wall-col-3">
-                    <div className="hero-wall-track hero-wall-up-3">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={42} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[2].map((c, i) => (
                         <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
                 </div>
 
-                {/* Tablet two-column variant */}
                 <div className="hero-wall-cols-2">
                   <div className="hero-wall-col">
-                    <div className="hero-wall-track hero-wall-up-1">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_2[0].map((c, i) => (
                         <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  <div className="hero-wall-col hero-wall-col-2">
-                    <div className="hero-wall-track hero-wall-down-2">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
                       {COLS_2[1].map((c, i) => (
                         <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
                 </div>
               </div>
 
               {/* Mobile: single horizontal row */}
-              <div className="hero-wall-horizontal">
-                <div className="hero-wall-row-track">
+              <div
+                className="hero-wall-horizontal"
+                onMouseEnter={() => { wallPausedRef.current = true; }}
+                onMouseLeave={() => { wallPausedRef.current = false; }}
+              >
+                <DriftTrack className="hero-wall-row-track" loopSeconds={39} axis="x" direction={-1} pausedRef={wallPausedRef}>
                   {ROW_M.map((c, i) => (
                     <WallCard key={`r-${i}`} clip={c} onOpen={openLightbox} horizontal />
                   ))}
-                </div>
+                </DriftTrack>
               </div>
 
-              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-4 hero-wall-edge leading-[1.6]">
+              <span className="hero-wall-disclaimer hero-wall-edge">
                 Video editing only. Brand ownership belongs to respective clients.
               </span>
             </div>
@@ -335,18 +406,79 @@ const Hero = () => {
         .hero-wall { width: 100%; }
         .hero-wall-edge { display: block; }
 
+        /* Label row with pulsing live dot */
+        .hero-wall-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: hsl(var(--muted-foreground));
+        }
+        .hero-wall-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 9999px;
+          background: #1A1A1A;
+          animation: hero-wall-live 2s ease-in-out infinite;
+        }
+        @keyframes hero-wall-live {
+          0%, 100% { opacity: 0.3; }
+          50%      { opacity: 1; }
+        }
+
+        /* Hairline rule between label and wall */
+        .hero-wall-rule {
+          height: 1px;
+          background: rgba(26,26,26,0.10);
+          margin-top: 16px;
+          margin-bottom: 16px;
+        }
+
+        /* Disclaimer */
+        .hero-wall-disclaimer {
+          margin-top: 16px;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-size: 9px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          line-height: 1.6;
+          color: hsl(var(--muted-foreground));
+          opacity: 0.5;
+        }
+
+        /* === Cards === */
         .hero-wall-card {
+          position: relative;
           display: block;
           width: 100%;
           aspect-ratio: 9 / 16;
           border-radius: 4px;
           overflow: hidden;
           background-color: hsl(var(--secondary));
-          border: 1px solid rgba(26,26,26,0.08);
+          border: 1px solid rgba(26,26,26,0.06);
+          box-shadow: 0 1px 2px rgba(26,26,26,0.04);
           padding: 0;
           cursor: pointer;
         }
-        .hero-wall-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .hero-wall-card video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .hero-wall-card-ring {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          border-radius: 4px;
+          box-shadow: inset 0 0 0 1px rgba(26,26,26,0.2);
+          opacity: 0;
+          transition: opacity 200ms ease;
+        }
+        .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
 
         /* === Vertical multi-column wall (desktop + tablet) === */
         .hero-wall-vertical {
@@ -354,8 +486,8 @@ const Hero = () => {
           height: 85vh;
           max-height: 760px;
           overflow: hidden;
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
-                  mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
         }
         .hero-wall-cols, .hero-wall-cols-2 {
           display: none;
@@ -363,29 +495,15 @@ const Hero = () => {
           height: 100%;
         }
         .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
-        .hero-wall-track { display: flex; flex-direction: column; gap: 16px; will-change: transform; }
-
-        /* Desktop: 3 cols */
-        @media (min-width: 1024px) {
-          .hero-wall-cols { display: flex; }
-        }
-        /* Tablet: 2 cols */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .hero-wall-cols-2 { display: flex; }
+        .hero-wall-track {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          will-change: transform;
         }
 
-        @keyframes hero-wall-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
-        @keyframes hero-wall-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
-
-        .hero-wall-up-1   { animation: hero-wall-up 28s linear infinite; }
-        .hero-wall-down-2 { animation: hero-wall-down 36s linear infinite; }
-        .hero-wall-up-3   { animation: hero-wall-up 32s linear infinite; }
-
-        /* Pause when cursor is over the wall */
-        .hero-wall-vertical:hover .hero-wall-track,
-        .hero-wall-horizontal:hover .hero-wall-row-track {
-          animation-play-state: paused;
-        }
+        @media (min-width: 1024px) { .hero-wall-cols { display: flex; } }
+        @media (min-width: 768px) and (max-width: 1023px) { .hero-wall-cols-2 { display: flex; } }
 
         /* === Mobile horizontal row === */
         .hero-wall-horizontal {
@@ -393,15 +511,14 @@ const Hero = () => {
           position: relative;
           height: 40vh;
           overflow: hidden;
-          -webkit-mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
-                  mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                  mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
         }
         .hero-wall-row-track {
           display: flex;
           gap: 16px;
           height: 100%;
           width: max-content;
-          animation: hero-wall-left 30s linear infinite;
           will-change: transform;
         }
         .hero-wall-card-h {
@@ -409,15 +526,9 @@ const Hero = () => {
           width: auto;
           aspect-ratio: 9 / 16;
         }
-        @keyframes hero-wall-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
         @media (max-width: 767px) {
           .hero-wall-vertical { display: none; }
           .hero-wall-horizontal { display: block; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .hero-wall-track, .hero-wall-row-track { animation: none; }
         }
       `}</style>
     </section>
