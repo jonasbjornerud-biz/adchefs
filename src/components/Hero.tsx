@@ -613,19 +613,20 @@ const Hero = () => {
         /* Focus-hover: dim & blur siblings when any card is hovered */
         .wall-clip:has(.hero-wall-card:hover) .hero-wall-card,
         .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
-          filter: blur(3px);
+          filter: blur(2px);
           opacity: 0.45;
-          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
         }
         .wall-clip .hero-wall-card,
         .hero-wall-horizontal .hero-wall-card {
-          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
         }
         .wall-clip .hero-wall-card:hover,
         .hero-wall-horizontal .hero-wall-card:hover {
           filter: none !important;
           opacity: 1 !important;
           border-color: rgba(26,26,26,0.25);
+          box-shadow: 0 24px 60px rgba(26,26,26,0.18);
         }
 
         /* Lightbox chrome buttons */
