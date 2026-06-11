@@ -194,7 +194,7 @@ const Pricing = () => {
                     {/* Cast shadow — sibling, behind paper, follows tilt */}
                     <div
                       aria-hidden="true"
-                      className="shadow-breathe"
+                      className="receipt-cast-shadow"
                       style={{
                         position: "absolute",
                         top: "28px",
@@ -214,7 +214,7 @@ const Pricing = () => {
 
                     {/* Receipt paper — flat plane, 3D tilt + curvature shading */}
                     <div
-                      className="receipt-paper sheet-breathe relative w-full p-7"
+                      className="receipt-sheet relative w-full p-7"
                       style={{
                         background: "#FDFCFA",
                         borderRadius: 0,
