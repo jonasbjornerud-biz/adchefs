@@ -266,17 +266,13 @@ export function ShortlistedEditors() {
                 }}
               >
                 {/* Square trial preview */}
-                <div className="relative w-full" style={{ aspectRatio: '1 / 1', backgroundColor: '#000' }}>
+                <div className="relative w-full flex items-center justify-center" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#000' : '#EEEDE8' }}>
                   {sub ? (
-                    <div className="absolute inset-0 [&_*]:!aspect-auto">
-                      <div className="w-full h-full">
-                        <EmbeddedSubmission url={sub.submission_url} />
-                      </div>
+                    <div className="w-full">
+                      <EmbeddedSubmission url={sub.submission_url} />
                     </div>
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center" style={{ backgroundColor: '#EEEDE8' }}>
-                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
-                    </div>
+                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
                   )}
                   {/* Selection checkbox overlay */}
                   <label
