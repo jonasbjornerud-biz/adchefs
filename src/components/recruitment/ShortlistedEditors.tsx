@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Star, Send, Mail, CheckCircle2 } from 'lucide-react';
+import { Star, Send, Mail, CheckCircle2, Play, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmbeddedSubmission } from './RecruitmentPanel';
 
@@ -25,89 +25,50 @@ type Submission = {
   submission_url: string; notes: string | null; created_at: string;
 };
 
-/* ---------------- Gravatar ---------------- */
-async function sha256Hex(input: string): Promise<string> {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-function gravatarUrl(hash: string, size = 96) {
-  // d=404 -> the <img> errors out when no gravatar exists, letting us fall back to initials
-  return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=404`;
+/* ---------------- Profile photo ----------------
+ * unavatar.io aggregates public avatars from Google, Gravatar, Twitter, etc.
+ * by email. Falls back to initials on failure.
+ */
+function initialsOf(name: string) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('') || '?';
 }
 
-function EditorAvatar({ email, name }: { email: string; name: string }) {
-  const [hash, setHash] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
-  useEffect(() => {
-    sha256Hex(email.trim().toLowerCase()).then(setHash);
-  }, [email]);
-  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('') || '?';
-  return (
-    <div
-      className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0"
-      style={{ backgroundColor: '#1A1A1A', color: '#FAF8F3', fontFamily: "'Inter Tight', sans-serif", fontWeight: 600, fontSize: '14px' }}
-    >
-      {hash && !failed ? (
-        <img
-          src={gravatarUrl(hash)}
-          alt={name}
-          className="w-full h-full object-cover"
-          onError={() => setFailed(true)}
-        />
-      ) : initials}
-    </div>
-  );
-}
-
-/* ---------------- Thumbnail extraction ---------------- */
-function driveFileId(url: string): string | null {
-  const m1 = url.match(/\/file\/d\/([A-Za-z0-9_-]+)/);
-  if (m1) return m1[1];
-  const m2 = url.match(/[?&]id=([A-Za-z0-9_-]+)/);
-  if (m2) return m2[1];
-  return null;
-}
-function youtubeId(url: string): string | null {
-  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return m ? m[1] : null;
-}
-function thumbnailFor(url: string): string | null {
-  const yt = youtubeId(url);
-  if (yt) return `https://img.youtube.com/vi/${yt}/hqdefault.jpg`;
-  const driveId = driveFileId(url);
-  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
-  return null;
-}
-
-function SubmissionThumb({ url }: { url: string }) {
-  const thumb = thumbnailFor(url);
-  const [failed, setFailed] = useState(false);
-  if (!thumb || failed) {
-    // Fallback: existing link/embed card
+function ProfilePhoto({ email, name, size = 'lg' }: { email: string; name: string; size?: 'sm' | 'lg' }) {
+  const [idx, setIdx] = useState(0);
+  const sources = [
+    `https://unavatar.io/google/${encodeURIComponent(email)}?fallback=false`,
+    `https://unavatar.io/${encodeURIComponent(email)}?fallback=false`,
+  ];
+  const failed = idx >= sources.length;
+  const cls = size === 'lg'
+    ? 'w-full h-full object-cover'
+    : 'w-full h-full object-cover';
+  if (failed) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <EmbeddedSubmission url={url} />
+      <div
+        className="w-full h-full flex items-center justify-center"
+        style={{
+          background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)',
+          color: '#FAF8F3',
+          fontFamily: "'Inter Tight', sans-serif",
+          fontWeight: 600,
+          fontSize: size === 'lg' ? '64px' : '14px',
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {initialsOf(name)}
       </div>
     );
   }
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={e => e.stopPropagation()}
-      className="absolute inset-0 block group"
-      title="Open submission"
-    >
-      <img
-        src={thumb}
-        alt=""
-        loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-        onError={() => setFailed(true)}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    </a>
+    <img
+      key={idx}
+      src={sources[idx]}
+      alt={name}
+      loading="lazy"
+      className={cls}
+      onError={() => setIdx(i => i + 1)}
+    />
   );
 }
 
@@ -317,14 +278,22 @@ export function ShortlistedEditors() {
                   boxShadow: checked ? '0 0 0 1px #1A1A1A inset' : 'none',
                 }}
               >
-                {/* Square trial preview */}
-                <div className="relative w-full" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#0c0c0c' : '#EEEDE8' }}>
-                  {sub ? (
-                    <SubmissionThumb url={sub.submission_url} />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
-                    </div>
+                {/* Square profile photo */}
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', backgroundColor: '#1A1A1A' }}>
+                  <ProfilePhoto email={app.email} name={`${app.first_name} ${app.last_name}`} />
+                  {/* Open trial button overlay */}
+                  {sub && (
+                    <a
+                      href={sub.submission_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1 rounded-[3px] px-2.5 py-1.5 mono text-[10px] uppercase tracking-[0.15em] backdrop-blur transition-colors"
+                      style={{ backgroundColor: 'rgba(26,26,26,0.78)', color: '#FAF8F3' }}
+                      title="Open trial submission"
+                    >
+                      <Play className="w-3 h-3" /> View trial <ExternalLink className="w-3 h-3 opacity-70" />
+                    </a>
                   )}
                   {/* Selection checkbox overlay */}
                   <label
@@ -346,7 +315,6 @@ export function ShortlistedEditors() {
                 {/* Candidate meta */}
                 <div className="p-4 flex flex-col gap-3">
                   <div className="flex items-start gap-3">
-                    <EditorAvatar email={app.email} name={`${app.first_name} ${app.last_name}`} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[16px] tracking-[-0.02em] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
                         {app.first_name} {app.last_name}
