@@ -291,7 +291,7 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
+        <div className="grid lg:grid-cols-[45%_1fr] gap-10 lg:gap-6 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
             <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
@@ -342,14 +342,14 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: scrolling video wall */}
-          <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
-            <div className="hero-wall flex flex-col w-full">
-              <span className="hero-wall-label hero-wall-edge">
+          {/* RIGHT: broken-grid video wall, bleeds off right viewport edge */}
+          <div className="hero-wall-col-wrap relative lg:h-full lg:pt-28 lg:pb-8">
+            <div className="hero-wall flex flex-col">
+              <span className="hero-wall-label">
                 <span aria-hidden className="hero-wall-dot" />
                 <span>Live cuts shipping for clients</span>
               </span>
-              <span aria-hidden className="hero-wall-rule hero-wall-edge" />
+              <span aria-hidden className="hero-wall-rule" />
 
               {/* Desktop / tablet: vertical multi-column wall */}
               <div
@@ -357,42 +357,44 @@ const Hero = () => {
                 onMouseEnter={() => { wallPausedRef.current = true; }}
                 onMouseLeave={() => { wallPausedRef.current = false; }}
               >
-                <div className="hero-wall-cols">
-                  <div className="hero-wall-col">
-                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_3[0].map((c, i) => (
-                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
+                {/* Desktop: 3 unequal columns */}
+                <div className="hero-wall-cols hero-wall-cols--3">
+                  <div className="hero-wall-col hero-wall-col--a">
+                    <DriftTrack className="hero-wall-track" loopSeconds={48} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_3[0].map((it, i) => (
+                        <WallCard key={`c1-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col">
-                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
-                      {COLS_3[1].map((c, i) => (
-                        <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
+                  <div className="hero-wall-col hero-wall-col--b">
+                    <DriftTrack className="hero-wall-track" loopSeconds={38} axis="y" direction={1} pausedRef={wallPausedRef}>
+                      {COLS_3[1].map((it, i) => (
+                        <WallCard key={`c2-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col">
-                    <DriftTrack className="hero-wall-track" loopSeconds={42} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_3[2].map((c, i) => (
-                        <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
+                  <div className="hero-wall-col hero-wall-col--c">
+                    <DriftTrack className="hero-wall-track" loopSeconds={56} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_3[2].map((it, i) => (
+                        <WallCard key={`c3-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
                 </div>
 
-                <div className="hero-wall-cols-2">
-                  <div className="hero-wall-col">
-                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_2[0].map((c, i) => (
-                        <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
+                {/* Tablet: 2 unequal columns */}
+                <div className="hero-wall-cols hero-wall-cols--2">
+                  <div className="hero-wall-col hero-wall-col--a">
+                    <DriftTrack className="hero-wall-track" loopSeconds={48} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_2[0].map((it, i) => (
+                        <WallCard key={`t1-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col">
-                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
-                      {COLS_2[1].map((c, i) => (
-                        <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
+                  <div className="hero-wall-col hero-wall-col--b">
+                    <DriftTrack className="hero-wall-track" loopSeconds={38} axis="y" direction={1} pausedRef={wallPausedRef}>
+                      {COLS_2[1].map((it, i) => (
+                        <WallCard key={`t2-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
@@ -412,7 +414,7 @@ const Hero = () => {
                 </DriftTrack>
               </div>
 
-              <span className="hero-wall-disclaimer hero-wall-edge">
+              <span className="hero-wall-disclaimer">
                 Video editing only. Brand ownership belongs to respective clients.
               </span>
             </div>
