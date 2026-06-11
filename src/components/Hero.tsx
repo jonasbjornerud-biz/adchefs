@@ -238,10 +238,10 @@ const Hero = () => {
         }}
       />
 
-      <div className="mx-auto max-w-[1280px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[55fr_45fr] gap-10 lg:gap-12 items-stretch lg:h-full">
+      <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
+        <div className="grid lg:grid-cols-[1fr_38%] gap-10 lg:gap-16 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
-          <div className="flex flex-col justify-center lg:py-16">
+          <div className="flex flex-col justify-center lg:pt-28 lg:pb-16">
             <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
@@ -290,15 +290,17 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: video wall (full hero height) */}
-          <div className="relative h-[640px] lg:h-full">
-            {/* Top label, centered above wall, sits in top fade zone */}
-            <span className="absolute top-4 lg:top-6 left-1/2 -translate-x-1/2 z-20 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
-              Live cuts shipping for clients
-            </span>
+          {/* RIGHT: video wall, sits below navbar with labels above/below */}
+          <div className="flex flex-col h-[640px] lg:h-full lg:pt-28 lg:pb-8">
+            {/* Top label on its own line above the wall */}
+            <div className="text-center mb-3">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
+                Live cuts shipping for clients
+              </span>
+            </div>
 
             <div
-              className="video-wall absolute inset-0 overflow-hidden"
+              className="video-wall relative flex-1 min-h-0 overflow-hidden"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
@@ -334,8 +336,8 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Disclaimer centered under wall, in bottom fade zone */}
-            <p className="absolute bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 z-20 text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4">
+            {/* Disclaimer on its own line below the wall */}
+            <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4 mt-3">
               Video editing only. Brand ownership belongs to respective clients.
             </p>
           </div>
