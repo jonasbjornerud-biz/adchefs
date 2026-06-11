@@ -1,22 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon, Play } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, X as XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
 
 const CLOUD = "dqnifzwda";
-const CLIPS: { id: string; mov?: boolean }[] = [
-  { id: "AC1_r0bbjh" },
-  { id: "AC2_xllvey" },
-  { id: "AC3_wa3d0v" },
-  { id: "AC4_l0cp6d" },
-  { id: "AC5_v65ofr" },
-  { id: "AC6_pqpagf", mov: true },
-  { id: "AC7_kwkbqq", mov: true },
-  { id: "AC8_bvkrvb" },
-  { id: "AC9_uwa9z6" },
-  { id: "AC10_obarrz" },
+const CLIPS: { id: string; mov?: boolean; label: string }[] = [
+  { id: "AC1_r0bbjh", label: "BOSANT" },
+  { id: "AC2_xllvey", label: "IRON MAN" },
+  { id: "AC3_wa3d0v", label: "NORDIC SKIN" },
+  { id: "AC4_l0cp6d", label: "PEAK GEAR" },
+  { id: "AC5_v65ofr", label: "RITUAL CO" },
+  { id: "AC6_pqpagf", mov: true, label: "OAKWELL" },
+  { id: "AC7_kwkbqq", mov: true, label: "FORMA" },
+  { id: "AC8_bvkrvb", label: "HALO HOME" },
+  { id: "AC9_uwa9z6", label: "VANTA" },
+  { id: "AC10_obarrz", label: "NORTHFIELD" },
 ];
 
 type ClipUrls = { preview: string; poster: string; full: string };
@@ -30,118 +29,10 @@ const buildUrls = (id: string, mov?: boolean): ClipUrls => {
   };
 };
 
-const CLIP_URLS: ClipUrls[] = CLIPS.map((c) => buildUrls(c.id, c.mov));
-
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-interface CardProps {
-  urls: ClipUrls;
-  onOpen: (full: string) => void;
-  className?: string;
-}
-
-const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
-  const wrapRef = useRef<HTMLButtonElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [errored, setErrored] = useState(false);
-  const [hover, setHover] = useState(false);
-  const reduced = useRef(prefersReducedMotion());
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        const v = videoRef.current;
-        if (!v) return;
-        if (entry.isIntersecting) {
-          if (v.preload === "none") v.preload = "metadata";
-          if (!reduced.current) v.play().catch(() => {});
-        } else {
-          v.pause();
-        }
-      },
-      { rootMargin: "200px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  const showIndicator = hover || errored;
-
-  return (
-    <button
-      ref={wrapRef}
-      type="button"
-      onClick={() => onOpen(urls.full)}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={
-        className ??
-        "recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
-      }
-      style={{
-        backgroundImage: `url("${urls.poster}")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-      aria-label="Play video"
-    >
-      {!errored && (
-        <video
-          ref={videoRef}
-          src={urls.preview}
-          poster={urls.poster}
-          muted
-          autoPlay={!reduced.current}
-          loop
-          playsInline
-          preload="none"
-          onError={() => setErrored(true)}
-          className="w-full h-full object-cover block"
-        />
-      )}
-      {errored && (
-        <img src={urls.poster} alt="" className="w-full h-full object-cover block" />
-      )}
-
-      {/* inset ring */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-[4px] transition-opacity duration-[250ms] ease-out"
-        style={{
-          boxShadow: "inset 0 0 0 1px #9ED8F5",
-          opacity: hover ? 1 : 0,
-        }}
-      />
-
-      {/* play indicator */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-all duration-300"
-        style={{
-          opacity: showIndicator ? 1 : 0,
-          transform: showIndicator ? "scale(1)" : "scale(0.8)",
-          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-        }}
-      >
-        <span
-          className="flex items-center justify-center"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "rgba(26,26,26,0.85)",
-          }}
-        >
-          <Play className="h-4 w-4 text-white fill-white" />
-        </span>
-      </span>
-    </button>
-  );
-};
+const FEATURED_FULL = CLIPS.map((c) => ({
+  ...buildUrls(c.id, c.mov),
+  label: c.label.slice(0, 14).toUpperCase(),
+}));
 
 interface LightboxProps {
   src: string | null;
@@ -209,8 +100,23 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 };
 
 const Hero = () => {
-  const navigate = useNavigate();
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [topLayer, setTopLayer] = useState(0); // which stacked video is visible (0 or 1)
+  const [layerSrcs, setLayerSrcs] = useState<[string, string]>([
+    FEATURED_FULL[0].preview,
+    FEATURED_FULL[1 % FEATURED_FULL.length].preview,
+  ]);
+  const [paused, setPaused] = useState(false);
+  const [cursor, setCursor] = useState<{ x: number; y: number; visible: boolean }>({
+    x: 0,
+    y: 0,
+    visible: false,
+  });
+  const cursorTargetRef = useRef({ x: 0, y: 0 });
+  const cursorRafRef = useRef<number | null>(null);
+  const videoARef = useRef<HTMLVideoElement>(null);
+  const videoBRef = useRef<HTMLVideoElement>(null);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -220,11 +126,79 @@ const Hero = () => {
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
 
-  // Split clips into two columns, then double each for seamless loop
-  const colA = CLIP_URLS.filter((_, i) => i % 2 === 0);
-  const colB = CLIP_URLS.filter((_, i) => i % 2 === 1);
-  const colADoubled = [...colA, ...colA];
-  const colBDoubled = [...colB, ...colB];
+  // Swap to a given index with crossfade
+  const swapTo = useCallback(
+    (idx: number) => {
+      const next = ((idx % FEATURED_FULL.length) + FEATURED_FULL.length) % FEATURED_FULL.length;
+      setActiveIdx((prev) => {
+        if (prev === next) return prev;
+        // Place the incoming video on the hidden layer, then flip
+        setLayerSrcs((srcs) => {
+          const incomingLayer = topLayer === 0 ? 1 : 0;
+          const newSrcs: [string, string] = [...srcs] as [string, string];
+          newSrcs[incomingLayer] = FEATURED_FULL[next].preview;
+          return newSrcs;
+        });
+        setTopLayer((l) => (l === 0 ? 1 : 0));
+        return next;
+      });
+    },
+    [topLayer]
+  );
+
+  // Auto-advance every 7s unless paused
+  useEffect(() => {
+    if (paused) return;
+    const t = setInterval(() => {
+      swapTo(activeIdx + 1);
+    }, 7000);
+    return () => clearInterval(t);
+  }, [paused, activeIdx, swapTo]);
+
+  // Smoothed cursor follow
+  useEffect(() => {
+    const tick = () => {
+      setCursor((c) => {
+        const tx = cursorTargetRef.current.x;
+        const ty = cursorTargetRef.current.y;
+        const nx = c.x + (tx - c.x) * 0.18;
+        const ny = c.y + (ty - c.y) * 0.18;
+        return { ...c, x: nx, y: ny };
+      });
+      cursorRafRef.current = requestAnimationFrame(tick);
+    };
+    cursorRafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (cursorRafRef.current) cancelAnimationFrame(cursorRafRef.current);
+    };
+  }, []);
+
+  const featuredWrapRef = useRef<HTMLDivElement>(null);
+
+  const handleFeaturedMove = (e: React.MouseEvent) => {
+    const rect = featuredWrapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    cursorTargetRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  };
+
+  const handleFeaturedEnter = (e: React.MouseEvent) => {
+    const rect = featuredWrapRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    cursorTargetRef.current = { x, y };
+    setCursor({ x, y, visible: true });
+    setPaused(true);
+  };
+
+  const handleFeaturedLeave = () => {
+    setCursor((c) => ({ ...c, visible: false }));
+    setPaused(false);
+  };
+
+  const handleFeaturedClick = () => {
+    openLightbox(FEATURED_FULL[activeIdx].full);
+  };
 
   return (
     <section className="relative min-h-screen lg:h-screen overflow-hidden bg-background pt-24 pb-12 lg:pt-0 lg:pb-0">
@@ -248,7 +222,7 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-stretch lg:h-full">
+        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
             <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
@@ -299,69 +273,185 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: video wall column. Wall is right-aligned, capped width, with breathing room. */}
-          <div className="flex flex-col items-end justify-center min-w-0 h-[640px] lg:h-full lg:pt-28 lg:pb-8">
-            <div
-              className="flex flex-col w-full max-w-[420px]"
-              style={{ height: "80vh", maxHeight: "calc(100vh - 160px)", marginRight: "48px" }}
-            >
-              {/* Top label */}
-              <div className="text-center mb-3">
-                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
+          {/* RIGHT: featured video + index list */}
+          <div className="flex min-w-0 justify-end items-center lg:h-full lg:pt-28 lg:pb-8">
+            {/* Desktop layout: index list + featured video, with featured bleeding off the right edge */}
+            <div className="hidden lg:flex w-full items-center gap-6 relative">
+              {/* Index list */}
+              <div
+                className="flex flex-col flex-shrink-0"
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+              >
+                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4">
                   Live cuts shipping for clients
+                </span>
+                <ul className="flex flex-col">
+                  {FEATURED_FULL.map((c, i) => {
+                    const active = i === activeIdx;
+                    return (
+                      <li key={i}>
+                        <button
+                          type="button"
+                          onMouseEnter={() => swapTo(i)}
+                          onClick={() => swapTo(i)}
+                          className="group flex items-center gap-3 py-[5px] mono uppercase whitespace-nowrap transition-colors duration-200"
+                          style={{
+                            fontSize: "11px",
+                            letterSpacing: "0.15em",
+                            color: active ? "#1A1A1A" : "#75726B",
+                          }}
+                        >
+                          <span
+                            aria-hidden
+                            className="block transition-all duration-200"
+                            style={{
+                              width: active ? "16px" : "0px",
+                              height: "1px",
+                              background: "#1A1A1A",
+                              opacity: active ? 1 : 0,
+                            }}
+                          />
+                          <span>
+                            {String(i + 1).padStart(2, "0")} {c.label}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-5 max-w-[240px] leading-[1.6]">
+                  Video editing only. Brand ownership belongs to respective clients.
                 </span>
               </div>
 
-              {/* Tilted wall */}
+              {/* Featured video — bleeds 7% off the right viewport edge */}
               <div
-                className="video-wall-perspective relative flex-1 min-h-0"
-                style={{ perspective: "1200px" }}
+                ref={featuredWrapRef}
+                onMouseEnter={handleFeaturedEnter}
+                onMouseMove={handleFeaturedMove}
+                onMouseLeave={handleFeaturedLeave}
+                onClick={handleFeaturedClick}
+                className="relative rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary flex-shrink-0"
+                style={{
+                  height: "min(80vh, 720px)",
+                  aspectRatio: "9 / 16",
+                  transform: "translateX(7%)",
+                  cursor: "none",
+                  boxShadow: "0 24px 60px rgba(26,26,26,0.18)",
+                }}
               >
+                {/* Two stacked video layers for crossfade */}
+                <video
+                  ref={videoARef}
+                  key={`a-${layerSrcs[0]}`}
+                  src={layerSrcs[0]}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
+                  style={{ opacity: topLayer === 0 ? 1 : 0 }}
+                />
+                <video
+                  ref={videoBRef}
+                  key={`b-${layerSrcs[1]}`}
+                  src={layerSrcs[1]}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
+                  style={{ opacity: topLayer === 1 ? 1 : 0 }}
+                />
+
+                {/* Custom cursor chip */}
                 <div
-                  className="video-wall-tilt absolute inset-0 overflow-hidden"
+                  aria-hidden
+                  className="absolute pointer-events-none flex items-center justify-center rounded-full transition-opacity duration-200"
                   style={{
-                    transform: "rotateX(8deg) rotateY(-12deg) rotateZ(2deg)",
-                    transformStyle: "preserve-3d",
-                    transformOrigin: "center center",
-                    WebkitMaskImage:
-                      "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
-                    maskImage:
-                      "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
+                    width: 56,
+                    height: 56,
+                    background: "#1A1A1A",
+                    color: "#F7F6F3",
+                    transform: `translate(${cursor.x - 28}px, ${cursor.y - 28}px)`,
+                    opacity: cursor.visible ? 1 : 0,
+                    left: 0,
+                    top: 0,
                   }}
                 >
-                  <div className="grid grid-cols-2 gap-3 h-full">
-                    <div className="video-col video-col-up overflow-hidden">
-                      <div className="video-track-up flex flex-col gap-3">
-                        {colADoubled.map((urls, i) => (
-                          <RecentWorkCard
-                            key={`a-${i}`}
-                            urls={urls}
-                            onOpen={openLightbox}
-                            className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block shadow-[0_12px_32px_rgba(26,26,26,0.12)]"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="video-col video-col-down overflow-hidden">
-                      <div className="video-track-down flex flex-col gap-3">
-                        {colBDoubled.map((urls, i) => (
-                          <RecentWorkCard
-                            key={`b-${i}`}
-                            urls={urls}
-                            onOpen={openLightbox}
-                            className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block shadow-[0_12px_32px_rgba(26,26,26,0.12)]"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <span
+                    className="mono uppercase"
+                    style={{ fontSize: "10px", letterSpacing: "0.15em" }}
+                  >
+                    Play
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {/* Disclaimer */}
-              <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4 mt-3">
+            {/* Mobile / tablet layout */}
+            <div className="lg:hidden w-full flex flex-col">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">
+                Live cuts shipping for clients
+              </span>
+              <div className="-mx-6 overflow-x-auto no-scrollbar mb-3">
+                <ul className="flex gap-5 px-6">
+                  {FEATURED_FULL.map((c, i) => {
+                    const active = i === activeIdx;
+                    return (
+                      <li key={i}>
+                        <button
+                          type="button"
+                          onClick={() => swapTo(i)}
+                          className="mono uppercase whitespace-nowrap py-1"
+                          style={{
+                            fontSize: "11px",
+                            letterSpacing: "0.15em",
+                            color: active ? "#1A1A1A" : "#75726B",
+                            borderBottom: active ? "1px solid #1A1A1A" : "1px solid transparent",
+                          }}
+                        >
+                          {String(i + 1).padStart(2, "0")} {c.label}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div
+                onClick={handleFeaturedClick}
+                className="relative w-full rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary"
+                style={{ height: "60vh", maxHeight: "640px" }}
+              >
+                <video
+                  key={`m-${layerSrcs[0]}`}
+                  src={layerSrcs[0]}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                  style={{ opacity: topLayer === 0 ? 1 : 0 }}
+                />
+                <video
+                  key={`m2-${layerSrcs[1]}`}
+                  src={layerSrcs[1]}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                  style={{ opacity: topLayer === 1 ? 1 : 0 }}
+                />
+              </div>
+              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-3 leading-[1.6]">
                 Video editing only. Brand ownership belongs to respective clients.
-              </p>
+              </span>
             </div>
           </div>
         </div>
@@ -370,58 +460,8 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
-        @media (hover: hover) and (pointer: fine) {
-          .recent-work-card {
-            transform: translateZ(0) scale(1);
-            opacity: 1;
-            transition:
-              transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
-          }
-          /* Sibling dim when any card in the wall is hovered */
-          .video-wall-tilt:hover .recent-work-card {
-            opacity: 0.55;
-            transform: scale(0.99);
-          }
-          /* Hovered card: lift in 3D plane */
-          .video-wall-tilt .recent-work-card:hover {
-            opacity: 1;
-            transform: translateZ(24px) scale(1.04);
-            box-shadow: 0 24px 48px rgba(26,26,26,0.18);
-            z-index: 2;
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .recent-work-card:hover { transform: none !important; }
-        }
-
-        @keyframes video-scroll-up {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(-50%); }
-        }
-        @keyframes video-scroll-down {
-          0% { transform: translateY(-50%); }
-          100% { transform: translateY(0); }
-        }
-        .video-track-up {
-          animation: video-scroll-up 60s linear infinite;
-          will-change: transform;
-        }
-        .video-track-down {
-          animation: video-scroll-down 60s linear infinite;
-          animation-delay: -30s;
-          will-change: transform;
-        }
-        /* Ease wall scroll to a halt when hovering anywhere on the tilted wall */
-        .video-wall-tilt:hover .video-track-up,
-        .video-wall-tilt:hover .video-track-down {
-          animation-play-state: paused;
-          transition: animation-play-state 400ms cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .video-track-up, .video-track-down { animation: none; }
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </section>
   );
