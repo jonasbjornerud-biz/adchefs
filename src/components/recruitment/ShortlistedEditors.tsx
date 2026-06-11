@@ -160,15 +160,15 @@ export function ShortlistedEditors() {
     for (const app of selectedApps) {
       const previousBrand = postingById.get(app.job_posting_id ?? '')?.brand ?? '';
       const personalSubject = subject
-        .replaceAll('{{first_name}}', app.first_name)
-        .replaceAll('{{previous_brand}}', previousBrand)
-        .replaceAll('{{new_brand}}', targetPosting.brand);
+        .split('{{first_name}}').join(app.first_name)
+        .split('{{previous_brand}}').join(previousBrand)
+        .split('{{new_brand}}').join(targetPosting.brand);
       const personalBody = body
-        .replaceAll('{{first_name}}', app.first_name)
-        .replaceAll('{{previous_brand}}', previousBrand || 'a previous')
-        .replaceAll('{{new_brand}}', targetPosting.brand)
-        .replaceAll('{{notion_task_url}}', targetPosting.notion_task_url || '')
-        .replaceAll('{{submission_form_url}}', `${window.location.origin}/submit-task-${targetPosting.submit_slug}`);
+        .split('{{first_name}}').join(app.first_name)
+        .split('{{previous_brand}}').join(previousBrand || 'a previous')
+        .split('{{new_brand}}').join(targetPosting.brand)
+        .split('{{notion_task_url}}').join(targetPosting.notion_task_url || '')
+        .split('{{submission_form_url}}', `${window.location.origin}/submit-task-${targetPosting.submit_slug}`);
       try {
         const { error } = await supabase.functions.invoke('send-transactional-email', {
           body: {
