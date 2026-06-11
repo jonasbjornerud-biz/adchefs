@@ -59,6 +59,58 @@ function EditorAvatar({ email, name }: { email: string; name: string }) {
   );
 }
 
+/* ---------------- Thumbnail extraction ---------------- */
+function driveFileId(url: string): string | null {
+  const m1 = url.match(/\/file\/d\/([A-Za-z0-9_-]+)/);
+  if (m1) return m1[1];
+  const m2 = url.match(/[?&]id=([A-Za-z0-9_-]+)/);
+  if (m2) return m2[1];
+  return null;
+}
+function youtubeId(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+function thumbnailFor(url: string): string | null {
+  const yt = youtubeId(url);
+  if (yt) return `https://img.youtube.com/vi/${yt}/hqdefault.jpg`;
+  const driveId = driveFileId(url);
+  if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
+  return null;
+}
+
+function SubmissionThumb({ url }: { url: string }) {
+  const thumb = thumbnailFor(url);
+  const [failed, setFailed] = useState(false);
+  if (!thumb || failed) {
+    // Fallback: existing link/embed card
+    return (
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <EmbeddedSubmission url={url} />
+      </div>
+    );
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={e => e.stopPropagation()}
+      className="absolute inset-0 block group"
+      title="Open submission"
+    >
+      <img
+        src={thumb}
+        alt=""
+        loading="lazy"
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        onError={() => setFailed(true)}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+    </a>
+  );
+}
+
 /* ---------------- Email template ---------------- */
 const DEFAULT_SUBJECT = (_brand: string) => `Re: Video Editing Position. Follow-up`;
 const DEFAULT_BODY = (vars: {
@@ -266,13 +318,13 @@ export function ShortlistedEditors() {
                 }}
               >
                 {/* Square trial preview */}
-                <div className="relative w-full flex items-center justify-center" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#000' : '#EEEDE8' }}>
+                <div className="relative w-full" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#0c0c0c' : '#EEEDE8' }}>
                   {sub ? (
-                    <div className="w-full">
-                      <EmbeddedSubmission url={sub.submission_url} />
-                    </div>
+                    <SubmissionThumb url={sub.submission_url} />
                   ) : (
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
+                    </div>
                   )}
                   {/* Selection checkbox overlay */}
                   <label
@@ -313,8 +365,6 @@ export function ShortlistedEditors() {
                     >
                       {posting?.brand ?? '—'}
                     </span>
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">·</span>
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">{app.software}</span>
                   </div>
                 </div>
               </article>
