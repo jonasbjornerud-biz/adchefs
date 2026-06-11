@@ -8,35 +8,35 @@ import {
 const faqs = [
   {
     q: "How does the pay-per-video model work?",
-    a: "Flat rate per delivered video, starting at $100. You request cuts when you need them, the editor delivers, and you pay for what is approved. Most brands get 15 - 40 videos per month.",
+    a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for.",
   },
   {
     q: "What's included in the price?",
-    a: "Full edit, sound design, captions, and revisions until approved, including different formats and resolutions. You also get a private performance dashboard with performance oversight of all ads and the editors' deliverables over time.",
+    a: "The editor, their management, all software. Higgsfield, ElevenLabs, and professional editing subscriptions are covered by me. The performance dashboard is free. The only thing you pay for is delivered videos.",
   },
   {
     q: "How fast is turnaround?",
-    a: "As fast as 12 hours from brief to first draft. Revisions are typically handled within 6 hours from feedback is given, depending on the time of day.",
+    a: "24 to 48 hours standard per video. Complex or longer form work gets scoped on the call.",
   },
   {
     q: "Can you match our existing brand style?",
-    a: "Yes. I personally onboard the editor on your brand before they start. We align on your previous winners, internal SOP's and brand identity, and I build a full playbook for the editors based on that. The first edits are calibration, before the editor fully adapts to your brand and products.",
+    a: "Yes. Your editor goes through your brand folder, your past winners, and your ad account before the first cut. Matching your style is part of onboarding, not an extra.",
   },
   {
     q: "Who owns the footage and final videos?",
-    a: "You do. Full IP transfer on delivery. You keep the raw files, project files and exports.",
+    a: "You do. Everything delivered belongs to your brand. AdChefs is video editing only.",
   },
   {
     q: "What if I don't click with the editor?",
-    a: "You get a new one, no questions asked. I only win if the match works, so I'd rather swap early than force a bad fit.",
+    a: "Tell me and I replace them. Because I run the recruiting funnel continuously, a replacement is matched fast, and they onboard from your existing brand documentation rather than from zero.",
   },
   {
     q: "What tools do your editors use?",
-    a: "Primarily Adobe Premiere Pro and After Effects, trained with our internal SOP's tailored to your brand. Delivered through Frame.io, Drive, or wherever you live. We adapt to your workflow, not the other way around.",
+    a: "Premiere Pro, CapCut, or DaVinci Resolve depending on your format, plus Higgsfield and ElevenLabs where they lift performance. All licenses are on me.",
   },
   {
     q: "Do you sign NDAs?",
-    a: "Yes. Happy to sign non-competes for direct category competitors too.",
+    a: "Yes, standard practice. Your data, footage, and numbers stay inside your account.",
   },
 ];
 
