@@ -372,6 +372,7 @@ const Hero = () => {
         }
         .video-track-down {
           animation: video-scroll-down 60s linear infinite;
+          animation-delay: -30s;
           will-change: transform;
         }
         .video-col-up:hover .video-track-up,
