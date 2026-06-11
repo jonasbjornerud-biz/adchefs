@@ -297,7 +297,10 @@ Let me know if you have any questions.
   is_active: true,
 };
 
-export function RecruitmentPanel() {
+export function RecruitmentPanel({ section }: { section?: 'pipeline' | 'shortlist' | 'jobs' } = {}) {
+  if (section === 'pipeline') return <Pipeline />;
+  if (section === 'shortlist') return <ShortlistedEditors />;
+  if (section === 'jobs') return <Postings />;
   return (
     <Tabs defaultValue="pipeline" className="w-full">
       <TabsList className="rounded-[4px] bg-[#EEEDE8] border" style={{ borderColor: '#E2E0D9' }}>
