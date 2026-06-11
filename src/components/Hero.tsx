@@ -3,6 +3,7 @@ import { ArrowRight, X as XIcon, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
+import jonasPhoto from "@/assets/jonas.jpg";
 
 const CLOUD = "dqnifzwda";
 const CLIPS: { id: string; mov?: boolean }[] = [
@@ -38,9 +39,10 @@ const prefersReducedMotion = () =>
 interface CardProps {
   urls: ClipUrls;
   onOpen: (full: string) => void;
+  className?: string;
 }
 
-const RecentWorkCard = ({ urls, onOpen }: CardProps) => {
+const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
   const wrapRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [errored, setErrored] = useState(false);
@@ -76,7 +78,10 @@ const RecentWorkCard = ({ urls, onOpen }: CardProps) => {
       onClick={() => onOpen(urls.full)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
+      className={
+        className ??
+        "recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
+      }
       aria-label="Play video"
     >
       {!errored && (
@@ -206,7 +211,11 @@ const Hero = () => {
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
 
-  const doubled = [...CLIP_URLS, ...CLIP_URLS];
+  // Split clips into two columns, then double each for seamless loop
+  const colA = CLIP_URLS.filter((_, i) => i % 2 === 0);
+  const colB = CLIP_URLS.filter((_, i) => i % 2 === 1);
+  const colADoubled = [...colA, ...colA];
+  const colBDoubled = [...colB, ...colB];
 
   return (
     <section className="relative pt-24 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
@@ -229,60 +238,105 @@ const Hero = () => {
         }}
       />
 
-      <div className="mx-auto max-w-[1200px] px-6 relative z-10">
-        <div className="max-w-[1200px] md:-ml-4">
-          <span className="eyebrow">Built for e-com brands · Pay per video</span>
+      <div className="mx-auto max-w-[1280px] px-6 relative z-10">
+        <div className="grid lg:grid-cols-[55fr_45fr] gap-10 lg:gap-12 items-center">
+          {/* LEFT: hero content */}
+          <div>
+            <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
-          <h1 className="mt-4 font-display text-[34px] sm:text-[56px] md:text-[68px] leading-[1.02] sm:leading-[0.95] tracking-[-0.03em] text-foreground sm:whitespace-nowrap">
-            Your <em>dedicated</em> video editor<br className="hidden sm:inline" />
-            {" "}without the additional cost
-          </h1>
+            <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
+              Your <em>dedicated</em> video editor without the additional cost
+            </h1>
 
-          <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-            I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
-          </p>
+            <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
+              I match e-commerce brands with one vetted editor who learns your product, your voice, and your winners. You pay per video. No retainers, no agency markup, no rotating freelancers.
+            </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("booking")}>
-              Book a Call
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
-              See how it works
-            </Button>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("booking")}>
+                Book a Call
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
+                See how it works
+              </Button>
+            </div>
+
+            <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
+
+            <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+              <span>From $100 / video</span>
+              <span className="h-3 w-px bg-border" />
+              <span>Cancel anytime</span>
+            </div>
+
+            {/* Founder row */}
+            <div className="mt-6 flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full overflow-hidden border border-foreground/10 flex-shrink-0">
+                <img
+                  src={jonasPhoto}
+                  alt="Jonas Bjørnerud"
+                  className="w-full h-full object-cover grayscale"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-sans font-medium text-[14px] text-foreground leading-tight">
+                  Jonas Bjørnerud
+                </span>
+                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-0.5">
+                  Founder · AdChefs
+                </span>
+              </div>
+            </div>
           </div>
 
-          <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
-
-          <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-            <span>From $100 / video</span>
-            <span className="h-3 w-px bg-border" />
-            <span>Cancel anytime</span>
+          {/* RIGHT: video wall */}
+          <div className="relative">
+            <div className="mb-4 flex justify-end">
+              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+                Live cuts shipping for clients
+              </span>
+            </div>
+            <div
+              className="video-wall relative w-full h-[520px] lg:h-[640px] overflow-hidden"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
+                maskImage:
+                  "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
+              }}
+            >
+              <div className="grid grid-cols-2 gap-4 h-full">
+                <div className="video-col video-col-up overflow-hidden">
+                  <div className="video-track-up flex flex-col gap-4">
+                    {colADoubled.map((urls, i) => (
+                      <RecentWorkCard
+                        key={`a-${i}`}
+                        urls={urls}
+                        onOpen={openLightbox}
+                        className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="video-col video-col-down overflow-hidden">
+                  <div className="video-track-down flex flex-col gap-4">
+                    {colBDoubled.map((urls, i) => (
+                      <RecentWorkCard
+                        key={`b-${i}`}
+                        urls={urls}
+                        onOpen={openLightbox}
+                        className="recent-work-card group relative w-full aspect-[9/16] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer block"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent work marquee */}
-      <div className="relative mt-20 sm:mt-24">
-        <div className="mx-auto max-w-[1200px] px-6 mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <span className="eyebrow">Recent work</span>
-          <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-            Live cuts shipping for clients
-          </span>
-        </div>
-
-        <div className="relative w-full overflow-hidden marquee-wrapper">
-          <div className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
-
-          <div className="marquee-track flex gap-4">
-            {doubled.map((urls, i) => (
-              <RecentWorkCard key={i} urls={urls} onOpen={openLightbox} />
-            ))}
-          </div>
-        </div>
-
-        <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-6 px-4">
+        <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-10 px-4">
           Video editing only. Brand ownership belongs to respective clients.
         </p>
       </div>
@@ -301,6 +355,30 @@ const Hero = () => {
         }
         @media (prefers-reduced-motion: reduce) {
           .recent-work-card:hover { transform: none !important; }
+        }
+
+        @keyframes video-scroll-up {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-50%); }
+        }
+        @keyframes video-scroll-down {
+          0% { transform: translateY(-50%); }
+          100% { transform: translateY(0); }
+        }
+        .video-track-up {
+          animation: video-scroll-up 60s linear infinite;
+          will-change: transform;
+        }
+        .video-track-down {
+          animation: video-scroll-down 60s linear infinite;
+          will-change: transform;
+        }
+        .video-col-up:hover .video-track-up,
+        .video-col-down:hover .video-track-down {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .video-track-up, .video-track-down { animation: none; }
         }
       `}</style>
     </section>
