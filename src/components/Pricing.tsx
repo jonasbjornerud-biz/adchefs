@@ -71,10 +71,38 @@ const Pricing = () => {
           50% { transform: translateY(-2px); }
           100% { transform: translateY(0); }
         }
-        @keyframes pricing-sway {
-          0%   { transform: rotate(0.5deg) translateY(0); }
-          50%  { transform: rotate(-0.3deg) translateY(2px); }
-          100% { transform: rotate(0.5deg) translateY(0); }
+        @keyframes receiptSway {
+          0%   { transform: rotate(0.6deg) translateY(0px); }
+          25%  { transform: rotate(-0.2deg) translateY(2px); }
+          50%  { transform: rotate(0.4deg) translateY(-1px); }
+          75%  { transform: rotate(-0.3deg) translateY(1px); }
+          100% { transform: rotate(0.6deg) translateY(0px); }
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .receipt-sway {
+            animation: receiptSway 7s ease-in-out infinite;
+            transform-origin: top center;
+            will-change: transform;
+          }
+        }
+        .receipt-paper { position: relative; }
+        .receipt-paper::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0;
+          width: 52px; height: 52px;
+          background: linear-gradient(135deg, #FDFCFA 45%, #EAE8E2 70%, #DBD9D2 100%);
+          border-radius: 0 0 0 100%;
+          box-shadow: 6px -6px 12px rgba(26,26,26,0.10);
+          z-index: 3;
+        }
+        .receipt-paper::before {
+          content: '';
+          position: absolute;
+          bottom: 2px; left: 2px;
+          width: 56px; height: 56px;
+          background: radial-gradient(circle at 0% 100%, rgba(26,26,26,0.18), transparent 65%);
+          z-index: -1;
         }
       `}</style>
       <div className="mx-auto max-w-[1200px] px-6">
@@ -126,64 +154,30 @@ const Pricing = () => {
             <div className="w-full" style={{ maxWidth: "360px" }}>
               {/* Thermal printer bar */}
               <div
-                className="relative mx-auto"
+                className="relative mx-auto rounded-[6px]"
                 style={{
-                  width: "calc(100% + 64px)",
-                  marginLeft: "-32px",
-                  marginRight: "-32px",
-                  height: "22px",
-                  background: "#1A1A1A",
-                  borderRadius: "4px",
-                  zIndex: 2,
+                  width: "calc(100% + 48px)",
+                  marginLeft: "-24px",
+                  marginRight: "-24px",
+                  height: "24px",
+                  background:
+                    "linear-gradient(180deg, #2A2A2A 0%, #1A1A1A 55%, #111111 100%)",
+                  zIndex: 3,
                 }}
               >
                 {/* Recessed slot */}
                 <div
+                  className="rounded-full"
                   style={{
                     position: "absolute",
                     top: "50%",
-                    left: "14px",
-                    right: "14px",
-                    height: "4px",
+                    left: "20px",
+                    right: "20px",
+                    height: "5px",
                     transform: "translateY(-50%)",
-                    background: "#0D0D0D",
-                    borderRadius: "1px",
-                  }}
-                />
-                {/* Highlight line above slot */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "calc(50% - 3px)",
-                    left: "14px",
-                    right: "14px",
-                    height: "1px",
-                    background: "rgba(247,246,243,0.12)",
-                  }}
-                />
-                {/* Screw dots */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "6px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "4px",
-                    height: "4px",
-                    borderRadius: "9999px",
-                    background: "rgba(247,246,243,0.2)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    right: "6px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "4px",
-                    height: "4px",
-                    borderRadius: "9999px",
-                    background: "rgba(247,246,243,0.2)",
+                    background: "#0A0A0A",
+                    boxShadow:
+                      "inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(247,246,243,0.08)",
                   }}
                 />
               </div>
@@ -195,7 +189,7 @@ const Pricing = () => {
                   paddingBottom: "14px",
                   position: "relative",
                   zIndex: 1,
-                  marginTop: "-6px",
+                  marginTop: "-12px",
                 }}
               >
                 {/* Translate wrapper */}
@@ -209,27 +203,16 @@ const Pricing = () => {
                     willChange: "transform",
                   }}
                 >
-                  {/* Rotation wrapper — keeps 0.5deg rotation isolated from translate */}
+                  {/* Receipt paper — sway lives here, no entrance transform on this element */}
                   <div
+                    className="receipt-paper receipt-sway relative w-full p-7"
                     style={{
-                      transform: "rotate(0.5deg)",
-                      animation:
-                        printed && !reduceMotion
-                          ? "pricing-sway 6s ease-in-out 2.1s infinite"
-                          : undefined,
-                      transformOrigin: "center top",
+                      background: "#FDFCFA",
+                      borderRadius: 0,
+                      boxShadow:
+                        "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
                     }}
                   >
-                    <div
-                      className="relative w-full p-7"
-                      style={{
-                        position: "relative",
-                        background: "#FDFCFA",
-                        borderRadius: 0,
-                        boxShadow:
-                          "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
-                      }}
-                    >
                       {/* Wordmark */}
                       <div style={rowStyle(0)}>
                         <div
@@ -308,28 +291,12 @@ const Pricing = () => {
                         WHETHER ANYTHING SHIPS OR NOT
                       </div>
 
-                      {/* Paper curl — bottom-left corner */}
+                      {/* Torn bottom edge — shortened from left to clear the curl */}
                       <div
                         aria-hidden="true"
                         style={{
                           position: "absolute",
-                          left: 0,
-                          bottom: 0,
-                          width: "28px",
-                          height: "28px",
-                          background:
-                            "linear-gradient(135deg, #E8E6E0 0%, #F3F1EC 50%, transparent 50%)",
-                          boxShadow: "-2px 2px 4px rgba(26,26,26,0.08)",
-                          zIndex: 2,
-                        }}
-                      />
-
-                      {/* Torn bottom edge */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          left: 0,
+                          left: "56px",
                           right: 0,
                           bottom: "-12px",
                           height: "12px",
@@ -337,7 +304,6 @@ const Pricing = () => {
                             "linear-gradient(-45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x, linear-gradient(45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x",
                         }}
                       />
-                    </div>
                   </div>
                 </div>
               </div>
