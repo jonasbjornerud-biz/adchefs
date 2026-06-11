@@ -139,7 +139,7 @@ const Comparison = () => {
 
         <div className="mt-12 flex justify-center">
           <a
-            href="#book"
+            href="#booking"
             className="inline-flex items-center justify-center rounded-[4px] px-6 py-3 text-[14px] font-medium transition-opacity hover:opacity-90"
             style={{ background: "#1A1A1A", color: "#F7F6F3" }}
           >
