@@ -44,6 +44,16 @@
     --paper: 45 21% 96%;
     --surface: 45 11% 92%;
     --accent-deep: 199 48% 44%;     /* #3B86A8 — legible accent on light bg */
+
+    /* Sidebar — premium ink with blue accent */
+    --sidebar-background: 0 0% 7%;            /* #121212 */
+    --sidebar-foreground: 40 14% 86%;         /* warm paper #E2DFD7 */
+    --sidebar-primary: 200 81% 79%;           /* #9ED8F5 */
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 12%;               /* hover bg */
+    --sidebar-accent-foreground: 45 21% 96%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 200 81% 65%;
   }
 
   .dark {
