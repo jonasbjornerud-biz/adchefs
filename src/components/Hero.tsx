@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X as XIcon } from "lucide-react";
+import { ArrowRight, X as XIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
@@ -33,6 +33,7 @@ const FEATURED_FULL = CLIPS.map((c) => ({
   ...buildUrls(c.id, c.mov),
   label: c.label.slice(0, 14).toUpperCase(),
 }));
+const TOTAL = FEATURED_FULL.length;
 
 interface LightboxProps {
   src: string | null;
@@ -102,21 +103,9 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 const Hero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [topLayer, setTopLayer] = useState(0); // which stacked video is visible (0 or 1)
-  const [layerSrcs, setLayerSrcs] = useState<[string, string]>([
-    FEATURED_FULL[0].preview,
-    FEATURED_FULL[1 % FEATURED_FULL.length].preview,
-  ]);
-  const [paused, setPaused] = useState(false);
-  const [cursor, setCursor] = useState<{ x: number; y: number; visible: boolean }>({
-    x: 0,
-    y: 0,
-    visible: false,
-  });
-  const cursorTargetRef = useRef({ x: 0, y: 0 });
-  const cursorRafRef = useRef<number | null>(null);
-  const videoARef = useRef<HTMLVideoElement>(null);
-  const videoBRef = useRef<HTMLVideoElement>(null);
+  const [hoverPause, setHoverPause] = useState(false);
+  const [manualPauseUntil, setManualPauseUntil] = useState(0);
+  const dragRef = useRef<{ startX: number; active: boolean }>({ startX: 0, active: false });
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -126,78 +115,36 @@ const Hero = () => {
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
   const closeLightbox = useCallback(() => setLightboxSrc(null), []);
 
-  // Swap to a given index with crossfade
-  const swapTo = useCallback(
-    (idx: number) => {
-      const next = ((idx % FEATURED_FULL.length) + FEATURED_FULL.length) % FEATURED_FULL.length;
-      setActiveIdx((prev) => {
-        if (prev === next) return prev;
-        // Place the incoming video on the hidden layer, then flip
-        setLayerSrcs((srcs) => {
-          const incomingLayer = topLayer === 0 ? 1 : 0;
-          const newSrcs: [string, string] = [...srcs] as [string, string];
-          newSrcs[incomingLayer] = FEATURED_FULL[next].preview;
-          return newSrcs;
-        });
-        setTopLayer((l) => (l === 0 ? 1 : 0));
-        return next;
-      });
-    },
-    [topLayer]
-  );
-
-  // Auto-advance every 7s unless paused
-  useEffect(() => {
-    if (paused) return;
-    const t = setInterval(() => {
-      swapTo(activeIdx + 1);
-    }, 7000);
-    return () => clearInterval(t);
-  }, [paused, activeIdx, swapTo]);
-
-  // Smoothed cursor follow
-  useEffect(() => {
-    const tick = () => {
-      setCursor((c) => {
-        const tx = cursorTargetRef.current.x;
-        const ty = cursorTargetRef.current.y;
-        const nx = c.x + (tx - c.x) * 0.18;
-        const ny = c.y + (ty - c.y) * 0.18;
-        return { ...c, x: nx, y: ny };
-      });
-      cursorRafRef.current = requestAnimationFrame(tick);
-    };
-    cursorRafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (cursorRafRef.current) cancelAnimationFrame(cursorRafRef.current);
-    };
+  const goTo = useCallback((idx: number) => {
+    setActiveIdx(((idx % TOTAL) + TOTAL) % TOTAL);
   }, []);
 
-  const featuredWrapRef = useRef<HTMLDivElement>(null);
+  const markManual = useCallback(() => {
+    setManualPauseUntil(Date.now() + 15000);
+  }, []);
 
-  const handleFeaturedMove = (e: React.MouseEvent) => {
-    const rect = featuredWrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    cursorTargetRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  // Auto-advance every 7s unless hovered or recently interacted with
+  useEffect(() => {
+    const t = setInterval(() => {
+      if (hoverPause) return;
+      if (Date.now() < manualPauseUntil) return;
+      setActiveIdx((i) => (i + 1) % TOTAL);
+    }, 7000);
+    return () => clearInterval(t);
+  }, [hoverPause, manualPauseUntil]);
+
+  // Drag / swipe
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragRef.current = { startX: e.clientX, active: true };
   };
-
-  const handleFeaturedEnter = (e: React.MouseEvent) => {
-    const rect = featuredWrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    cursorTargetRef.current = { x, y };
-    setCursor({ x, y, visible: true });
-    setPaused(true);
-  };
-
-  const handleFeaturedLeave = () => {
-    setCursor((c) => ({ ...c, visible: false }));
-    setPaused(false);
-  };
-
-  const handleFeaturedClick = () => {
-    openLightbox(FEATURED_FULL[activeIdx].full);
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!dragRef.current.active) return;
+    const dx = e.clientX - dragRef.current.startX;
+    dragRef.current.active = false;
+    if (Math.abs(dx) > 40) {
+      markManual();
+      goTo(activeIdx + (dx < 0 ? 1 : -1));
+    }
   };
 
   return (
@@ -273,185 +220,135 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: featured video + index list */}
-          <div className="flex min-w-0 justify-end items-center lg:h-full lg:pt-28 lg:pb-8">
-            {/* Desktop layout: index list + featured video, with featured bleeding off the right edge */}
-            <div className="hidden lg:flex w-full items-center gap-6 relative">
-              {/* Index list */}
-              <div
-                className="flex flex-col flex-shrink-0"
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
-              >
-                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4">
+          {/* RIGHT: horizontal video carousel */}
+          <div
+            className="hero-carousel-col flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8"
+            onMouseEnter={() => setHoverPause(true)}
+            onMouseLeave={() => setHoverPause(false)}
+          >
+            <div className="hero-carousel mx-auto flex flex-col w-full">
+              {/* Top label, flush with active slide's left edge */}
+              <div className="hero-carousel-edge">
+                <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                   Live cuts shipping for clients
                 </span>
-                <ul className="flex flex-col">
-                  {FEATURED_FULL.map((c, i) => {
-                    const active = i === activeIdx;
-                    return (
-                      <li key={i}>
-                        <button
-                          type="button"
-                          onMouseEnter={() => swapTo(i)}
-                          onClick={() => swapTo(i)}
-                          className="group flex items-center gap-3 py-[5px] mono uppercase whitespace-nowrap transition-colors duration-200"
-                          style={{
-                            fontSize: "11px",
-                            letterSpacing: "0.15em",
-                            color: active ? "#1A1A1A" : "#75726B",
-                          }}
-                        >
-                          <span
-                            aria-hidden
-                            className="block transition-all duration-200"
-                            style={{
-                              width: active ? "16px" : "0px",
-                              height: "1px",
-                              background: "#1A1A1A",
-                              opacity: active ? 1 : 0,
-                            }}
-                          />
-                          <span>
-                            {String(i + 1).padStart(2, "0")} {c.label}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-5 max-w-[240px] leading-[1.6]">
+              </div>
+
+              {/* Track */}
+              <div
+                className="hero-carousel-track relative mt-4"
+                onPointerDown={onPointerDown}
+                onPointerUp={onPointerUp}
+                onPointerCancel={() => (dragRef.current.active = false)}
+                style={{ touchAction: "pan-y" }}
+              >
+                {FEATURED_FULL.map((c, i) => {
+                  // shortest signed distance accounting for wrap
+                  let offset = i - activeIdx;
+                  if (offset > TOTAL / 2) offset -= TOTAL;
+                  if (offset < -TOTAL / 2) offset += TOTAL;
+                  const isActive = offset === 0;
+                  const isPeek = Math.abs(offset) === 1;
+                  const visible = isActive || isPeek;
+                  // X position: center + offset * (activeW/2 + gap + peekW/2)
+                  // peekW = 0.85 * activeW. so spacing = activeW*0.5 + 20 + 0.85*activeW*0.5 = 0.925W + 20
+                  const translate = `calc(-50% + ${offset} * (var(--slide-w) * 0.925 + 20px))`;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={isActive ? `Open ${c.label}` : `Show ${c.label}`}
+                      onClick={() => {
+                        markManual();
+                        if (isActive) openLightbox(c.full);
+                        else goTo(i);
+                      }}
+                      className="hero-slide absolute top-1/2 left-1/2 rounded-[4px] overflow-hidden bg-secondary p-0"
+                      style={{
+                        width: isActive
+                          ? "var(--slide-w)"
+                          : "calc(var(--slide-w) * 0.85)",
+                        height: isActive
+                          ? "var(--slide-h)"
+                          : "calc(var(--slide-h) * 0.85)",
+                        transform: `translate(${translate}, -50%)`,
+                        opacity: visible ? (isActive ? 1 : 0.5) : 0,
+                        pointerEvents: visible ? "auto" : "none",
+                        zIndex: isActive ? 2 : 1,
+                        border: "1px solid rgba(26,26,26,0.08)",
+                        boxShadow: isActive
+                          ? "0 24px 60px rgba(26,26,26,0.18)"
+                          : "0 12px 28px rgba(26,26,26,0.10)",
+                        transition:
+                          "transform 450ms cubic-bezier(0.22, 1, 0.36, 1), opacity 450ms cubic-bezier(0.22, 1, 0.36, 1), width 450ms cubic-bezier(0.22, 1, 0.36, 1), height 450ms cubic-bezier(0.22, 1, 0.36, 1)",
+                        backgroundImage: `url("${c.poster}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        cursor: isActive ? "pointer" : "pointer",
+                      }}
+                    >
+                      {isActive && (
+                        <video
+                          key={`v-${i}`}
+                          src={c.preview}
+                          poster={c.poster}
+                          muted
+                          autoPlay
+                          loop
+                          playsInline
+                          preload="auto"
+                          className="w-full h-full object-cover block"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Footer: counter + arrows, left-aligned with active slide */}
+              <div className="hero-carousel-edge mt-5 flex items-center gap-4">
+                <span
+                  className="mono uppercase select-none"
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.15em",
+                    color: "#75726B",
+                  }}
+                >
+                  {String(activeIdx + 1).padStart(2, "0")} / {String(TOTAL).padStart(2, "0")}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Previous slide"
+                    onClick={() => {
+                      markManual();
+                      goTo(activeIdx - 1);
+                    }}
+                    className="hero-arrow flex items-center justify-center"
+                  >
+                    <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next slide"
+                    onClick={() => {
+                      markManual();
+                      goTo(activeIdx + 1);
+                    }}
+                    className="hero-arrow flex items-center justify-center"
+                  >
+                    <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="hero-carousel-edge mt-3">
+                <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70">
                   Video editing only. Brand ownership belongs to respective clients.
                 </span>
               </div>
-
-              {/* Featured video — bleeds 7% off the right viewport edge */}
-              <div
-                ref={featuredWrapRef}
-                onMouseEnter={handleFeaturedEnter}
-                onMouseMove={handleFeaturedMove}
-                onMouseLeave={handleFeaturedLeave}
-                onClick={handleFeaturedClick}
-                className="relative rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary flex-shrink-0"
-                style={{
-                  height: "min(80vh, 720px)",
-                  aspectRatio: "9 / 16",
-                  transform: "translateX(7%)",
-                  cursor: "none",
-                  boxShadow: "0 24px 60px rgba(26,26,26,0.18)",
-                }}
-              >
-                {/* Two stacked video layers for crossfade */}
-                <video
-                  ref={videoARef}
-                  key={`a-${layerSrcs[0]}`}
-                  src={layerSrcs[0]}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
-                  style={{ opacity: topLayer === 0 ? 1 : 0 }}
-                />
-                <video
-                  ref={videoBRef}
-                  key={`b-${layerSrcs[1]}`}
-                  src={layerSrcs[1]}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
-                  style={{ opacity: topLayer === 1 ? 1 : 0 }}
-                />
-
-                {/* Custom cursor chip */}
-                <div
-                  aria-hidden
-                  className="absolute pointer-events-none flex items-center justify-center rounded-full transition-opacity duration-200"
-                  style={{
-                    width: 56,
-                    height: 56,
-                    background: "#1A1A1A",
-                    color: "#F7F6F3",
-                    transform: `translate(${cursor.x - 28}px, ${cursor.y - 28}px)`,
-                    opacity: cursor.visible ? 1 : 0,
-                    left: 0,
-                    top: 0,
-                  }}
-                >
-                  <span
-                    className="mono uppercase"
-                    style={{ fontSize: "10px", letterSpacing: "0.15em" }}
-                  >
-                    Play
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile / tablet layout */}
-            <div className="lg:hidden w-full flex flex-col">
-              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">
-                Live cuts shipping for clients
-              </span>
-              <div className="-mx-6 overflow-x-auto no-scrollbar mb-3">
-                <ul className="flex gap-5 px-6">
-                  {FEATURED_FULL.map((c, i) => {
-                    const active = i === activeIdx;
-                    return (
-                      <li key={i}>
-                        <button
-                          type="button"
-                          onClick={() => swapTo(i)}
-                          className="mono uppercase whitespace-nowrap py-1"
-                          style={{
-                            fontSize: "11px",
-                            letterSpacing: "0.15em",
-                            color: active ? "#1A1A1A" : "#75726B",
-                            borderBottom: active ? "1px solid #1A1A1A" : "1px solid transparent",
-                          }}
-                        >
-                          {String(i + 1).padStart(2, "0")} {c.label}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div
-                onClick={handleFeaturedClick}
-                className="relative w-full rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary"
-                style={{ height: "60vh", maxHeight: "640px" }}
-              >
-                <video
-                  key={`m-${layerSrcs[0]}`}
-                  src={layerSrcs[0]}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-                  style={{ opacity: topLayer === 0 ? 1 : 0 }}
-                />
-                <video
-                  key={`m2-${layerSrcs[1]}`}
-                  src={layerSrcs[1]}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-                  style={{ opacity: topLayer === 1 ? 1 : 0 }}
-                />
-              </div>
-              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-3 leading-[1.6]">
-                Video editing only. Brand ownership belongs to respective clients.
-              </span>
             </div>
           </div>
         </div>
@@ -460,8 +357,51 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hero-carousel {
+          --slide-h: min(65vh, 600px);
+          --slide-w: calc(var(--slide-h) * 9 / 16);
+        }
+        @media (max-width: 1023px) {
+          .hero-carousel { --slide-h: 55vh; }
+        }
+        @media (max-width: 767px) {
+          .hero-carousel {
+            --slide-h: 60vh;
+            --slide-w: 100%;
+          }
+        }
+        .hero-carousel-track {
+          height: var(--slide-h);
+          overflow: hidden;
+          user-select: none;
+        }
+        /* Left-edge aligned blocks: width = active slide, centered in the column */
+        .hero-carousel-edge {
+          width: var(--slide-w);
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hero-arrow {
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
+          border: 1px solid rgba(26,26,26,0.15);
+          background: transparent;
+          color: #1A1A1A;
+          transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+        }
+        .hero-arrow:hover {
+          background: #1A1A1A;
+          color: #F7F6F3;
+          border-color: #1A1A1A;
+        }
+        /* Mobile: single full-width slide, no peek */
+        @media (max-width: 767px) {
+          .hero-slide {
+            width: 100% !important;
+            height: var(--slide-h) !important;
+          }
+        }
       `}</style>
     </section>
   );
