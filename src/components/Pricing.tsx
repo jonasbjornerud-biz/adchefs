@@ -71,49 +71,36 @@ const Pricing = () => {
           50% { transform: translateY(-2px); }
           100% { transform: translateY(0); }
         }
-        @keyframes receiptSway3d {
-          0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0.4deg); }
-          25%  { transform: rotateX(1.2deg) rotateY(-1deg) rotateZ(-0.2deg); }
-          50%  { transform: rotateX(-0.6deg) rotateY(0.8deg) rotateZ(0.3deg); }
-          75%  { transform: rotateX(0.8deg) rotateY(-0.5deg) rotateZ(-0.3deg); }
-          100% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0.4deg); }
-        }
-        @keyframes curlFlutter {
-          0%   { transform: rotate(0deg) scale(1); }
-          30%  { transform: rotate(-3deg) scale(1.04); }
-          55%  { transform: rotate(1deg) scale(0.99); }
-          80%  { transform: rotate(-2deg) scale(1.02); }
-          100% { transform: rotate(0deg) scale(1); }
-        }
-        @keyframes wrinkleDrift {
-          0%   { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%; }
-          50%  { background-position: 30% 15%, 70% 20%, 25% 75%, 75% 80%; }
-          100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%; }
-        }
-        .wrinkle-light {
-          background:
-            radial-gradient(ellipse 50% 30% at 25% 20%, rgba(26,26,26,0.05), transparent 70%),
-            radial-gradient(ellipse 40% 25% at 75% 45%, rgba(26,26,26,0.04), transparent 70%),
-            radial-gradient(ellipse 55% 30% at 40% 75%, rgba(26,26,26,0.05), transparent 70%),
-            radial-gradient(ellipse 35% 20% at 80% 85%, rgba(255,255,255,0.5), transparent 70%);
-          background-size: 220% 220%;
-        }
-        @media (prefers-reduced-motion: no-preference) {
-          .receipt-sway {
-            animation: receiptSway3d 8s ease-in-out infinite;
-            transform-origin: top center;
-            transform-style: preserve-3d;
-            will-change: transform;
-          }
-          .curl-flutter {
-            animation: curlFlutter 8s ease-in-out infinite;
-          }
-          .wrinkle-light {
-            animation: wrinkleDrift 8s ease-in-out infinite;
-          }
-        }
         .receipt-paper { position: relative; }
       `}</style>
+      {/* SVG filter — slow, broad paper warp */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <filter id="paperWarp" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.004 0.007"
+            numOctaves={1}
+            seed={7}
+            result="warp"
+          >
+            {!reduceMotion && (
+              <animate
+                attributeName="baseFrequency"
+                dur="14s"
+                values="0.004 0.007;0.005 0.009;0.004 0.007"
+                repeatCount="indefinite"
+              />
+            )}
+          </feTurbulence>
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="warp"
+            scale={9}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
@@ -210,19 +197,18 @@ const Pricing = () => {
                       ? "pricing-settle 0.25s ease-out 1.8s"
                       : undefined,
                     willChange: "transform",
-                    perspective: "900px",
                   }}
                 >
-                  {/* Sway wrapper — moves the whole sheet (paper + curl together) */}
-                  <div className="receipt-sway relative">
-                    {/* Receipt paper — crisp content, lighting overlay fakes wrinkles */}
+                  {/* Sheet wrapper */}
+                  <div className="relative">
+                    {/* Receipt paper — SVG warp filter + chained drop-shadows */}
                     <div
                       className="receipt-paper relative w-full p-7"
                       style={{
                         background: "#FDFCFA",
                         borderRadius: 0,
-                        boxShadow:
-                          "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
+                        filter:
+                          "url(#paperWarp) drop-shadow(0 3px 5px rgba(26,26,26,0.08)) drop-shadow(0 22px 44px rgba(26,26,26,0.16))",
                       }}
                     >
                       {/* Wordmark */}
@@ -317,64 +303,20 @@ const Pricing = () => {
                         }}
                       />
 
-                      {/* Wrinkle lighting overlay — last child, sits above all content */}
+                      {/* Static grain overlay — last child */}
                       <div
-                        className="wrinkle-light"
                         aria-hidden="true"
                         style={{
                           position: "absolute",
                           inset: 0,
                           pointerEvents: "none",
                           mixBlendMode: "multiply",
-                          opacity: 0.5,
-                          borderRadius: "inherit",
+                          opacity: 0.35,
+                          backgroundImage:
+                            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0.25 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E\")",
                         }}
                       />
                     </div>
-
-                    {/* Drawn SVG curl — sibling of paper so filter doesn't touch it */}
-                    <svg
-                      viewBox="0 0 64 64"
-                      aria-hidden="true"
-                      className="curl-flutter"
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        width: "64px",
-                        height: "64px",
-                        overflow: "visible",
-                        transformOrigin: "0% 100%",
-                        zIndex: 5,
-                        pointerEvents: "none",
-                      }}
-                    >
-                      <defs>
-                        <linearGradient id="curlFace" x1="0" y1="1" x2="0.8" y2="0.2">
-                          <stop offset="0" stopColor="#D8D6CF" />
-                          <stop offset="0.45" stopColor="#F1EFEA" />
-                          <stop offset="1" stopColor="#FDFCFA" />
-                        </linearGradient>
-                      </defs>
-                      {/* cast shadow */}
-                      <path
-                        d="M0 64 L0 20 Q2 50 26 58 Q44 63 64 64 Z"
-                        fill="rgba(26,26,26,0.14)"
-                        style={{ filter: "blur(3px)", transform: "translate(3px,-2px)" }}
-                      />
-                      {/* curled flap face */}
-                      <path
-                        d="M0 64 L0 14 Q14 46 40 56 Q52 61 64 64 Q34 60 14 44 Q2 32 0 14 Z"
-                        fill="url(#curlFace)"
-                      />
-                      {/* fold crease */}
-                      <path
-                        d="M0 14 Q14 46 40 56 Q52 61 64 64"
-                        fill="none"
-                        stroke="rgba(26,26,26,0.10)"
-                        strokeWidth={0.8}
-                      />
-                    </svg>
                   </div>
                 </div>
               </div>
