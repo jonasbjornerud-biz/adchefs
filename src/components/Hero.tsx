@@ -320,7 +320,7 @@ const Hero = () => {
                   </div>
                 </div>
                 <div className="video-col video-col-down overflow-hidden">
-                  <div className="video-track-down flex flex-col gap-3" style={{ transform: "translateY(-50%)" }}>
+                  <div className="video-track-down flex flex-col gap-3">
                     {colBDoubled.map((urls, i) => (
                       <RecentWorkCard
                         key={`b-${i}`}
