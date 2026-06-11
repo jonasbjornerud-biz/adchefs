@@ -72,18 +72,22 @@ const Pricing = () => {
           100% { transform: translateY(0); }
         }
         @keyframes sheetBreathe {
-          0%, 100% { transform: rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg); }
-          50%      { transform: rotateX(15.5deg) rotateY(-9deg) rotateZ(0.3deg); }
+          0%, 100% { transform: rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg) translateY(0); }
+          20%      { transform: rotateX(15.5deg) rotateY(-8.5deg) rotateZ(1.2deg) translateY(-3px); }
+          45%      { transform: rotateX(13deg) rotateY(-12.5deg) rotateZ(-0.4deg) translateY(2px); }
+          70%      { transform: rotateX(15deg) rotateY(-9.5deg) rotateZ(1deg) translateY(-2px); }
         }
         @keyframes shadowBreathe {
-          0%, 100% { opacity: 0.32; }
-          50%      { opacity: 0.26; }
+          0%, 100% { opacity: 0.32; transform: rotateX(14deg) skewX(-6deg) scaleY(1.05); }
+          20%      { opacity: 0.28; transform: rotateX(14deg) skewX(-7.5deg) scaleY(1.07) translateX(2px); }
+          45%      { opacity: 0.34; transform: rotateX(14deg) skewX(-4.5deg) scaleY(1.03) translateX(-2px); }
+          70%      { opacity: 0.28; transform: rotateX(14deg) skewX(-7deg) scaleY(1.06) translateX(1px); }
         }
         .receipt-sheet {
-          animation: sheetBreathe 10s ease-in-out infinite;
+          animation: sheetBreathe 7s ease-in-out infinite;
         }
         .receipt-cast-shadow {
-          animation: shadowBreathe 10s ease-in-out infinite;
+          animation: shadowBreathe 7s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .receipt-sheet,
@@ -303,20 +307,6 @@ const Pricing = () => {
                         AN AGENCY BILLS $4,500 THIS MONTH<br />
                         WHETHER ANYTHING SHIPS OR NOT
                       </div>
-
-                      {/* Torn bottom edge — shortened from left to clear the curl */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          left: "56px",
-                          right: 0,
-                          bottom: "-12px",
-                          height: "12px",
-                          background:
-                            "linear-gradient(-45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x, linear-gradient(45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x",
-                        }}
-                      />
 
                       {/* Curvature shading — last child, above content */}
                       <div
