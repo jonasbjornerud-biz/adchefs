@@ -218,7 +218,7 @@ const Hero = () => {
   const colBDoubled = [...colB, ...colB];
 
   return (
-    <section className="relative pt-24 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
+    <section className="relative min-h-screen lg:h-screen overflow-hidden bg-background pt-24 pb-12 lg:pt-0 lg:pb-0">
       <HeroBackground />
       {/* Subtle noise texture overlay */}
       <div
@@ -238,10 +238,10 @@ const Hero = () => {
         }}
       />
 
-      <div className="mx-auto max-w-[1280px] px-6 relative z-10">
-        <div className="grid lg:grid-cols-[55fr_45fr] gap-10 lg:gap-12 items-center">
-          {/* LEFT: hero content */}
-          <div>
+      <div className="mx-auto max-w-[1280px] px-6 relative z-10 h-full">
+        <div className="grid lg:grid-cols-[55fr_45fr] gap-10 lg:gap-12 items-stretch lg:h-full">
+          {/* LEFT: hero content (vertically centered) */}
+          <div className="flex flex-col justify-center lg:py-16">
             <span className="eyebrow">Built for e-com brands · Pay per video</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
@@ -290,15 +290,15 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: video wall */}
-          <div className="relative">
-            <div className="mb-4 flex justify-end">
-              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-                Live cuts shipping for clients
-              </span>
-            </div>
+          {/* RIGHT: video wall (full hero height) */}
+          <div className="relative h-[640px] lg:h-full">
+            {/* Top label, centered above wall, sits in top fade zone */}
+            <span className="absolute top-4 lg:top-6 left-1/2 -translate-x-1/2 z-20 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap">
+              Live cuts shipping for clients
+            </span>
+
             <div
-              className="video-wall relative w-full h-[520px] lg:h-[640px] overflow-hidden"
+              className="video-wall absolute inset-0 overflow-hidden"
               style={{
                 WebkitMaskImage:
                   "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
@@ -306,9 +306,9 @@ const Hero = () => {
                   "linear-gradient(to bottom, transparent 0px, black 120px, black calc(100% - 120px), transparent 100%)",
               }}
             >
-              <div className="grid grid-cols-2 gap-4 h-full">
+              <div className="grid grid-cols-2 gap-3 h-full">
                 <div className="video-col video-col-up overflow-hidden">
-                  <div className="video-track-up flex flex-col gap-4">
+                  <div className="video-track-up flex flex-col gap-3">
                     {colADoubled.map((urls, i) => (
                       <RecentWorkCard
                         key={`a-${i}`}
@@ -320,7 +320,7 @@ const Hero = () => {
                   </div>
                 </div>
                 <div className="video-col video-col-down overflow-hidden">
-                  <div className="video-track-down flex flex-col gap-4">
+                  <div className="video-track-down flex flex-col gap-3">
                     {colBDoubled.map((urls, i) => (
                       <RecentWorkCard
                         key={`b-${i}`}
@@ -333,12 +333,13 @@ const Hero = () => {
                 </div>
               </div>
             </div>
+
+            {/* Disclaimer centered under wall, in bottom fade zone */}
+            <p className="absolute bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 z-20 text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 whitespace-nowrap px-4">
+              Video editing only. Brand ownership belongs to respective clients.
+            </p>
           </div>
         </div>
-
-        <p className="text-center mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-10 px-4">
-          Video editing only. Brand ownership belongs to respective clients.
-        </p>
       </div>
 
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
@@ -371,6 +372,7 @@ const Hero = () => {
         }
         .video-track-down {
           animation: video-scroll-down 60s linear infinite;
+          animation-delay: -30s;
           will-change: transform;
         }
         .video-col-up:hover .video-track-up,
