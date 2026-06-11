@@ -1,3 +1,4 @@
+import GeoGate from "@/components/GeoGate";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
