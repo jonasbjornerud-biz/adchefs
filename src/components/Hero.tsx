@@ -82,6 +82,11 @@ const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
         className ??
         "recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
       }
+      style={{
+        backgroundImage: `url("${urls.poster}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       aria-label="Play video"
     >
       {!errored && (
@@ -115,8 +120,12 @@ const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
       {/* play indicator */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-[250ms] ease-out"
-        style={{ opacity: showIndicator ? 1 : 0 }}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-all duration-300"
+        style={{
+          opacity: showIndicator ? 1 : 0,
+          transform: showIndicator ? "scale(1)" : "scale(0.8)",
+          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
       >
         <span
           className="flex items-center justify-center"
