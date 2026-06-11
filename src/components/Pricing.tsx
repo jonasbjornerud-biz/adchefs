@@ -3,9 +3,10 @@ import { ArrowRight, Check, X } from "lucide-react";
 
 const usBullets = [
   "Dedicated editor matched to your brand",
+  "All tools included: Higgsfield, ElevenLabs, editing software",
+  "24 to 48 hour standard turnaround",
   "Private performance dashboard, free",
   "Direct Slack or Notion communication",
-  "Unlimited revisions until approved",
   "No retainer, no minimum, no long contracts",
 ];
 
