@@ -508,7 +508,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <Lightbox src={lightboxSrc} onClose={closeLightbox} />
+      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={closeLightbox} />}
 
       <style>{`
         .hero-wall { width: 100%; }
