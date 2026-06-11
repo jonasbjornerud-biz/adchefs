@@ -71,12 +71,12 @@ const Pricing = () => {
           50% { transform: translateY(-2px); }
           100% { transform: translateY(0); }
         }
-        @keyframes receiptSway {
-          0%   { transform: rotate(0.6deg) translateY(0px); }
-          25%  { transform: rotate(-0.2deg) translateY(2px); }
-          50%  { transform: rotate(0.4deg) translateY(-1px); }
-          75%  { transform: rotate(-0.3deg) translateY(1px); }
-          100% { transform: rotate(0.6deg) translateY(0px); }
+        @keyframes receiptSway3d {
+          0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0.4deg); }
+          25%  { transform: rotateX(1.2deg) rotateY(-1deg) rotateZ(-0.2deg); }
+          50%  { transform: rotateX(-0.6deg) rotateY(0.8deg) rotateZ(0.3deg); }
+          75%  { transform: rotateX(0.8deg) rotateY(-0.5deg) rotateZ(-0.3deg); }
+          100% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0.4deg); }
         }
         @keyframes curlFlutter {
           0%   { transform: rotate(0deg) scale(1); }
@@ -85,44 +85,35 @@ const Pricing = () => {
           80%  { transform: rotate(-2deg) scale(1.02); }
           100% { transform: rotate(0deg) scale(1); }
         }
+        @keyframes wrinkleDrift {
+          0%   { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%; }
+          50%  { background-position: 30% 15%, 70% 20%, 25% 75%, 75% 80%; }
+          100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%; }
+        }
+        .wrinkle-light {
+          background:
+            radial-gradient(ellipse 50% 30% at 25% 20%, rgba(26,26,26,0.05), transparent 70%),
+            radial-gradient(ellipse 40% 25% at 75% 45%, rgba(26,26,26,0.04), transparent 70%),
+            radial-gradient(ellipse 55% 30% at 40% 75%, rgba(26,26,26,0.05), transparent 70%),
+            radial-gradient(ellipse 35% 20% at 80% 85%, rgba(255,255,255,0.5), transparent 70%);
+          background-size: 220% 220%;
+        }
         @media (prefers-reduced-motion: no-preference) {
           .receipt-sway {
-            animation: receiptSway 7s ease-in-out infinite;
+            animation: receiptSway3d 8s ease-in-out infinite;
             transform-origin: top center;
+            transform-style: preserve-3d;
             will-change: transform;
           }
           .curl-flutter {
-            animation: curlFlutter 5s ease-in-out infinite;
+            animation: curlFlutter 8s ease-in-out infinite;
+          }
+          .wrinkle-light {
+            animation: wrinkleDrift 8s ease-in-out infinite;
           }
         }
         .receipt-paper { position: relative; }
       `}</style>
-      {/* SVG filter for wind ripple — registered once */}
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <filter id="paperWind">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.012 0.02"
-            numOctaves={2}
-            seed={3}
-            result="noise"
-          >
-            <animate
-              attributeName="baseFrequency"
-              dur="9s"
-              values="0.012 0.02;0.014 0.026;0.012 0.02"
-              repeatCount="indefinite"
-            />
-          </feTurbulence>
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="noise"
-            scale={4}
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
@@ -219,11 +210,12 @@ const Pricing = () => {
                       ? "pricing-settle 0.25s ease-out 1.8s"
                       : undefined,
                     willChange: "transform",
+                    perspective: "900px",
                   }}
                 >
                   {/* Sway wrapper — moves the whole sheet (paper + curl together) */}
                   <div className="receipt-sway relative">
-                    {/* Receipt paper — wind filter wrinkles only the sheet */}
+                    {/* Receipt paper — crisp content, lighting overlay fakes wrinkles */}
                     <div
                       className="receipt-paper relative w-full p-7"
                       style={{
@@ -231,7 +223,6 @@ const Pricing = () => {
                         borderRadius: 0,
                         boxShadow:
                           "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
-                        filter: reduceMotion ? undefined : "url(#paperWind)",
                       }}
                     >
                       {/* Wordmark */}
@@ -323,6 +314,20 @@ const Pricing = () => {
                           height: "12px",
                           background:
                             "linear-gradient(-45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x, linear-gradient(45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x",
+                        }}
+                      />
+
+                      {/* Wrinkle lighting overlay — last child, sits above all content */}
+                      <div
+                        className="wrinkle-light"
+                        aria-hidden="true"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          mixBlendMode: "multiply",
+                          opacity: 0.5,
+                          borderRadius: "inherit",
                         }}
                       />
                     </div>
