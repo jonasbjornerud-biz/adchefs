@@ -78,9 +78,10 @@ interface WallCardProps {
   clip: typeof FEATURED_FULL[number];
   onOpen: (full: string) => void;
   horizontal?: boolean;
+  size?: CardSize;
 }
 
-const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
+const WallCard = ({ clip, onOpen, horizontal, size = "standard" }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const inViewRef = useRef(false);
@@ -126,7 +127,7 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
       onClick={() => onOpen(clip.full)}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
+      className={`hero-wall-card hero-wall-card--${size} ${horizontal ? "hero-wall-card-h" : ""}`}
       aria-label={`Play ${clip.label}`}
       style={{
         backgroundImage: `url("${clip.poster}")`,
