@@ -11,6 +11,24 @@ type GeoVerdict = "allowed" | "blocked";
 
 const STORAGE_KEY = "geo-gate-verdict";
 
+// Production hostnames where the gate is active. Anywhere else (Lovable
+// preview/builder, localhost, etc.) is exempt.
+const PRODUCTION_HOSTS = new Set(["adchefs.com", "www.adchefs.com"]);
+
+// Owner IPs are always allowed through, even from Norway. Replace the
+// placeholder with the actual IP(s).
+const OWNER_IPS = ["MY_IP_HERE"];
+
+const isExemptEnvironment = (): boolean => {
+  if (typeof window === "undefined") return true;
+  try {
+    if (window.self !== window.top) return true; // inside an iframe (builder/preview)
+  } catch {
+    return true; // cross-origin frame access throws -> treat as iframe
+  }
+  return !PRODUCTION_HOSTS.has(window.location.hostname);
+};
+
 const readCachedVerdict = (): GeoVerdict | null => {
   try {
     const v = sessionStorage.getItem(STORAGE_KEY);
@@ -31,6 +49,8 @@ const writeCachedVerdict = (v: GeoVerdict) => {
 // Kick off the lookup at module evaluation (app bootstrap), before the
 // component tree mounts. The gate reuses this in-flight promise.
 const geoPromise: Promise<GeoVerdict> = (() => {
+  if (isExemptEnvironment()) return Promise.resolve("allowed");
+
   const cached = readCachedVerdict();
   if (cached) return Promise.resolve(cached);
 
@@ -42,7 +62,11 @@ const geoPromise: Promise<GeoVerdict> = (() => {
       if (!res.ok) throw new Error("Geo lookup failed");
       return res.json();
     })
-    .then((data): GeoVerdict => (data?.country_code === "NO" ? "blocked" : "allowed"))
+    .then((data): GeoVerdict => {
+      const ip = typeof data?.ip === "string" ? data.ip : "";
+      if (ip && OWNER_IPS.includes(ip)) return "allowed";
+      return data?.country_code === "NO" ? "blocked" : "allowed";
+    })
     .catch((): GeoVerdict => "allowed") // fail open on error or timeout
     .finally(() => clearTimeout(timeoutId))
     .then((verdict) => {
@@ -82,7 +106,9 @@ const InkScreen = ({ showText }: { showText: boolean }) => (
 );
 
 const GeoGate = ({ children }: { children: React.ReactNode }) => {
-  const initial = readCachedVerdict();
+  const initial: GeoVerdict | null = isExemptEnvironment()
+    ? "allowed"
+    : readCachedVerdict();
   const [verdict, setVerdict] = useState<GeoVerdict | null>(initial);
 
   useEffect(() => {
