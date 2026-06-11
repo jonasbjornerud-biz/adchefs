@@ -1,23 +1,107 @@
 const rows: { label: string; values: [string, string, string, string] }[] = [
   { label: "Dedicated to your brand", values: ["Yes, yours alone", "Yes", "Shared across clients", "Rotating"] },
-  { label: "Learns your winners", values: ["Trained on your data", "Over time", "Rarely", "Starts from zero"] },
   { label: "Who you brief", values: ["The editor, directly", "The editor", "Their PM", "The freelancer"] },
   { label: "Turnaround", values: ["24 to 48 hours", "Depends on workload", "Days to weeks", "Varies"] },
-  { label: "Recruiting and management", values: ["On me", "On you", "Their juniors", "On you"] },
+  { label: "Hiring and management", values: ["On me", "On you", "Their juniors", "On you"] },
   { label: "Tools and software", values: ["Included", "You buy licenses", "Included", "Their own setup"] },
-  { label: "Performance visibility", values: ["Live dashboard, free", "If you build it", "Monthly report", "None"] },
-  { label: "Cost structure", values: ["From $100 per video", "Salary plus overhead", "Monthly retainer", "Per project"] },
-  { label: "Commitment", values: ["Cancel anytime", "Employment", "Locked-in months", "None"] },
+  { label: "Cost", values: ["From $100 per video", "Salary plus overhead", "Monthly retainer", "Per project"] },
 ];
 
-const columnGradients: string[] = [
-  "linear-gradient(180deg, rgba(158,216,245,0.30) 0%, rgba(158,216,245,0.04) 100%)",
-  "linear-gradient(180deg, rgba(214,116,98,0.14) 0%, rgba(214,116,98,0.02) 100%)",
-  "linear-gradient(180deg, rgba(222,196,110,0.16) 0%, rgba(222,196,110,0.02) 100%)",
-  "linear-gradient(180deg, rgba(117,114,107,0.10) 0%, rgba(117,114,107,0.02) 100%)",
+type ColumnStyle = {
+  label: string;
+  background: string;
+  border: string;
+  shadow?: string;
+  lifted?: boolean;
+  isAdChefs?: boolean;
+};
+
+const columns: ColumnStyle[] = [
+  {
+    label: "AdChefs.",
+    background:
+      "linear-gradient(180deg, rgba(158,216,245,0.35) 0%, rgba(158,216,245,0.03) 70%)",
+    border: "1px solid #1A1A1A",
+    shadow: "0 12px 32px rgba(26,26,26,0.10)",
+    lifted: true,
+    isAdChefs: true,
+  },
+  {
+    label: "IN-HOUSE HIRE",
+    background:
+      "linear-gradient(180deg, rgba(214,116,98,0.10) 0%, rgba(214,116,98,0.0) 80%)",
+    border: "1px solid rgba(26,26,26,0.08)",
+  },
+  {
+    label: "AGENCY",
+    background:
+      "linear-gradient(180deg, rgba(222,196,110,0.12) 0%, rgba(222,196,110,0.0) 80%)",
+    border: "1px solid rgba(26,26,26,0.08)",
+  },
+  {
+    label: "FREELANCERS",
+    background:
+      "linear-gradient(180deg, rgba(117,114,107,0.08) 0%, rgba(117,114,107,0.0) 80%)",
+    border: "1px solid rgba(26,26,26,0.08)",
+  },
 ];
 
-const columnLabels = ["AdChefs.", "IN-HOUSE HIRE", "AGENCY", "FREELANCERS"];
+const DIVIDER = "1px solid rgba(26,26,26,0.06)";
+const ROW_HEIGHT = 64; // px, equal row heights
+const HEADER_PAD_TOP = 28;
+const HEADER_PAD_BOTTOM = 24;
+const HEADER_HEIGHT = 96; // approx header card section height for label alignment
+
+const CheckIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    style={{ flexShrink: 0 }}
+  >
+    <path
+      d="M2.5 7.5L5.5 10.5L11.5 3.5"
+      stroke="#1A1A1A"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const ColumnHeader = ({ col }: { col: ColumnStyle }) => {
+  if (col.isAdChefs) {
+    return (
+      <div
+        className="px-5"
+        style={{ paddingTop: HEADER_PAD_TOP, paddingBottom: HEADER_PAD_BOTTOM }}
+      >
+        <div className="font-display font-bold text-[20px] tracking-tight" style={{ color: "#1A1A1A" }}>
+          AdChefs.
+        </div>
+        <span
+          className="mono inline-block mt-2 rounded-[4px] px-2 py-1 text-[10px] uppercase tracking-[0.15em]"
+          style={{ background: "#9ED8F5", color: "#1A1A1A" }}
+        >
+          PAY PER VIDEO
+        </span>
+      </div>
+    );
+  }
+  return (
+    <div
+      className="px-5"
+      style={{ paddingTop: HEADER_PAD_TOP, paddingBottom: HEADER_PAD_BOTTOM }}
+    >
+      <span className="mono text-[11px] uppercase tracking-[0.15em]" style={{ color: "#75726B" }}>
+        {col.label}
+      </span>
+    </div>
+  );
+};
 
 const Comparison = () => {
   return (
@@ -33,106 +117,115 @@ const Comparison = () => {
           </p>
         </div>
 
-        {/* Desktop / tablet table */}
+        {/* Desktop / tablet: labels + four continuous column cards */}
         <div className="hidden md:block">
-          <div className="grid" style={{ gridTemplateColumns: "1.4fr repeat(4, 1fr)", columnGap: "12px" }}>
-            {/* Header row */}
-            <div />
-            {columnLabels.map((label, i) => (
+          <div
+            className="grid items-start"
+            style={{ gridTemplateColumns: "1.4fr repeat(4, 1fr)", columnGap: "16px" }}
+          >
+            {/* Labels column */}
+            <div>
+              <div style={{ height: HEADER_HEIGHT }} />
+              {rows.map((row, rIdx) => (
+                <div
+                  key={row.label}
+                  className="px-2 flex items-center text-[14px] font-medium"
+                  style={{
+                    color: "#1A1A1A",
+                    height: ROW_HEIGHT,
+                    borderTop: rIdx === 0 ? "none" : "1px solid transparent",
+                  }}
+                >
+                  {row.label}
+                </div>
+              ))}
+            </div>
+
+            {/* Four column cards */}
+            {columns.map((col, cIdx) => (
               <div
-                key={label}
-                className="rounded-t-[4px] px-5 pt-6 pb-4"
+                key={col.label}
+                className={`rounded-[4px] overflow-hidden ${col.lifted ? "-translate-y-3" : ""}`}
                 style={{
-                  background: columnGradients[i],
-                  ...(i === 0
-                    ? { borderLeft: "1px solid #1A1A1A", borderRight: "1px solid #1A1A1A", borderTop: "1px solid #1A1A1A" }
-                    : {}),
+                  background: col.background,
+                  border: col.border,
+                  boxShadow: col.shadow,
                 }}
               >
-                {i === 0 ? (
-                  <span className="font-display font-bold text-[18px] tracking-tight" style={{ color: "#1A1A1A" }}>
-                    {label}
-                  </span>
-                ) : (
-                  <span className="mono text-[11px] uppercase tracking-[0.15em]" style={{ color: "#75726B" }}>
-                    {label}
-                  </span>
-                )}
-              </div>
-            ))}
-
-            {/* Body rows */}
-            {rows.map((row, rIdx) => {
-              const isLast = rIdx === rows.length - 1;
-              return (
-                <div key={row.label} className="contents">
+                <div style={{ height: HEADER_HEIGHT }} className="flex flex-col justify-center">
+                  <ColumnHeader col={col} />
+                </div>
+                {rows.map((row, rIdx) => (
                   <div
-                    className="px-2 py-5 text-[14px] font-medium flex items-center"
+                    key={row.label}
+                    className="px-5 flex items-center text-[14px]"
                     style={{
-                      color: "#1A1A1A",
-                      borderTop: rIdx === 0 ? "none" : "1px solid #EEEDE8",
+                      height: ROW_HEIGHT,
+                      borderTop: rIdx === 0 ? "none" : DIVIDER,
+                      color: col.isAdChefs ? "#1A1A1A" : "#75726B",
+                      fontWeight: col.isAdChefs ? 500 : 400,
                     }}
                   >
-                    {row.label}
+                    {col.isAdChefs ? (
+                      <span className="inline-flex items-center gap-2">
+                        <CheckIcon />
+                        <span>{row.values[cIdx]}</span>
+                      </span>
+                    ) : (
+                      <span>{row.values[cIdx]}</span>
+                    )}
                   </div>
-                  {row.values.map((val, cIdx) => (
-                    <div
-                      key={cIdx}
-                      className={`px-5 py-5 text-[14px] flex items-center ${isLast && cIdx === 0 ? "rounded-b-[4px]" : ""}`}
-                      style={{
-                        background: columnGradients[cIdx],
-                        color: cIdx === 0 ? "#1A1A1A" : "#75726B",
-                        borderTop: rIdx === 0 ? "none" : "1px solid #EEEDE8",
-                        ...(cIdx === 0
-                          ? {
-                              borderLeft: "1px solid #1A1A1A",
-                              borderRight: "1px solid #1A1A1A",
-                              ...(isLast ? { borderBottom: "1px solid #1A1A1A" } : {}),
-                            }
-                          : {}),
-                      }}
-                    >
-                      {val}
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Mobile stacked cards */}
+        {/* Mobile: stacked cards, AdChefs first (already first in columns) */}
         <div className="md:hidden space-y-5">
-          {columnLabels.map((label, i) => (
+          {columns.map((col, cIdx) => (
             <div
-              key={label}
-              className="rounded-[4px] p-5"
+              key={col.label}
+              className="rounded-[4px] overflow-hidden"
               style={{
-                background: columnGradients[i],
-                ...(i === 0 ? { border: "1px solid #1A1A1A" } : {}),
+                background: col.background,
+                border: col.border,
+                boxShadow: col.shadow,
               }}
             >
-              <div className="mb-4">
-                {i === 0 ? (
-                  <span className="font-display font-bold text-[20px] tracking-tight" style={{ color: "#1A1A1A" }}>
-                    {label}
-                  </span>
-                ) : (
-                  <span className="mono text-[11px] uppercase tracking-[0.15em]" style={{ color: "#75726B" }}>
-                    {label}
-                  </span>
-                )}
-              </div>
-              <dl className="space-y-3">
-                {rows.map((row) => (
-                  <div key={row.label} className="flex justify-between gap-4 py-2" style={{ borderTop: "1px solid #EEEDE8" }}>
-                    <dt className="text-[13px] font-medium" style={{ color: "#1A1A1A" }}>{row.label}</dt>
-                    <dd className="text-[13px] text-right" style={{ color: i === 0 ? "#1A1A1A" : "#75726B" }}>
-                      {row.values[i]}
-                    </dd>
+              <ColumnHeader col={col} />
+              {rows.map((row, rIdx) => (
+                <div
+                  key={row.label}
+                  className="px-5 py-4"
+                  style={{
+                    borderTop: rIdx === 0 ? "none" : DIVIDER,
+                  }}
+                >
+                  <div
+                    className="mono text-[10px] uppercase tracking-[0.15em] mb-1"
+                    style={{ color: "#75726B" }}
+                  >
+                    {row.label}
                   </div>
-                ))}
-              </dl>
+                  <div
+                    className="text-[14px]"
+                    style={{
+                      color: col.isAdChefs ? "#1A1A1A" : "#75726B",
+                      fontWeight: col.isAdChefs ? 500 : 400,
+                    }}
+                  >
+                    {col.isAdChefs ? (
+                      <span className="inline-flex items-center gap-2">
+                        <CheckIcon />
+                        <span>{row.values[cIdx]}</span>
+                      </span>
+                    ) : (
+                      <span>{row.values[cIdx]}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
