@@ -3,10 +3,9 @@ import { ArrowRight } from "lucide-react";
 const receiptLines: { label: string; value: string; ink?: boolean }[] = [
   { label: "VIDEOS × 20", value: "$2,000", ink: true },
   { label: "HOOK VARIATIONS + 2 FORMATS", value: "$0" },
-  { label: "TOOLS", value: "$0" },
+  { label: "EDITING TOOLS", value: "$0" },
   { label: "ONGOING MANAGEMENT", value: "$0" },
   { label: "CLIENT DASHBOARD", value: "$0" },
-  { label: "EDITOR MATCHING · ONE TIME", value: "$500" },
 ];
 
 const Pricing = () => {
@@ -62,11 +61,18 @@ const Pricing = () => {
           {/* Right column — receipt */}
           <div className="md:w-[45%] flex justify-start md:justify-end">
             <div
-              className="w-full max-w-sm rounded-[4px] p-7"
+              className="w-full max-w-sm p-7"
               style={{
-                background: "#FFFFFF",
-                border: "1px solid rgba(26,26,26,0.12)",
-                boxShadow: "0 8px 24px rgba(26,26,26,0.06)",
+                position: "relative",
+                overflow: "visible",
+                background: "#FDFCFA",
+                borderTopLeftRadius: "4px",
+                borderTopRightRadius: "4px",
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                boxShadow:
+                  "0 1px 2px rgba(26,26,26,0.06), 0 12px 32px rgba(26,26,26,0.10)",
+                transform: "rotate(0.5deg)",
               }}
             >
               {/* Wordmark */}
@@ -81,6 +87,16 @@ const Pricing = () => {
                 style={{ color: "#75726B" }}
               >
                 A MONTH OF CREATIVE, ITEMIZED
+              </div>
+
+              {/* Metadata row */}
+              <div
+                className="mono flex justify-between text-[9px] uppercase tracking-[0.15em] mt-2"
+                style={{ color: "#75726B" }}
+              >
+                <span>NO. 001</span>
+                <span>QTY 20</span>
+                <span>DEDICATED EDITOR</span>
               </div>
 
               {/* Divider */}
@@ -103,27 +119,13 @@ const Pricing = () => {
                 ))}
               </div>
 
-              {/* Divider */}
-              <div
-                className="mt-2 w-full"
-                style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)" }}
-              />
-
               {/* Total */}
               <div
-                className="mono flex justify-between text-[13px] font-medium mt-3"
-                style={{ color: "#1A1A1A" }}
+                className="mono flex justify-between text-[13px] font-medium mt-3 pt-3"
+                style={{ color: "#1A1A1A", borderTop: "2px solid #1A1A1A" }}
               >
-                <span>TOTAL, FIRST MONTH</span>
-                <span>$2,500</span>
-              </div>
-
-              {/* Then line */}
-              <div
-                className="mono text-right text-[10px] mt-1.5"
-                style={{ color: "#75726B" }}
-              >
-                THEN $2,000 / MONTH AT THIS VOLUME
+                <span>TOTAL</span>
+                <span>$2,000</span>
               </div>
 
               {/* Per video */}
@@ -149,6 +151,42 @@ const Pricing = () => {
                 WHETHER ANYTHING SHIPS OR NOT
               </div>
 
+              {/* Stamp */}
+              <div
+                className="mono"
+                style={{
+                  position: "absolute",
+                  right: "18px",
+                  bottom: "44px",
+                  fontSize: "11px",
+                  letterSpacing: "0.15em",
+                  color: "#4A7A96",
+                  border: "2px solid #4A7A96",
+                  padding: "6px 12px",
+                  borderRadius: "4px",
+                  transform: "rotate(-8deg)",
+                  opacity: 0.85,
+                  background: "transparent",
+                  textTransform: "uppercase",
+                  pointerEvents: "none",
+                }}
+              >
+                PAY PER VIDEO
+              </div>
+
+              {/* Torn bottom edge */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: "-12px",
+                  height: "12px",
+                  background:
+                    "linear-gradient(-45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x, linear-gradient(45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x",
+                }}
+              />
             </div>
           </div>
         </div>
