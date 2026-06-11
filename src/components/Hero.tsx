@@ -34,38 +34,19 @@ const FEATURED_FULL = CLIPS.map((c) => ({
   label: c.label.slice(0, 14).toUpperCase(),
 }));
 
-// Card sizing pattern for the broken-grid wall.
-type CardSize = "standard" | "small" | "feature";
-
-// Per-column size patterns. Repeats deterministically so the doubled-loop is seamless.
-const PATTERNS_3: CardSize[][] = [
-  ["feature", "standard", "small", "standard", "small", "standard"],
-  ["small", "standard", "small", "standard", "small", "standard"],
-  ["standard", "small", "standard", "small", "standard", "small"],
-];
-const PATTERNS_2: CardSize[][] = [
-  ["feature", "standard", "small", "standard", "small"],
-  ["small", "standard", "small", "standard", "small", "standard"],
-];
-
-type WallItem = { clip: typeof FEATURED_FULL[number]; size: CardSize };
-
-const buildPatternedColumns = (patterns: CardSize[][], min: number): WallItem[][] => {
-  const n = patterns.length;
-  const cols: WallItem[][] = Array.from({ length: n }, () => []);
-  FEATURED_FULL.forEach((c, i) => {
-    const ci = i % n;
-    const pat = patterns[ci];
-    cols[ci].push({ clip: c, size: pat[cols[ci].length % pat.length] });
-  });
+// Distribute videos across N columns; ensure each column has at least `min` items
+// by repeating, then double for seamless loop.
+const buildColumns = (n: number, min: number) => {
+  const cols: typeof FEATURED_FULL[] = Array.from({ length: n }, () => []);
+  FEATURED_FULL.forEach((c, i) => cols[i % n].push(c));
   return cols.map((col) => {
     let filled = [...col];
     while (filled.length < min) filled = filled.concat(col);
     return [...filled, ...filled];
   });
 };
-const COLS_3 = buildPatternedColumns(PATTERNS_3, 4);
-const COLS_2 = buildPatternedColumns(PATTERNS_2, 4);
+const COLS_3 = buildColumns(3, 4);
+const COLS_2 = buildColumns(2, 4);
 // Single row for mobile: all videos doubled for seamless loop
 const ROW_M = [...FEATURED_FULL, ...FEATURED_FULL];
 
@@ -78,10 +59,9 @@ interface WallCardProps {
   clip: typeof FEATURED_FULL[number];
   onOpen: (full: string) => void;
   horizontal?: boolean;
-  size?: CardSize;
 }
 
-const WallCard = ({ clip, onOpen, horizontal, size = "standard" }: WallCardProps) => {
+const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const inViewRef = useRef(false);
@@ -127,7 +107,7 @@ const WallCard = ({ clip, onOpen, horizontal, size = "standard" }: WallCardProps
       onClick={() => onOpen(clip.full)}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className={`hero-wall-card hero-wall-card--${size} ${horizontal ? "hero-wall-card-h" : ""}`}
+      className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
       aria-label={`Play ${clip.label}`}
       style={{
         backgroundImage: `url("${clip.poster}")`,
@@ -291,7 +271,7 @@ const Hero = () => {
       />
 
       <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[45%_1fr] gap-10 lg:gap-6 items-stretch lg:h-full">
+        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
             <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
@@ -342,14 +322,14 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: broken-grid video wall, bleeds off right viewport edge */}
-          <div className="hero-wall-col-wrap relative lg:h-full lg:pt-28 lg:pb-8">
-            <div className="hero-wall flex flex-col">
-              <span className="hero-wall-label">
+          {/* RIGHT: scrolling video wall */}
+          <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
+            <div className="hero-wall flex flex-col w-full">
+              <span className="hero-wall-label hero-wall-edge">
                 <span aria-hidden className="hero-wall-dot" />
                 <span>Live cuts shipping for clients</span>
               </span>
-              <span aria-hidden className="hero-wall-rule" />
+              <span aria-hidden className="hero-wall-rule hero-wall-edge" />
 
               {/* Desktop / tablet: vertical multi-column wall */}
               <div
@@ -357,44 +337,42 @@ const Hero = () => {
                 onMouseEnter={() => { wallPausedRef.current = true; }}
                 onMouseLeave={() => { wallPausedRef.current = false; }}
               >
-                {/* Desktop: 3 unequal columns */}
-                <div className="hero-wall-cols hero-wall-cols--3">
-                  <div className="hero-wall-col hero-wall-col--a">
-                    <DriftTrack className="hero-wall-track" loopSeconds={48} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_3[0].map((it, i) => (
-                        <WallCard key={`c1-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
+                <div className="hero-wall-cols">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_3[0].map((c, i) => (
+                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col hero-wall-col--b">
-                    <DriftTrack className="hero-wall-track" loopSeconds={38} axis="y" direction={1} pausedRef={wallPausedRef}>
-                      {COLS_3[1].map((it, i) => (
-                        <WallCard key={`c2-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
+                      {COLS_3[1].map((c, i) => (
+                        <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col hero-wall-col--c">
-                    <DriftTrack className="hero-wall-track" loopSeconds={56} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_3[2].map((it, i) => (
-                        <WallCard key={`c3-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={42} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_3[2].map((c, i) => (
+                        <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
                 </div>
 
-                {/* Tablet: 2 unequal columns */}
-                <div className="hero-wall-cols hero-wall-cols--2">
-                  <div className="hero-wall-col hero-wall-col--a">
-                    <DriftTrack className="hero-wall-track" loopSeconds={48} axis="y" direction={-1} pausedRef={wallPausedRef}>
-                      {COLS_2[0].map((it, i) => (
-                        <WallCard key={`t1-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
+                <div className="hero-wall-cols-2">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
+                      {COLS_2[0].map((c, i) => (
+                        <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
-                  <div className="hero-wall-col hero-wall-col--b">
-                    <DriftTrack className="hero-wall-track" loopSeconds={38} axis="y" direction={1} pausedRef={wallPausedRef}>
-                      {COLS_2[1].map((it, i) => (
-                        <WallCard key={`t2-${i}`} clip={it.clip} size={it.size} onOpen={openLightbox} />
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
+                      {COLS_2[1].map((c, i) => (
+                        <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
                     </DriftTrack>
                   </div>
@@ -414,7 +392,7 @@ const Hero = () => {
                 </DriftTrack>
               </div>
 
-              <span className="hero-wall-disclaimer">
+              <span className="hero-wall-disclaimer hero-wall-edge">
                 Video editing only. Brand ownership belongs to respective clients.
               </span>
             </div>
@@ -425,18 +403,8 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
-        /* Right column escapes the container and bleeds off the viewport's right edge */
-        .hero-wall-col-wrap {
-          min-width: 0;
-        }
-        @media (min-width: 1024px) {
-          .hero-wall-col-wrap {
-            /* Cancel parent container's right padding (24px) and extend to the viewport edge */
-            margin-right: calc(-1 * (50vw - 50%) - 24px);
-            padding-right: 0;
-          }
-        }
         .hero-wall { width: 100%; }
+        .hero-wall-edge { display: block; }
 
         /* Label row with pulsing live dot */
         .hero-wall-label {
@@ -495,10 +463,6 @@ const Hero = () => {
           padding: 0;
           cursor: pointer;
         }
-        /* Size variants — all still 9/16-cropped via object-fit cover */
-        .hero-wall-card--standard { aspect-ratio: 9 / 16; }
-        .hero-wall-card--small    { aspect-ratio: 9 / 11; }   /* ~70% height of standard */
-        .hero-wall-card--feature  { aspect-ratio: 9 / 32; }   /* spans 2 rows visually */
         .hero-wall-card video {
           width: 100%;
           height: 100%;
@@ -516,38 +480,30 @@ const Hero = () => {
         }
         .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
 
-        /* === Broken-grid multi-column wall === */
+        /* === Vertical multi-column wall (desktop + tablet) === */
         .hero-wall-vertical {
           position: relative;
-          height: 95vh;
-          max-height: 860px;
+          height: 85vh;
+          max-height: 760px;
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
                   mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
         }
-        .hero-wall-cols { display: none; gap: 20px; height: 100%; }
-        .hero-wall-col { min-width: 0; overflow: hidden; }
+        .hero-wall-cols, .hero-wall-cols-2 {
+          display: none;
+          gap: 16px;
+          height: 100%;
+        }
+        .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
         .hero-wall-track {
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 16px;
           will-change: transform;
         }
 
-        /* Desktop: 3 unequal columns (1.6fr / 1fr / 1.2fr) with staggered vertical offsets */
-        @media (min-width: 1024px) {
-          .hero-wall-cols--3 { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr; }
-          .hero-wall-cols--3 .hero-wall-col--a .hero-wall-track { margin-top: 0; }
-          .hero-wall-cols--3 .hero-wall-col--b .hero-wall-track { margin-top: -80px; }
-          .hero-wall-cols--3 .hero-wall-col--c .hero-wall-track { margin-top: -40px; }
-        }
-        /* Tablet: 2 unequal columns (1.4fr / 1fr), shorter wall */
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .hero-wall-vertical { height: 70vh; max-height: 720px; }
-          .hero-wall-cols--2 { display: grid; grid-template-columns: 1.4fr 1fr; }
-          .hero-wall-cols--2 .hero-wall-col--a .hero-wall-track { margin-top: 0; }
-          .hero-wall-cols--2 .hero-wall-col--b .hero-wall-track { margin-top: -60px; }
-        }
+        @media (min-width: 1024px) { .hero-wall-cols { display: flex; } }
+        @media (min-width: 768px) and (max-width: 1023px) { .hero-wall-cols-2 { display: flex; } }
 
         /* === Mobile horizontal row === */
         .hero-wall-horizontal {
