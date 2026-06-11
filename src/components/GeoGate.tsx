@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import adchefsLogo from "@/assets/adchefs-logo.png.asset.json";
 
 // =============================================================================
 // TEMPORARY GEO-BLOCK FOR NORWAY
