@@ -55,23 +55,21 @@ function EditorAvatar({ email, name }: { email: string; name: string }) {
 }
 
 /* ---------------- Email template ---------------- */
-const DEFAULT_SUBJECT = (brand: string) => `An invitation from AdChefs — paid trial for ${brand}`;
+const DEFAULT_SUBJECT = (_brand: string) => `Re: Video Editing Position. Follow-up`;
 const DEFAULT_BODY = (vars: {
   first_name: string; previous_brand: string; new_brand: string;
   notion_task_url: string; submission_form_url: string;
 }) => `Hi ${vars.first_name},
 
-A while back you applied for our ${vars.previous_brand || 'previous'} role and made our shortlist — your trial work genuinely stood out, even though we ended up moving forward with someone else for that brand.
+A while back you applied for our ${vars.previous_brand || 'previous'} video editor role and made our shortlist. Your trial work was really impressive, even though we ended up moving forward with someone else for that brand.
 
-We've just opened a new role with ${vars.new_brand}, and I think your editing style would be a great fit. Rather than have you go through the application again, I'd like to invite you straight to the paid trial task for them.
+We've just opened a new role with ${vars.new_brand}, and I think your editing style would be a great fit based on your previous trial and portfolio. Rather than have you go through the application again, I'd like to invite you straight to the trial task for them.
 
-Task brief & assets:
-${vars.notion_task_url}
+You can find everything you need here: ${vars.notion_task_url}
 
-When you're done, submit your work here:
-${vars.submission_form_url}
+The submission form can be found in the bottom of the document along with the rest of the resources.
 
-No pressure if the timing doesn't work — but if it does, I'd love to see what you put together.
+No pressure if the timing doesn't work, but if it does, I'd love to see what you can put together. Don't hesitate to reach out if you have any questions.
 
 Best,
 Jonas`;
