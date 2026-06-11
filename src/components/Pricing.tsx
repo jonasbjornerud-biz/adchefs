@@ -143,14 +143,24 @@ const Pricing = () => {
                 AN AGENCY BILLS $4,500 THIS MONTH<br />
                 WHETHER ANYTHING SHIPS OR NOT
               </div>
+
+              {/* Divider */}
+              <div
+                className="mt-3 w-full"
+                style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)" }}
+              />
+
+              {/* Final footnote */}
+              <div
+                className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3 leading-relaxed"
+                style={{ color: "#75726B" }}
+              >
+                COMPLEX EDITS + LONGER FORM PRICED ON THE CALL<br />
+                MOST BRANDS START WITH A SMALL TRIAL BATCH
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom line */}
-        <p className="mt-12 text-[14px]" style={{ color: "#75726B" }}>
-          Complex edits and longer form priced on the call. Most brands start with a small trial batch.
-        </p>
       </div>
     </section>
   );
