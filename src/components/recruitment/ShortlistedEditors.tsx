@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Star, Send, Mail, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { EmbeddedSubmission } from './RecruitmentPanel';
 
 type Posting = {
   id: string; slug: string; title: string; brand: string; submit_slug: string;
@@ -18,6 +19,10 @@ type Application = {
   first_name: string; last_name: string; email: string;
   software: string; stage: string; starred?: boolean | null;
   portfolio_url: string | null;
+};
+type Submission = {
+  id: string; application_id: string | null; email: string;
+  submission_url: string; notes: string | null; created_at: string;
 };
 
 /* ---------------- Gravatar ---------------- */
@@ -78,6 +83,7 @@ Jonas`;
 export function ShortlistedEditors() {
   const [apps, setApps] = useState<Application[]>([]);
   const [postings, setPostings] = useState<Posting[]>([]);
+  const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -89,14 +95,16 @@ export function ShortlistedEditors() {
 
   async function load() {
     setLoading(true);
-    const [{ data: a }, { data: p }] = await Promise.all([
+    const [{ data: a }, { data: p }, { data: s }] = await Promise.all([
       (supabase.from('applications' as never) as any)
         .select('id,job_posting_id,first_name,last_name,email,software,stage,starred,portfolio_url')
         .eq('starred', true).order('created_at', { ascending: false }),
       (supabase.from('job_postings' as never) as any).select('*').order('created_at', { ascending: false }),
+      (supabase.from('trial_submissions' as never) as any).select('*').order('created_at', { ascending: false }),
     ]);
     setApps((a as Application[]) ?? []);
     setPostings((p as Posting[]) ?? []);
+    setSubs((s as Submission[]) ?? []);
     setLoading(false);
   }
   useEffect(() => { load(); }, []);
@@ -104,6 +112,10 @@ export function ShortlistedEditors() {
   const postingById = useMemo(() => {
     const m = new Map<string, Posting>(); postings.forEach(p => m.set(p.id, p)); return m;
   }, [postings]);
+  function subFor(app: Application) {
+    return subs.find(s => s.application_id === app.id) ||
+      subs.find(s => s.email.toLowerCase() === app.email.toLowerCase());
+  }
   const activePostings = postings.filter(p => p.is_active);
   const targetPosting = postings.find(p => p.id === targetPostingId);
 
