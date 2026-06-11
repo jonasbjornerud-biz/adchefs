@@ -1,4 +1,3 @@
-import GeoGate from "@/components/GeoGate";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
@@ -12,19 +11,17 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const Index = () => {
   return (
-    <GeoGate>
-      <div className="min-h-screen bg-background text-foreground">
-        <Navigation />
-        <Hero />
-        <ScrollReveal><WhyAdChefs /></ScrollReveal>
-        <ScrollReveal><HowItWorks /></ScrollReveal>
-        <ScrollReveal><EditorEdge /></ScrollReveal>
-        <ScrollReveal><Pricing /></ScrollReveal>
-        <ScrollReveal><CalendlyBooking /></ScrollReveal>
-        <ScrollReveal><FAQ /></ScrollReveal>
-        <Footer />
-      </div>
-    </GeoGate>
+    <div className="min-h-screen bg-background text-foreground">
+      <Navigation />
+      <Hero />
+      <ScrollReveal><WhyAdChefs /></ScrollReveal>
+      <ScrollReveal><HowItWorks /></ScrollReveal>
+      <ScrollReveal><EditorEdge /></ScrollReveal>
+      <ScrollReveal><Pricing /></ScrollReveal>
+      <ScrollReveal><CalendlyBooking /></ScrollReveal>
+      <ScrollReveal><FAQ /></ScrollReveal>
+      <Footer />
+    </div>
   );
 };
 
