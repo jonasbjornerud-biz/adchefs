@@ -82,6 +82,11 @@ const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
         className ??
         "recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
       }
+      style={{
+        backgroundImage: `url("${urls.poster}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       aria-label="Play video"
     >
       {!errored && (
@@ -115,8 +120,12 @@ const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
       {/* play indicator */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-[250ms] ease-out"
-        style={{ opacity: showIndicator ? 1 : 0 }}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-all duration-300"
+        style={{
+          opacity: showIndicator ? 1 : 0,
+          transform: showIndicator ? "scale(1)" : "scale(0.8)",
+          transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
       >
         <span
           className="flex items-center justify-center"
@@ -242,7 +251,7 @@ const Hero = () => {
         <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow">Built for e-com brands · Pay per video</span>
+            <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
               Your <em>dedicated</em> video editor without the additional cost
@@ -363,11 +372,24 @@ const Hero = () => {
       <style>{`
         @media (hover: hover) and (pointer: fine) {
           .recent-work-card {
-            transition: transform 250ms ease-out, box-shadow 250ms ease-out;
+            transform: translateZ(0) scale(1);
+            opacity: 1;
+            transition:
+              transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
           }
-          .recent-work-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 24px rgba(26,26,26,0.10);
+          /* Sibling dim when any card in the wall is hovered */
+          .video-wall-tilt:hover .recent-work-card {
+            opacity: 0.55;
+            transform: scale(0.99);
+          }
+          /* Hovered card: lift in 3D plane */
+          .video-wall-tilt .recent-work-card:hover {
+            opacity: 1;
+            transform: translateZ(24px) scale(1.04);
+            box-shadow: 0 24px 48px rgba(26,26,26,0.18);
+            z-index: 2;
           }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -391,9 +413,11 @@ const Hero = () => {
           animation-delay: -30s;
           will-change: transform;
         }
-        .video-col-up:hover .video-track-up,
-        .video-col-down:hover .video-track-down {
+        /* Ease wall scroll to a halt when hovering anywhere on the tilted wall */
+        .video-wall-tilt:hover .video-track-up,
+        .video-wall-tilt:hover .video-track-down {
           animation-play-state: paused;
+          transition: animation-play-state 400ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         @media (prefers-reduced-motion: reduce) {
           .video-track-up, .video-track-down { animation: none; }

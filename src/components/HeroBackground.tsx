@@ -38,43 +38,43 @@ const HeroBackground = () => {
         }}
       />
 
-      {/* Ring layer — masked to fade out over the bottom 280px */}
+      {/* Ring layer — anchored to bottom-left, softly faded at top so it doesn't
+          fight the headline */}
       <div
         className="absolute inset-0"
         style={{
           WebkitMaskImage:
-            "linear-gradient(to bottom, #000 0, #000 calc(100% - 280px), transparent 100%)",
+            "linear-gradient(to top, #000 0, #000 calc(100% - 220px), transparent 100%)",
           maskImage:
-            "linear-gradient(to bottom, #000 0, #000 calc(100% - 280px), transparent 100%)",
+            "linear-gradient(to top, #000 0, #000 calc(100% - 220px), transparent 100%)",
         }}
       >
-
-      {/* Ring 2 — curves down through right side from beyond top-right */}
-      <svg
-        className="hero-ring-2 absolute"
-        style={{
-          right: "-650px",
-          top: "-600px",
-          width: "1400px",
-          height: "1000px",
-          filter: "blur(16px)",
-          overflow: "visible",
-        }}
-        viewBox="0 0 1400 1000"
-        preserveAspectRatio="none"
-      >
-        <g transform="rotate(20 700 500)">
-          <ellipse
-            cx="700"
-            cy="500"
-            rx="620"
-            ry="420"
-            fill="none"
-            stroke="#CDE9F8"
-            strokeWidth="140"
-          />
-        </g>
-      </svg>
+        {/* Ring 2 — sweeps through the lower-left corner, partially off-canvas */}
+        <svg
+          className="hero-ring-2 absolute"
+          style={{
+            left: "-700px",
+            bottom: "-550px",
+            width: "1400px",
+            height: "1000px",
+            filter: "blur(16px)",
+            overflow: "visible",
+          }}
+          viewBox="0 0 1400 1000"
+          preserveAspectRatio="none"
+        >
+          <g transform="rotate(-15 700 500)">
+            <ellipse
+              cx="700"
+              cy="500"
+              rx="620"
+              ry="420"
+              fill="none"
+              stroke="#CDE9F8"
+              strokeWidth="140"
+            />
+          </g>
+        </svg>
       </div>
 
       {/* Static film grain overlay */}
