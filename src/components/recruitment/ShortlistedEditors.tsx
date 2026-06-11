@@ -318,13 +318,13 @@ export function ShortlistedEditors() {
                 }}
               >
                 {/* Square trial preview */}
-                <div className="relative w-full flex items-center justify-center" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#000' : '#EEEDE8' }}>
+                <div className="relative w-full" style={{ aspectRatio: '1 / 1', backgroundColor: sub ? '#0c0c0c' : '#EEEDE8' }}>
                   {sub ? (
-                    <div className="w-full">
-                      <EmbeddedSubmission url={sub.submission_url} />
-                    </div>
+                    <SubmissionThumb url={sub.submission_url} />
                   ) : (
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">No trial submitted</span>
+                    </div>
                   )}
                   {/* Selection checkbox overlay */}
                   <label
@@ -365,8 +365,6 @@ export function ShortlistedEditors() {
                     >
                       {posting?.brand ?? '—'}
                     </span>
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">·</span>
-                    <span className="mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">{app.software}</span>
                   </div>
                 </div>
               </article>
