@@ -126,6 +126,20 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
         className="w-full h-full object-cover block"
       />
       <span aria-hidden className="hero-wall-card-ring" />
+      <span aria-hidden className="hero-wall-card-play">
+        <span className="hero-wall-card-play-ring" />
+        <span className="hero-wall-card-play-chip">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M7 4.5 L20 12 L7 19.5 Z" fill="#1A1A1A" />
+          </svg>
+        </span>
+      </span>
     </button>
   );
 };
@@ -494,7 +508,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <Lightbox src={lightboxSrc} onClose={closeLightbox} />
+      {lightboxSrc && <Lightbox src={lightboxSrc} onClose={closeLightbox} />}
 
       <style>{`
         .hero-wall { width: 100%; }
@@ -573,6 +587,42 @@ const Hero = () => {
           transition: opacity 200ms ease;
         }
         .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
+
+        /* Branded play overlay — only on hovered (sharp) card */
+        .hero-wall-card-play {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 250ms ease;
+        }
+        .hero-wall-card-play-ring {
+          position: absolute;
+          width: 88px;
+          height: 88px;
+          border-radius: 9999px;
+          border: 1px solid rgba(247,246,243,0.4);
+        }
+        .hero-wall-card-play-chip {
+          position: relative;
+          width: 72px;
+          height: 72px;
+          border-radius: 9999px;
+          background: rgba(247,246,243,0.95);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .hero-wall-card-play-chip svg {
+          transform: translateX(2px);
+          display: block;
+        }
+        .hero-wall-card:hover .hero-wall-card-play { opacity: 1; }
 
         /* === Vertical multi-column wall (desktop + tablet) === */
         /* 1) perspective only */
