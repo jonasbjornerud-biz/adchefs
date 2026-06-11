@@ -577,44 +577,45 @@ const Hero = () => {
           position: relative;
           height: 85vh;
           max-height: 760px;
-          overflow: hidden;
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
-                  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
           perspective: 1600px;
         }
         .hero-wall-plane {
           height: 100%;
           width: 100%;
+          position: relative;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
           transform-style: preserve-3d;
           transform: rotateY(-4deg) rotateX(1deg);
           transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
           will-change: transform;
         }
         @media (min-width: 1024px) {
-          .hero-wall-vertical:hover .hero-wall-plane {
+          .hero-wall-plane:hover {
             transform: rotateY(-1.5deg) rotateX(1deg);
           }
         }
         @media (max-width: 1023px) {
           .hero-wall-vertical { perspective: none; }
-          .hero-wall-plane { transform: none; }
+          .hero-wall-plane { transform: none; transform-style: flat; }
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-wall-plane { transition: none; }
         }
 
         /* Focus-hover: dim & blur siblings when any card is hovered */
-        .hero-wall-vertical:has(.hero-wall-card:hover) .hero-wall-card,
+        .hero-wall-plane:has(.hero-wall-card:hover) .hero-wall-card,
         .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
           filter: blur(3px);
           opacity: 0.45;
           transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
         }
-        .hero-wall-vertical .hero-wall-card,
+        .hero-wall-plane .hero-wall-card,
         .hero-wall-horizontal .hero-wall-card {
           transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
         }
-        .hero-wall-vertical .hero-wall-card:hover,
+        .hero-wall-plane .hero-wall-card:hover,
         .hero-wall-horizontal .hero-wall-card:hover {
           filter: none !important;
           opacity: 1 !important;
