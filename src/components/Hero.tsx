@@ -580,7 +580,62 @@ const Hero = () => {
           overflow: hidden;
           -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
                   mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+          perspective: 1600px;
         }
+        .hero-wall-plane {
+          height: 100%;
+          width: 100%;
+          transform-style: preserve-3d;
+          transform: rotateY(-4deg) rotateX(1deg);
+          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+          will-change: transform;
+        }
+        @media (min-width: 1024px) {
+          .hero-wall-vertical:hover .hero-wall-plane {
+            transform: rotateY(-1.5deg) rotateX(1deg);
+          }
+        }
+        @media (max-width: 1023px) {
+          .hero-wall-vertical { perspective: none; }
+          .hero-wall-plane { transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-wall-plane { transition: none; }
+        }
+
+        /* Focus-hover: dim & blur siblings when any card is hovered */
+        .hero-wall-vertical:has(.hero-wall-card:hover) .hero-wall-card,
+        .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
+          filter: blur(3px);
+          opacity: 0.45;
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+        }
+        .hero-wall-vertical .hero-wall-card,
+        .hero-wall-horizontal .hero-wall-card {
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease;
+        }
+        .hero-wall-vertical .hero-wall-card:hover,
+        .hero-wall-horizontal .hero-wall-card:hover {
+          filter: none !important;
+          opacity: 1 !important;
+          border-color: rgba(26,26,26,0.25);
+        }
+
+        /* Lightbox chrome buttons */
+        .hero-lb-chrome {
+          width: 36px;
+          height: 36px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          color: #F7F6F3;
+          opacity: 0.6;
+          cursor: pointer;
+          transition: opacity 150ms ease;
+        }
+        .hero-lb-chrome:hover { opacity: 1; }
         .hero-wall-cols, .hero-wall-cols-2 {
           display: none;
           gap: 16px;
