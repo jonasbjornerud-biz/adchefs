@@ -68,21 +68,27 @@ const Pricing = () => {
         </div>
 
         {/* Ledger */}
-        <div>
+        <div className="max-w-5xl">
+          <div
+            className="mono text-[11px] uppercase tracking-[0.15em]"
+            style={{ color: "#75726B", marginBottom: 12 }}
+          >
+            WHAT YOU'RE NOT PAYING FOR
+          </div>
           {ledger.map((row) => (
             <div
               key={row.label}
-              className="flex flex-col md:flex-row md:items-start md:gap-8 py-6"
-              style={{ borderTop: "1px solid rgba(26,26,26,0.10)" }}
+              className="flex flex-col md:flex-row md:items-start py-4"
+              style={{ borderTop: "1px solid rgba(26,26,26,0.10)", gap: 0 }}
             >
               <div
                 className="mono text-[11px] uppercase tracking-[0.15em] mb-2 md:mb-0 md:flex-shrink-0"
-                style={{ color: row.color, width: 130 }}
+                style={{ color: row.color, width: 110, marginRight: 20 }}
               >
                 {row.label}
               </div>
               <p
-                className="text-[19px]"
+                className="text-[16px]"
                 style={{ color: "#75726B", lineHeight: 1.45 }}
               >
                 {row.statement}
@@ -93,10 +99,10 @@ const Pricing = () => {
 
         {/* AdChefs price block */}
         <div
-          className="rounded-[4px] p-10"
+          className="rounded-[4px] p-8 max-w-5xl"
           style={{ background: "#1A1A1A", marginTop: 8 }}
         >
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <div
               className="font-display font-bold text-[22px] tracking-tight"
               style={{ color: "#F7F6F3" }}
@@ -115,9 +121,9 @@ const Pricing = () => {
             </span>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+          <div className="mt-8 flex flex-wrap items-baseline gap-3">
             <span
-              className="font-display font-semibold tracking-tight text-[40px] md:text-[56px] leading-none"
+              className="font-display font-semibold tracking-tight text-[40px] md:text-[52px] leading-none"
               style={{ color: "#F7F6F3" }}
             >
               From $100
@@ -131,8 +137,8 @@ const Pricing = () => {
           </div>
 
           <p
-            className="mt-3 text-[15px] leading-relaxed"
-            style={{ color: "rgba(247,246,243,0.65)" }}
+            className="text-[15px] leading-relaxed max-w-xl"
+            style={{ color: "rgba(247,246,243,0.65)", marginTop: 8 }}
           >
             Each video includes hook variations and delivery in two formats, sized for the platforms you run.
           </p>
@@ -142,7 +148,9 @@ const Pricing = () => {
             style={{ background: "rgba(247,246,243,0.10)" }}
           />
 
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+          <ul
+            className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-3 md:grid-flow-col gap-x-12 gap-y-4"
+          >
             {checklist.map((item) => (
               <li
                 key={item}
@@ -155,27 +163,26 @@ const Pricing = () => {
             ))}
           </ul>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <a
               href="#booking"
               onClick={scrollToBooking}
-              className="inline-flex items-center justify-center rounded-[4px] px-6 py-3 text-[14px] font-medium transition-opacity hover:opacity-90"
+              className="inline-flex w-full md:w-auto items-center justify-center rounded-[4px] px-8 py-4 text-[14px] font-medium transition-opacity hover:opacity-90"
               style={{ background: "#F7F6F3", color: "#1A1A1A" }}
             >
               Book a call
               <ArrowRight className="ml-1.5 h-4 w-4" />
             </a>
-          </div>
-
-          <div
-            className="mt-5 mono text-[10px] uppercase tracking-[0.15em]"
-            style={{ color: "rgba(247,246,243,0.40)" }}
-          >
-            NO RETAINER · NO MINIMUM · CANCEL ANYTIME
+            <div
+              className="mono text-[10px] uppercase tracking-[0.15em] text-center md:text-right"
+              style={{ color: "rgba(247,246,243,0.40)" }}
+            >
+              NO RETAINER · NO MINIMUM · CANCEL ANYTIME
+            </div>
           </div>
         </div>
 
-        <p className="mt-6 text-[14px]" style={{ color: "#75726B" }}>
+        <p className="mt-6 text-[14px] max-w-5xl" style={{ color: "#75726B" }}>
           Complex edits and longer form priced on the call.
         </p>
       </div>
