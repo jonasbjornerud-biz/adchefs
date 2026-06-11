@@ -7,7 +7,7 @@ const WhyAdChefs = () => {
       <div className="mx-auto max-w-[1100px] px-6">
         <div className="grid md:grid-cols-[220px_1fr] gap-10 md:gap-16 items-start">
           <div className="flex justify-start">
-            <div className="w-[180px] h-[180px] rounded-[4px] overflow-hidden border border-foreground/10">
+            <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-2 border-[#3B86A8]">
               <img
                 src={jonasPhoto}
                 alt="Jonas Bjørnerud, founder of AdChefs"
@@ -17,7 +17,7 @@ const WhyAdChefs = () => {
           </div>
 
           <div>
-            <span className="eyebrow">WHY ADCHEFS</span>
+            <span className="eyebrow">HOW IT STARTED</span>
             <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground">
               Built by an operator, not an agency.
             </h2>
