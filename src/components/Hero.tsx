@@ -3,6 +3,7 @@ import { ArrowRight, X as XIcon, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
+import jonasPhoto from "@/assets/jonas.jpg";
 
 const CLOUD = "dqnifzwda";
 const CLIPS: { id: string; mov?: boolean }[] = [
@@ -38,9 +39,10 @@ const prefersReducedMotion = () =>
 interface CardProps {
   urls: ClipUrls;
   onOpen: (full: string) => void;
+  className?: string;
 }
 
-const RecentWorkCard = ({ urls, onOpen }: CardProps) => {
+const RecentWorkCard = ({ urls, onOpen, className }: CardProps) => {
   const wrapRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [errored, setErrored] = useState(false);
@@ -76,7 +78,10 @@ const RecentWorkCard = ({ urls, onOpen }: CardProps) => {
       onClick={() => onOpen(urls.full)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
+      className={
+        className ??
+        "recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
+      }
       aria-label="Play video"
     >
       {!errored && (
