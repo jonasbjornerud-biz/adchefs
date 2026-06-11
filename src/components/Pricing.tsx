@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 
 const receiptLines: { label: string; value: string; ink?: boolean }[] = [
-  { label: "VIDEOS × 6", value: "$600", ink: true },
+  { label: "VIDEOS × 20", value: "$2,000", ink: true },
   { label: "HOOK VARIATIONS", value: "$0" },
   { label: "2 PLACEMENT FORMATS", value: "$0" },
   { label: "HIGGSFIELD + ELEVENLABS", value: "$0" },
@@ -118,7 +118,7 @@ const Pricing = () => {
                 style={{ color: "#1A1A1A" }}
               >
                 <span>TOTAL</span>
-                <span>$600</span>
+                <span>$2,000</span>
               </div>
 
               {/* Per video */}
