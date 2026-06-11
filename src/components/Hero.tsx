@@ -238,6 +238,7 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 
 const Hero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const wallPausedRef = useRef(false);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -257,14 +258,15 @@ const Hero = () => {
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'repeat',
           backgroundSize: '200px 200px',
+          mixBlendMode: 'multiply',
         }}
       />
 
-      {/* Top-right radial gradient accent */}
+      {/* Top-right radial gradient accent — desaturated, never touches pure white */}
       <div
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          background: 'radial-gradient(ellipse at 85% 10%, rgba(158, 216, 245, 0.35) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 85% 10%, rgba(180, 214, 232, 0.28) 0%, transparent 60%)',
         }}
       />
 
@@ -320,71 +322,77 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: scrolling video wall (3 cols desktop, 2 cols tablet, 1 row mobile) */}
+          {/* RIGHT: scrolling video wall */}
           <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
             <div className="hero-wall flex flex-col w-full">
-              <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-4 hero-wall-edge">
-                Live cuts shipping for clients
+              <span className="hero-wall-label hero-wall-edge">
+                <span aria-hidden className="hero-wall-dot" />
+                <span>Live cuts shipping for clients</span>
               </span>
+              <span aria-hidden className="hero-wall-rule hero-wall-edge" />
 
               {/* Desktop / tablet: vertical multi-column wall */}
-              <div className="hero-wall-vertical">
+              <div
+                className="hero-wall-vertical"
+                onMouseEnter={() => { wallPausedRef.current = true; }}
+                onMouseLeave={() => { wallPausedRef.current = false; }}
+              >
                 <div className="hero-wall-cols">
-                  {/* col 1 — up */}
                   <div className="hero-wall-col">
-                    <div className="hero-wall-track hero-wall-up-1">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[0].map((c, i) => (
                         <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  {/* col 2 — down */}
-                  <div className="hero-wall-col hero-wall-col-2">
-                    <div className="hero-wall-track hero-wall-down-2">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
                       {COLS_3[1].map((c, i) => (
                         <WallCard key={`c2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  {/* col 3 — up */}
-                  <div className="hero-wall-col hero-wall-col-3">
-                    <div className="hero-wall-track hero-wall-up-3">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={42} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[2].map((c, i) => (
                         <WallCard key={`c3-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
                 </div>
 
-                {/* Tablet two-column variant */}
                 <div className="hero-wall-cols-2">
                   <div className="hero-wall-col">
-                    <div className="hero-wall-track hero-wall-up-1">
+                    <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_2[0].map((c, i) => (
                         <WallCard key={`t1-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
-                  <div className="hero-wall-col hero-wall-col-2">
-                    <div className="hero-wall-track hero-wall-down-2">
+                  <div className="hero-wall-col">
+                    <DriftTrack className="hero-wall-track" loopSeconds={47} axis="y" direction={1} pausedRef={wallPausedRef}>
                       {COLS_2[1].map((c, i) => (
                         <WallCard key={`t2-${i}`} clip={c} onOpen={openLightbox} />
                       ))}
-                    </div>
+                    </DriftTrack>
                   </div>
                 </div>
               </div>
 
               {/* Mobile: single horizontal row */}
-              <div className="hero-wall-horizontal">
-                <div className="hero-wall-row-track">
+              <div
+                className="hero-wall-horizontal"
+                onMouseEnter={() => { wallPausedRef.current = true; }}
+                onMouseLeave={() => { wallPausedRef.current = false; }}
+              >
+                <DriftTrack className="hero-wall-row-track" loopSeconds={39} axis="x" direction={-1} pausedRef={wallPausedRef}>
                   {ROW_M.map((c, i) => (
                     <WallCard key={`r-${i}`} clip={c} onOpen={openLightbox} horizontal />
                   ))}
-                </div>
+                </DriftTrack>
               </div>
 
-              <span className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70 mt-4 hero-wall-edge leading-[1.6]">
+              <span className="hero-wall-disclaimer hero-wall-edge">
                 Video editing only. Brand ownership belongs to respective clients.
               </span>
             </div>
