@@ -55,6 +55,64 @@ interface LightboxProps {
   onClose: () => void;
 }
 
+interface WallCardProps {
+  clip: typeof FEATURED_FULL[number];
+  onOpen: (full: string) => void;
+  horizontal?: boolean;
+}
+
+const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        const v = videoRef.current;
+        if (!v) return;
+        if (entry.isIntersecting) {
+          if (v.preload === "none") v.preload = "metadata";
+          v.play().catch(() => {});
+        } else {
+          v.pause();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => onOpen(clip.full)}
+      className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
+      aria-label={`Play ${clip.label}`}
+      style={{
+        backgroundImage: `url("${clip.poster}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <video
+        ref={videoRef}
+        src={clip.preview}
+        poster={clip.poster}
+        muted
+        autoPlay
+        loop
+        playsInline
+        preload="none"
+        className="w-full h-full object-cover block"
+      />
+    </button>
+  );
+};
+
 const Lightbox = ({ src, onClose }: LightboxProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -274,50 +332,92 @@ const Hero = () => {
       <Lightbox src={lightboxSrc} onClose={closeLightbox} />
 
       <style>{`
-        .hero-carousel {
-          --slide-h: min(65vh, 600px);
-          --slide-w: calc(var(--slide-h) * 9 / 16);
-        }
-        @media (max-width: 1023px) {
-          .hero-carousel { --slide-h: 55vh; }
-        }
-        @media (max-width: 767px) {
-          .hero-carousel {
-            --slide-h: 60vh;
-            --slide-w: 100%;
-          }
-        }
-        .hero-carousel-track {
-          height: var(--slide-h);
-          overflow: hidden;
-          user-select: none;
-        }
-        /* Left-edge aligned blocks: width = active slide, centered in the column */
-        .hero-carousel-edge {
-          width: var(--slide-w);
-          margin-left: auto;
-          margin-right: auto;
-        }
-        .hero-arrow {
-          width: 40px;
-          height: 40px;
+        .hero-wall { width: 100%; }
+        .hero-wall-edge { display: block; }
+
+        .hero-wall-card {
+          display: block;
+          width: 100%;
+          aspect-ratio: 9 / 16;
           border-radius: 4px;
-          border: 1px solid rgba(26,26,26,0.15);
-          background: transparent;
-          color: #1A1A1A;
-          transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+          overflow: hidden;
+          background-color: hsl(var(--secondary));
+          border: 1px solid rgba(26,26,26,0.08);
+          padding: 0;
+          cursor: pointer;
         }
-        .hero-arrow:hover {
-          background: #1A1A1A;
-          color: #F7F6F3;
-          border-color: #1A1A1A;
+        .hero-wall-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* === Vertical multi-column wall (desktop + tablet) === */
+        .hero-wall-vertical {
+          position: relative;
+          height: 85vh;
+          max-height: 760px;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+                  mask-image: linear-gradient(to bottom, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
         }
-        /* Mobile: single full-width slide, no peek */
+        .hero-wall-cols, .hero-wall-cols-2 {
+          display: none;
+          gap: 16px;
+          height: 100%;
+        }
+        .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
+        .hero-wall-track { display: flex; flex-direction: column; gap: 16px; will-change: transform; }
+
+        /* Desktop: 3 cols */
+        @media (min-width: 1024px) {
+          .hero-wall-cols { display: flex; }
+        }
+        /* Tablet: 2 cols */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .hero-wall-cols-2 { display: flex; }
+        }
+
+        @keyframes hero-wall-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+        @keyframes hero-wall-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+
+        .hero-wall-up-1   { animation: hero-wall-up 28s linear infinite; }
+        .hero-wall-down-2 { animation: hero-wall-down 36s linear infinite; }
+        .hero-wall-up-3   { animation: hero-wall-up 32s linear infinite; }
+
+        /* Pause when cursor is over the wall */
+        .hero-wall-vertical:hover .hero-wall-track,
+        .hero-wall-horizontal:hover .hero-wall-row-track {
+          animation-play-state: paused;
+        }
+
+        /* === Mobile horizontal row === */
+        .hero-wall-horizontal {
+          display: none;
+          position: relative;
+          height: 40vh;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+                  mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+        }
+        .hero-wall-row-track {
+          display: flex;
+          gap: 16px;
+          height: 100%;
+          width: max-content;
+          animation: hero-wall-left 30s linear infinite;
+          will-change: transform;
+        }
+        .hero-wall-card-h {
+          height: 100%;
+          width: auto;
+          aspect-ratio: 9 / 16;
+        }
+        @keyframes hero-wall-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
         @media (max-width: 767px) {
-          .hero-slide {
-            width: 100% !important;
-            height: var(--slide-h) !important;
-          }
+          .hero-wall-vertical { display: none; }
+          .hero-wall-horizontal { display: block; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-wall-track, .hero-wall-row-track { animation: none; }
         }
       `}</style>
     </section>
