@@ -64,6 +64,7 @@ interface WallCardProps {
 const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const inViewRef = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -72,24 +73,40 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
       ([entry]) => {
         const v = videoRef.current;
         if (!v) return;
-        if (entry.isIntersecting) {
-          if (v.preload === "none") v.preload = "metadata";
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        inViewRef.current = visible;
+        if (visible) {
           v.play().catch(() => {});
         } else {
           v.pause();
         }
       },
-      { rootMargin: "200px" }
+      { threshold: [0, 0.5, 1] }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  const handleEnter = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = false;
+    v.play().catch(() => {});
+  };
+  const handleLeave = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    if (!inViewRef.current) v.pause();
+  };
 
   return (
     <button
       ref={ref}
       type="button"
       onClick={() => onOpen(clip.full)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       className={`hero-wall-card ${horizontal ? "hero-wall-card-h" : ""}`}
       aria-label={`Play ${clip.label}`}
       style={{
@@ -103,14 +120,60 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
         src={clip.preview}
         poster={clip.poster}
         muted
-        autoPlay
         loop
         playsInline
-        preload="none"
+        preload="metadata"
         className="w-full h-full object-cover block"
       />
+      <span aria-hidden className="hero-wall-card-ring" />
     </button>
   );
+};
+
+/* JS-driven drift track: eases speed multiplier 0↔1 over ~600ms on hover. */
+interface DriftTrackProps {
+  loopSeconds: number;
+  axis: "y" | "x";
+  direction: 1 | -1;
+  pausedRef: React.MutableRefObject<boolean>;
+  className?: string;
+  children: React.ReactNode;
+}
+const DriftTrack = ({ loopSeconds, axis, direction, pausedRef, className, children }: DriftTrackProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    let pos = direction < 0 ? 0 : -0.0001; // tiny offset so wrap math is symmetric
+    let mult = 1;
+    const tick = (t: number) => {
+      if (!last) last = t;
+      const dt = Math.min((t - last) / 1000, 0.05);
+      last = t;
+      const target = pausedRef.current ? 0 : 1;
+      // exponential easing — ~600ms time-constant => k ≈ 1 - exp(-dt * 5)
+      mult += (target - mult) * (1 - Math.exp(-dt * 5));
+      const el = ref.current;
+      if (el) {
+        const half = axis === "y" ? el.scrollHeight / 2 : el.scrollWidth / 2;
+        if (half > 0) {
+          const v = (half / loopSeconds) * direction * mult;
+          pos += v * dt;
+          if (pos <= -half) pos += half;
+          if (pos >= 0) pos -= half;
+          el.style.transform = axis === "y"
+            ? `translate3d(0, ${pos}px, 0)`
+            : `translate3d(${pos}px, 0, 0)`;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [loopSeconds, axis, direction, pausedRef]);
+
+  return <div ref={ref} className={className}>{children}</div>;
 };
 
 const Lightbox = ({ src, onClose }: LightboxProps) => {
