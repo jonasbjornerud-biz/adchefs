@@ -1,28 +1,212 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X as XIcon, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
 import HeroBackground from "./HeroBackground";
 
-const mediaSources = [
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501822/GIF9_u1acww.webm",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501817/GIF10_mgrxbx.webm",
-  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562702/GIF15_or6gkv.gif",
-  "https://res.cloudinary.com/dqnifzwda/video/upload/v1773501815/GIF5_NEW_c8ocsj.webm",
-  "https://res.cloudinary.com/dqnifzwda/image/upload/v1773785219/GIF12_zcuv10.webp",
-  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562209/GIF12_i0rqck.gif",
-  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562215/GIF14_ajoqr7.gif",
-  "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562219/GIF13_lrfho3.gif",
+const CLOUD = "dqnifzwda";
+const CLIPS: { id: string; mov?: boolean }[] = [
+  { id: "AC1_r0bbjh" },
+  { id: "AC2_xllvey" },
+  { id: "AC3_wa3d0v" },
+  { id: "AC4_l0cp6d" },
+  { id: "AC5_v65ofr" },
+  { id: "AC6_pqpagf", mov: true },
+  { id: "AC7_kwkbqq", mov: true },
+  { id: "AC8_bvkrvb" },
+  { id: "AC9_uwa9z6" },
+  { id: "AC10_obarrz" },
 ];
+
+type ClipUrls = { preview: string; poster: string; full: string };
+
+const buildUrls = (id: string, mov?: boolean): ClipUrls => {
+  const f = mov ? "" : ",f_auto";
+  return {
+    preview: `https://res.cloudinary.com/${CLOUD}/video/upload/so_0,eo_3,w_400,q_auto${f},ac_none/${id}.mp4`,
+    poster: `https://res.cloudinary.com/${CLOUD}/video/upload/so_1,w_400,q_auto${f}/${id}.jpg`,
+    full: `https://res.cloudinary.com/${CLOUD}/video/upload/q_auto${f}/${id}.mp4`,
+  };
+};
+
+const CLIP_URLS: ClipUrls[] = CLIPS.map((c) => buildUrls(c.id, c.mov));
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+interface CardProps {
+  urls: ClipUrls;
+  onOpen: (full: string) => void;
+}
+
+const RecentWorkCard = ({ urls, onOpen }: CardProps) => {
+  const wrapRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [errored, setErrored] = useState(false);
+  const [hover, setHover] = useState(false);
+  const reduced = useRef(prefersReducedMotion());
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        const v = videoRef.current;
+        if (!v) return;
+        if (entry.isIntersecting) {
+          if (v.preload === "none") v.preload = "metadata";
+          if (!reduced.current) v.play().catch(() => {});
+        } else {
+          v.pause();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const showIndicator = hover || errored;
+
+  return (
+    <button
+      ref={wrapRef}
+      type="button"
+      onClick={() => onOpen(urls.full)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="recent-work-card group relative flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary p-0 cursor-pointer"
+      aria-label="Play video"
+    >
+      {!errored && (
+        <video
+          ref={videoRef}
+          src={urls.preview}
+          poster={urls.poster}
+          muted
+          autoPlay={!reduced.current}
+          loop
+          playsInline
+          preload="none"
+          onError={() => setErrored(true)}
+          className="w-full h-full object-cover block"
+        />
+      )}
+      {errored && (
+        <img src={urls.poster} alt="" className="w-full h-full object-cover block" />
+      )}
+
+      {/* inset ring */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[4px] transition-opacity duration-[250ms] ease-out"
+        style={{
+          boxShadow: "inset 0 0 0 1px #9ED8F5",
+          opacity: hover ? 1 : 0,
+        }}
+      />
+
+      {/* play indicator */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-[250ms] ease-out"
+        style={{ opacity: showIndicator ? 1 : 0 }}
+      >
+        <span
+          className="flex items-center justify-center"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "rgba(26,26,26,0.85)",
+          }}
+        >
+          <Play className="h-4 w-4 text-white fill-white" />
+        </span>
+      </span>
+    </button>
+  );
+};
+
+interface LightboxProps {
+  src: string | null;
+  onClose: () => void;
+}
+
+const Lightbox = ({ src, onClose }: LightboxProps) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!src) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      const v = videoRef.current;
+      if (v) {
+        v.pause();
+        v.removeAttribute("src");
+        v.load();
+      }
+    };
+  }, [src, onClose]);
+
+  if (!src) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center animate-in fade-in duration-200"
+      style={{ background: "rgba(26,26,26,0.90)" }}
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Close"
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
+        style={{ color: "#F7F6F3" }}
+      >
+        <XIcon className="h-6 w-6" />
+      </button>
+      <video
+        ref={videoRef}
+        src={src}
+        controls
+        autoPlay
+        preload="none"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          maxWidth: "90vw",
+          maxHeight: "85vh",
+          width: "auto",
+          height: "auto",
+        }}
+      />
+    </div>
+  );
+};
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const doubled = [...mediaSources, ...mediaSources];
+  const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
+  const closeLightbox = useCallback(() => setLightboxSrc(null), []);
+
+  const doubled = [...CLIP_URLS, ...CLIP_URLS];
 
   return (
     <section className="relative pt-24 pb-12 sm:pt-40 sm:pb-16 overflow-hidden bg-background">
@@ -92,25 +276,8 @@ const Hero = () => {
           <div className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent" />
 
           <div className="marquee-track flex gap-4">
-            {doubled.map((src, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 w-[170px] h-[240px] sm:w-[220px] sm:h-[310px] rounded-[4px] overflow-hidden border border-foreground/10 bg-secondary"
-              >
-                {src.match(/\.(webp|png|jpe?g|gif)(\?|$)/i) ? (
-                  <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
-                ) : (
-                  <video
-                    src={src}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                  />
-                )}
-              </div>
+            {doubled.map((urls, i) => (
+              <RecentWorkCard key={i} urls={urls} onOpen={openLightbox} />
             ))}
           </div>
         </div>
@@ -119,6 +286,23 @@ const Hero = () => {
           Video editing only. Brand ownership belongs to respective clients.
         </p>
       </div>
+
+      <Lightbox src={lightboxSrc} onClose={closeLightbox} />
+
+      <style>{`
+        @media (hover: hover) and (pointer: fine) {
+          .recent-work-card {
+            transition: transform 250ms ease-out, box-shadow 250ms ease-out;
+          }
+          .recent-work-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(26,26,26,0.10);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .recent-work-card:hover { transform: none !important; }
+        }
+      `}</style>
     </section>
   );
 };
