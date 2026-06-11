@@ -106,21 +106,20 @@ export default function AdminDashboard({ initialTab }: AdminDashboardProps = {})
   return (
     <AdminShell eyebrow="Admin · internal" actions={headerActions}>
       <div className="relative max-w-[1280px] mx-auto px-6 py-10">
-        {/* Page header */}
-        <div className="mb-10">
-          <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8]/40 rounded-[4px] px-[14px] py-[6px] bg-white/50 backdrop-blur-sm">
-            {meta.eyebrow}
-          </span>
-          <h1
-            className="mt-5 text-[34px] sm:text-[44px] leading-[1.02] tracking-[-0.025em] text-[#1A1A1A]"
-            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
-          >
-            {meta.title}
-          </h1>
-          <p className="mt-2 text-[14px] text-[#75726B] max-w-xl">{meta.subtitle}</p>
-        </div>
-
         {section === 'clients' ? (
+          <>
+          <div className="mb-10">
+            <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8]/40 rounded-[4px] px-[14px] py-[6px] bg-white/50 backdrop-blur-sm">
+              {meta.eyebrow}
+            </span>
+            <h1
+              className="mt-5 text-[34px] sm:text-[44px] leading-[1.02] tracking-[-0.025em] text-[#1A1A1A]"
+              style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+            >
+              {meta.title}
+            </h1>
+            <p className="mt-2 text-[14px] text-[#75726B] max-w-xl">{meta.subtitle}</p>
+          </div>
           <div className="space-y-8">
             <div
               className="rounded-[8px] border p-6 max-w-sm"
@@ -197,6 +196,7 @@ export default function AdminDashboard({ initialTab }: AdminDashboardProps = {})
               </ul>
             )}
           </div>
+          </>
         ) : (
           <RecruitmentPanel
             section={section === 'pipeline' || section === 'shortlist' || section === 'jobs' ? section : 'pipeline'}
