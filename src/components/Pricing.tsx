@@ -2,14 +2,11 @@ import { ArrowRight } from "lucide-react";
 
 const receiptLines: { label: string; value: string; ink?: boolean }[] = [
   { label: "VIDEOS × 20", value: "$2,000", ink: true },
-  { label: "HOOK VARIATIONS", value: "$0" },
-  { label: "2 PLACEMENT FORMATS", value: "$0" },
-  { label: "HIGGSFIELD + ELEVENLABS", value: "$0" },
-  { label: "EDITING SOFTWARE", value: "$0" },
-  { label: "RECRUITING + MANAGEMENT", value: "$0" },
-  { label: "PERFORMANCE DASHBOARD", value: "$0" },
-  { label: "REVISIONS UNTIL APPROVED", value: "$0" },
-  { label: "RETAINER", value: "$0" },
+  { label: "HOOK VARIATIONS + 2 FORMATS", value: "$0" },
+  { label: "TOOLS", value: "$0" },
+  { label: "ONGOING MANAGEMENT", value: "$0" },
+  { label: "CLIENT DASHBOARD", value: "$0" },
+  { label: "EDITOR MATCHING · ONE TIME", value: "$500" },
 ];
 
 const Pricing = () => {
@@ -117,8 +114,16 @@ const Pricing = () => {
                 className="mono flex justify-between text-[13px] font-medium mt-3"
                 style={{ color: "#1A1A1A" }}
               >
-                <span>TOTAL</span>
-                <span>$2,000</span>
+                <span>TOTAL, FIRST MONTH</span>
+                <span>$2,500</span>
+              </div>
+
+              {/* Then line */}
+              <div
+                className="mono text-right text-[10px] mt-1.5"
+                style={{ color: "#75726B" }}
+              >
+                THEN $2,000 / MONTH AT THIS VOLUME
               </div>
 
               {/* Per video */}
@@ -144,20 +149,6 @@ const Pricing = () => {
                 WHETHER ANYTHING SHIPS OR NOT
               </div>
 
-              {/* Divider */}
-              <div
-                className="mt-3 w-full"
-                style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)" }}
-              />
-
-              {/* Final footnote */}
-              <div
-                className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3 leading-relaxed"
-                style={{ color: "#75726B" }}
-              >
-                COMPLEX EDITS + LONGER FORM PRICED ON THE CALL<br />
-                MOST BRANDS START WITH A SMALL TRIAL BATCH
-              </div>
             </div>
           </div>
         </div>
