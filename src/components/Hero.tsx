@@ -251,7 +251,7 @@ const Hero = () => {
         <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow">Built for e-com brands · Pay per video</span>
+            <span className="eyebrow self-start w-fit">Built for e-com brands · Pay per video</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
               Your <em>dedicated</em> video editor without the additional cost
