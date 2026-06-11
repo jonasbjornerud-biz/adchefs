@@ -71,36 +71,21 @@ const Pricing = () => {
           50% { transform: translateY(-2px); }
           100% { transform: translateY(0); }
         }
+        @keyframes sheetBreathe {
+          0%   { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
+          50%  { transform: rotateX(7.5deg) rotateY(-5deg) rotateZ(0.2deg); }
+          100% { transform: rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg); }
+        }
+        @keyframes shadowBreathe {
+          0%, 100% { opacity: 0.18; }
+          50%      { opacity: 0.14; }
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .sheet-breathe { animation: sheetBreathe 10s ease-in-out infinite; }
+          .shadow-breathe { animation: shadowBreathe 10s ease-in-out infinite; }
+        }
         .receipt-paper { position: relative; }
       `}</style>
-      {/* SVG filter — slow, broad paper warp */}
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <filter id="paperWarp" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence
-            type="turbulence"
-            baseFrequency="0.004 0.007"
-            numOctaves={1}
-            seed={7}
-            result="warp"
-          >
-            {!reduceMotion && (
-              <animate
-                attributeName="baseFrequency"
-                dur="14s"
-                values="0.004 0.007;0.005 0.009;0.004 0.007"
-                repeatCount="indefinite"
-              />
-            )}
-          </feTurbulence>
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="warp"
-            scale={9}
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
@@ -197,18 +182,43 @@ const Pricing = () => {
                       ? "pricing-settle 0.25s ease-out 1.8s"
                       : undefined,
                     willChange: "transform",
+                    perspective: "1200px",
                   }}
                 >
-                  {/* Sheet wrapper */}
+                  {/* Sheet wrapper — holds paper + detached cast shadow */}
                   <div className="relative">
-                    {/* Receipt paper — SVG warp filter + chained drop-shadows */}
+                    {/* Cast shadow — sibling, behind paper, follows tilt */}
                     <div
-                      className="receipt-paper relative w-full p-7"
+                      aria-hidden="true"
+                      className="shadow-breathe"
+                      style={{
+                        position: "absolute",
+                        top: "28px",
+                        left: "14px",
+                        width: "100%",
+                        height: "85%",
+                        background: "rgba(26,26,26,0.18)",
+                        borderRadius: "12px",
+                        filter: "blur(26px)",
+                        transform: "rotateX(6deg) skewX(-4deg)",
+                        transformOrigin: "top center",
+                        opacity: 0.18,
+                        zIndex: 0,
+                        pointerEvents: "none",
+                      }}
+                    />
+
+                    {/* Receipt paper — flat plane, 3D tilt + curvature shading */}
+                    <div
+                      className="receipt-paper sheet-breathe relative w-full p-7"
                       style={{
                         background: "#FDFCFA",
                         borderRadius: 0,
-                        filter:
-                          "url(#paperWarp) drop-shadow(0 3px 5px rgba(26,26,26,0.08)) drop-shadow(0 22px 44px rgba(26,26,26,0.16))",
+                        transform:
+                          "rotateX(6deg) rotateY(-7deg) rotateZ(0.5deg)",
+                        transformStyle: "preserve-3d",
+                        transformOrigin: "top center",
+                        zIndex: 1,
                       }}
                     >
                       {/* Wordmark */}
@@ -303,17 +313,17 @@ const Pricing = () => {
                         }}
                       />
 
-                      {/* Static grain overlay — last child */}
+                      {/* Curvature shading — last child, above content */}
                       <div
                         aria-hidden="true"
                         style={{
                           position: "absolute",
                           inset: 0,
                           pointerEvents: "none",
-                          mixBlendMode: "multiply",
-                          opacity: 0.35,
-                          backgroundImage:
-                            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0.25 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E\")",
+                          borderRadius: "inherit",
+                          background:
+                            "linear-gradient(100deg, rgba(26,26,26,0.10) 0%, rgba(26,26,26,0.02) 18%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.35) 62%, rgba(26,26,26,0.04) 85%, rgba(26,26,26,0.10) 100%), linear-gradient(180deg, rgba(26,26,26,0.06) 0%, transparent 12%)",
+                          mixBlendMode: "soft-light",
                         }}
                       />
                     </div>
