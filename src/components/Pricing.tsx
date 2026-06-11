@@ -78,33 +78,51 @@ const Pricing = () => {
           75%  { transform: rotate(-0.3deg) translateY(1px); }
           100% { transform: rotate(0.6deg) translateY(0px); }
         }
+        @keyframes curlFlutter {
+          0%   { transform: rotate(0deg) scale(1); }
+          30%  { transform: rotate(-3deg) scale(1.04); }
+          55%  { transform: rotate(1deg) scale(0.99); }
+          80%  { transform: rotate(-2deg) scale(1.02); }
+          100% { transform: rotate(0deg) scale(1); }
+        }
         @media (prefers-reduced-motion: no-preference) {
           .receipt-sway {
             animation: receiptSway 7s ease-in-out infinite;
             transform-origin: top center;
             will-change: transform;
           }
+          .curl-flutter {
+            animation: curlFlutter 5s ease-in-out infinite;
+          }
         }
         .receipt-paper { position: relative; }
-        .receipt-paper::after {
-          content: '';
-          position: absolute;
-          bottom: 0; left: 0;
-          width: 52px; height: 52px;
-          background: linear-gradient(135deg, #FDFCFA 45%, #EAE8E2 70%, #DBD9D2 100%);
-          border-radius: 0 0 0 100%;
-          box-shadow: 6px -6px 12px rgba(26,26,26,0.10);
-          z-index: 3;
-        }
-        .receipt-paper::before {
-          content: '';
-          position: absolute;
-          bottom: 2px; left: 2px;
-          width: 56px; height: 56px;
-          background: radial-gradient(circle at 0% 100%, rgba(26,26,26,0.18), transparent 65%);
-          z-index: -1;
-        }
       `}</style>
+      {/* SVG filter for wind ripple — registered once */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <filter id="paperWind">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.012 0.02"
+            numOctaves={2}
+            seed={3}
+            result="noise"
+          >
+            <animate
+              attributeName="baseFrequency"
+              dur="9s"
+              values="0.012 0.02;0.014 0.026;0.012 0.02"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale={4}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
@@ -186,7 +204,7 @@ const Pricing = () => {
               <div
                 style={{
                   overflow: "hidden",
-                  paddingBottom: "14px",
+                  paddingBottom: "72px",
                   position: "relative",
                   zIndex: 1,
                   marginTop: "-12px",
@@ -203,16 +221,19 @@ const Pricing = () => {
                     willChange: "transform",
                   }}
                 >
-                  {/* Receipt paper — sway lives here, no entrance transform on this element */}
-                  <div
-                    className="receipt-paper receipt-sway relative w-full p-7"
-                    style={{
-                      background: "#FDFCFA",
-                      borderRadius: 0,
-                      boxShadow:
-                        "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
-                    }}
-                  >
+                  {/* Sway wrapper — moves the whole sheet (paper + curl together) */}
+                  <div className="receipt-sway relative">
+                    {/* Receipt paper — wind filter wrinkles only the sheet */}
+                    <div
+                      className="receipt-paper relative w-full p-7"
+                      style={{
+                        background: "#FDFCFA",
+                        borderRadius: 0,
+                        boxShadow:
+                          "0 2px 4px rgba(26,26,26,0.05), 0 16px 40px rgba(26,26,26,0.14)",
+                        filter: reduceMotion ? undefined : "url(#paperWind)",
+                      }}
+                    >
                       {/* Wordmark */}
                       <div style={rowStyle(0)}>
                         <div
@@ -304,6 +325,51 @@ const Pricing = () => {
                             "linear-gradient(-45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x, linear-gradient(45deg, transparent 8px, #FDFCFA 0) 0 0 / 16px 12px repeat-x",
                         }}
                       />
+                    </div>
+
+                    {/* Drawn SVG curl — sibling of paper so filter doesn't touch it */}
+                    <svg
+                      viewBox="0 0 64 64"
+                      aria-hidden="true"
+                      className="curl-flutter"
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: "64px",
+                        height: "64px",
+                        overflow: "visible",
+                        transformOrigin: "0% 100%",
+                        zIndex: 5,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      <defs>
+                        <linearGradient id="curlFace" x1="0" y1="1" x2="0.8" y2="0.2">
+                          <stop offset="0" stopColor="#D8D6CF" />
+                          <stop offset="0.45" stopColor="#F1EFEA" />
+                          <stop offset="1" stopColor="#FDFCFA" />
+                        </linearGradient>
+                      </defs>
+                      {/* cast shadow */}
+                      <path
+                        d="M0 64 L0 20 Q2 50 26 58 Q44 63 64 64 Z"
+                        fill="rgba(26,26,26,0.14)"
+                        style={{ filter: "blur(3px)", transform: "translate(3px,-2px)" }}
+                      />
+                      {/* curled flap face */}
+                      <path
+                        d="M0 64 L0 14 Q14 46 40 56 Q52 61 64 64 Q34 60 14 44 Q2 32 0 14 Z"
+                        fill="url(#curlFace)"
+                      />
+                      {/* fold crease */}
+                      <path
+                        d="M0 14 Q14 46 40 56 Q52 61 64 64"
+                        fill="none"
+                        stroke="rgba(26,26,26,0.10)"
+                        strokeWidth={0.8}
+                      />
+                    </svg>
                   </div>
                 </div>
               </div>
