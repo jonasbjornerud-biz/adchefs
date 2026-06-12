@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { generatePassword, brandToUsername } from '@/lib/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ArrowLeft, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Copy, Check, KeyRound, Zap, FileSpreadsheet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AdminShell from '@/components/admin/AdminShell';
+import { PageHeader, FormField, FormLabel, FormHint, StatusPill } from '@/components/backend';
+import { DEFAULT_PORTAL_TEMPLATE } from '@/lib/clientDefaults';
 
 function extractSheetId(url: string): string | null {
   const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -64,106 +65,247 @@ export default function ClientForm() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
-        <div className="max-w-2xl mx-auto px-6 py-4">
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        <h1 className="text-xl font-semibold text-foreground mb-6">New Client</h1>
+    <AdminShell
+      eyebrow="Admin · new client"
+      actions={
+        <button
+          onClick={() => navigate('/admin?section=clients')}
+          className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[4px] border border-[#E2E0D9] bg-white text-[#1A1A1A] hover:bg-[#FAF8F3] mono text-[10px] uppercase tracking-[0.15em] transition-colors"
+        >
+          <ArrowLeft className="w-3 h-3" /> Back
+        </button>
+      }
+    >
+      <div className="relative max-w-[920px] mx-auto px-6 py-12">
+        <PageHeader
+          eyebrow="New brand"
+          title={<>Onboard a <em>new client.</em></>}
+          subtitle="They'll inherit the premium AdChefs portal — editor performance, KPI dashboard, and ad reporting — out of the box."
+        />
 
         {!credentials ? (
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Brand Name</label>
-              <Input
-                value={brandName}
-                onChange={(e) => setBrandName(e.target.value)}
-                placeholder="e.g. BluComerce"
-                className="max-w-md"
-              />
-              {brandName && (
-                <p className="text-xs text-muted-foreground mt-1 font-mono">
-                  Username: {brandToUsername(brandName)}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">
-                Editor Performance Sheet URL <span className="text-muted-foreground font-normal">(optional)</span>
-              </label>
-              <Input
-                value={sheetUrl}
-                onChange={(e) => setSheetUrl(e.target.value)}
-                placeholder="https://docs.google.com/spreadsheets/d/..."
-                className="max-w-md"
-              />
-              {sheetUrl && extractSheetId(sheetUrl) && (
-                <p className="text-xs text-foreground mt-1 font-mono">
-                  ✓ Sheet ID: {extractSheetId(sheetUrl)}
-                </p>
-              )}
-              {sheetUrl && !extractSheetId(sheetUrl) && (
-                <p className="text-xs text-destructive mt-1">Invalid Google Sheets URL</p>
-              )}
-            </div>
-            <div className="pt-2 border-t border-border">
-              <p className="text-sm font-semibold text-foreground mb-3">Meta Ads (optional)</p>
-              <p className="text-xs text-muted-foreground mb-3">
-                Add the client's own Meta access token + ad account ID to power their KPI dashboard. Both can be edited later.
-              </p>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-medium text-foreground mb-1.5 block">Meta Access Token</label>
-                  <Input
-                    value={metaAccessToken}
-                    onChange={(e) => setMetaAccessToken(e.target.value)}
-                    placeholder="EAAB..."
-                    className="max-w-md font-mono text-xs"
-                  />
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
+            {/* Form column */}
+            <div className="space-y-8">
+              {/* Brand identity */}
+              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{ background: 'linear-gradient(90deg,#9ED8F5 0%,#3B86A8 35%,transparent 100%)', opacity: 0.6 }}
+                />
+                <div className="px-6 pt-6 pb-3 border-b border-[#EEEDE8]">
+                  <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#75726B]">Section 01</p>
+                  <h2
+                    className="mt-1 text-[18px] tracking-[-0.015em] text-[#1A1A1A]"
+                    style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                  >
+                    Brand identity
+                  </h2>
                 </div>
-                <div>
-                  <label className="text-xs font-medium text-foreground mb-1.5 block">Meta Ad Account ID</label>
-                  <Input
-                    value={metaAdAccountId}
-                    onChange={(e) => setMetaAdAccountId(e.target.value)}
-                    placeholder="act_1234567890"
-                    className="max-w-md font-mono text-xs"
-                  />
+                <div className="p-6 space-y-5">
+                  <div>
+                    <FormLabel>Brand name</FormLabel>
+                    <FormField
+                      value={brandName}
+                      onChange={(e) => setBrandName(e.target.value)}
+                      placeholder="e.g. BluComerce"
+                    />
+                    {brandName && (
+                      <FormHint tone="ok">Username · {brandToUsername(brandName)}</FormHint>
+                    )}
+                  </div>
                 </div>
+              </section>
+
+              {/* Editor performance source */}
+              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{ background: 'linear-gradient(90deg,#9ED8F5 0%,#3B86A8 35%,transparent 100%)', opacity: 0.6 }}
+                />
+                <div className="px-6 pt-6 pb-3 border-b border-[#EEEDE8] flex items-center justify-between">
+                  <div>
+                    <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#75726B]">Section 02</p>
+                    <h2
+                      className="mt-1 text-[18px] tracking-[-0.015em] text-[#1A1A1A]"
+                      style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                    >
+                      Editor performance <span className="text-[#9A988F] font-normal">— optional</span>
+                    </h2>
+                  </div>
+                  <FileSpreadsheet className="w-4 h-4 text-[#3B86A8]" strokeWidth={1.5} />
+                </div>
+                <div className="p-6 space-y-3">
+                  <FormLabel hint="Google Sheet URL">EOD Report sheet</FormLabel>
+                  <FormField
+                    value={sheetUrl}
+                    onChange={(e) => setSheetUrl(e.target.value)}
+                    placeholder="https://docs.google.com/spreadsheets/d/..."
+                  />
+                  {sheetUrl && extractSheetId(sheetUrl) && (
+                    <FormHint tone="ok">Sheet ID · {extractSheetId(sheetUrl)}</FormHint>
+                  )}
+                  {sheetUrl && !extractSheetId(sheetUrl) && (
+                    <FormHint tone="error">Invalid Google Sheets URL</FormHint>
+                  )}
+                </div>
+              </section>
+
+              {/* Meta Ads */}
+              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{ background: 'linear-gradient(90deg,#9ED8F5 0%,#3B86A8 35%,transparent 100%)', opacity: 0.6 }}
+                />
+                <div className="px-6 pt-6 pb-3 border-b border-[#EEEDE8] flex items-center justify-between">
+                  <div>
+                    <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#75726B]">Section 03</p>
+                    <h2
+                      className="mt-1 text-[18px] tracking-[-0.015em] text-[#1A1A1A]"
+                      style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                    >
+                      Meta Ads <span className="text-[#9A988F] font-normal">— optional</span>
+                    </h2>
+                    <p className="mt-1.5 text-[12px] text-[#75726B] max-w-md">
+                      Powers the client's KPI dashboard. Both fields can be edited later.
+                    </p>
+                  </div>
+                  <Zap className="w-4 h-4 text-[#3B86A8]" strokeWidth={1.5} />
+                </div>
+                <div className="p-6 space-y-5">
+                  <div>
+                    <FormLabel>Meta access token</FormLabel>
+                    <FormField
+                      value={metaAccessToken}
+                      onChange={(e) => setMetaAccessToken(e.target.value)}
+                      placeholder="EAAB..."
+                      className="font-mono text-[12px]"
+                    />
+                  </div>
+                  <div>
+                    <FormLabel>Meta ad account ID</FormLabel>
+                    <FormField
+                      value={metaAdAccountId}
+                      onChange={(e) => setMetaAdAccountId(e.target.value)}
+                      placeholder="act_1234567890"
+                      className="font-mono text-[12px]"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  onClick={() => navigate('/admin?section=clients')}
+                  className="h-11 px-5 rounded-[4px] border border-[#E2E0D9] bg-white text-[#1A1A1A] hover:bg-[#FAF8F3] text-[13px] font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreate}
+                  disabled={!brandName.trim() || loading}
+                  className="group h-11 px-6 rounded-[4px] bg-[#1A1A1A] text-[#F7F6F3] hover:bg-black text-[13px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                >
+                  {loading ? 'Creating…' : 'Create client'}
+                </button>
               </div>
             </div>
-            <Button onClick={handleCreate} disabled={!brandName.trim() || loading} className="bg-foreground hover:bg-foreground/90 text-white">
-              {loading ? 'Creating...' : 'Create Client'}
-            </Button>
+
+            {/* Side panel: what they get */}
+            <aside className="lg:sticky lg:top-20 self-start">
+              <div className="relative rounded-[6px] border border-[#E2E0D9] bg-white p-5 overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{ background: 'linear-gradient(90deg,#9ED8F5 0%,#3B86A8 35%,transparent 100%)', opacity: 0.6 }}
+                />
+                <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#3B86A8] mb-3">
+                  Portal template
+                </p>
+                <h3
+                  className="text-[15px] tracking-[-0.01em] text-[#1A1A1A] mb-3"
+                  style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                >
+                  Every new client inherits this stack.
+                </h3>
+                <ul className="space-y-2.5 text-[12px] text-[#1A1A1A]">
+                  {[
+                    ['Client portal home', DEFAULT_PORTAL_TEMPLATE.client_portal_enabled],
+                    ['Editor Performance', DEFAULT_PORTAL_TEMPLATE.editor_performance_enabled],
+                    ['KPI Dashboard', DEFAULT_PORTAL_TEMPLATE.kpi_dashboard_enabled],
+                    ['Ad Performance', DEFAULT_PORTAL_TEMPLATE.ad_performance_enabled],
+                  ].map(([label, on]) => (
+                    <li key={label as string} className="flex items-center justify-between gap-3">
+                      <span>{label as string}</span>
+                      <StatusPill variant={on ? 'connected' : 'not-configured'}>
+                        {on ? 'Default on' : 'Off'}
+                      </StatusPill>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-5 pt-4 border-t border-[#EEEDE8] mono text-[10px] uppercase tracking-[0.15em] text-[#75726B]">
+                  Theme · adchefs-premium
+                </div>
+              </div>
+            </aside>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="rounded-xl border border-border bg-secondary p-5 space-y-3">
-              <p className="text-sm font-semibold text-foreground">✅ Client created successfully</p>
-              <p className="text-xs text-muted-foreground">Save these credentials — the password won't be shown again.</p>
-              <div className="bg-card rounded-lg border border-border p-4 font-mono text-sm space-y-1">
-                <p><span className="text-muted-foreground">Username:</span> {credentials.username}</p>
-                <p><span className="text-muted-foreground">Password:</span> {credentials.password}</p>
+          <div className="max-w-xl">
+            <div className="relative rounded-[6px] border border-[#E2E0D9] bg-white p-7 overflow-hidden">
+              <span
+                aria-hidden
+                className="absolute top-0 left-0 right-0 h-[2px]"
+                style={{ background: 'linear-gradient(90deg,#9ED8F5 0%,#3B86A8 50%,transparent 100%)' }}
+              />
+              <div className="flex items-center gap-2 mb-2">
+                <KeyRound className="w-4 h-4 text-[#3B86A8]" strokeWidth={1.5} />
+                <span className="mono text-[10px] uppercase tracking-[0.18em] text-[#3B86A8]">
+                  Client created · portal ready
+                </span>
               </div>
-              <Button variant="outline" size="sm" onClick={copyCredentials}>
-                {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
-                {copied ? 'Copied!' : 'Copy Credentials'}
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => navigate('/admin')}>Back to Dashboard</Button>
-              <Button onClick={() => { setCredentials(null); setBrandName(''); setSheetUrl(''); }} className="bg-foreground hover:bg-foreground/90 text-white">
-                Create Another
-              </Button>
+              <h2
+                className="text-[24px] tracking-[-0.02em] text-[#1A1A1A] mb-2"
+                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}
+              >
+                Save these <em>credentials.</em>
+              </h2>
+              <p className="text-[13px] text-[#75726B] mb-5">
+                The password won't be shown again. Share it with the client through a secure channel.
+              </p>
+
+              <div className="rounded-[4px] border border-[#E2E0D9] bg-[#FAF8F3] p-4 font-mono text-[13px] space-y-1.5">
+                <p><span className="text-[#75726B]">Username · </span>{credentials.username}</p>
+                <p><span className="text-[#75726B]">Password · </span>{credentials.password}</p>
+              </div>
+
+              <div className="mt-5 flex items-center gap-2">
+                <button
+                  onClick={copyCredentials}
+                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[4px] border border-[#E2E0D9] bg-white text-[#1A1A1A] hover:bg-[#FAF8F3] text-[13px] font-medium transition-colors"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? 'Copied' : 'Copy credentials'}
+                </button>
+                <button
+                  onClick={() => navigate('/admin?section=clients')}
+                  className="h-10 px-4 rounded-[4px] bg-[#1A1A1A] text-[#F7F6F3] hover:bg-black text-[13px] font-medium transition-colors"
+                >
+                  Back to clients
+                </button>
+                <button
+                  onClick={() => { setCredentials(null); setBrandName(''); setSheetUrl(''); setMetaAccessToken(''); setMetaAdAccountId(''); }}
+                  className="h-10 px-4 rounded-[4px] text-[#75726B] hover:text-[#1A1A1A] text-[13px] font-medium transition-colors"
+                >
+                  Create another
+                </button>
+              </div>
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AdminShell>
   );
 }
