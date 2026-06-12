@@ -259,28 +259,54 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
                 key={card.title}
                 onClick={() => enabled && navigate(card.route)}
                 disabled={!enabled}
-                className={`group text-left relative overflow-hidden rounded-[4px] p-8 transition-all duration-300 bg-white border border-[#E2E0D9] ${
-                  enabled ? 'cursor-pointer hover:border-[#1A1A1A] hover:-translate-y-0.5 hover:shadow-[0_24px_60px_-30px_rgba(26,26,26,0.35)]' : 'cursor-not-allowed opacity-55'
+                className={`group text-left relative overflow-hidden rounded-[12px] p-8 transition-all duration-500 border ${
+                  enabled
+                    ? 'cursor-pointer border-[#E5E3DC] hover:border-[#1A1A1A]/30 hover:-translate-y-[3px]'
+                    : 'cursor-not-allowed opacity-55 border-[#E2E0D9]'
                 }`}
+                style={{
+                  background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)',
+                  boxShadow: enabled
+                    ? '0 1px 0 rgba(255,255,255,0.9) inset, 0 18px 40px -28px rgba(26,26,26,0.25)'
+                    : '0 1px 0 rgba(255,255,255,0.7) inset',
+                }}
               >
-                {/* Accent corner mark */}
+                {/* Top accent rail */}
                 <span
-                  className="absolute top-0 left-0 h-px transition-all duration-300 bg-[#9ED8F5]"
-                  style={{ width: enabled ? '64px' : '24px' }}
+                  className="absolute top-0 left-0 h-[2px] transition-all duration-500 group-hover:w-full"
+                  style={{
+                    width: enabled ? '80px' : '24px',
+                    background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 50%, transparent 100%)',
+                    boxShadow: enabled ? '0 0 10px rgba(158,216,245,0.5)' : 'none',
+                  }}
                 />
+                {/* Soft corner glow */}
+                {enabled && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -right-24 -top-24 w-72 h-72 rounded-full opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{ background: 'radial-gradient(circle, rgba(158,216,245,0.18) 0%, transparent 65%)' }}
+                  />
+                )}
 
                 <div className="relative flex flex-col h-full min-h-[280px]">
                   {/* Header row */}
                   <div className="flex items-start justify-between mb-8">
                     <div className="flex items-center gap-3">
-                      <span className="eyebrow">0{idx + 1}</span>
-                      <Icon className="w-4 h-4 text-[#75726B]" strokeWidth={1.5} />
+                      <span className="inline-flex items-center justify-center w-9 h-9 rounded-[8px] bg-white border border-[#E5E3DC] text-[#3B86A8] shadow-[0_1px_0_rgba(255,255,255,0.8)_inset]">
+                        <Icon className="w-4 h-4" strokeWidth={1.5} />
+                      </span>
+                      <span className="mono text-[10px] uppercase tracking-[0.22em] text-[#8A8780]">
+                        0{idx + 1} / 02
+                      </span>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-[#1A1A1A] transition-transform duration-300 group-hover:translate-x-1" strokeWidth={1.5} />
+                    <span className="w-9 h-9 rounded-full flex items-center justify-center border border-transparent group-hover:border-[#1A1A1A]/15 transition-all duration-300">
+                      <ArrowRight className="w-4 h-4 text-[#1A1A1A] transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.75} />
+                    </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[28px] leading-[1.05] tracking-tight font-semibold mb-3">
+                  <h3 className="text-[30px] leading-[1.02] tracking-[-0.025em] font-semibold mb-3" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
                     {card.titlePrefix} <em>{card.emphasis}</em>
                   </h3>
                   <p className="text-[14px] text-[#75726B] leading-relaxed max-w-sm">
@@ -289,15 +315,15 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
 
                   {/* Stats strip */}
                   {enabled && (
-                    <div className="mt-7 mb-6 grid grid-cols-2 gap-px bg-[#E2E0D9] border border-[#E2E0D9] rounded-[4px] overflow-hidden">
+                    <div className="mt-7 mb-6 grid grid-cols-2 gap-px rounded-[10px] overflow-hidden border border-[#E5E3DC]" style={{ background: '#E5E3DC' }}>
                       {card.stats.map((s, i) => (
-                        <div key={i} className="bg-[#F7F6F3] px-4 py-3.5">
-                          <div className="text-[10px] uppercase tracking-[0.15em] font-mono text-[#75726B] mb-1.5">
+                        <div key={i} className="px-4 py-4" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)' }}>
+                          <div className="text-[9px] uppercase tracking-[0.22em] font-mono text-[#8A8780] mb-1.5">
                             {s.label}
                           </div>
-                          <div className="text-xl font-semibold tracking-tight tabular-nums text-[#1A1A1A]">
+                          <div className="text-[22px] tracking-[-0.025em] tabular-nums text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
                             {wtdData.loading ? (
-                              <span className="inline-block w-14 h-5 rounded-sm bg-[#E2E0D9] animate-pulse" />
+                              <span className="inline-block w-14 h-6 rounded-sm bg-[#EFEEE8] animate-pulse" />
                             ) : (
                               s.value
                             )}
