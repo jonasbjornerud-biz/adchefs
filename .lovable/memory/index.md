@@ -15,3 +15,4 @@
 - [Booking Qualification Rules](mem://constraints/booking-qualification) — Target audience constraints for Calendly booking
 - [FAQ Content](mem://features/faq-content) — The 3 core FAQ topics and their answers
 - [Dashboard parity](mem://preferences/dashboard-parity) — Keep editor and mock dashboards visually identical
+- [Backend design system](mem://architecture/backend-design-system) — Shared primitives in src/components/backend/ + default portal template for every new client
