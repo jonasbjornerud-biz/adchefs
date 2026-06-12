@@ -349,7 +349,19 @@ const LongReceipt = () => {
           style={{ display: "block" }}
           aria-hidden
         >
-          <path d={`M 0 0 L ${W} 0 ${edge(0, 1).replace("M 0 0", "L 0 0")} Z`} fill="#FBFAF6" />
+          <path
+            d={`M 0 0 L ${W} 0 L ${W} 0 ${(() => {
+              let d = "";
+              for (let i = teeth - 1; i >= 0; i--) {
+                const x1 = (i + 1) * toothW;
+                const x2 = i * toothW + toothW / 2;
+                const x3 = i * toothW;
+                d += ` L ${x1} 0 L ${x2} 6 L ${x3} 0`;
+              }
+              return d;
+            })()} Z`}
+            fill="#FBFAF6"
+          />
         </svg>
       </div>
     </div>
