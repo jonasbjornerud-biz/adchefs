@@ -230,23 +230,31 @@ export default function PerformanceDashboard() {
   const editorBreakdown = useMemo(() => {
     if (!data) return [];
     const monthFiltered = data.eod.filter(r => r.Month?.toLowerCase() === month.toLowerCase());
-    const map: Record<string, { delivered: number; days: Set<string> }> = {};
+    const map: Record<string, { delivered: number; days: Set<string>; weeks: Set<string> }> = {};
     monthFiltered.forEach(r => {
       const name = r.Name;
       if (!name) return;
-      if (!map[name]) map[name] = { delivered: 0, days: new Set() };
+      if (!map[name]) map[name] = { delivered: 0, days: new Set(), weeks: new Set() };
       map[name].delivered += parseInt(r['Videos Delivered']) || 0;
       if (r.Date) map[name].days.add(r.Date);
+      if (r.Week) map[name].weeks.add(r.Week);
     });
+    const totalDelivered = Object.values(map).reduce((s, v) => s + v.delivered, 0) || 1;
     return Object.entries(map)
       .map(([name, stats]) => ({
         name,
         delivered: stats.delivered,
         activeDays: stats.days.size,
+        weeksActive: stats.weeks.size,
         avg: stats.days.size > 0 ? (stats.delivered / stats.days.size).toFixed(1) : '—',
+        sharePct: Math.round((stats.delivered / totalDelivered) * 100),
       }))
       .sort((a, b) => b.delivered - a.delivered);
   }, [data, month]);
+
+  function initialsOf(name: string) {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('');
+  }
 
   const noData = filteredEod.length === 0 && !loading;
 
@@ -441,36 +449,121 @@ export default function PerformanceDashboard() {
             {/* Editor Breakdown Table */}
             {editorBreakdown.length > 0 && (
               <div>
-                <span className="eyebrow mb-4 inline-block">Editor Breakdown</span>
+                <div className="flex items-end justify-between gap-4 mb-4">
+                  <div>
+                    <span className="eyebrow">Editor Breakdown</span>
+                    <p className="mt-2 text-[12px] text-[#75726B]">
+                      Per-editor output for {month}. Sorted by delivered volume.
+                    </p>
+                  </div>
+                  <div className="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#3B86A8]" /> Top performer
+                    </span>
+                    <span className="text-[#D8D7D2]">·</span>
+                    <span>{editorBreakdown.length} editors</span>
+                  </div>
+                </div>
                 <PremiumCard className="overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
                       <thead>
-                        <tr className="bg-[#F7F6F3]">
-                          <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Editor</th>
-                          <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Delivered</th>
-                          <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Active Days</th>
-                          <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Avg/Day</th>
-                          <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Output</th>
+                        <tr style={{ background: '#FAF8F3', borderBottom: '1px solid #EEEDE8' }}>
+                          <th className="px-5 py-3 text-left text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780] w-12">#</th>
+                          <th className="px-5 py-3 text-left text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780]">Editor</th>
+                          <th className="px-5 py-3 text-right text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780]">Delivered</th>
+                          <th className="px-5 py-3 text-left text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780] min-w-[180px]">Share of output</th>
+                          <th className="px-5 py-3 text-right text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780]">Avg / day</th>
+                          <th className="px-5 py-3 text-right text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8780]">Active days</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {editorBreakdown.map((ed) => {
-                          const maxDelivered = Math.max(...editorBreakdown.map(e => e.delivered), 1);
-                          const pct = (ed.delivered / maxDelivered) * 100;
+                        {editorBreakdown.map((ed, i) => {
+                          const isTop = i === 0;
+                          const sharePct = ed.sharePct;
                           return (
-                            <tr key={ed.name} className="border-b border-[#E2E0D9] last:border-b-0 hover:bg-[#F7F6F3] transition-colors duration-200">
-                              <td className="px-4 py-5 text-[#1A1A1A] font-medium">{ed.name}</td>
-                              <td className="px-4 py-5 font-semibold text-[#1A1A1A] tabular-nums">{ed.delivered}</td>
-                              <td className="px-4 py-5 text-[#75726B] tabular-nums">{ed.activeDays}</td>
-                              <td className="px-4 py-5 text-[#75726B] tabular-nums">{ed.avg}</td>
-                              <td className="px-4 py-5 min-w-[160px]">
-                                <div className="flex items-center gap-2">
-                                  <div className="flex-1 h-[3px] rounded-full bg-[#E2E0D9] overflow-hidden">
-                                    <div className="h-full rounded-full bg-[#1A1A1A] transition-all duration-300" style={{ width: `${pct}%` }} />
+                            <tr
+                              key={ed.name}
+                              className="border-b last:border-b-0 transition-colors duration-200"
+                              style={{
+                                borderColor: '#F1EFE8',
+                                background: isTop
+                                  ? 'linear-gradient(90deg, rgba(236,247,253,0.55) 0%, transparent 80%)'
+                                  : 'transparent',
+                              }}
+                              onMouseEnter={e => { if (!isTop) (e.currentTarget as HTMLTableRowElement).style.background = 'rgba(158,216,245,0.05)'; }}
+                              onMouseLeave={e => { if (!isTop) (e.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
+                            >
+                              <td className="px-5 py-4 align-middle">
+                                <span
+                                  className="inline-flex items-center justify-center w-7 h-6 rounded-[4px] mono text-[10px] tabular-nums"
+                                  style={
+                                    isTop
+                                      ? { background: 'linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 100%)', color: '#9ED8F5', boxShadow: '0 0 8px rgba(158,216,245,0.25)' }
+                                      : { background: '#F2F1EC', color: '#75726B' }
+                                  }
+                                >
+                                  {String(i + 1).padStart(2, '0')}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4 align-middle">
+                                <div className="flex items-center gap-3">
+                                  <span
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] tracking-[0.05em] tabular-nums shrink-0"
+                                    style={{
+                                      background: isTop
+                                        ? 'linear-gradient(135deg, #BFE3F5 0%, #ECF7FD 100%)'
+                                        : 'linear-gradient(135deg, #F2F1EC 0%, #FAF8F3 100%)',
+                                      color: isTop ? '#1A4A6B' : '#75726B',
+                                      border: '1px solid #E5E3DC',
+                                      fontFamily: "'Inter Tight', sans-serif",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    {initialsOf(ed.name) || '–'}
+                                  </span>
+                                  <div className="min-w-0">
+                                    <p
+                                      className="text-[14px] tracking-[-0.01em] text-[#1A1A1A] leading-tight truncate"
+                                      style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+                                    >
+                                      {ed.name}
+                                    </p>
+                                    {isTop && (
+                                      <p className="mt-0.5 mono text-[9px] uppercase tracking-[0.2em] text-[#3B86A8]">
+                                        Top performer
+                                      </p>
+                                    )}
                                   </div>
                                 </div>
                               </td>
+                              <td
+                                className="px-5 py-4 text-right tabular-nums text-[#0F0F0F]"
+                                style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600, fontSize: '18px', letterSpacing: '-0.02em' }}
+                              >
+                                {ed.delivered}
+                              </td>
+                              <td className="px-5 py-4 align-middle">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-1 h-[6px] rounded-full overflow-hidden" style={{ background: '#EFEEE8' }}>
+                                    <div
+                                      className="h-full rounded-full transition-all duration-500"
+                                      style={{
+                                        width: `${sharePct}%`,
+                                        background: isTop
+                                          ? 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 100%)'
+                                          : 'linear-gradient(90deg, #C8E9F7 0%, #6FB8E0 100%)',
+                                        boxShadow: isTop ? '0 0 6px rgba(158,216,245,0.5)' : 'none',
+                                      }}
+                                    />
+                                  </div>
+                                  <span className="mono text-[11px] tabular-nums text-[#75726B] w-10 text-right">
+                                    {sharePct}%
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-5 py-4 text-right tabular-nums text-[#1A1A1A] text-[13px]">{ed.avg}</td>
+                              <td className="px-5 py-4 text-right tabular-nums text-[#75726B] text-[13px]">{ed.activeDays}</td>
                             </tr>
                           );
                         })}
