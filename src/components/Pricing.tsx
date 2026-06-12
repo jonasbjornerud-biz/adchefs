@@ -72,26 +72,38 @@ const Pricing = () => {
           100% { transform: translateY(0); }
         }
         @keyframes sheetBreathe {
-          0%, 100% { transform: rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg) translateY(0); }
-          20%      { transform: rotateX(15.5deg) rotateY(-8.5deg) rotateZ(1.2deg) translateY(-3px); }
-          45%      { transform: rotateX(13deg) rotateY(-12.5deg) rotateZ(-0.4deg) translateY(2px); }
-          70%      { transform: rotateX(15deg) rotateY(-9.5deg) rotateZ(1deg) translateY(-2px); }
+          0%, 100% { transform: perspective(1400px) rotateX(16deg) rotateY(-13deg) rotateZ(0.8deg) translate3d(0,0,0); }
+          18%      { transform: perspective(1400px) rotateX(20deg) rotateY(-6deg)  rotateZ(2.2deg) translate3d(2px,-4px,18px); }
+          36%      { transform: perspective(1400px) rotateX(12deg) rotateY(-17deg) rotateZ(-1.4deg) translate3d(-3px,3px,-12px); }
+          55%      { transform: perspective(1400px) rotateX(22deg) rotateY(-9deg)  rotateZ(1.6deg) translate3d(1px,-3px,22px); }
+          74%      { transform: perspective(1400px) rotateX(14deg) rotateY(-15deg) rotateZ(-0.6deg) translate3d(-2px,2px,-8px); }
         }
         @keyframes shadowBreathe {
-          0%, 100% { opacity: 0.32; transform: rotateX(14deg) skewX(-6deg) scaleY(1.05); }
-          20%      { opacity: 0.28; transform: rotateX(14deg) skewX(-7.5deg) scaleY(1.07) translateX(2px); }
-          45%      { opacity: 0.34; transform: rotateX(14deg) skewX(-4.5deg) scaleY(1.03) translateX(-2px); }
-          70%      { opacity: 0.28; transform: rotateX(14deg) skewX(-7deg) scaleY(1.06) translateX(1px); }
+          0%, 100% { opacity: 0.34; transform: rotateX(14deg) skewX(-6deg) scaleY(1.06) translateX(0); filter: blur(34px); }
+          18%      { opacity: 0.26; transform: rotateX(14deg) skewX(-9deg) scaleY(1.10) translateX(6px); filter: blur(40px); }
+          36%      { opacity: 0.38; transform: rotateX(14deg) skewX(-3deg) scaleY(1.02) translateX(-6px); filter: blur(28px); }
+          55%      { opacity: 0.24; transform: rotateX(14deg) skewX(-8.5deg) scaleY(1.09) translateX(4px); filter: blur(38px); }
+          74%      { opacity: 0.36; transform: rotateX(14deg) skewX(-4deg) scaleY(1.04) translateX(-3px); filter: blur(30px); }
+        }
+        @keyframes wrinkleDrift {
+          0%, 100% { transform: translateX(0) scaleY(1);  opacity: 0.55; }
+          25%      { transform: translateX(-4%) scaleY(1.05); opacity: 0.7; }
+          50%      { transform: translateX(3%)  scaleY(0.95); opacity: 0.45; }
+          75%      { transform: translateX(-2%) scaleY(1.03); opacity: 0.65; }
         }
         .receipt-sheet {
-          animation: sheetBreathe 7s ease-in-out infinite;
+          animation: sheetBreathe 9s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
         }
         .receipt-cast-shadow {
-          animation: shadowBreathe 7s ease-in-out infinite;
+          animation: shadowBreathe 9s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+        }
+        .receipt-wrinkles {
+          animation: wrinkleDrift 11s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .receipt-sheet,
-          .receipt-cast-shadow { animation: none !important; }
+          .receipt-cast-shadow,
+          .receipt-wrinkles { animation: none !important; }
         }
       `}</style>
       <div className="mx-auto max-w-[1200px] px-6">
