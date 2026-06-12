@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 
 const receiptLines: { label: string; value: string; ink?: boolean }[] = [
   { label: "VIDEOS × 20", value: "$2,000", ink: true },
@@ -18,94 +17,8 @@ const Pricing = () => {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const triggerRef = useRef<HTMLDivElement>(null);
-  const [phase, setPhase] = useState<"idle" | "armed" | "printed">("idle");
-  const [reduceMotion, setReduceMotion] = useState(false);
-
-  useEffect(() => {
-    const el = triggerRef.current;
-    if (!el) return;
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReduceMotion(reduce);
-    if (reduce || typeof IntersectionObserver === "undefined") {
-      setPhase("printed");
-      return;
-    }
-    setPhase("armed");
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setPhase("printed");
-            io.disconnect();
-          }
-        });
-      },
-      { threshold: 0.35 }
-    );
-    io.observe(el);
-    // Safety fallback: never leave the receipt hidden
-    const t = window.setTimeout(() => setPhase("printed"), 4000);
-    return () => {
-      io.disconnect();
-      window.clearTimeout(t);
-    };
-  }, []);
-
-  const hidden = phase === "armed";
-  const printed = phase === "printed";
-
-  const rowStyle = (i: number): React.CSSProperties => ({
-    opacity: hidden ? 0 : 1,
-    transition: "opacity 0.3s ease-out",
-    transitionDelay: printed ? `${400 + i * 80}ms` : "0ms",
-  });
-
   return (
     <section id="pricing" className="py-16 sm:py-32" style={{ background: "#F7F6F3" }}>
-      <style>{`
-        @keyframes pricing-settle {
-          0% { transform: translateY(0); }
-          50% { transform: translateY(-2px); }
-          100% { transform: translateY(0); }
-        }
-        @keyframes sheetBreathe {
-          0%, 100% { transform: perspective(1400px) rotateX(16deg) rotateY(-13deg) rotateZ(0.8deg) translate3d(0,0,0); }
-          18%      { transform: perspective(1400px) rotateX(20deg) rotateY(-6deg)  rotateZ(2.2deg) translate3d(2px,-4px,18px); }
-          36%      { transform: perspective(1400px) rotateX(12deg) rotateY(-17deg) rotateZ(-1.4deg) translate3d(-3px,3px,-12px); }
-          55%      { transform: perspective(1400px) rotateX(22deg) rotateY(-9deg)  rotateZ(1.6deg) translate3d(1px,-3px,22px); }
-          74%      { transform: perspective(1400px) rotateX(14deg) rotateY(-15deg) rotateZ(-0.6deg) translate3d(-2px,2px,-8px); }
-        }
-        @keyframes shadowBreathe {
-          0%, 100% { opacity: 0.34; transform: rotateX(14deg) skewX(-6deg) scaleY(1.06) translateX(0); filter: blur(34px); }
-          18%      { opacity: 0.26; transform: rotateX(14deg) skewX(-9deg) scaleY(1.10) translateX(6px); filter: blur(40px); }
-          36%      { opacity: 0.38; transform: rotateX(14deg) skewX(-3deg) scaleY(1.02) translateX(-6px); filter: blur(28px); }
-          55%      { opacity: 0.24; transform: rotateX(14deg) skewX(-8.5deg) scaleY(1.09) translateX(4px); filter: blur(38px); }
-          74%      { opacity: 0.36; transform: rotateX(14deg) skewX(-4deg) scaleY(1.04) translateX(-3px); filter: blur(30px); }
-        }
-        @keyframes wrinkleDrift {
-          0%, 100% { transform: translateX(0) scaleY(1);  opacity: 0.55; }
-          25%      { transform: translateX(-4%) scaleY(1.05); opacity: 0.7; }
-          50%      { transform: translateX(3%)  scaleY(0.95); opacity: 0.45; }
-          75%      { transform: translateX(-2%) scaleY(1.03); opacity: 0.65; }
-        }
-        .receipt-sheet {
-          animation: sheetBreathe 9s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
-        }
-        .receipt-cast-shadow {
-          animation: shadowBreathe 9s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
-        }
-        .receipt-wrinkles {
-          animation: wrinkleDrift 11s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .receipt-sheet,
-          .receipt-cast-shadow,
-          .receipt-wrinkles { animation: none !important; }
-        }
-      `}</style>
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex flex-col md:flex-row gap-16 md:items-start">
           {/* Left column */}
@@ -147,248 +60,401 @@ const Pricing = () => {
             </p>
           </div>
 
-          {/* Right column — printer + receipt */}
-          <div
-            ref={triggerRef}
-            className="md:w-[45%] flex flex-col items-center md:items-end"
-          >
-            <div className="w-full" style={{ maxWidth: "360px" }}>
-              {/* Thermal printer bar */}
-              <div
-                className="relative mx-auto rounded-[6px]"
-                style={{
-                  width: "calc(100% + 48px)",
-                  marginLeft: "-24px",
-                  marginRight: "-24px",
-                  height: "24px",
-                  background:
-                    "linear-gradient(180deg, #2A2A2A 0%, #1A1A1A 55%, #111111 100%)",
-                  zIndex: 3,
-                }}
-              >
-                {/* Recessed slot */}
-                <div
-                  className="rounded-full"
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "20px",
-                    right: "20px",
-                    height: "5px",
-                    transform: "translateY(-50%)",
-                    background: "#0A0A0A",
-                    boxShadow:
-                      "inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(247,246,243,0.08)",
-                  }}
-                />
-              </div>
-
-              {/* Clipping container — receipt slides out from under the slot */}
-              <div
-                style={{
-                  overflow: "hidden",
-                  paddingBottom: "72px",
-                  position: "relative",
-                  zIndex: 1,
-                  marginTop: "-12px",
-                }}
-              >
-                {/* Translate wrapper */}
-                <div
-                  style={{
-                    transform: hidden ? "translateY(-110%)" : "translateY(0)",
-                    transition: "transform 1.8s cubic-bezier(0.22, 1, 0.36, 1)",
-                    animation: printed
-                      ? "pricing-settle 0.25s ease-out 1.8s"
-                      : undefined,
-                    willChange: "transform",
-                    perspective: "1200px",
-                  }}
-                >
-                  {/* Sheet wrapper — holds paper + detached cast shadow */}
-                  <div className="relative">
-                    {/* Cast shadow — sibling, behind paper, follows tilt */}
-                    <div
-                      aria-hidden="true"
-                      className="receipt-cast-shadow"
-                      style={{
-                        position: "absolute",
-                        top: "40px",
-                        left: "22px",
-                        width: "100%",
-                        height: "92%",
-                        background:
-                          "radial-gradient(60% 70% at 50% 60%, rgba(26,26,26,0.45) 0%, rgba(26,26,26,0.18) 55%, rgba(26,26,26,0) 100%)",
-                        borderRadius: "20px",
-                        filter: "blur(32px)",
-                        transform: "rotateX(14deg) skewX(-6deg) scaleY(1.05)",
-                        transformOrigin: "top center",
-                        opacity: 0.32,
-                        zIndex: 0,
-                        pointerEvents: "none",
-                      }}
-                    />
-
-                    {/* Receipt paper — flat plane, 3D tilt + curvature shading */}
-                    <div
-                      className="receipt-sheet relative w-full p-7"
-                      style={{
-                        background: "#FDFCFA",
-                        borderRadius: 0,
-                        transform:
-                          "rotateX(14deg) rotateY(-11deg) rotateZ(0.6deg)",
-                        transformStyle: "preserve-3d",
-                        transformOrigin: "top center",
-                        zIndex: 1,
-                      }}
-                    >
-                      {/* Wordmark */}
-                      <div style={rowStyle(0)}>
-                        <div
-                          className="text-center font-bold text-[18px] tracking-tight"
-                          style={{ fontFamily: "'Inter Tight', sans-serif", color: "#1A1A1A" }}
-                        >
-                          AdChefs.
-                        </div>
-                        <div
-                          className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-1.5"
-                          style={{ color: "#75726B" }}
-                        >
-                          ONE MONTH, ITEMIZED
-                        </div>
-                      </div>
-
-                      {/* Divider */}
-                      <div
-                        className="mt-4 w-full"
-                        style={{ borderTop: "1.5px dashed rgba(26,26,26,0.25)", ...rowStyle(1) }}
-                      />
-
-                      {/* Line items */}
-                      <div className="mt-3">
-                        {receiptLines.map((line, i) => (
-                          <div
-                            key={i}
-                            className="mono flex justify-between text-[12px] py-1.5"
-                            style={{
-                              color: line.ink ? "#1A1A1A" : "#75726B",
-                              ...rowStyle(2 + i),
-                            }}
-                          >
-                            <span>{line.label}</span>
-                            <span>{line.value}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Total */}
-                      <div
-                        className="mono flex justify-between text-[13px] font-medium mt-3 pt-3"
-                        style={{
-                          color: "#1A1A1A",
-                          borderTop: "2px solid #1A1A1A",
-                          ...rowStyle(2 + receiptLines.length),
-                        }}
-                      >
-                        <span>TOTAL</span>
-                        <span>$2,000</span>
-                      </div>
-
-                      {/* Per video */}
-                      <div
-                        className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3"
-                        style={{ color: "#75726B", ...rowStyle(3 + receiptLines.length) }}
-                      >
-                        FROM $100 / DELIVERED VIDEO
-                      </div>
-
-                      {/* Divider */}
-                      <div
-                        className="mt-3 w-full"
-                        style={{
-                          borderTop: "1.5px dashed rgba(26,26,26,0.25)",
-                          ...rowStyle(4 + receiptLines.length),
-                        }}
-                      />
-
-                      {/* Footer */}
-                      <div
-                        className="mono text-center text-[10px] uppercase tracking-[0.15em] mt-3 leading-relaxed"
-                        style={{ color: "#B0552F", ...rowStyle(5 + receiptLines.length) }}
-                      >
-                        AN AGENCY BILLS $4,500 THIS MONTH<br />
-                        WHETHER ANYTHING SHIPS OR NOT
-                      </div>
-
-                      {/* Curvature shading — last child, above content */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          pointerEvents: "none",
-                          borderRadius: "inherit",
-                          background:
-                            "linear-gradient(95deg, rgba(26,26,26,0.18) 0%, rgba(26,26,26,0.04) 14%, rgba(255,255,255,0) 38%, rgba(255,255,255,0.55) 60%, rgba(26,26,26,0.05) 82%, rgba(26,26,26,0.16) 100%), linear-gradient(180deg, rgba(26,26,26,0.12) 0%, transparent 14%, transparent 78%, rgba(26,26,26,0.18) 100%)",
-                          mixBlendMode: "multiply",
-                        }}
-                      />
-
-                      {/* Wrinkle bands — thin diagonal creases that drift like paper catching air */}
-                      <div
-                        aria-hidden="true"
-                        className="receipt-wrinkles"
-                        style={{
-                          position: "absolute",
-                          inset: "-4% -8%",
-                          pointerEvents: "none",
-                          background:
-                            "repeating-linear-gradient(92deg, rgba(26,26,26,0) 0px, rgba(26,26,26,0) 22px, rgba(26,26,26,0.07) 23px, rgba(255,255,255,0.35) 24px, rgba(26,26,26,0) 26px), repeating-linear-gradient(88deg, rgba(26,26,26,0) 0px, rgba(26,26,26,0) 47px, rgba(26,26,26,0.05) 48px, rgba(255,255,255,0.25) 49px, rgba(26,26,26,0) 51px)",
-                          mixBlendMode: "overlay",
-                          opacity: 0.55,
-                          maskImage:
-                            "radial-gradient(120% 90% at 50% 50%, black 40%, transparent 95%)",
-                          WebkitMaskImage:
-                            "radial-gradient(120% 90% at 50% 50%, black 40%, transparent 95%)",
-                        }}
-                      />
-
-                      {/* Soft vertical curl shading — strengthens the windblown bend */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          pointerEvents: "none",
-                          background:
-                            "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 18%, rgba(26,26,26,0.08) 48%, rgba(255,255,255,0) 78%, rgba(26,26,26,0.22) 100%)",
-                          mixBlendMode: "multiply",
-                        }}
-                      />
-
-                      {/* Highlight sheen — adds a soft specular for paper sheen */}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          pointerEvents: "none",
-                          background:
-                            "linear-gradient(95deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0) 78%)",
-                          mixBlendMode: "screen",
-                          opacity: 0.5,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Right column — long thermal receipt, S-curved, static */}
+          <div className="md:w-[45%] flex flex-col items-center md:items-end">
+            <LongReceipt />
           </div>
         </div>
       </div>
     </section>
   );
+};
+
+/* ------------------------------------------------------------------ */
+/* Long thermal receipt — static, S-curved like a printout in mid-air */
+/* ------------------------------------------------------------------ */
+
+const LongReceipt = () => {
+  // Geometry
+  const W = 360;          // viewBox width
+  const H = 620;          // viewBox height
+  const paperW = 220;     // receipt width
+  const cx = W / 2;
+  // Horizontal centerline as a sine wave — left and right edges offset from it
+  // Two full curves give the S-shape seen in the reference
+  const amp = 26;
+  const steps = 60;
+  const top = 30;
+  const bottom = H - 60;
+
+  const centerX = (t: number) =>
+    cx + Math.sin(t * Math.PI * 2) * amp - Math.sin(t * Math.PI * 0.6) * 6;
+
+  const points: { x: number; y: number }[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const y = top + (bottom - top) * t;
+    points.push({ x: centerX(t), y });
+  }
+
+  // Build outline: right edge top→bottom + zigzag bottom + left edge bottom→top + zigzag top
+  const right = points.map((p) => `${p.x + paperW / 2},${p.y}`);
+  const left = [...points].reverse().map((p) => `${p.x - paperW / 2},${p.y}`);
+
+  const zig = (xStart: number, xEnd: number, y: number, dir: 1 | -1) => {
+    const teeth = 14;
+    const step = (xEnd - xStart) / teeth;
+    const h = 6 * dir;
+    let s = "";
+    for (let i = 1; i <= teeth; i++) {
+      const x = xStart + step * i;
+      const yMid = y + (i % 2 === 0 ? 0 : h);
+      s += ` L ${x},${yMid}`;
+    }
+    return s;
+  };
+
+  const last = points[points.length - 1];
+  const first = points[0];
+  const outline =
+    `M ${right[0]} ` +
+    right.slice(1).map((p) => `L ${p}`).join(" ") +
+    zig(last.x + paperW / 2, last.x - paperW / 2, last.y, 1) +
+    " " +
+    left.slice(1).map((p) => `L ${p}`).join(" ") +
+    zig(first.x - paperW / 2, first.x + paperW / 2, first.y, -1) +
+    " Z";
+
+  return (
+    <div className="relative w-full" style={{ maxWidth: 420 }}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full h-auto"
+        style={{ overflow: "visible" }}
+        aria-hidden
+      >
+        <defs>
+          {/* Paper base — warm off-white with subtle vertical gradient */}
+          <linearGradient id="paperBase" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#F2EFE8" />
+            <stop offset="50%" stopColor="#FDFCFA" />
+            <stop offset="100%" stopColor="#EDE9E0" />
+          </linearGradient>
+
+          {/* Curl shading bands following the S-curve. */}
+          <linearGradient id="curlShade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stopColor="rgba(26,26,26,0)" />
+            <stop offset="18%" stopColor="rgba(26,26,26,0.18)" />
+            <stop offset="34%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="52%" stopColor="rgba(26,26,26,0.16)" />
+            <stop offset="70%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="86%" stopColor="rgba(26,26,26,0.20)" />
+            <stop offset="100%" stopColor="rgba(26,26,26,0)" />
+          </linearGradient>
+
+          {/* Specular highlight bands */}
+          <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stopColor="rgba(255,255,255,0)" />
+            <stop offset="10%" stopColor="rgba(255,255,255,0.55)" />
+            <stop offset="22%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="44%" stopColor="rgba(255,255,255,0.45)" />
+            <stop offset="60%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="78%" stopColor="rgba(255,255,255,0.4)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
+
+          {/* Drop shadow */}
+          <filter id="paperShadow" x="-30%" y="-10%" width="160%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+            <feOffset dx="10" dy="14" result="offset" />
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.28" />
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Clip the paper shape so shading stays inside */}
+          <clipPath id="paperClip">
+            <path d={outline} />
+          </clipPath>
+        </defs>
+
+        {/* Soft floor shadow */}
+        <ellipse
+          cx={cx}
+          cy={H - 24}
+          rx={paperW * 0.55}
+          ry={10}
+          fill="rgba(26,26,26,0.18)"
+          filter="url(#paperShadow)"
+        />
+
+        {/* Paper body */}
+        <path d={outline} fill="url(#paperBase)" filter="url(#paperShadow)" />
+
+        {/* Curl shading + sheen, clipped to paper */}
+        <g clipPath="url(#paperClip)">
+          <rect x="0" y="0" width={W} height={H} fill="url(#curlShade)" style={{ mixBlendMode: "multiply" }} />
+          <rect x="0" y="0" width={W} height={H} fill="url(#sheen)" style={{ mixBlendMode: "screen" }} opacity={0.6} />
+
+          {/* Side edge darkening to imply roundness */}
+          <rect x="0" y="0" width={W} height={H} fill="url(#sideShade)" style={{ mixBlendMode: "multiply" }} />
+        </g>
+
+        {/* Side shade gradient (defined here so it can reference cx) */}
+        <defs>
+          <linearGradient id="sideShade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"  stopColor="rgba(26,26,26,0.18)" />
+            <stop offset="14%" stopColor="rgba(26,26,26,0)" />
+            <stop offset="86%" stopColor="rgba(26,26,26,0)" />
+            <stop offset="100%" stopColor="rgba(26,26,26,0.22)" />
+          </linearGradient>
+        </defs>
+
+        {/* Content — text bent along the centerline by translating each row to its sampled point */}
+        <g clipPath="url(#paperClip)">
+          <ReceiptContent points={points} paperW={paperW} />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+const ReceiptContent = ({
+  points,
+  paperW,
+}: {
+  points: { x: number; y: number }[];
+  paperW: number;
+}) => {
+  // Sample the centerline at vertical positions and place rows there
+  const sample = (yTarget: number) => {
+    // Find nearest point by y
+    let best = points[0];
+    let bestD = Infinity;
+    for (const p of points) {
+      const d = Math.abs(p.y - yTarget);
+      if (d < bestD) {
+        bestD = d;
+        best = p;
+      }
+    }
+    // Slope-based rotation for slight tilt
+    const i = points.indexOf(best);
+    const a = points[Math.max(0, i - 1)];
+    const b = points[Math.min(points.length - 1, i + 1)];
+    const angle = (Math.atan2(b.x - a.x, b.y - a.y) * 180) / Math.PI;
+    // We want angle off-vertical: rotation = -angle (since text is horizontal and we tilt with curve)
+    return { x: best.x, y: best.y, rot: -angle };
+  };
+
+  const inner = paperW - 24;
+
+  const row = (
+    yTarget: number,
+    render: (innerW: number) => React.ReactNode
+  ) => {
+    const s = sample(yTarget);
+    return (
+      <g transform={`translate(${s.x}, ${s.y}) rotate(${s.rot})`}>
+        <foreignObject x={-inner / 2} y={-10} width={inner} height={28}>
+          <div
+            // @ts-expect-error xmlns required for foreignObject HTML
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{ width: "100%", color: "#1A1A1A" }}
+          >
+            {render(inner)}
+          </div>
+        </foreignObject>
+      </g>
+    );
+  };
+
+  const startY = 60;
+  const headerGap = 22;
+  const rowH = 22;
+  let y = startY;
+
+  const items = [
+    { label: "VIDEOS × 20", value: "$2,000", ink: true },
+    { label: "HOOK VARIATIONS", value: "$0" },
+    { label: "2 FORMATS", value: "$0" },
+    { label: "EDITING TOOLS", value: "$0" },
+    { label: "HIGGSFIELD", value: "$0" },
+    { label: "ELEVENLABS", value: "$0" },
+    { label: "MANAGEMENT", value: "$0" },
+    { label: "KPI DASHBOARD", value: "$0" },
+    { label: "DELIVERY TRACKING", value: "$0" },
+  ];
+
+  const nodes: React.ReactNode[] = [];
+
+  // Wordmark
+  nodes.push(
+    <g key="brand">
+      {row(y, () => (
+        <div
+          style={{
+            textAlign: "center",
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 700,
+            fontSize: 14,
+            letterSpacing: "-0.01em",
+            color: "#1A1A1A",
+          }}
+        >
+          AdChefs.
+        </div>
+      ))}
+    </g>
+  );
+  y += 16;
+  nodes.push(
+    <g key="sub">
+      {row(y, () => (
+        <div
+          style={{
+            textAlign: "center",
+            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontSize: 8,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#75726B",
+          }}
+        >
+          One month · itemized
+        </div>
+      ))}
+    </g>
+  );
+  y += headerGap;
+
+  // Divider
+  nodes.push(
+    <g key="d1">
+      {row(y, () => (
+        <div
+          style={{
+            borderTop: "1px dashed rgba(26,26,26,0.3)",
+            width: "100%",
+          }}
+        />
+      ))}
+    </g>
+  );
+  y += 12;
+
+  items.forEach((it, idx) => {
+    nodes.push(
+      <g key={`it-${idx}`}>
+        {row(y, () => (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+              fontSize: 9.5,
+              letterSpacing: "0.04em",
+              color: it.ink ? "#1A1A1A" : "#75726B",
+            }}
+          >
+            <span>{it.label}</span>
+            <span>{it.value}</span>
+          </div>
+        ))}
+      </g>
+    );
+    y += rowH;
+  });
+
+  // Total bar
+  y += 4;
+  nodes.push(
+    <g key="totalbar">
+      {row(y, () => (
+        <div style={{ borderTop: "1.5px solid #1A1A1A", width: "100%" }} />
+      ))}
+    </g>
+  );
+  y += 14;
+  nodes.push(
+    <g key="total">
+      {row(y, () => (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#1A1A1A",
+          }}
+        >
+          <span>TOTAL</span>
+          <span>$2,000</span>
+        </div>
+      ))}
+    </g>
+  );
+  y += 22;
+  nodes.push(
+    <g key="per">
+      {row(y, () => (
+        <div
+          style={{
+            textAlign: "center",
+            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontSize: 8,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#75726B",
+          }}
+        >
+          From $100 / delivered video
+        </div>
+      ))}
+    </g>
+  );
+  y += 18;
+  nodes.push(
+    <g key="d2">
+      {row(y, () => (
+        <div
+          style={{
+            borderTop: "1px dashed rgba(26,26,26,0.3)",
+            width: "100%",
+          }}
+        />
+      ))}
+    </g>
+  );
+  y += 14;
+  nodes.push(
+    <g key="foot">
+      {row(y, () => (
+        <div
+          style={{
+            textAlign: "center",
+            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontSize: 8,
+            lineHeight: 1.55,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#B0552F",
+          }}
+        >
+          Agencies bill $4,500
+          <br />
+          whether anything ships or not
+        </div>
+      ))}
+    </g>
+  );
+
+  return <>{nodes}</>;
 };
 
 export default Pricing;
