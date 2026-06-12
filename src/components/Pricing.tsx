@@ -334,6 +334,38 @@ const Pricing = () => {
                         }}
                       />
 
+                      {/* Wrinkle bands — thin diagonal creases that drift like paper catching air */}
+                      <div
+                        aria-hidden="true"
+                        className="receipt-wrinkles"
+                        style={{
+                          position: "absolute",
+                          inset: "-4% -8%",
+                          pointerEvents: "none",
+                          background:
+                            "repeating-linear-gradient(92deg, rgba(26,26,26,0) 0px, rgba(26,26,26,0) 22px, rgba(26,26,26,0.07) 23px, rgba(255,255,255,0.35) 24px, rgba(26,26,26,0) 26px), repeating-linear-gradient(88deg, rgba(26,26,26,0) 0px, rgba(26,26,26,0) 47px, rgba(26,26,26,0.05) 48px, rgba(255,255,255,0.25) 49px, rgba(26,26,26,0) 51px)",
+                          mixBlendMode: "overlay",
+                          opacity: 0.55,
+                          maskImage:
+                            "radial-gradient(120% 90% at 50% 50%, black 40%, transparent 95%)",
+                          WebkitMaskImage:
+                            "radial-gradient(120% 90% at 50% 50%, black 40%, transparent 95%)",
+                        }}
+                      />
+
+                      {/* Soft vertical curl shading — strengthens the windblown bend */}
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          background:
+                            "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 18%, rgba(26,26,26,0.08) 48%, rgba(255,255,255,0) 78%, rgba(26,26,26,0.22) 100%)",
+                          mixBlendMode: "multiply",
+                        }}
+                      />
+
                       {/* Highlight sheen — adds a soft specular for paper sheen */}
                       <div
                         aria-hidden="true"
