@@ -1,15 +1,5 @@
 import { ArrowRight } from "lucide-react";
 
-const receiptLines: { label: string; value: string; ink?: boolean }[] = [
-  { label: "VIDEOS × 20", value: "$2,000", ink: true },
-  { label: "HOOK VARIATIONS + 2 FORMATS", value: "$0" },
-  { label: "EDITING TOOLS", value: "$0" },
-  { label: "HIGGSFIELD + ELEVENLABS", value: "$0" },
-  { label: "ONGOING MANAGEMENT", value: "$0" },
-  { label: "AD KPI DASHBOARD", value: "$0" },
-  { label: "EDITOR DELIVERY TRACKING", value: "$0" },
-];
-
 const Pricing = () => {
   const scrollToBooking = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,390 +61,299 @@ const Pricing = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Long thermal receipt — static, S-curved like a printout in mid-air */
+/* Premium thermal receipt — straight, readable, with curled corners  */
 /* ------------------------------------------------------------------ */
 
+const items: { label: string; value: string; ink?: boolean }[] = [
+  { label: "Videos × 20", value: "$2,000", ink: true },
+  { label: "Hook variations", value: "Included" },
+  { label: "Vertical + square cuts", value: "Included" },
+  { label: "Editing tools & licenses", value: "Included" },
+  { label: "Higgsfield + ElevenLabs", value: "Included" },
+  { label: "Ongoing management", value: "Included" },
+  { label: "KPI dashboard", value: "Included" },
+  { label: "Delivery tracking", value: "Included" },
+];
+
 const LongReceipt = () => {
-  // Geometry
-  const W = 360;          // viewBox width
-  const H = 620;          // viewBox height
-  const paperW = 220;     // receipt width
-  const cx = W / 2;
-  // Horizontal centerline as a sine wave — left and right edges offset from it
-  // Two full curves give the S-shape seen in the reference
-  const amp = 26;
-  const steps = 60;
-  const top = 30;
-  const bottom = H - 60;
+  const W = 320;
+  const teeth = 18;
+  const toothW = W / teeth;
 
-  const centerX = (t: number) =>
-    cx + Math.sin(t * Math.PI * 2) * amp - Math.sin(t * Math.PI * 0.6) * 6;
-
-  const points: { x: number; y: number }[] = [];
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const y = top + (bottom - top) * t;
-    points.push({ x: centerX(t), y });
-  }
-
-  // Build outline: right edge top→bottom + zigzag bottom + left edge bottom→top + zigzag top
-  const right = points.map((p) => `${p.x + paperW / 2},${p.y}`);
-  const left = [...points].reverse().map((p) => `${p.x - paperW / 2},${p.y}`);
-
-  const zig = (xStart: number, xEnd: number, y: number, dir: 1 | -1) => {
-    const teeth = 14;
-    const step = (xEnd - xStart) / teeth;
-    const h = 6 * dir;
-    let s = "";
-    for (let i = 1; i <= teeth; i++) {
-      const x = xStart + step * i;
-      const yMid = y + (i % 2 === 0 ? 0 : h);
-      s += ` L ${x},${yMid}`;
+  const edge = (y: number, dir: 1 | -1) => {
+    let d = `M 0 ${y}`;
+    for (let i = 0; i < teeth; i++) {
+      const x1 = i * toothW;
+      const x2 = x1 + toothW / 2;
+      const x3 = x1 + toothW;
+      d += ` L ${x2} ${y + 6 * dir} L ${x3} ${y}`;
     }
-    return s;
+    return d;
   };
-
-  const last = points[points.length - 1];
-  const first = points[0];
-  const outline =
-    `M ${right[0]} ` +
-    right.slice(1).map((p) => `L ${p}`).join(" ") +
-    zig(last.x + paperW / 2, last.x - paperW / 2, last.y, 1) +
-    " " +
-    left.slice(1).map((p) => `L ${p}`).join(" ") +
-    zig(first.x - paperW / 2, first.x + paperW / 2, first.y, -1) +
-    " Z";
 
   return (
-    <div className="relative w-full" style={{ maxWidth: 420 }}>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full h-auto"
-        style={{ overflow: "visible" }}
+    <div
+      className="relative"
+      style={{
+        width: "100%",
+        maxWidth: 380,
+        perspective: "1600px",
+      }}
+    >
+      {/* Floor shadow */}
+      <div
         aria-hidden
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{
+          bottom: -28,
+          width: "78%",
+          height: 36,
+          background:
+            "radial-gradient(50% 50% at 50% 50%, rgba(26,26,26,0.28) 0%, rgba(26,26,26,0) 70%)",
+          filter: "blur(6px)",
+        }}
+      />
+
+      <div
+        style={{
+          transform: "rotateX(6deg) rotateY(-7deg) rotateZ(-2.5deg)",
+          transformOrigin: "50% 30%",
+        }}
       >
-        <defs>
-          {/* Paper base — warm off-white with subtle vertical gradient */}
-          <linearGradient id="paperBase" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#F2EFE8" />
-            <stop offset="50%" stopColor="#FDFCFA" />
-            <stop offset="100%" stopColor="#EDE9E0" />
-          </linearGradient>
+        {/* Top torn edge */}
+        <svg
+          viewBox={`0 0 ${W} 8`}
+          width="100%"
+          height="14"
+          preserveAspectRatio="none"
+          style={{ display: "block" }}
+          aria-hidden
+        >
+          <path d={`${edge(0, -1)} L ${W} 8 L 0 8 Z`} fill="#FBFAF6" />
+        </svg>
 
-          {/* Curl shading bands following the S-curve. */}
-          <linearGradient id="curlShade" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"  stopColor="rgba(26,26,26,0)" />
-            <stop offset="18%" stopColor="rgba(26,26,26,0.18)" />
-            <stop offset="34%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="52%" stopColor="rgba(26,26,26,0.16)" />
-            <stop offset="70%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="86%" stopColor="rgba(26,26,26,0.20)" />
-            <stop offset="100%" stopColor="rgba(26,26,26,0)" />
-          </linearGradient>
+        {/* Body */}
+        <div
+          style={{
+            background:
+              "linear-gradient(180deg, #FBFAF6 0%, #FDFCF8 12%, #F5F2EA 50%, #FDFCF8 88%, #FBFAF6 100%)",
+            boxShadow:
+              "0 1px 0 rgba(255,255,255,0.9) inset, 0 -1px 0 rgba(0,0,0,0.04) inset, 18px 32px 60px -28px rgba(26,26,26,0.45), 4px 8px 18px -8px rgba(26,26,26,0.18)",
+            padding: "26px 28px 22px",
+            position: "relative",
+          }}
+        >
+          {/* Subtle side curl shading */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(26,26,26,0.10) 0%, rgba(26,26,26,0) 12%, rgba(26,26,26,0) 88%, rgba(26,26,26,0.12) 100%)",
+              mixBlendMode: "multiply",
+            }}
+          />
+          {/* Paper grain */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.06]"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+              mixBlendMode: "multiply",
+            }}
+          />
 
-          {/* Specular highlight bands */}
-          <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"  stopColor="rgba(255,255,255,0)" />
-            <stop offset="10%" stopColor="rgba(255,255,255,0.55)" />
-            <stop offset="22%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="44%" stopColor="rgba(255,255,255,0.45)" />
-            <stop offset="60%" stopColor="rgba(255,255,255,0)" />
-            <stop offset="78%" stopColor="rgba(255,255,255,0.4)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </linearGradient>
+          {/* Header */}
+          <div className="relative text-center">
+            <div
+              style={{
+                fontFamily: "'Inter Tight', sans-serif",
+                fontWeight: 700,
+                fontSize: 18,
+                letterSpacing: "-0.02em",
+                color: "#1A1A1A",
+              }}
+            >
+              AdChefs<span style={{ color: "#B0552F" }}>.</span>
+            </div>
+            <div
+              style={{
+                marginTop: 4,
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                fontSize: 9,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#9A968C",
+              }}
+            >
+              One month · itemized
+            </div>
+            <div
+              style={{
+                marginTop: 14,
+                borderTop: "1px dashed rgba(26,26,26,0.28)",
+              }}
+            />
+          </div>
 
-          {/* Drop shadow */}
-          <filter id="paperShadow" x="-30%" y="-10%" width="160%" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
-            <feOffset dx="10" dy="14" result="offset" />
-            <feComponentTransfer>
-              <feFuncA type="linear" slope="0.28" />
-            </feComponentTransfer>
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
+          {/* Items */}
+          <ul className="relative mt-4 space-y-[10px]">
+            {items.map((it) => (
+              <li
+                key={it.label}
+                className="flex items-baseline justify-between gap-3"
+                style={{
+                  fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.02em",
+                  color: it.ink ? "#1A1A1A" : "#6E6B63",
+                }}
+              >
+                <span
+                  style={{
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    fontWeight: it.ink ? 600 : 500,
+                  }}
+                >
+                  {it.label}
+                </span>
+                <span
+                  aria-hidden
+                  style={{
+                    flex: 1,
+                    margin: "0 8px",
+                    borderBottom: "1px dotted rgba(26,26,26,0.22)",
+                    transform: "translateY(-3px)",
+                  }}
+                />
+                <span
+                  style={{
+                    fontVariantNumeric: "tabular-nums",
+                    fontWeight: it.ink ? 700 : 500,
+                    color: it.ink ? "#1A1A1A" : "#9A968C",
+                  }}
+                >
+                  {it.value}
+                </span>
+              </li>
+            ))}
+          </ul>
 
-          {/* Clip the paper shape so shading stays inside */}
-          <clipPath id="paperClip">
-            <path d={outline} />
-          </clipPath>
-        </defs>
+          {/* Total */}
+          <div
+            className="relative mt-5 pt-3"
+            style={{ borderTop: "1.5px solid #1A1A1A" }}
+          >
+            <div className="flex items-baseline justify-between">
+              <span
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                  color: "#1A1A1A",
+                }}
+              >
+                Total
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 22,
+                  letterSpacing: "-0.02em",
+                  color: "#1A1A1A",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                $2,000
+              </span>
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                fontSize: 9,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "#9A968C",
+              }}
+            >
+              From $100 / delivered video
+            </div>
+          </div>
 
-        {/* Soft floor shadow */}
-        <ellipse
-          cx={cx}
-          cy={H - 24}
-          rx={paperW * 0.55}
-          ry={10}
-          fill="rgba(26,26,26,0.18)"
-          filter="url(#paperShadow)"
-        />
+          {/* Footer */}
+          <div
+            className="relative mt-5 pt-4 text-center"
+            style={{ borderTop: "1px dashed rgba(26,26,26,0.28)" }}
+          >
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                fontSize: 9.5,
+                lineHeight: 1.7,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#B0552F",
+              }}
+            >
+              Agencies bill $4,500
+              <br />
+              whether anything ships or not
+            </div>
 
-        {/* Paper body */}
-        <path d={outline} fill="url(#paperBase)" filter="url(#paperShadow)" />
+            {/* Barcode */}
+            <div
+              aria-hidden
+              className="mx-auto mt-5 flex items-end justify-center gap-[2px]"
+              style={{ height: 32 }}
+            >
+              {[3, 1, 2, 1, 3, 2, 1, 2, 3, 1, 2, 1, 3, 1, 2, 2, 1, 3, 1, 2, 3, 1, 2, 1, 3].map(
+                (w, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: w,
+                      height: "100%",
+                      background: "#1A1A1A",
+                      opacity: i % 4 === 0 ? 0.85 : 1,
+                    }}
+                  />
+                )
+              )}
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                fontSize: 8,
+                letterSpacing: "0.3em",
+                color: "#9A968C",
+              }}
+            >
+              ADCHEFS · 2026
+            </div>
+          </div>
+        </div>
 
-        {/* Curl shading + sheen, clipped to paper */}
-        <g clipPath="url(#paperClip)">
-          <rect x="0" y="0" width={W} height={H} fill="url(#curlShade)" style={{ mixBlendMode: "multiply" }} />
-          <rect x="0" y="0" width={W} height={H} fill="url(#sheen)" style={{ mixBlendMode: "screen" }} opacity={0.6} />
-
-          {/* Side edge darkening to imply roundness */}
-          <rect x="0" y="0" width={W} height={H} fill="url(#sideShade)" style={{ mixBlendMode: "multiply" }} />
-        </g>
-
-        {/* Side shade gradient (defined here so it can reference cx) */}
-        <defs>
-          <linearGradient id="sideShade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%"  stopColor="rgba(26,26,26,0.18)" />
-            <stop offset="14%" stopColor="rgba(26,26,26,0)" />
-            <stop offset="86%" stopColor="rgba(26,26,26,0)" />
-            <stop offset="100%" stopColor="rgba(26,26,26,0.22)" />
-          </linearGradient>
-        </defs>
-
-        {/* Content — text bent along the centerline by translating each row to its sampled point */}
-        <g clipPath="url(#paperClip)">
-          <ReceiptContent points={points} paperW={paperW} />
-        </g>
-      </svg>
+        {/* Bottom torn edge */}
+        <svg
+          viewBox={`0 0 ${W} 8`}
+          width="100%"
+          height="14"
+          preserveAspectRatio="none"
+          style={{ display: "block" }}
+          aria-hidden
+        >
+          <path d={`M 0 0 L ${W} 0 ${edge(0, 1).replace("M 0 0", "L 0 0")} Z`} fill="#FBFAF6" />
+        </svg>
+      </div>
     </div>
   );
-};
-
-const ReceiptContent = ({
-  points,
-  paperW,
-}: {
-  points: { x: number; y: number }[];
-  paperW: number;
-}) => {
-  // Sample the centerline at vertical positions and place rows there
-  const sample = (yTarget: number) => {
-    // Find nearest point by y
-    let best = points[0];
-    let bestD = Infinity;
-    for (const p of points) {
-      const d = Math.abs(p.y - yTarget);
-      if (d < bestD) {
-        bestD = d;
-        best = p;
-      }
-    }
-    // Slope-based rotation for slight tilt
-    const i = points.indexOf(best);
-    const a = points[Math.max(0, i - 1)];
-    const b = points[Math.min(points.length - 1, i + 1)];
-    const angle = (Math.atan2(b.x - a.x, b.y - a.y) * 180) / Math.PI;
-    // We want angle off-vertical: rotation = -angle (since text is horizontal and we tilt with curve)
-    return { x: best.x, y: best.y, rot: -angle };
-  };
-
-  const inner = paperW - 24;
-
-  const row = (
-    yTarget: number,
-    render: (innerW: number) => React.ReactNode
-  ) => {
-    const s = sample(yTarget);
-    return (
-      <g transform={`translate(${s.x}, ${s.y}) rotate(${s.rot})`}>
-        <foreignObject x={-inner / 2} y={-10} width={inner} height={28}>
-          <div
-            // @ts-expect-error xmlns required for foreignObject HTML
-            xmlns="http://www.w3.org/1999/xhtml"
-            style={{ width: "100%", color: "#1A1A1A" }}
-          >
-            {render(inner)}
-          </div>
-        </foreignObject>
-      </g>
-    );
-  };
-
-  const startY = 60;
-  const headerGap = 22;
-  const rowH = 22;
-  let y = startY;
-
-  const items = [
-    { label: "VIDEOS × 20", value: "$2,000", ink: true },
-    { label: "HOOK VARIATIONS", value: "$0" },
-    { label: "2 FORMATS", value: "$0" },
-    { label: "EDITING TOOLS", value: "$0" },
-    { label: "HIGGSFIELD", value: "$0" },
-    { label: "ELEVENLABS", value: "$0" },
-    { label: "MANAGEMENT", value: "$0" },
-    { label: "KPI DASHBOARD", value: "$0" },
-    { label: "DELIVERY TRACKING", value: "$0" },
-  ];
-
-  const nodes: React.ReactNode[] = [];
-
-  // Wordmark
-  nodes.push(
-    <g key="brand">
-      {row(y, () => (
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "'Inter Tight', sans-serif",
-            fontWeight: 700,
-            fontSize: 14,
-            letterSpacing: "-0.01em",
-            color: "#1A1A1A",
-          }}
-        >
-          AdChefs.
-        </div>
-      ))}
-    </g>
-  );
-  y += 16;
-  nodes.push(
-    <g key="sub">
-      {row(y, () => (
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-            fontSize: 8,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "#75726B",
-          }}
-        >
-          One month · itemized
-        </div>
-      ))}
-    </g>
-  );
-  y += headerGap;
-
-  // Divider
-  nodes.push(
-    <g key="d1">
-      {row(y, () => (
-        <div
-          style={{
-            borderTop: "1px dashed rgba(26,26,26,0.3)",
-            width: "100%",
-          }}
-        />
-      ))}
-    </g>
-  );
-  y += 12;
-
-  items.forEach((it, idx) => {
-    nodes.push(
-      <g key={`it-${idx}`}>
-        {row(y, () => (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-              fontSize: 9.5,
-              letterSpacing: "0.04em",
-              color: it.ink ? "#1A1A1A" : "#75726B",
-            }}
-          >
-            <span>{it.label}</span>
-            <span>{it.value}</span>
-          </div>
-        ))}
-      </g>
-    );
-    y += rowH;
-  });
-
-  // Total bar
-  y += 4;
-  nodes.push(
-    <g key="totalbar">
-      {row(y, () => (
-        <div style={{ borderTop: "1.5px solid #1A1A1A", width: "100%" }} />
-      ))}
-    </g>
-  );
-  y += 14;
-  nodes.push(
-    <g key="total">
-      {row(y, () => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#1A1A1A",
-          }}
-        >
-          <span>TOTAL</span>
-          <span>$2,000</span>
-        </div>
-      ))}
-    </g>
-  );
-  y += 22;
-  nodes.push(
-    <g key="per">
-      {row(y, () => (
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-            fontSize: 8,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "#75726B",
-          }}
-        >
-          From $100 / delivered video
-        </div>
-      ))}
-    </g>
-  );
-  y += 18;
-  nodes.push(
-    <g key="d2">
-      {row(y, () => (
-        <div
-          style={{
-            borderTop: "1px dashed rgba(26,26,26,0.3)",
-            width: "100%",
-          }}
-        />
-      ))}
-    </g>
-  );
-  y += 14;
-  nodes.push(
-    <g key="foot">
-      {row(y, () => (
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-            fontSize: 8,
-            lineHeight: 1.55,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#B0552F",
-          }}
-        >
-          Agencies bill $4,500
-          <br />
-          whether anything ships or not
-        </div>
-      ))}
-    </g>
-  );
-
-  return <>{nodes}</>;
 };
 
 export default Pricing;
