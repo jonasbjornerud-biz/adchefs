@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { logout } from "@/lib/auth";
-import adchefsLogo from "@/assets/adchefs-logo.png.asset.json";
+import adchefsLogo from "@/assets/adchefs-logo-light.png.asset.json";
 import { BrandStar } from "@/components/brand/BrandStar";
 
 type NavItem = {
