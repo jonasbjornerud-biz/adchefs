@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import adchefsLogo from "@/assets/adchefs-logo.png.asset.json";
+import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 
 const navLinks = [
   { label: "How it works", id: "how-it-works" },
