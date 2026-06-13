@@ -1,4 +1,4 @@
-import adchefsLogo from "@/assets/adchefs-logo.png.asset.json";
+import adchefsLogo from "@/assets/adchefs-logo-light.png.asset.json";
 
 const Footer = () => {
   const scrollTo = (id: string) => {
