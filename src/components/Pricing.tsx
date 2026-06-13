@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 
 const Pricing = () => {
   const scrollToBooking = (e: React.MouseEvent) => {
@@ -90,7 +91,7 @@ const Pricing = () => {
 /* ------------------------------------------------------------------ */
 
 const items: { label: string; value: string; ink?: boolean }[] = [
-  { label: "Videos × 20", value: "$2,000", ink: true },
+  { label: "Price per video", value: "$100", ink: true },
   { label: "Hook variations", value: "Included" },
   { label: "Vertical + square cuts", value: "Included" },
   { label: "Editing tools & licenses", value: "Included" },
@@ -258,16 +259,12 @@ const PrintingReceipt = () => {
                   : `opacity 500ms ease ${lineDelay(0)}ms, transform 500ms ease ${lineDelay(0)}ms`,
               }}
             >
-              <div
-                style={{
-                  fontFamily: "'Inter Tight', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 20,
-                  letterSpacing: "-0.02em",
-                  color: "#1A1A1A",
-                }}
-              >
-                AdChefs<span style={{ color: "#9ED8F5" }}>.</span>
+              <div className="flex justify-center">
+                <img
+                  src={adchefsLogo.url}
+                  alt="AdChefs"
+                  style={{ height: 32, width: "auto" }}
+                />
               </div>
               <div
                 style={{
@@ -373,7 +370,7 @@ const PrintingReceipt = () => {
                     fontVariantNumeric: "tabular-nums",
                   }}
                 >
-                  $2,000
+                  $100
                 </span>
               </div>
               <div
@@ -387,7 +384,7 @@ const PrintingReceipt = () => {
                   fontWeight: 600,
                 }}
               >
-                From $100 / delivered video
+                Pay only per delivered video
               </div>
             </div>
 
