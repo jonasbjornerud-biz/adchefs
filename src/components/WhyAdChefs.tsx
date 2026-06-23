@@ -1,3 +1,5 @@
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
 
@@ -23,7 +25,7 @@ const WhyAdChefs = () => {
             </h2>
             <div className="mt-6 space-y-4 text-[15px] text-muted-foreground leading-relaxed max-w-xl">
               <p>
-                I'm Jonas. I've spent 7 years editing direct response ads for e-commerce brands, learning what makes someone stop, watch, and buy.
+                I'm Jonas. I've spent the last decade editing direct-response ads for e-commerce brands, learning what makes someone stop, watch, and buy.
               </p>
               <p>
                 Every brand I worked with hit the same wall. Rotating freelancers who relearn the brand from zero. Retainers that bill whether anything ships or not. Briefs that go through a project manager instead of the person doing the work. So I built AdChefs to remove all of it.
@@ -31,6 +33,15 @@ const WhyAdChefs = () => {
               <p>
                 I recruit, train, and manage every editor on the roster myself. I vet every brand before we start. And I stay close enough to the work that when an ad underperforms, I know why, and we fix it.
               </p>
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-4">
+              <a href="/about">
+                <Button variant="outline" size="sm" className="gap-2">
+                  Read more about me
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </a>
             </div>
 
             <div className="mt-7 flex items-end gap-4">

@@ -10,6 +10,7 @@ import GeoGate from "@/components/GeoGate";
 
 // Pages
 import Index from "./pages/Index";
+import About from "./pages/About";
 import Login from "./pages/editor/Login";
 import ClientDashboard from "./pages/editor/ClientDashboard";
 import PerformanceDashboard from "./pages/editor/PerformanceDashboard";
@@ -48,6 +49,7 @@ const App = () => (
           <Routes>
             {/* Public */}
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/jobs" element={<JobBoard />} />
             <Route path="/jobs/:slug" element={<JobDetail />} />
