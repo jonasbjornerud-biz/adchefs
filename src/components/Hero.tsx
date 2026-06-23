@@ -124,7 +124,7 @@ const WallCard = ({ clip, onOpen, horizontal, priority }: WallCardProps) => {
         loop
         playsInline
         preload="metadata"
-        {...(priority ? { fetchPriority: "high" as const } : {})}
+        {...(priority ? ({ fetchpriority: "high" } as Record<string, string>) : {})}
         className="w-full h-full object-cover block"
       />
       <span aria-hidden className="hero-wall-card-ring" />
