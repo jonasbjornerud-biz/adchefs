@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
 import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
