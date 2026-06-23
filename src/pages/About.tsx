@@ -298,7 +298,7 @@ const About = () => {
           </section>
 
           {/* CREDENTIALS */}
-          <section className="pb-14 md:pb-18">
+          <section className="pb-14 md:pb-20">
             <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1.15fr_0.9fr] gap-y-6 gap-x-8">
               {credentials.map((cell) => (
                 <div key={cell.label}>
