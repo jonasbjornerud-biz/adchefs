@@ -31,17 +31,17 @@ const Container = ({ children, className = "" }: { children: React.ReactNode; cl
 const PlaceholderFrame = ({ caption }: { caption: string }) => (
   <figure className="mt-10">
     <div className="relative w-full aspect-[16/9] rounded-[4px] border border-foreground/10 overflow-hidden bg-background/10">
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Crosshair className="w-14 h-14 text-foreground/10" strokeWidth={0.5} />
-    </div>
-    <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
-      <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
-    </div>
-    <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
-    <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
-    <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
-    <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Crosshair className="w-14 h-14 text-foreground/10" strokeWidth={0.5} />
+      </div>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
+      </div>
+      <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
+      <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
+      <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
+      <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
     </div>
     <figcaption className="mt-3 mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground text-center">
       {caption}
