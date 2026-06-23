@@ -107,7 +107,7 @@ type Chapter = {
   extra?: React.ReactNode;
 };
 
-const ChapterBlock = ({ ch, flip }: { ch: Chapter; flip: boolean }) => (
+const ChapterBlock = ({ ch }: { ch: Chapter }) => (
   <article className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-8 py-16 md:py-24">
     {/* Left rail: number + label (sticky on desktop) */}
     <aside className="md:col-span-3 md:sticky md:top-28 self-start">
@@ -128,12 +128,8 @@ const ChapterBlock = ({ ch, flip }: { ch: Chapter; flip: boolean }) => (
         {ch.title}
       </h2>
 
-      <div
-        className={`mt-10 grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 ${
-          flip ? "md:[&>figure]:order-first" : ""
-        }`}
-      >
-        <div className="md:col-span-7 space-y-5 text-[16px] md:text-[17px] leading-[1.75] text-muted-foreground">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 items-start">
+        <div className="space-y-5 text-[16px] md:text-[17px] leading-[1.75] text-muted-foreground">
           {ch.body}
           {ch.extra}
           {ch.metrics.length > 0 && (
@@ -148,8 +144,7 @@ const ChapterBlock = ({ ch, flip }: { ch: Chapter; flip: boolean }) => (
         </div>
         <PlaceholderFrame
           caption={ch.imageCaption}
-          ratio={ch.imageRatio ?? "4/5"}
-          className="md:col-span-5"
+          ratio="1/1"
           src={ch.imageSrc}
           alt={ch.imageAlt}
         />
@@ -413,7 +408,7 @@ const About = () => {
             {chapters.map((c, i) => (
               <div key={c.num} className={i > 0 ? "border-t border-foreground/10" : ""}>
                 <ScrollReveal>
-                  <ChapterBlock ch={c} flip={i % 2 === 1} />
+                  <ChapterBlock ch={c} />
                 </ScrollReveal>
               </div>
             ))}
