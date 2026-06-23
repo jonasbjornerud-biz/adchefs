@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles, Zap, Trophy, Globe2 } from 'lucide-react';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import SEO from '@/components/SEO';
 
 const schema = z.object({
   first_name: z.string().trim().min(1).max(80),
@@ -110,6 +111,29 @@ export default function JobDetail() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title={`${posting.title} — Remote Role at AdChefs`}
+        description={
+          (posting.description || '').replace(/\s+/g, ' ').trim().slice(0, 155) ||
+          `Apply for the ${posting.title} role at AdChefs. Remote, pay per delivered video, direct mentorship.`
+        }
+        path={`/jobs/${slug}`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'JobPosting',
+          title: posting.title,
+          description: posting.description,
+          datePosted: new Date().toISOString().slice(0, 10),
+          employmentType: 'CONTRACTOR',
+          hiringOrganization: {
+            '@type': 'Organization',
+            name: 'AdChefs',
+            sameAs: 'https://adchefs.lovable.app',
+          },
+          jobLocationType: 'TELECOMMUTE',
+          applicantLocationRequirements: { '@type': 'Country', name: 'Anywhere' },
+        }}
+      />
       {/* HERO */}
       <section className="relative overflow-hidden bg-foreground text-background pt-24 pb-32">
         <div

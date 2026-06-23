@@ -1,0 +1,11 @@
+# AdChefs
+
+> Dedicated video editors for e-commerce brands doing over €5k/month in ad spend. Pay per delivered video. No retainers, no rotating freelancers.
+
+AdChefs places one trained direct-response editor inside each brand, managed by a founder with 10 years editing for revenue and 7 in DR video. Max 2–3 brands per month.
+
+## Pages
+
+- [Home](/): How AdChefs works, pricing, booking, and FAQ.
+- [About](/about): Founder story — Jonas Bjørnerud, why AdChefs exists.
+- [Careers](/jobs): Open remote video editor roles.

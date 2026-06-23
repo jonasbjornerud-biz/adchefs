@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowUpRight } from 'lucide-react';
+import SEO from '@/components/SEO';
 
 interface Posting {
   id: string;
@@ -26,6 +27,11 @@ export default function JobBoard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Careers — Remote Video Editor Roles at AdChefs"
+        description="Edit direct-response ads for e-commerce brands. Fully remote, pay per delivered video, direct mentorship from a founder with 7+ years in DR video."
+        path="/jobs"
+      />
       {/* HERO */}
       <section className="relative overflow-hidden bg-foreground text-background pt-24 pb-28">
         <div

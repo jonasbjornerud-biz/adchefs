@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import HeroBackground from "@/components/HeroBackground";
 import ScrollReveal from "@/components/ScrollReveal";
+import SEO from "@/components/SEO";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
 import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
@@ -266,6 +267,11 @@ const About = () => {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      <SEO
+        title="About Jonas Bjørnerud — Founder of AdChefs"
+        description="Ten years editing for revenue. Seven in direct response. Why AdChefs was built: one trained editor per brand, paid per delivered video, managed by an operator."
+        path="/about"
+      />
       <TopGradient />
 
       {/* Sticky nav */}
