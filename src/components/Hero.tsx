@@ -443,7 +443,7 @@ const Hero = () => {
                   <div className="hero-wall-col">
                     <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[0].map((c, i) => (
-                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
+                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} priority={i === 0} />
                       ))}
                     </DriftTrack>
                   </div>
