@@ -298,8 +298,8 @@ const About = () => {
           </section>
 
           {/* CREDENTIALS */}
-          <section className="pb-16 md:pb-20">
-            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
+          <section className="pb-14 md:pb-18">
+            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1.15fr_0.9fr] gap-y-6 gap-x-8">
               {credentials.map((cell) => (
                 <div key={cell.label}>
                   <div className="font-display font-semibold text-[24px] md:text-[28px] leading-none tracking-[-0.02em] text-foreground">
@@ -317,7 +317,7 @@ const About = () => {
           </section>
 
           {/* STORY */}
-          <section className="pb-8 md:pb-12">
+          <section className="pb-8 md:pb-10">
             {chapters.map((c, i) => (
               <div key={c.num} className={i > 0 ? "border-t border-foreground/10" : ""}>
                 <ScrollReveal>
@@ -328,7 +328,7 @@ const About = () => {
           </section>
 
           {/* CTA */}
-          <section className="pb-24 md:pb-36 pt-8 md:pt-12 border-t border-foreground/10 text-center">
+          <section className="pb-24 md:pb-32 pt-10 md:pt-14 border-t border-foreground/10 text-center">
             <Mono className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</Mono>
             <h2 className="mt-5 font-display font-semibold text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
               Want to see if AdChefs fits <em className="font-serif italic font-normal">your</em> brand?
