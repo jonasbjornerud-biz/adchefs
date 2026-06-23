@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Crosshair } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import HeroBackground from "@/components/HeroBackground";
 import ScrollReveal from "@/components/ScrollReveal";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
@@ -17,146 +18,100 @@ const goBooking = () => {
   window.location.href = "/#booking";
 };
 
-/* ---------- Primitives ---------- */
+/* ------- small primitives ------- */
 
-const MonoLabel = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-  <span className={`font-mono text-[10px] uppercase tracking-[0.18em] ${className}`}>{children}</span>
+const Mono = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <span className={`mono text-[10px] uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
 
-const FramedImage = ({
-  caption,
-  dark = false,
-  className = "",
-}: {
-  caption: string;
-  dark?: boolean;
-  className?: string;
-}) => (
-  <div
-    className={`relative aspect-[4/3] w-full overflow-hidden rounded-[4px] border ${
-      dark ? "border-white/10 bg-white/[0.03]" : "border-foreground/10 bg-[hsl(var(--surface))]"
-    } ${className}`}
-    aria-label={`Image placeholder: ${caption}`}
-  >
-    {/* faint compass / crosshair motif */}
+const PlaceholderFrame = ({ caption }: { caption: string }) => (
+  <div className="relative w-full aspect-[16/9] rounded-[4px] border border-foreground/10 overflow-hidden">
+    {/* transparent — gradient shows through */}
     <div className="absolute inset-0 flex items-center justify-center">
-      <Crosshair
-        className={`w-24 h-24 ${dark ? "text-white/10" : "text-foreground/10"}`}
-        strokeWidth={0.6}
-      />
+      <Crosshair className="w-16 h-16 text-foreground/10" strokeWidth={0.5} />
+    </div>
+    {/* faint hairline cross */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
+      <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
     </div>
     {/* corner ticks */}
-    <div className={`absolute top-3 left-3 w-3 h-3 border-l border-t ${dark ? "border-white/20" : "border-foreground/15"}`} />
-    <div className={`absolute top-3 right-3 w-3 h-3 border-r border-t ${dark ? "border-white/20" : "border-foreground/15"}`} />
-    <div className={`absolute bottom-3 left-3 w-3 h-3 border-l border-b ${dark ? "border-white/20" : "border-foreground/15"}`} />
-    <div className={`absolute bottom-3 right-3 w-3 h-3 border-r border-b ${dark ? "border-white/20" : "border-foreground/15"}`} />
-
-    <div className="absolute bottom-4 left-4">
-      <span
-        className={`inline-block font-mono text-[10px] uppercase tracking-[0.18em] rounded-[4px] border px-2.5 py-1 ${
-          dark
-            ? "bg-[#1A1A1A]/80 border-white/15 text-white/70"
-            : "bg-background/80 border-foreground/10 text-muted-foreground"
-        }`}
-      >
+    <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
+    <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
+    <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
+    <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
+    <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+      <span className="inline-block mono text-[9.5px] uppercase tracking-[0.18em] rounded-[4px] border border-foreground/10 bg-background/60 backdrop-blur-sm text-muted-foreground px-2.5 py-1">
         {caption}
       </span>
     </div>
   </div>
 );
 
-const MetricChip = ({
-  value,
-  accent,
-  label,
-  dark = false,
-}: {
-  value: string;
-  accent: string;
-  label: string;
-  dark?: boolean;
-}) => (
-  <div
-    className={`inline-flex items-baseline gap-3 rounded-[4px] border px-3.5 py-2 ${
-      dark ? "border-white/15 bg-white/[0.03]" : "border-foreground/10 bg-background"
-    }`}
-  >
-    <span className={`font-display text-[18px] leading-none tracking-[-0.01em] ${dark ? "text-paper" : "text-foreground"}`}>
-      {value}
-      <em className="font-serif italic font-normal ml-0.5">{accent}</em>
-    </span>
-    <MonoLabel className={dark ? "text-white/50" : "text-muted-foreground"}>{label}</MonoLabel>
-  </div>
-);
-
-/* ---------- Chapter component ---------- */
+/* ------- chapter ------- */
 
 type Chapter = {
   num: string;
   label: string;
   title: React.ReactNode;
   body: React.ReactNode;
-  chips: { value: string; accent: string; label: string }[];
+  metrics: string[];
   imageCaption: string;
-  imageLeft: boolean;
-  bg: "paper" | "surface" | "ink";
   extra?: React.ReactNode;
 };
 
-const ChapterBlock = ({ chapter }: { chapter: Chapter }) => {
-  const dark = chapter.bg === "ink";
-  const sectionBg =
-    chapter.bg === "ink"
-      ? "bg-[hsl(var(--ink))] text-paper"
-      : chapter.bg === "surface"
-      ? "bg-[hsl(var(--surface))]"
-      : "bg-background";
+const ChapterRow = ({ ch, last }: { ch: Chapter; last?: boolean }) => (
+  <div className="relative pl-12 md:pl-20 pb-20 md:pb-28">
+    {/* spine */}
+    {!last && (
+      <span
+        aria-hidden
+        className="absolute left-[14px] md:left-[22px] top-[64px] md:top-[72px] bottom-0 w-px bg-foreground/15"
+      />
+    )}
+    {/* node */}
+    <span
+      aria-hidden
+      className="absolute left-[10px] md:left-[18px] top-[14px] w-[9px] h-[9px] rounded-full bg-accent ring-4 ring-background/70"
+    />
+    {/* numeral + label sit on the spine */}
+    <div className="flex items-baseline gap-4 md:gap-5">
+      <span
+        className="font-display leading-none tracking-[-0.03em] text-[44px] md:text-[56px]"
+        style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}
+      >
+        {ch.num}
+      </span>
+      <Mono className="text-muted-foreground">{ch.label}</Mono>
+    </div>
 
-  return (
-    <section className={`py-20 md:py-28 ${sectionBg} ${chapter.bg !== "ink" ? "border-y border-foreground/5" : ""}`}>
-      <div className="mx-auto max-w-[1100px] px-6">
-        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-          {/* Image */}
-          <div className={`order-2 ${chapter.imageLeft ? "md:order-1" : "md:order-2"}`}>
-            <FramedImage caption={chapter.imageCaption} dark={dark} />
-          </div>
-          {/* Text */}
-          <div className={`order-1 ${chapter.imageLeft ? "md:order-2" : "md:order-1"}`}>
-            <div className="flex items-center gap-4">
-              <span
-                className={`font-display text-[44px] md:text-[56px] leading-none tracking-[-0.03em] ${
-                  dark ? "text-accent" : "text-accent"
-                }`}
-                style={{ color: "hsl(var(--accent))" }}
-              >
-                {chapter.num}
-              </span>
-              <MonoLabel className={dark ? "text-accent" : "text-muted-foreground"}>{chapter.label}</MonoLabel>
-            </div>
-            <h2
-              className={`mt-5 font-display text-[28px] md:text-[40px] leading-[1.05] tracking-[-0.02em] ${
-                dark ? "text-paper" : "text-foreground"
-              }`}
-            >
-              {chapter.title}
-            </h2>
-            <div className={`mt-5 space-y-4 text-[15px] leading-relaxed ${dark ? "text-white/65" : "text-muted-foreground"}`}>
-              {chapter.body}
-            </div>
-            {chapter.extra}
-            <div className="mt-7 flex flex-wrap gap-2.5">
-              {chapter.chips.map((c) => (
-                <MetricChip key={c.label} value={c.value} accent={c.accent} label={c.label} dark={dark} />
-              ))}
-            </div>
-          </div>
-        </div>
+    <h2 className="mt-5 font-display text-[28px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground max-w-[640px]">
+      {ch.title}
+    </h2>
+
+    <div className="mt-6 space-y-5 text-[16px] md:text-[17px] leading-[1.7] text-muted-foreground max-w-[640px]">
+      {ch.body}
+    </div>
+
+    {ch.extra}
+
+    {ch.metrics.length > 0 && (
+      <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 max-w-[640px]">
+        {ch.metrics.map((m) => (
+          <Mono key={m} className="text-foreground/65">
+            {m}
+          </Mono>
+        ))}
       </div>
-    </section>
-  );
-};
+    )}
 
-/* ---------- Page ---------- */
+    <div className="mt-10 max-w-[640px]">
+      <PlaceholderFrame caption={ch.imageCaption} />
+    </div>
+  </div>
+);
+
+/* ------- page ------- */
 
 const About = () => {
   const chapters: Chapter[] = [
@@ -176,13 +131,8 @@ const About = () => {
           <p>That instinct never left. It just found a better use case.</p>
         </>
       ),
-      chips: [
-        { value: "Age ", accent: "4", label: "FIRST CAMERA" },
-        { value: "Age ", accent: "12", label: "FIRST UPLOAD" },
-      ],
+      metrics: ["AGE 4 · FIRST CAMERA", "AGE 12 · FIRST UPLOAD"],
       imageCaption: "EARLY YOUTUBE ANALYTICS",
-      imageLeft: true,
-      bg: "paper",
     },
     {
       num: "02",
@@ -200,13 +150,8 @@ const About = () => {
           <p>This was the intersection I had been chasing. Creativity, judged by results.</p>
         </>
       ),
-      chips: [
-        { value: "", accent: "2020", label: "FIRST DR CAMPAIGN" },
-        { value: "0 ", accent: "blind", label: "CUTS SINCE" },
-      ],
+      metrics: ["2020 · FIRST DR CAMPAIGN"],
       imageCaption: "FIRST DIRECT-RESPONSE ADS",
-      imageLeft: false,
-      bg: "surface",
     },
     {
       num: "03",
@@ -226,14 +171,8 @@ const About = () => {
           </p>
         </>
       ),
-      chips: [
-        { value: "9 ", accent: "figures", label: "BRAND SCALE" },
-        { value: "Team of ", accent: "10", label: "EDITORS LED" },
-        { value: "Multi ", accent: "market", label: "AT VOLUME" },
-      ],
+      metrics: ["9 FIGURES · BRAND SCALE", "TEAM OF 10 · EDITORS LED"],
       imageCaption: "LEADING A REMOTE EDITING TEAM",
-      imageLeft: true,
-      bg: "paper",
     },
     {
       num: "04",
@@ -249,28 +188,29 @@ const About = () => {
         </p>
       ),
       extra: (
-        <div
-          className="mt-6 rounded-[4px] border-l-2 border-accent bg-accent/10 px-5 py-4 text-[15px] leading-relaxed text-white/80"
-        >
-          <p>
-            <span className="font-medium text-paper">
+        <div className="mt-7 border-l-2 border-accent pl-5 max-w-[640px]">
+          <p className="text-[16px] md:text-[17px] leading-[1.7] text-foreground/80">
+            <span className="font-medium text-foreground">
               So I built <em className="font-serif italic font-normal">AdChefs.</em>
             </span>{" "}
             One dedicated editor per brand, trained on performance, placed and managed by someone who has lived inside the work. No rotating freelancers. No retainer that bills whether anything ships or not.
           </p>
         </div>
       ),
-      chips: [],
+      metrics: [],
       imageCaption: "BUILDING THE ADCHEFS SYSTEM",
-      imageLeft: false,
-      bg: "ink",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen text-foreground overflow-x-hidden">
+      {/* ONE continuous gradient wash across the entire page */}
+      <div className="fixed inset-0 -z-10 bg-background" aria-hidden>
+        <HeroBackground />
+      </div>
+
       {/* Sticky nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-xl border-b border-foreground/10">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-foreground/10">
         <div className="mx-auto max-w-[1200px] px-6 h-16 md:h-20 flex items-center justify-between">
           <a href="/" className="flex items-center" aria-label="AdChefs">
             <img src={adchefsLogo.url} alt="AdChefs" className="h-8 md:h-10 w-auto" />
@@ -292,87 +232,87 @@ const About = () => {
         </div>
       </nav>
 
-      <main className="pt-24 md:pt-32">
+      <main className="relative pt-24 md:pt-32">
         {/* HERO */}
-        <section className="pb-14 md:pb-20">
-          <div className="mx-auto max-w-[1100px] px-6">
+        <section className="pb-16 md:pb-24">
+          <div className="mx-auto max-w-[760px] px-6">
             <a
               href="/"
-              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
+              className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to home
             </a>
 
-            <div className="grid md:grid-cols-[300px_1fr] gap-10 md:gap-16 items-start">
-              {/* Portrait */}
-              <div className="flex justify-start md:justify-center">
-                <div className="relative">
-                  <div className="w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full overflow-hidden border border-accent/70 bg-[hsl(var(--ink))]">
-                    <img
-                      src={jonasPhoto}
-                      alt="Jonas Bjørnerud"
-                      className="w-full h-full object-cover grayscale"
-                    />
-                  </div>
-                  <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Jonas Bjørnerud
+            <span
+              className="inline-block mono text-[10px] uppercase tracking-[0.18em] rounded-[4px] border px-2.5 py-1"
+              style={{
+                color: "hsl(var(--accent-deep, var(--accent)))",
+                borderColor: "hsl(var(--accent))",
+                background: "hsl(var(--accent) / 0.12)",
+              }}
+            >
+              ABOUT THE FOUNDER
+            </span>
+
+            <h1 className="mt-6 font-display text-[44px] md:text-[68px] leading-[1.02] tracking-[-0.03em] text-foreground">
+              Editor, mentor, <em className="font-serif italic font-normal">founder.</em>
+            </h1>
+
+            <p className="mt-7 text-[17px] md:text-[19px] leading-[1.65] text-muted-foreground max-w-[620px]">
+              For ten years I have turned raw footage into measurable revenue for e-commerce brands around the world. Editing is the skill. Performance is the obsession.
+            </p>
+
+            {/* Founder row — quiet, inline */}
+            <div className="mt-10 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full overflow-hidden ring-1 ring-accent/70 flex-shrink-0">
+                <img
+                  src={jonasPhoto}
+                  alt="Jonas Bjørnerud"
+                  className="w-full h-full object-cover grayscale"
+                />
+              </div>
+              <div className="flex items-end gap-3">
+                <img
+                  src={jonasSignature}
+                  alt="Jonas Bjørnerud signature"
+                  className="h-11 w-auto select-none pointer-events-none -mb-1"
+                  draggable={false}
+                />
+                <div className="pb-1">
+                  <p className="text-[13px] font-medium text-foreground leading-tight">Jonas Bjørnerud</p>
+                  <p
+                    className="mt-0.5 mono text-[10px] uppercase tracking-[0.18em]"
+                    style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}
+                  >
+                    FOUNDER · ADCHEFS
                   </p>
                 </div>
               </div>
-
-              {/* Content */}
-              <div className="max-w-2xl">
-                <span
-                  className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] rounded-[4px] border border-accent text-accent bg-accent/10 px-2.5 py-1"
-                  style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}
-                >
-                  ABOUT THE FOUNDER
-                </span>
-                <h1 className="mt-5 font-display text-[40px] md:text-[60px] leading-[1.02] tracking-[-0.03em] text-foreground">
-                  Editor, mentor, <em className="font-serif italic font-normal">founder.</em>
-                </h1>
-                <p className="mt-6 text-[16px] md:text-[18px] text-muted-foreground leading-relaxed max-w-xl">
-                  For ten years I have turned raw footage into measurable revenue for e-commerce brands around the world. Editing is the skill. Performance is the obsession.
-                </p>
-                <div className="mt-8 flex items-end gap-4">
-                  <img
-                    src={jonasSignature}
-                    alt="Jonas Bjørnerud signature"
-                    className="h-14 w-auto select-none pointer-events-none"
-                    draggable={false}
-                  />
-                  <div className="pb-1">
-                    <p className="text-[13px] font-medium text-foreground">Jonas Bjørnerud</p>
-                    <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-accent" style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}>
-                      FOUNDER · ADCHEFS
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
+          </div>
+        </section>
 
-            {/* Credential strip */}
-            <div className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 rounded-[4px] border border-foreground/10 overflow-hidden bg-background">
+        {/* CREDENTIAL STRIP — inline hairline row, no boxes */}
+        <section className="pb-20 md:pb-28">
+          <div className="mx-auto max-w-[760px] px-6">
+            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0 md:divide-x md:divide-foreground/10">
               {[
                 { value: "10", accent: "yrs", label: "EDITING FOR REVENUE" },
-                { value: "9", accent: "fig", label: "BRAND LED AS EDITOR" },
+                { value: "9", accent: "fig", label: "BRAND LED" },
                 { value: "10", accent: "", label: "EDITORS MANAGED" },
-                { value: "1", accent: "obsession", label: "PERFORMANCE" },
+                { value: "", accent: "Performance", label: "THE OBSESSION" },
               ].map((cell, i) => (
-                <div
-                  key={cell.label}
-                  className={`p-6 md:p-7 ${i < 3 ? "md:border-r" : ""} ${i < 2 ? "border-r md:border-r" : ""} ${
-                    i < 2 ? "border-b md:border-b-0" : ""
-                  } border-foreground/10`}
-                >
-                  <div className="font-display text-[34px] md:text-[42px] leading-none tracking-[-0.03em] text-foreground">
+                <div key={cell.label} className={`${i > 0 ? "md:pl-5" : ""} ${i < 3 ? "md:pr-5" : ""}`}>
+                  <div className="font-display text-[26px] md:text-[30px] leading-none tracking-[-0.02em] text-foreground">
                     {cell.value}
                     {cell.accent && (
-                      <em className="font-serif italic font-normal ml-0.5">{cell.accent}</em>
+                      <em className={`font-serif italic font-normal ${cell.value ? "ml-1" : ""}`}>
+                        {cell.accent}
+                      </em>
                     )}
                   </div>
-                  <MonoLabel className="mt-3 block text-muted-foreground">{cell.label}</MonoLabel>
+                  <Mono className="mt-2.5 block text-muted-foreground">{cell.label}</Mono>
                 </div>
               ))}
             </div>
@@ -380,23 +320,32 @@ const About = () => {
         </section>
 
         {/* STORY TIMELINE */}
-        {chapters.map((c) => (
-          <ScrollReveal key={c.num}>
-            <ChapterBlock chapter={c} />
-          </ScrollReveal>
-        ))}
+        <section className="pb-12 md:pb-20">
+          <div className="mx-auto max-w-[760px] px-6">
+            {chapters.map((c, i) => (
+              <ScrollReveal key={c.num}>
+                <ChapterRow ch={c} last={i === chapters.length - 1} />
+              </ScrollReveal>
+            ))}
+          </div>
+        </section>
 
         {/* CTA */}
-        <section className="py-20 md:py-28 bg-background">
-          <div className="mx-auto max-w-[800px] px-6 text-center">
-            <MonoLabel className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</MonoLabel>
+        <section className="pb-24 md:pb-36">
+          <div className="mx-auto max-w-[680px] px-6 text-center">
+            <Mono className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</Mono>
             <h2 className="mt-5 font-display text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em]">
               Want to see if AdChefs fits <em className="font-serif italic font-normal">your</em> brand?
             </h2>
-            <p className="mt-5 text-[15px] md:text-[16px] text-muted-foreground leading-relaxed max-w-xl mx-auto">
+            <p className="mt-5 text-[15px] md:text-[16px] leading-relaxed text-muted-foreground max-w-xl mx-auto">
               I vet every brand before we start. If you spend north of €5k a month on ads and you need consistent creative output, book a call.
             </p>
-            <Button onClick={goBooking} size="lg" variant="cta" className="mt-9 h-auto px-8 py-4 tracking-[0.01em] gap-[10px]">
+            <Button
+              onClick={goBooking}
+              size="lg"
+              variant="cta"
+              className="mt-9 h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
+            >
               Book a call
               <ArrowRight className="h-4 w-4" />
             </Button>
