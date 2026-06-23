@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import SEO from '@/components/SEO';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
@@ -11,6 +12,10 @@ export default function Unsubscribe() {
   const token = params.get('token');
   const [state, setState] = useState<'loading' | 'valid' | 'invalid' | 'already' | 'success' | 'error'>('loading');
   const [working, setWorking] = useState(false);
+
+  const seo = (
+    <SEO title="Unsubscribe — AdChefs" description="Manage your AdChefs email preferences." path="/unsubscribe" noindex />
+  );
 
   useEffect(() => {
     if (!token) { setState('invalid'); return; }

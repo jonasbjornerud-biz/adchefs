@@ -27,6 +27,8 @@ interface Posting {
   description: string;
   junior_pay: string | null;
   senior_pay: string | null;
+  created_at?: string | null;
+  expires_at?: string | null;
 }
 
 export default function JobDetail() {
@@ -102,6 +104,44 @@ export default function JobDetail() {
     );
   }
 
+  const parsePay = (s: string | null | undefined): number | null => {
+    if (!s) return null;
+    const m = s.replace(/[, ]/g, "").match(/(\d+(?:\.\d+)?)/);
+    return m ? Number(m[1]) : null;
+  };
+  const minPay = parsePay(posting.junior_pay);
+  const maxPay = parsePay(posting.senior_pay);
+  const jobJsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: posting.title,
+    description: posting.description,
+    datePosted: (posting.created_at ?? new Date().toISOString()).slice(0, 10),
+    employmentType: "CONTRACTOR",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: "AdChefs",
+      sameAs: "https://adchefs.com",
+    },
+    jobLocationType: "TELECOMMUTE",
+    applicantLocationRequirements: { "@type": "Country", name: "Anywhere" },
+  };
+  if (posting.expires_at) {
+    jobJsonLd.validThrough = posting.expires_at;
+  }
+  if (minPay != null) {
+    jobJsonLd.baseSalary = {
+      "@type": "MonetaryAmount",
+      currency: "USD",
+      value: {
+        "@type": "QuantitativeValue",
+        minValue: minPay,
+        maxValue: maxPay ?? minPay,
+        unitText: "VIDEO",
+      },
+    };
+  }
+
   const perks = [
     { icon: Zap, title: "Per-video pay", body: "Get paid for the videos you edit, not the hours spent. The faster and sharper you are, the more you make." },
     { icon: Trophy, title: "Real direct response work", body: "Edit ads that actually run for e-commerce brands, and get live feedback on the results." },
@@ -118,21 +158,7 @@ export default function JobDetail() {
           `Apply for the ${posting.title} role at AdChefs. Remote, pay per delivered video, direct mentorship.`
         }
         path={`/jobs/${slug}`}
-        jsonLd={{
-          '@context': 'https://schema.org',
-          '@type': 'JobPosting',
-          title: posting.title,
-          description: posting.description,
-          datePosted: new Date().toISOString().slice(0, 10),
-          employmentType: 'CONTRACTOR',
-          hiringOrganization: {
-            '@type': 'Organization',
-            name: 'AdChefs',
-            sameAs: 'https://adchefs.lovable.app',
-          },
-          jobLocationType: 'TELECOMMUTE',
-          applicantLocationRequirements: { '@type': 'Country', name: 'Anywhere' },
-        }}
+        jsonLd={jobJsonLd}
       />
       {/* HERO */}
       <section className="relative overflow-hidden bg-foreground text-background pt-24 pb-32">
