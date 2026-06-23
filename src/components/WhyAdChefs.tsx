@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
 
@@ -35,15 +33,6 @@ const WhyAdChefs = () => {
               <p>
                 I recruit, train, and manage every editor on the roster myself. I vet every brand before we start. And I stay close enough to the work that when an ad underperforms, I know why, and we fix it.
               </p>
-            </div>
-
-            <div className="mt-7 flex flex-wrap items-center gap-4">
-              <a href="/about">
-                <Button variant="outline" size="sm" className="gap-2">
-                  Read more about me
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
             </div>
 
             <div className="mt-7 flex items-end gap-4">
