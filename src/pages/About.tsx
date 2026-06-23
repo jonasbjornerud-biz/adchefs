@@ -240,7 +240,7 @@ const About = () => {
       <main className="relative z-10 pt-24 md:pt-32">
         <Container>
           {/* HERO */}
-          <section className="relative pb-14 md:pb-18">
+          <section className="relative pb-14 md:pb-20">
             <a
               href="/"
               className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
