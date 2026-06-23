@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import SEO from '@/components/SEO';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
@@ -11,6 +12,10 @@ export default function Unsubscribe() {
   const token = params.get('token');
   const [state, setState] = useState<'loading' | 'valid' | 'invalid' | 'already' | 'success' | 'error'>('loading');
   const [working, setWorking] = useState(false);
+
+  const seo = (
+    <SEO title="Unsubscribe — AdChefs" description="Manage your AdChefs email preferences." path="/unsubscribe" noindex />
+  );
 
   useEffect(() => {
     if (!token) { setState('invalid'); return; }
@@ -42,6 +47,7 @@ export default function Unsubscribe() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
+      {seo}
       <div className="max-w-md w-full text-center space-y-4 border border-border rounded-2xl p-8 bg-card">
         <h1 className="text-2xl font-semibold text-foreground">Unsubscribe</h1>
         {state === 'loading' && <p className="text-muted-foreground">Verifying your link…</p>}

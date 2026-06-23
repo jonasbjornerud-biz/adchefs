@@ -59,9 +59,10 @@ interface WallCardProps {
   clip: typeof FEATURED_FULL[number];
   onOpen: (full: string) => void;
   horizontal?: boolean;
+  priority?: boolean;
 }
 
-const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
+const WallCard = ({ clip, onOpen, horizontal, priority }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const inViewRef = useRef(false);
@@ -123,6 +124,7 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
         loop
         playsInline
         preload="metadata"
+        {...((priority ? { fetchpriority: "high" } : {}) as any)}
         className="w-full h-full object-cover block"
       />
       <span aria-hidden className="hero-wall-card-ring" />
@@ -441,7 +443,7 @@ const Hero = () => {
                   <div className="hero-wall-col">
                     <DriftTrack className="hero-wall-track" loopSeconds={36} axis="y" direction={-1} pausedRef={wallPausedRef}>
                       {COLS_3[0].map((c, i) => (
-                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} />
+                        <WallCard key={`c1-${i}`} clip={c} onOpen={openLightbox} priority={i === 0} />
                       ))}
                     </DriftTrack>
                   </div>

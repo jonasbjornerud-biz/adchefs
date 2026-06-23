@@ -51,7 +51,13 @@ const PlaceholderFrame = ({
       style={{ aspectRatio: ratio }}
     >
       {src ? (
-        <img src={src} alt={alt ?? caption} className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={src}
+          alt={alt ?? caption}
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
         <>
           <div className="absolute inset-0 flex items-center justify-center">

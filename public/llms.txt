@@ -4,6 +4,8 @@
 
 AdChefs places one trained direct-response editor inside each brand, managed by a founder with 10 years editing for revenue and 7 in DR video. Max 2–3 brands per month.
 
+Site: https://adchefs.com
+
 ## Pages
 
 - [Home](/): How AdChefs works, pricing, booking, and FAQ.

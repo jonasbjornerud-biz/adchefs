@@ -424,6 +424,7 @@ export type Database = {
         Args: { _slug: string }
         Returns: {
           brand: string
+          created_at: string
           description: string
           id: string
           junior_pay: string

@@ -264,6 +264,8 @@ const PrintingReceipt = () => {
                   src={adchefsLogo.url}
                   alt="AdChefs"
                   style={{ height: 32, width: "auto" }}
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div
