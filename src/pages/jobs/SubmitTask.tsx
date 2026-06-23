@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, ArrowRight, CheckCircle2, Upload } from 'lucide-react';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import SEO from '@/components/SEO';
 
 const schema = z.object({
   email: z.string().trim().email().max(255),
@@ -85,6 +86,7 @@ export default function SubmitTask() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO title="Submit trial task — AdChefs" description="Submit your AdChefs trial task." path="/submit-task" noindex />
       {/* SUBMISSION FORM */}
       <section className="bg-secondary py-20 min-h-screen">
         <div className="max-w-2xl mx-auto px-6">

@@ -47,6 +47,7 @@ export default function Unsubscribe() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-4">
+      {seo}
       <div className="max-w-md w-full text-center space-y-4 border border-border rounded-2xl p-8 bg-card">
         <h1 className="text-2xl font-semibold text-foreground">Unsubscribe</h1>
         {state === 'loading' && <p className="text-muted-foreground">Verifying your link…</p>}
