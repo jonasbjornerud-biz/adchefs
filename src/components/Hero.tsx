@@ -59,9 +59,10 @@ interface WallCardProps {
   clip: typeof FEATURED_FULL[number];
   onOpen: (full: string) => void;
   horizontal?: boolean;
+  priority?: boolean;
 }
 
-const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
+const WallCard = ({ clip, onOpen, horizontal, priority }: WallCardProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const inViewRef = useRef(false);
@@ -123,6 +124,7 @@ const WallCard = ({ clip, onOpen, horizontal }: WallCardProps) => {
         loop
         playsInline
         preload="metadata"
+        {...(priority ? { fetchPriority: "high" as const } : {})}
         className="w-full h-full object-cover block"
       />
       <span aria-hidden className="hero-wall-card-ring" />
