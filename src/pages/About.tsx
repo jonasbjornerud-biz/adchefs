@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Crosshair } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import HeroBackground from "@/components/HeroBackground";
 import ScrollReveal from "@/components/ScrollReveal";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
@@ -23,56 +24,43 @@ const Mono = ({ children, className = "" }: { children: React.ReactNode; classNa
   <span className={`mono text-[10px] uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
 
-const Container = ({ children }: { children: React.ReactNode }) => (
-  <div className="mx-auto w-full max-w-[680px] px-6">{children}</div>
+const Container = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={`mx-auto w-full max-w-[680px] px-6 ${className}`}>{children}</div>
 );
 
 const PlaceholderFrame = ({ caption }: { caption: string }) => (
-  <div className="relative w-full aspect-[16/9] rounded-[4px] border border-foreground/10 overflow-hidden">
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Crosshair className="w-14 h-14 text-foreground/10" strokeWidth={0.5} />
+  <figure className="mt-10">
+    <div className="relative w-full aspect-[16/9] rounded-[4px] border border-foreground/10 overflow-hidden bg-background/10">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Crosshair className="w-14 h-14 text-foreground/10" strokeWidth={0.5} />
+      </div>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
+      </div>
+      <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
+      <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
+      <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
+      <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
     </div>
-    <div className="absolute inset-0 pointer-events-none">
-      <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
-      <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
-    </div>
-    <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
-    <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
-    <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
-    <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
-    <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-      <span className="inline-block mono text-[9.5px] uppercase tracking-[0.18em] rounded-[4px] border border-foreground/10 bg-background/70 backdrop-blur-sm text-muted-foreground px-2.5 py-1 whitespace-nowrap">
-        {caption}
-      </span>
-    </div>
-  </div>
+    <figcaption className="mt-3 mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground text-center">
+      {caption}
+    </figcaption>
+  </figure>
 );
 
-/* ---------- Top-only gradient (mimics home hero, fades to paper) ---------- */
+/* ---------- Top-only gradient (same background system as the lander hero) ---------- */
 
 const TopGradient = () => (
-  <div aria-hidden className="absolute inset-x-0 top-0 h-[720px] overflow-hidden pointer-events-none -z-10">
-    {/* base wash, fading down to paper */}
+  <div aria-hidden className="absolute inset-x-0 top-0 h-[760px] overflow-hidden pointer-events-none z-0">
+    <HeroBackground />
     <div
-      className="absolute inset-0"
+      className="absolute inset-0 z-[1]"
       style={{
-        background:
-          "linear-gradient(to bottom, #E8F4FB 0%, #EEF6FB 40%, #F4F3EF 75%, #F7F6F3 100%)",
+        background: "radial-gradient(ellipse at 85% 10%, rgba(180, 214, 232, 0.28) 0%, transparent 60%)",
       }}
     />
-    {/* top-right radial accent — same vibe as home hero */}
-    <div
-      className="absolute inset-0"
-      style={{
-        background:
-          "radial-gradient(ellipse at 85% 0%, rgba(180, 214, 232, 0.35) 0%, transparent 55%)",
-      }}
-    />
-    {/* hard fade to paper at the bottom edge */}
-    <div
-      className="absolute inset-x-0 bottom-0 h-40"
-      style={{ background: "linear-gradient(to bottom, transparent, #F7F6F3)" }}
-    />
+    <div className="absolute inset-x-0 bottom-0 z-[2] h-64 bg-gradient-to-b from-transparent to-background" />
   </div>
 );
 
@@ -89,10 +77,10 @@ type Chapter = {
 };
 
 const ChapterBlock = ({ ch }: { ch: Chapter }) => (
-  <article className="py-14 md:py-20">
+  <article className="py-12 md:py-16">
     <div className="flex items-baseline gap-4 md:gap-5">
       <span
-        className="font-display leading-none tracking-[-0.03em] text-[40px] md:text-[52px]"
+        className="font-display leading-none tracking-[-0.03em] text-[34px] md:text-[44px]"
         style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}
       >
         {ch.num}
@@ -100,7 +88,7 @@ const ChapterBlock = ({ ch }: { ch: Chapter }) => (
       <Mono className="text-muted-foreground">{ch.label}</Mono>
     </div>
 
-    <h2 className="mt-5 font-display font-semibold text-[28px] md:text-[36px] leading-[1.08] tracking-[-0.02em] text-foreground">
+    <h2 className="mt-5 font-display font-semibold text-[27px] md:text-[34px] leading-[1.08] tracking-[-0.02em] text-foreground">
       {ch.title}
     </h2>
 
@@ -120,9 +108,7 @@ const ChapterBlock = ({ ch }: { ch: Chapter }) => (
       </div>
     )}
 
-    <div className="mt-10">
-      <PlaceholderFrame caption={ch.imageCaption} />
-    </div>
+    <PlaceholderFrame caption={ch.imageCaption} />
   </article>
 );
 
@@ -225,7 +211,9 @@ const About = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#F7F6F3] text-foreground overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      <TopGradient />
+
       {/* Sticky nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-foreground/10">
         <div className="mx-auto max-w-[1200px] px-6 h-16 md:h-20 flex items-center justify-between">
@@ -249,12 +237,10 @@ const About = () => {
         </div>
       </nav>
 
-      <main className="relative pt-24 md:pt-32">
+      <main className="relative z-10 pt-24 md:pt-32">
         <Container>
-          {/* HERO over top-only gradient */}
-          <section className="relative pb-20 md:pb-28">
-            <TopGradient />
-
+          {/* HERO */}
+          <section className="relative pb-14 md:pb-20">
             <a
               href="/"
               className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
@@ -312,8 +298,8 @@ const About = () => {
           </section>
 
           {/* CREDENTIALS */}
-          <section className="pb-16 md:pb-20">
-            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
+          <section className="pb-14 md:pb-20">
+            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1.15fr_0.9fr] gap-y-6 gap-x-8">
               {credentials.map((cell) => (
                 <div key={cell.label}>
                   <div className="font-display font-semibold text-[24px] md:text-[28px] leading-none tracking-[-0.02em] text-foreground">
@@ -331,7 +317,7 @@ const About = () => {
           </section>
 
           {/* STORY */}
-          <section className="pb-8 md:pb-12">
+          <section className="pb-8 md:pb-10">
             {chapters.map((c, i) => (
               <div key={c.num} className={i > 0 ? "border-t border-foreground/10" : ""}>
                 <ScrollReveal>
@@ -342,7 +328,7 @@ const About = () => {
           </section>
 
           {/* CTA */}
-          <section className="pb-24 md:pb-36 pt-8 md:pt-12 border-t border-foreground/10 text-center">
+          <section className="pb-24 md:pb-32 pt-10 md:pt-14 border-t border-foreground/10 text-center">
             <Mono className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</Mono>
             <h2 className="mt-5 font-display font-semibold text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
               Want to see if AdChefs fits <em className="font-serif italic font-normal">your</em> brand?
