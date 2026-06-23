@@ -60,7 +60,7 @@ const TopGradient = () => (
         background: "radial-gradient(ellipse at 85% 10%, rgba(180, 214, 232, 0.28) 0%, transparent 60%)",
       }}
     />
-    <div className="absolute inset-x-0 bottom-0 z-[2] h-56 bg-gradient-to-b from-transparent to-background" />
+    <div className="absolute inset-x-0 bottom-0 z-[2] h-64 bg-gradient-to-b from-transparent to-background" />
   </div>
 );
 
@@ -211,7 +211,9 @@ const About = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#F7F6F3] text-foreground overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
+      <TopGradient />
+
       {/* Sticky nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-foreground/10">
         <div className="mx-auto max-w-[1200px] px-6 h-16 md:h-20 flex items-center justify-between">
@@ -235,12 +237,10 @@ const About = () => {
         </div>
       </nav>
 
-      <main className="relative pt-24 md:pt-32">
+      <main className="relative z-10 pt-24 md:pt-32">
         <Container>
-          {/* HERO over top-only gradient */}
-          <section className="relative pb-20 md:pb-28">
-            <TopGradient />
-
+          {/* HERO */}
+          <section className="relative pb-14 md:pb-18">
             <a
               href="/"
               className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
