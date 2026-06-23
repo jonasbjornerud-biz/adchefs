@@ -37,15 +37,6 @@ const WhyAdChefs = () => {
               </p>
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center gap-4">
-              <a href="/about">
-                <Button variant="outline" size="sm" className="gap-2">
-                  Read more about me
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
-            </div>
-
             <div className="mt-7 flex items-end gap-4">
               <img
                 src={jonasSignature}
