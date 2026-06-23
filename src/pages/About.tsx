@@ -6,6 +6,9 @@ import ScrollReveal from "@/components/ScrollReveal";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
 import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
+import ch1Image from "@/assets/about-ch1-child.png.asset.json";
+import ch3Image from "@/assets/about-ch3-cafe.jpg.asset.json";
+import ch4Image from "@/assets/about-ch4-desk.jpg.asset.json";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -32,30 +35,40 @@ const PlaceholderFrame = ({
   caption,
   ratio = "16/9",
   className = "",
+  src,
+  alt,
 }: {
   caption: string;
   ratio?: string;
   className?: string;
+  src?: string;
+  alt?: string;
 }) => (
   <figure className={className}>
     <div
       className="relative w-full rounded-[4px] border border-foreground/10 overflow-hidden bg-background/40"
       style={{ aspectRatio: ratio }}
     >
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Crosshair className="w-12 h-12 text-foreground/10" strokeWidth={0.5} />
-      </div>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.05]" />
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.05]" />
-      </div>
-      <div className="absolute top-2.5 left-2.5 w-2 h-2 border-l border-t border-foreground/20" />
-      <div className="absolute top-2.5 right-2.5 w-2 h-2 border-r border-t border-foreground/20" />
-      <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-l border-b border-foreground/20" />
-      <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-r border-b border-foreground/20" />
-      <div className="absolute top-2.5 right-3">
-        <Mono className="text-muted-foreground/70">PLACEHOLDER</Mono>
-      </div>
+      {src ? (
+        <img src={src} alt={alt ?? caption} className="absolute inset-0 w-full h-full object-cover" />
+      ) : (
+        <>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Crosshair className="w-12 h-12 text-foreground/10" strokeWidth={0.5} />
+          </div>
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.05]" />
+            <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.05]" />
+          </div>
+          <div className="absolute top-2.5 left-2.5 w-2 h-2 border-l border-t border-foreground/20" />
+          <div className="absolute top-2.5 right-2.5 w-2 h-2 border-r border-t border-foreground/20" />
+          <div className="absolute bottom-2.5 left-2.5 w-2 h-2 border-l border-b border-foreground/20" />
+          <div className="absolute bottom-2.5 right-2.5 w-2 h-2 border-r border-b border-foreground/20" />
+          <div className="absolute top-2.5 right-3">
+            <Mono className="text-muted-foreground/70">PLACEHOLDER</Mono>
+          </div>
+        </>
+      )}
     </div>
     <figcaption className="mt-3 mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">
       {caption}
@@ -89,6 +102,8 @@ type Chapter = {
   metrics: string[];
   imageCaption: string;
   imageRatio?: string;
+  imageSrc?: string;
+  imageAlt?: string;
   extra?: React.ReactNode;
 };
 
@@ -135,6 +150,8 @@ const ChapterBlock = ({ ch, flip }: { ch: Chapter; flip: boolean }) => (
           caption={ch.imageCaption}
           ratio={ch.imageRatio ?? "4/5"}
           className="md:col-span-5"
+          src={ch.imageSrc}
+          alt={ch.imageAlt}
         />
       </div>
     </div>
