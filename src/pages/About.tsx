@@ -1,7 +1,6 @@
 import { ArrowLeft, ArrowRight, Crosshair } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import HeroBackground from "@/components/HeroBackground";
 import ScrollReveal from "@/components/ScrollReveal";
 import jonasPhoto from "@/assets/jonas.jpg";
 import jonasSignature from "@/assets/jonas-signature.png";
@@ -18,37 +17,66 @@ const goBooking = () => {
   window.location.href = "/#booking";
 };
 
-/* ------- small primitives ------- */
+/* ---------- Primitives ---------- */
 
 const Mono = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <span className={`mono text-[10px] uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
 
+const Column = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={`mx-auto w-full max-w-[680px] px-6 ${className}`}>{children}</div>
+);
+
 const PlaceholderFrame = ({ caption }: { caption: string }) => (
   <div className="relative w-full aspect-[16/9] rounded-[4px] border border-foreground/10 overflow-hidden">
-    {/* transparent — gradient shows through */}
     <div className="absolute inset-0 flex items-center justify-center">
-      <Crosshair className="w-16 h-16 text-foreground/10" strokeWidth={0.5} />
+      <Crosshair className="w-14 h-14 text-foreground/10" strokeWidth={0.5} />
     </div>
-    {/* faint hairline cross */}
     <div className="absolute inset-0 pointer-events-none">
       <div className="absolute left-0 right-0 top-1/2 h-px bg-foreground/[0.06]" />
       <div className="absolute top-0 bottom-0 left-1/2 w-px bg-foreground/[0.06]" />
     </div>
-    {/* corner ticks */}
     <div className="absolute top-3 left-3 w-2.5 h-2.5 border-l border-t border-foreground/15" />
     <div className="absolute top-3 right-3 w-2.5 h-2.5 border-r border-t border-foreground/15" />
     <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-l border-b border-foreground/15" />
     <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-r border-b border-foreground/15" />
     <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-      <span className="inline-block mono text-[9.5px] uppercase tracking-[0.18em] rounded-[4px] border border-foreground/10 bg-background/60 backdrop-blur-sm text-muted-foreground px-2.5 py-1">
+      <span className="inline-block mono text-[9.5px] uppercase tracking-[0.18em] rounded-[4px] border border-foreground/10 bg-background/70 backdrop-blur-sm text-muted-foreground px-2.5 py-1 whitespace-nowrap">
         {caption}
       </span>
     </div>
   </div>
 );
 
-/* ------- chapter ------- */
+/* ---------- Top-only gradient (mimics home hero, fades to paper) ---------- */
+
+const TopGradient = () => (
+  <div aria-hidden className="absolute inset-x-0 top-0 h-[720px] overflow-hidden pointer-events-none -z-10">
+    {/* base wash, fading down to paper */}
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          "linear-gradient(to bottom, #E8F4FB 0%, #EEF6FB 40%, #F4F3EF 75%, #F7F6F3 100%)",
+      }}
+    />
+    {/* top-right radial accent — same vibe as home hero */}
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          "radial-gradient(ellipse at 85% 0%, rgba(180, 214, 232, 0.35) 0%, transparent 55%)",
+      }}
+    />
+    {/* hard fade to paper at the bottom edge */}
+    <div
+      className="absolute inset-x-0 bottom-0 h-40"
+      style={{ background: "linear-gradient(to bottom, transparent, #F7F6F3)" }}
+    />
+  </div>
+);
+
+/* ---------- Chapter ---------- */
 
 type Chapter = {
   num: string;
@@ -60,24 +88,11 @@ type Chapter = {
   extra?: React.ReactNode;
 };
 
-const ChapterRow = ({ ch, last }: { ch: Chapter; last?: boolean }) => (
-  <div className="relative pl-12 md:pl-20 pb-20 md:pb-28">
-    {/* spine */}
-    {!last && (
-      <span
-        aria-hidden
-        className="absolute left-[14px] md:left-[22px] top-[64px] md:top-[72px] bottom-0 w-px bg-foreground/15"
-      />
-    )}
-    {/* node */}
-    <span
-      aria-hidden
-      className="absolute left-[10px] md:left-[18px] top-[14px] w-[9px] h-[9px] rounded-full bg-accent ring-4 ring-background/70"
-    />
-    {/* numeral + label sit on the spine */}
+const ChapterBlock = ({ ch }: { ch: Chapter }) => (
+  <article className="py-14 md:py-20">
     <div className="flex items-baseline gap-4 md:gap-5">
       <span
-        className="font-display leading-none tracking-[-0.03em] text-[44px] md:text-[56px]"
+        className="font-display leading-none tracking-[-0.03em] text-[40px] md:text-[52px]"
         style={{ color: "hsl(var(--accent-deep, var(--accent)))" }}
       >
         {ch.num}
@@ -85,18 +100,18 @@ const ChapterRow = ({ ch, last }: { ch: Chapter; last?: boolean }) => (
       <Mono className="text-muted-foreground">{ch.label}</Mono>
     </div>
 
-    <h2 className="mt-5 font-display text-[28px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground max-w-[640px]">
+    <h2 className="mt-5 font-display font-semibold text-[28px] md:text-[36px] leading-[1.08] tracking-[-0.02em] text-foreground">
       {ch.title}
     </h2>
 
-    <div className="mt-6 space-y-5 text-[16px] md:text-[17px] leading-[1.7] text-muted-foreground max-w-[640px]">
+    <div className="mt-6 space-y-5 text-[16px] md:text-[17px] leading-[1.7] text-muted-foreground">
       {ch.body}
     </div>
 
     {ch.extra}
 
     {ch.metrics.length > 0 && (
-      <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 max-w-[640px]">
+      <div className="mt-8 flex flex-wrap gap-x-10 gap-y-3">
         {ch.metrics.map((m) => (
           <Mono key={m} className="text-foreground/65">
             {m}
@@ -105,13 +120,13 @@ const ChapterRow = ({ ch, last }: { ch: Chapter; last?: boolean }) => (
       </div>
     )}
 
-    <div className="mt-10 max-w-[640px]">
+    <div className="mt-10">
       <PlaceholderFrame caption={ch.imageCaption} />
     </div>
-  </div>
+  </article>
 );
 
-/* ------- page ------- */
+/* ---------- Page ---------- */
 
 const About = () => {
   const chapters: Chapter[] = [
@@ -188,7 +203,7 @@ const About = () => {
         </p>
       ),
       extra: (
-        <div className="mt-7 border-l-2 border-accent pl-5 max-w-[640px]">
+        <div className="mt-7 border-l-2 border-accent pl-5">
           <p className="text-[16px] md:text-[17px] leading-[1.7] text-foreground/80">
             <span className="font-medium text-foreground">
               So I built <em className="font-serif italic font-normal">AdChefs.</em>
@@ -202,13 +217,15 @@ const About = () => {
     },
   ];
 
-  return (
-    <div className="relative min-h-screen text-foreground overflow-x-hidden">
-      {/* ONE continuous gradient wash across the entire page */}
-      <div className="fixed inset-0 -z-10 bg-background" aria-hidden>
-        <HeroBackground />
-      </div>
+  const credentials = [
+    { value: "10", accent: "yrs", label: "EDITING FOR REVENUE" },
+    { value: "7", accent: "yrs", label: "DIRECT RESPONSE" },
+    { value: "10", accent: "", label: "EDITORS MANAGED" },
+    { value: "9", accent: "fig", label: "BRAND LED" },
+  ];
 
+  return (
+    <div className="relative min-h-screen bg-[#F7F6F3] text-foreground overflow-x-hidden">
       {/* Sticky nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-foreground/10">
         <div className="mx-auto max-w-[1200px] px-6 h-16 md:h-20 flex items-center justify-between">
@@ -233,9 +250,11 @@ const About = () => {
       </nav>
 
       <main className="relative pt-24 md:pt-32">
-        {/* HERO */}
-        <section className="pb-16 md:pb-24">
-          <div className="mx-auto max-w-[760px] px-6">
+        {/* HERO over top-only gradient */}
+        <section className="relative pb-20 md:pb-28">
+          <TopGradient />
+
+          <Column>
             <a
               href="/"
               className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
@@ -249,22 +268,22 @@ const About = () => {
               style={{
                 color: "hsl(var(--accent-deep, var(--accent)))",
                 borderColor: "hsl(var(--accent))",
-                background: "hsl(var(--accent) / 0.12)",
+                background: "hsl(var(--accent) / 0.14)",
               }}
             >
               ABOUT THE FOUNDER
             </span>
 
-            <h1 className="mt-6 font-display text-[44px] md:text-[68px] leading-[1.02] tracking-[-0.03em] text-foreground">
+            <h1 className="mt-6 font-display font-semibold text-[44px] sm:text-[52px] md:text-[60px] leading-[1.02] tracking-[-0.03em] text-foreground">
               Editor, mentor, <em className="font-serif italic font-normal">founder.</em>
             </h1>
 
-            <p className="mt-7 text-[17px] md:text-[19px] leading-[1.65] text-muted-foreground max-w-[620px]">
+            <p className="mt-7 text-[17px] md:text-[19px] leading-[1.6] text-muted-foreground">
               For ten years I have turned raw footage into measurable revenue for e-commerce brands around the world. Editing is the skill. Performance is the obsession.
             </p>
 
-            {/* Founder row — quiet, inline */}
-            <div className="mt-10 flex items-center gap-4">
+            {/* Founder row */}
+            <div className="mt-10 flex items-center gap-4 flex-wrap">
               <div className="w-14 h-14 rounded-full overflow-hidden ring-1 ring-accent/70 flex-shrink-0">
                 <img
                   src={jonasPhoto}
@@ -290,21 +309,16 @@ const About = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Column>
         </section>
 
-        {/* CREDENTIAL STRIP — inline hairline row, no boxes */}
-        <section className="pb-20 md:pb-28">
-          <div className="mx-auto max-w-[760px] px-6">
-            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0 md:divide-x md:divide-foreground/10">
-              {[
-                { value: "10", accent: "yrs", label: "EDITING FOR REVENUE" },
-                { value: "9", accent: "fig", label: "BRAND LED" },
-                { value: "10", accent: "", label: "EDITORS MANAGED" },
-                { value: "", accent: "Performance", label: "THE OBSESSION" },
-              ].map((cell, i) => (
-                <div key={cell.label} className={`${i > 0 ? "md:pl-5" : ""} ${i < 3 ? "md:pr-5" : ""}`}>
-                  <div className="font-display text-[26px] md:text-[30px] leading-none tracking-[-0.02em] text-foreground">
+        {/* CREDENTIALS */}
+        <section className="pb-16 md:pb-20">
+          <Column>
+            <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
+              {credentials.map((cell) => (
+                <div key={cell.label}>
+                  <div className="font-display font-semibold text-[24px] md:text-[28px] leading-none tracking-[-0.02em] text-foreground">
                     {cell.value}
                     {cell.accent && (
                       <em className={`font-serif italic font-normal ${cell.value ? "ml-1" : ""}`}>
@@ -316,28 +330,30 @@ const About = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </Column>
         </section>
 
-        {/* STORY TIMELINE */}
-        <section className="pb-12 md:pb-20">
-          <div className="mx-auto max-w-[760px] px-6">
+        {/* STORY */}
+        <section className="pb-8 md:pb-12">
+          <Column>
             {chapters.map((c, i) => (
-              <ScrollReveal key={c.num}>
-                <ChapterRow ch={c} last={i === chapters.length - 1} />
-              </ScrollReveal>
+              <div key={c.num} className={i > 0 ? "border-t border-foreground/10" : ""}>
+                <ScrollReveal>
+                  <ChapterBlock ch={c} />
+                </ScrollReveal>
+              </div>
             ))}
-          </div>
+          </Column>
         </section>
 
         {/* CTA */}
-        <section className="pb-24 md:pb-36">
-          <div className="mx-auto max-w-[680px] px-6 text-center">
+        <section className="pb-24 md:pb-36 pt-8 md:pt-12 border-t border-foreground/10">
+          <Column className="text-center">
             <Mono className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</Mono>
-            <h2 className="mt-5 font-display text-[32px] md:text-[48px] leading-[1.05] tracking-[-0.02em]">
+            <h2 className="mt-5 font-display font-semibold text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
               Want to see if AdChefs fits <em className="font-serif italic font-normal">your</em> brand?
             </h2>
-            <p className="mt-5 text-[15px] md:text-[16px] leading-relaxed text-muted-foreground max-w-xl mx-auto">
+            <p className="mt-5 text-[15px] md:text-[16px] leading-relaxed text-muted-foreground">
               I vet every brand before we start. If you spend north of €5k a month on ads and you need consistent creative output, book a call.
             </p>
             <Button
@@ -349,7 +365,7 @@ const About = () => {
               Book a call
               <ArrowRight className="h-4 w-4" />
             </Button>
-          </div>
+          </Column>
         </section>
       </main>
 
