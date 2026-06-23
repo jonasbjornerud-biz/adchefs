@@ -23,8 +23,8 @@ const Mono = ({ children, className = "" }: { children: React.ReactNode; classNa
   <span className={`mono text-[10px] uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
 
-const Column = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-  <div className={`mx-auto w-full max-w-[680px] px-6 ${className}`}>{children}</div>
+const Container = ({ children }: { children: React.ReactNode }) => (
+  <div className="mx-auto w-full max-w-[680px] px-6">{children}</div>
 );
 
 const PlaceholderFrame = ({ caption }: { caption: string }) => (
@@ -111,11 +111,11 @@ const ChapterBlock = ({ ch }: { ch: Chapter }) => (
     {ch.extra}
 
     {ch.metrics.length > 0 && (
-      <div className="mt-8 flex flex-wrap gap-x-10 gap-y-3">
+      <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
         {ch.metrics.map((m) => (
-          <Mono key={m} className="text-foreground/65">
-            {m}
-          </Mono>
+          <div key={m} className="text-foreground/65">
+            <Mono>{m}</Mono>
+          </div>
         ))}
       </div>
     )}
@@ -250,11 +250,11 @@ const About = () => {
       </nav>
 
       <main className="relative pt-24 md:pt-32">
-        {/* HERO over top-only gradient */}
-        <section className="relative pb-20 md:pb-28">
-          <TopGradient />
+        <Container>
+          {/* HERO over top-only gradient */}
+          <section className="relative pb-20 md:pb-28">
+            <TopGradient />
 
-          <Column>
             <a
               href="/"
               className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors mb-10"
@@ -309,12 +309,10 @@ const About = () => {
                 </div>
               </div>
             </div>
-          </Column>
-        </section>
+          </section>
 
-        {/* CREDENTIALS */}
-        <section className="pb-16 md:pb-20">
-          <Column>
+          {/* CREDENTIALS */}
+          <section className="pb-16 md:pb-20">
             <div className="border-t border-b border-foreground/10 py-6 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
               {credentials.map((cell) => (
                 <div key={cell.label}>
@@ -330,12 +328,10 @@ const About = () => {
                 </div>
               ))}
             </div>
-          </Column>
-        </section>
+          </section>
 
-        {/* STORY */}
-        <section className="pb-8 md:pb-12">
-          <Column>
+          {/* STORY */}
+          <section className="pb-8 md:pb-12">
             {chapters.map((c, i) => (
               <div key={c.num} className={i > 0 ? "border-t border-foreground/10" : ""}>
                 <ScrollReveal>
@@ -343,12 +339,10 @@ const About = () => {
                 </ScrollReveal>
               </div>
             ))}
-          </Column>
-        </section>
+          </section>
 
-        {/* CTA */}
-        <section className="pb-24 md:pb-36 pt-8 md:pt-12 border-t border-foreground/10">
-          <Column className="text-center">
+          {/* CTA */}
+          <section className="pb-24 md:pb-36 pt-8 md:pt-12 border-t border-foreground/10 text-center">
             <Mono className="text-muted-foreground">LET'S SEE IF WE'RE A FIT</Mono>
             <h2 className="mt-5 font-display font-semibold text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
               Want to see if AdChefs fits <em className="font-serif italic font-normal">your</em> brand?
@@ -365,8 +359,8 @@ const About = () => {
               Book a call
               <ArrowRight className="h-4 w-4" />
             </Button>
-          </Column>
-        </section>
+          </section>
+        </Container>
       </main>
 
       <Footer />
