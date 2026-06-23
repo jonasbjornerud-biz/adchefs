@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowRight } from 'lucide-react';
+import SEO from '@/components/SEO';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -53,6 +54,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-white">
+      <SEO
+        title="Sign in — AdChefs"
+        description="Sign in to your AdChefs dashboard."
+        path="/login"
+        noindex
+      />
       {/* Soft blue gradient wash */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -87,10 +94,11 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
+              <label htmlFor="login-username" className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
                 Username
               </label>
               <Input
+                id="login-username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="yourname"
@@ -99,10 +107,11 @@ export default function Login() {
               />
             </div>
             <div>
-              <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
+              <label htmlFor="login-password" className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground block mb-2">
                 Password
               </label>
               <Input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
