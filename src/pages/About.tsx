@@ -181,6 +181,8 @@ const About = () => {
       metrics: ["AGE 4 · FIRST CAMERA", "AGE 12 · FIRST UPLOAD"],
       imageCaption: "EARLY YOUTUBE ANALYTICS",
       imageRatio: "4/5",
+      imageSrc: ch1Image.url,
+      imageAlt: "Jonas as a child",
     },
     {
       num: "02",
@@ -223,6 +225,8 @@ const About = () => {
       metrics: ["9 FIGURES · BRAND SCALE", "TEAM OF 10 · EDITORS LED"],
       imageCaption: "LEADING A REMOTE EDITING TEAM",
       imageRatio: "4/5",
+      imageSrc: ch3Image.url,
+      imageAlt: "Jonas at a cafe",
     },
     {
       num: "04",
@@ -253,6 +257,8 @@ const About = () => {
       metrics: [],
       imageCaption: "BUILDING THE ADCHEFS SYSTEM",
       imageRatio: "4/5",
+      imageSrc: ch4Image.url,
+      imageAlt: "Editing workstation at night",
     },
   ];
 
