@@ -14,6 +14,8 @@ const WhyAdChefs = () => {
                 src={jonasPhoto}
                 alt="Jonas Bjørnerud, founder of AdChefs"
                 className="w-full h-full object-cover grayscale"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -50,6 +52,8 @@ const WhyAdChefs = () => {
                 alt="Jonas Bjørnerud signature"
                 className="h-14 w-auto select-none pointer-events-none"
                 draggable={false}
+                loading="lazy"
+                decoding="async"
               />
               <div className="pb-1">
                 <p className="text-[13px] font-medium text-foreground">Jonas Bjørnerud</p>

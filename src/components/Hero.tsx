@@ -407,6 +407,8 @@ const Hero = () => {
                   src={jonasPhoto}
                   alt="Jonas Bjørnerud"
                   className="w-full h-full object-cover grayscale"
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </div>
               <div className="flex flex-col">
