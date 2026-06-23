@@ -1,53 +1,41 @@
-## SEO audit — findings and fix plan
+## SEO audit — report only, no code changes yet
 
-The scanner returned 7 failing checks. Here's what's broken, ranked by impact, and the exact fixes I'd ship.
+Scope: `/`, `/about`, `/jobs`, `/jobs/:slug`, `/login`. There is no `/work` or `/privacy` route in `src/App.tsx`. Recent work shipped per-route Helmet, Organization JSON-LD, sitemap generator, robots, llms.txt, alt text and login labels — this report assumes that baseline and grades what's still broken.
 
-### Findings (current state)
+### Findings
 
-| # | Severity | Issue |
-|---|----------|-------|
-| 1 | mid | No `/sitemap.xml` — Google has nothing to crawl beyond what's linked from `/` |
-| 2 | mid | Every route shares the same `<title>` and `<meta description>` (home, /about, /jobs, /jobs/:slug, /login all identical) |
-| 3 | mid | Same problem for OG tags — `og:url` is hardcoded to `https://adchefs.com` on every page, so `/jobs` previews as the homepage |
-| 4 | mid | Logo `alt="AdChefs"` is too thin; `/login` inputs have no `id` ↔ `htmlFor` pairing |
-| 5 | mid | Google Search Console isn't connected — no indexing data, no sitemap submission |
-| 6 | low | No Organization JSON-LD on `/`, no JobPosting JSON-LD on `/jobs/:slug` (no rich results) |
-| 7 | low | No `/llms.txt` — AI assistants (ChatGPT, Perplexity, Claude) have to crawl the SPA shell |
+| # | Issue | Severity | Status | Location | Fix |
+|---|---|---|---|---|---|
+| 1 | **Client-only SPA — initial HTML has no per-route content.** `index.html` ships an empty `<div id="root">`. Helmet only mutates the head *after* hydration. Google's JS-aware crawler handles this, but non-JS social crawlers (LinkedIn, Slack, FB), some bots, and slow-renderers see only the sitewide head + empty body. | high | fail | `index.html`, `src/main.tsx` | Prerender marketing routes (`/`, `/about`, `/jobs`, `/jobs/:slug`) at build with `vite-plugin-prerender-spa` or `react-snap`. Each generated HTML keeps the per-route `<title>`/meta/JSON-LD and main copy in the static markup. |
+| 2 | **Canonical and og:url point at `adchefs.lovable.app`, not the brand domain `adchefs.com`.** Index.html `og:url` is `https://adchefs.com` but `SEO.tsx` SITE_URL is `https://adchefs.lovable.app`, plus sitemap, JSON-LD, and llms.txt all use the lovable subdomain. Mixed signals = Google may pick either and split authority. | high | fail | `src/components/SEO.tsx` (SITE_URL), `scripts/generate-sitemap.ts` (BASE_URL), `index.html` (Organization JSON-LD `url`/`logo`), `public/llms.txt` | Single source of truth: `https://adchefs.com`. Update SITE_URL, BASE_URL, JSON-LD, llms.txt. Add 301 from `adchefs.lovable.app` → `adchefs.com` at the hosting layer (or at minimum keep a sitewide canonical pointing at adchefs.com so the lovable subdomain isn't separately indexable). |
+| 3 | **Unique titles/descriptions per route — partial.** Home, /about, /jobs, /jobs/:slug, /login are unique via Helmet. /unsubscribe, /submit-task, /not-found, /mock/*, dashboards inherit the sitewide title. Marketing routes covered; auxiliary public routes aren't. | med | partial | `src/pages/Unsubscribe.tsx`, `src/pages/NotFound.tsx`, `src/pages/jobs/SubmitTask.tsx` | Add `<SEO ... noindex />` to non-marketing public routes; explicitly noindex `/login`, `/submit-task*`, `/unsubscribe`, `/not-found`. /login already has it. |
+| 4 | **og:image is set sitewide only (a screenshot file in a `gpt-engineer-file-uploads` bucket).** No per-route OG image. The current image is generic and brittle (hosted on a build-tool CDN). | med | partial | `index.html` lines with `og:image`/`twitter:image`; `src/components/SEO.tsx` doesn't emit og:image | Host a stable 1200×630 OG image at `public/og-image.jpg`. Add to `SEO.tsx` with a per-route override prop. Generate a job-specific variant for `/jobs/:slug` later. |
+| 5 | **`twitter:card` is `summary`, should be `summary_large_image`** given there's a 1200-wide image. | low | fail | `index.html` | Change `summary` → `summary_large_image`. |
+| 6 | **`apple-touch-icon.png` referenced but missing from `public/`** (only `favicon.ico` exists). No `site.webmanifest`. No 192/512 PNG icons for Android/PWA. | med | fail | `index.html` line referencing `/apple-touch-icon.png`; `public/` | Add `public/apple-touch-icon.png` (180×180), `public/icon-192.png`, `public/icon-512.png`, and `public/site.webmanifest`; link the manifest from `index.html`. |
+| 7 | **Sitemap omits routes.** Lists `/`, `/about`, `/jobs`, one job. Missing nothing critical for marketing, but `/jobs/:slug` is fetched via Supabase at build — confirm the build env has VITE_SUPABASE_URL/KEY in production (preview build may silently drop all jobs). | med | partial | `scripts/generate-sitemap.ts` | Add a build-time assertion: if env vars are missing, log a warning. Re-run sitemap on every publish (the predev/prebuild hook handles this if envs exist). |
+| 8 | **Robots.txt is fine but verbose** — separate `User-agent` blocks for Googlebot/Bingbot/Twitterbot/facebookexternalhit are redundant with the `*` rule. Sitemap directive present and correct. | low | pass | `public/robots.txt` | Optional cleanup: collapse to `User-agent: *` + `Allow: /` + `Sitemap:`. |
+| 9 | **404 route.** `NotFound.tsx` renders but a SPA-served 404 returns HTTP 200, not 404. Soft-404 risk. | med | partial | `src/pages/NotFound.tsx`, hosting | Lovable hosting can't return a real 404 for SPA routes. Add `<meta name="robots" content="noindex">` via Helmet on NotFound so Google ignores it. |
+| 10 | **Lovable preview subdomain is separately indexable.** `id-preview--...lovable.app` and `adchefs.lovable.app` both serve the same HTML with no canonical pointing at `adchefs.com`. | high | fail | `index.html`, `src/components/SEO.tsx` | Once #2 is fixed (canonical → adchefs.com), the preview subdomain is canonicalized away. Bonus: serve `X-Robots-Tag: noindex` from the preview hostname if possible. |
+| 11 | **Structured data.** Organization schema present in `index.html` and on `/`. JobPosting on `/jobs/:slug`. **Missing: Service schema** (pay-per-video offer) and **FAQPage schema** generated from `src/components/FAQ.tsx`. No JSON-LD validation run. | med | partial | `src/components/SEO.tsx`, `src/pages/Index.tsx`, `src/components/FAQ.tsx` | Emit Service JSON-LD on `/` with `name`, `provider`, `areaServed`, `offers` (priceSpecification from $100/video). Lift the `faqs` array into the homepage Helmet as FAQPage JSON-LD. Validate with Google Rich Results Test before shipping. |
+| 12 | **JobPosting JSON-LD uses `datePosted: today`** — fabricated every build. Google will flag stale postings. Missing `validThrough`, `baseSalary`, real `datePosted`. | med | fail | `src/pages/jobs/JobDetail.tsx` | Pull `created_at` and (if available) `expires_at` from the `job_postings` row. Add `baseSalary` derived from `junior_pay`/`senior_pay`. |
+| 13 | **Multiple `<h1>` across the app — but not on the same page.** Each route has exactly one H1 (Hero, About, JobBoard, JobDetail, Login, NotFound, Unsubscribe). Order is logical. | — | pass | n/a | None. |
+| 14 | **Image alt text.** `src/components/VideoCard.tsx` has `alt=""` (decorative — fine if that's intent, but the videos are content). `src/components/Pricing.tsx` has `alt="AdChefs"` (thin). Hero uses `alt="Jonas Bjørnerud"`. Most others are good. | low | partial | `VideoCard.tsx:81`, `Pricing.tsx:265` | VideoCard: `alt={\`${brand} ad — ${hook}\`}`. Pricing logo: `alt="AdChefs logo"`. |
+| 15 | **Link text.** No "click here" found. Most CTAs use "Book a call", "Apply now", "View role" — fine. | — | pass | n/a | None. |
+| 16 | **LCP element** is the Hero H1 + first video poster on `/` (the Cloudinary `so_1,w_400,q_auto/poster.jpg`). Hero JS-mounts the video columns; the poster URLs aren't preloaded. | high | fail | `src/components/Hero.tsx` | Preload the first column's first poster: `<link rel="preload" as="image" href="..." fetchpriority="high">` in `index.html` or via Helmet on `/`. Add `fetchpriority="high"` on the LCP `<img>`/`<video poster=...>`. |
+| 17 | **CLS sources.** (a) Hero video columns have `aspectRatio` set — good. (b) `WhyAdChefs.tsx` portraits, `Pricing.tsx` logo, `About.tsx` chapter images — most have explicit aspect-ratio wrappers from the recent refactor. (c) Webfonts: 4 families loaded via `@import` in `src/index.css` + a 5th (`Inter` weights `300-900`) in `index.html`. `@import` blocks CSS parsing → FOUT/layout shift risk. | med | partial | `src/index.css` (all `@import url(...)`), `index.html` (`fonts.googleapis.com/css2?...Inter:wght@400-900`) | Move all fonts to `index.html` `<link>` tags with `&display=swap`. Preload the two critical faces (Inter 500, Inter Tight 600). Drop the duplicate Inter weight set (300-900 vs 400-700). Drop Satoshi from `fontshare.com` — not used anywhere. |
+| 18 | **Cloudinary transforms.** Videos use `q_auto,f_auto` and width-capped (`w_400` for previews) — good. `.mov` source skips `f_auto` (correct, AVI/MOV-specific). No `dpr_auto`. Posters could be `w_auto`. | low | partial | `src/components/Hero.tsx` `buildUrls` | Add `dpr_auto` to preview/poster URLs. Consider `w_600` posters for retina. |
+| 19 | **Lazy-loading.** `grep` shows only 2 `loading=` attrs in entire `src/`. Hero videos manage autoplay manually but `<img>` placeholders below the fold (About chapter images, founder photo in WhyAdChefs, Pricing logo) lack `loading="lazy"`. | med | fail | `src/components/WhyAdChefs.tsx`, `src/components/Pricing.tsx`, `src/pages/About.tsx` `PlaceholderFrame` | Add `loading="lazy"` and `decoding="async"` to every non-hero `<img>`. Hero portrait stays eager. |
+| 20 | **Render-blocking resources.** `index.html` ships 2 `<link rel="stylesheet">` to Google Fonts + fontshare, then `src/index.css` adds 4 more `@import`s — every one is render-blocking. UnicornStudio loader is appended after main script (non-blocking, good). | med | fail | `index.html`, `src/index.css` | Consolidate per #17. UnicornStudio: confirm it's actually used (no `<unicorn-studio>` element found in a quick search — may be dead code). |
+| 21 | **JS bundle size.** Not measured here, but the project pulls in `@splinetool/react-spline` + `@splinetool/runtime` (~600 KB), `@tiptap/*` (rich text), Three.js indirectly via Spline. If Spline isn't on marketing routes, it's still pulled by route. | med | partial | `package.json`, `src/components/ui/spline-demo.tsx`, `src/components/ui/splite.tsx` | Run `vite build --report` (rollup-plugin-visualizer) to confirm. Code-split heavy components with `React.lazy` so the marketing bundle stays slim. Remove `spline-demo.tsx` if dead. |
+| 22 | **`<html lang="en">`** set. Viewport meta present. No leftover `noindex` in index.html. | — | pass | `index.html` | None. |
+| 23 | **JSON-LD validation.** Not run. Likely fine but unverified. | low | partial | n/a | After fixes 11/12, paste each route's HTML into Google Rich Results Test + Schema.org validator. |
 
-Semrush has no data on `adchefs.com` yet — normal for a new domain, will populate once Google indexes it (which #1 + #5 fix).
+### Top 5 fixes — priority order
 
-### Fix plan
+1. **Prerender the marketing routes** (#1). Single biggest SEO lift. Everything else assumes the static HTML actually contains the page.
+2. **Switch canonical/sitemap/JSON-LD to `https://adchefs.com`** (#2 + #10). Stops the lovable subdomain from competing for rankings and consolidates link equity on the real domain.
+3. **Fix LCP: preload hero poster + add `fetchpriority="high"`; consolidate fonts into one `<link>` with `display=swap` and preload critical faces** (#16 + #17 + #20). Directly moves Core Web Vitals.
+4. **Add FAQPage and Service JSON-LD on `/`, fix JobPosting `datePosted` to use real DB timestamp** (#11 + #12). Cheap rich-result wins; FAQ rich snippets are the highest-CTR organic feature for this kind of page.
+5. **Ship the missing icon set + manifest, set `twitter:card=summary_large_image`, add a stable `public/og-image.jpg`** (#4 + #5 + #6). Fixes social previews and PWA/install metadata in one pass.
 
-**1. Per-route head tags (fixes #2, #3, #6 in one pass)**
-- Install `react-helmet-async`, wrap `<App />` with `HelmetProvider` in `src/main.tsx`.
-- Remove `<link rel="canonical">` from `index.html` so each route owns its own.
-- Add a small `<SEO>` helper, then drop `<Helmet>` blocks into:
-  - `Index.tsx` → home title + description, Organization JSON-LD
-  - `About.tsx` → "About Jonas Bjørnerud — Founder, AdChefs"
-  - `JobBoard.tsx` → "Careers — Remote Video Editor Roles"
-  - `JobDetail.tsx` → per-job title + description + JobPosting JSON-LD (title, description, datePosted, hiringOrganization)
-  - `Login.tsx` → "Sign in — AdChefs" + `<meta name="robots" content="noindex">`
-- Each route self-references `canonical` and `og:url`.
-
-**2. Sitemap + robots (#1)**
-- Add `scripts/generate-sitemap.ts` that writes `public/sitemap.xml` with: `/`, `/about`, `/jobs`, plus one entry per published job pulled from the same data source `JobBoard` uses.
-- Wire `predev` + `prebuild` in `package.json` so it regenerates automatically.
-- Append `Sitemap: https://adchefs.lovable.app/sitemap.xml` to `public/robots.txt`.
-
-**3. `/llms.txt` (#7)**
-- Add `public/llms.txt` listing only the public marketing surfaces (`/`, `/about`, `/jobs`). Exclude `/login`, `/dashboard`, `/admin/*`, `/mock/*`, `/submit-task*`, `/unsubscribe`.
-
-**4. Accessibility nits (#4)**
-- `src/components/Navigation.tsx` and `src/components/Footer.tsx`: change `alt="AdChefs"` → `alt="AdChefs logo"`.
-- `src/pages/editor/Login.tsx`: give the username/password inputs unique `id`s and add `htmlFor` on their `<label>`s.
-
-**5. Google Search Console (#5)**
-- Trigger the GSC connector flow, verify `https://adchefs.lovable.app/` via the META token route, submit the new sitemap. This runs after the sitemap ships so there's something to submit.
-
-### What I won't touch
-- Copy, layout, design tokens, or any business logic.
-- The hardcoded social image (still valid sitewide fallback).
-- The `index.html` sitewide `<title>`/`<meta description>`/og tags — they stay as the fallback for non-JS social crawlers; Helmet overrides them per route for Google.
-
-### Caveat worth knowing
-Helmet runs client-side, so JS-aware crawlers (Google) see the per-route tags, but pure social-preview crawlers (LinkedIn, Slack, Facebook) only see the static `index.html` head. Truly per-page social previews would need SSR — out of scope here.
+Awaiting your go-ahead before changing anything.
