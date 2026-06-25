@@ -25,67 +25,48 @@ const MeVsAgency = () => {
         </div>
 
         {/* Desktop: 3-column layout with solid ME column */}
-        <div className="hidden md:flex gap-0 rounded-[4px] border border-foreground/10 bg-card overflow-hidden">
-          {/* Labels column */}
-          <div className="flex-1 flex flex-col">
-            <div className="px-6 py-4 border-b border-foreground/10 bg-foreground/[0.02]">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                What you get
-              </span>
-            </div>
-            {rows.map((label, i) => (
-              <div
-                key={label}
-                className={`flex items-center px-6 py-5 ${
-                  i !== rows.length - 1 ? "border-b border-foreground/5" : ""
-                } ${i % 2 === 1 ? "bg-surface/40" : ""}`}
-              >
-                <span className="text-[15px] text-foreground leading-snug">{label}</span>
-              </div>
-            ))}
+        <div className="hidden md:grid rounded-[4px] border border-foreground/10 bg-card overflow-hidden grid-cols-[1fr_180px_140px]">
+          {/* Header row */}
+          <div className="px-6 py-5 border-b border-foreground/10 bg-foreground/[0.02] flex items-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              What you get
+            </span>
+          </div>
+          <div className="px-4 py-5 bg-ink flex items-center justify-center rounded-t-[4px]">
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper font-semibold">
+              ME
+            </span>
+          </div>
+          <div className="px-4 py-5 border-b border-foreground/10 bg-foreground/[0.02] flex items-center justify-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              CREATIVE AGENCY
+            </span>
           </div>
 
-          {/* ME column: solid Ink block */}
-          <div className="w-[180px] flex flex-col bg-ink rounded-[4px] my-[-1px] mx-[-1px] z-10 shadow-sm">
-            <div className="px-4 py-4 border-b border-paper/10">
-              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper font-semibold block text-center">
-                ME
-              </span>
-            </div>
-            {rows.map((label, i) => (
-              <div
-                key={label}
-                className={`flex flex-col items-center justify-center px-4 py-5 ${
-                  i !== rows.length - 1 ? "border-b border-paper/10" : ""
-                }`}
-              >
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent text-ink">
-                  <Check className="h-4 w-4" strokeWidth={2.5} />
-                </span>
+          {rows.map((label, i) => {
+            const isLast = i === rows.length - 1;
+            const altBg = i % 2 === 1 ? "bg-surface/40" : "";
+            const labelBorder = isLast ? "" : "border-b border-foreground/5";
+            const agencyBorder = isLast ? "" : "border-b border-foreground/5";
+            const meRound = isLast ? "rounded-b-[4px]" : "";
+            return (
+              <div key={label} className="contents">
+                <div className={`flex items-center px-6 py-5 ${labelBorder} ${altBg}`}>
+                  <span className="text-[15px] text-foreground leading-snug">{label}</span>
+                </div>
+                <div className={`flex items-center justify-center px-4 py-5 bg-ink ${meRound}`}>
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent text-ink">
+                    <Check className="h-4 w-4" strokeWidth={2.5} />
+                  </span>
+                </div>
+                <div className={`flex items-center justify-center px-4 py-5 ${agencyBorder} ${altBg}`}>
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-muted-foreground bg-surface text-muted-foreground">
+                    <X className="h-4 w-4" strokeWidth={2.25} />
+                  </span>
+                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Agency column */}
-          <div className="w-[140px] flex flex-col">
-            <div className="px-4 py-4 border-b border-foreground/10 bg-foreground/[0.02]">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground block text-center">
-                CREATIVE AGENCY
-              </span>
-            </div>
-            {rows.map((label, i) => (
-              <div
-                key={label}
-                className={`flex flex-col items-center justify-center px-4 py-5 ${
-                  i !== rows.length - 1 ? "border-b border-foreground/5" : ""
-                }`}
-              >
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-muted text-muted">
-                  <X className="h-4 w-4" strokeWidth={2} />
-                </span>
-              </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         {/* Mobile: stacked cards */}
@@ -107,9 +88,9 @@ const MeVsAgency = () => {
                     <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                   </span>
                 </div>
-                <div className="flex flex-col items-center gap-2 rounded-[4px] border border-foreground/10 p-4">
+                <div className="flex flex-col items-center gap-2 rounded-[4px] border border-foreground/10 bg-surface/40 p-4">
                   <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Agency</span>
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-muted text-muted">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-muted-foreground bg-surface text-muted-foreground">
                     <X className="h-3.5 w-3.5" strokeWidth={2} />
                   </span>
                 </div>
