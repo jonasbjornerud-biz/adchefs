@@ -12,34 +12,35 @@ const Pod = ({
   title,
   description,
   included,
+  featured = false,
 }: {
-  theme: "dark" | "light" | "blue";
+  theme: "light" | "blue";
   eyebrow: string;
   title: string;
   description: string;
   included: string[];
+  featured?: boolean;
 }) => {
-  const isDark = theme === "dark";
   const isBlue = theme === "blue";
 
   return (
     <div
       className={`flex flex-col h-full rounded-[4px] border p-8 md:p-10 ${
-        isDark
-          ? "bg-[#1a1a1a] text-paper border-paper/10"
-          : isBlue
+        isBlue
           ? "bg-accent text-accent-foreground border-foreground/10"
           : "bg-surface text-foreground border-foreground/10"
-      }`}
+      } ${featured ? "border-t-[2px] border-t-accent shadow-sm" : ""}`}
     >
       <span
-        className="self-start font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 rounded-[4px] border border-current/20 text-current/70"
+        className={`self-start font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 rounded-[4px] border border-current/20 text-current/70 ${
+          featured ? "bg-accent/20 text-foreground/80 border-accent/30" : ""
+        }`}
       >
         {eyebrow}
       </span>
 
       <h3 className="mt-7 font-display text-[28px] md:text-[36px] leading-[1.1] tracking-[-0.02em]">
-        <em className="text-current not-italic">{title}</em>
+        <em className="text-current not-italic font-serif">{title}</em>
       </h3>
 
       <p className="mt-4 text-[15px] leading-relaxed text-current/70">
@@ -48,7 +49,7 @@ const Pod = ({
 
       <div className="mt-8 h-px w-full bg-current opacity-10" aria-hidden />
 
-      <span className="mono mt-6 text-[10px] uppercase tracking-[0.15em] text-current/50">
+      <span className="font-mono mt-6 text-[10px] uppercase tracking-[0.15em] text-current/50">
         Included
       </span>
 
@@ -58,7 +59,7 @@ const Pod = ({
             key={i}
             className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-current/80"
           >
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" aria-hidden />
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" aria-hidden />
             <span>{item}</span>
           </li>
         ))}
@@ -69,7 +70,7 @@ const Pod = ({
           variant="cta"
           size="lg"
           className={`w-full h-auto px-6 py-4 tracking-[0.01em] gap-[10px] ${
-            isDark ? "bg-paper text-ink hover:bg-paper/90" : isBlue ? "bg-ink text-paper hover:bg-ink/90" : ""
+            isBlue ? "bg-ink text-paper hover:bg-ink/90" : "bg-ink text-paper hover:bg-ink/90"
           }`}
           onClick={scrollToBooking}
         >
@@ -88,7 +89,7 @@ const TwoWaysToWork = () => {
         <div className="max-w-2xl mb-14">
           <span className="eyebrow">TWO WAYS TO WORK</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
-            Pick the engine you <em>need</em>.
+            Pick the engine you <em className="font-serif">need</em>.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
             Most brands start with an editor. When they are ready to scale, they loop me into the creative strategy.
@@ -97,20 +98,19 @@ const TwoWaysToWork = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           <Pod
-            theme="dark"
+            theme="light"
+            featured
             eyebrow="FULL SERVICE"
             title="Creative Strategy"
-            description="I run your creative department from concept to campaign. You get a system, a team, and a weekly operator reading your ad numbers. Editor placement is included, so you do not need to hire separately."
+            description="I run your creative department from concept to campaign. You get a system, an operator reading your ad numbers every week, and the videos produced and shipped. Editor placement is included, so you do not hire separately."
             included={[
-              "Editor Placement (If needed)",
-              "In-house system building",
-              "A+ team building",
-              "60+ creative concepts a month",
-              "Fast creative iterations",
-              "New creative batches every week",
-              "Lower retainer + winning bonuses",
+              "Research, angles, and briefs built with an editing eye",
+              "Weekly read on your ad numbers: hook, hold, ROAS, CPA",
+              "New creative batches shipped every week",
+              "Produced videos included, not just strategy decks",
               "Dedicated editor placement included",
-              "Operator who reads your ad numbers weekly",
+              "Live KPI dashboard, free",
+              "One operator owning the creative number end to end",
             ]}
           />
 
@@ -118,12 +118,12 @@ const TwoWaysToWork = () => {
             theme="blue"
             eyebrow="EDITOR PLACEMENT"
             title="Editor Placement"
-            description="A vetted direct-response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
+            description="A vetted direct response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
             included={[
               "Pay per delivered video, from $100",
               "Vetted editor onboarded in days",
               "24 to 48 hour turnaround",
-              "Trained on direct-response, not wedding cuts",
+              "Trained on direct response, not wedding cuts",
               "Replaced fast if it is not clicking",
               "All software covered (Premiere, Higgsfield, ElevenLabs)",
               "No retainer, no contract length",
