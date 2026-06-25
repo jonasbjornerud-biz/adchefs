@@ -3,30 +3,38 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import AnimationPlaceholder from "./AnimationPlaceholder";
 
-const principles = [
+const steps = [
   {
-    icon: Eye,
-    title: "Angles pulled from the numbers",
-    body: "Every week I sit with your hook rate, hold curve, ROAS and CPA, then build the next angles from whatever your winners have in common.",
-    stat: "HOOK · HOLD · ROAS",
-  },
-  {
-    icon: Film,
-    title: "Briefs written by an editor",
-    body: "Your editor gets more than a script. They get shot by shot direction, because I have spent enough years in the timeline to know what actually cuts.",
-    stat: "SHOT BY SHOT",
-  },
-  {
+    step: "01",
     icon: LineChart,
-    title: "Your live KPI dashboard",
-    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate alongside. One live view of what every video is actually moving. No spreadsheets.",
+    title: "Read the numbers",
+    body: "Every decision starts in your live dashboard. Hook rate, hold curve, ROAS, CPA and delivery, front and centre. No spreadsheets.",
     stat: "INCLUDED FREE",
+    animLabel: "ANIMATION 04",
   },
   {
+    step: "02",
+    icon: Eye,
+    title: "Build the angle",
+    body: "I read what your winners share, then build the next angles from the patterns in the data, not from taste.",
+    stat: "HOOK · HOLD · ROAS",
+    animLabel: "ANIMATION 05",
+  },
+  {
+    step: "03",
+    icon: Film,
+    title: "Brief it like an editor",
+    body: "Editors get more than a script. They get shot by shot direction, because I have spent years in the timeline myself.",
+    stat: "SHOT BY SHOT",
+    animLabel: "ANIMATION 06",
+  },
+  {
+    step: "04",
     icon: CheckCircle2,
-    title: "Produced and pushed live",
-    body: "Cut, reviewed against the brief, shipped. You see exactly what went out and exactly what it did.",
+    title: "Ship and measure",
+    body: "Cut, reviewed against the brief, and pushed live. The results land back in the dashboard, and the loop starts again.",
     stat: "REVIEWED",
+    animLabel: "ANIMATION 07",
   },
 ];
 
@@ -43,17 +51,20 @@ const EditorEdge = () => {
             Creative built on <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
-            Every account gets a private dashboard, free. Hook rate, hold curve, ROAS, CPA and delivery in one place, updated live. I direct the creative off the same numbers you see, so we are always arguing about the same thing.
+            Every account gets a private dashboard, free. Hook rate, hold curve, ROAS, CPA and delivery in one place, updated live. I direct the creative off the same numbers you see, so we are always working from one source of truth.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-px bg-background/10 border border-background/10 rounded-[4px] overflow-hidden">
-          {principles.map((p, idx) => (
+          {steps.map((p) => (
             <div key={p.title} className="bg-foreground p-8 md:p-10">
-              <AnimationPlaceholder label={`ANIMATION 0${idx + 4}`} className="mb-7" />
+              <AnimationPlaceholder label={p.animLabel} className="mb-7" />
               <div className="flex items-center justify-between mb-8">
-                <p.icon className="w-5 h-5 text-accent" />
-                <span className="mono text-[10px] uppercase tracking-[0.18em] text-accent">{p.stat}</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent/70">STEP {p.step}</span>
+                  <p.icon className="w-5 h-5 text-accent" />
+                </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">{p.stat}</span>
               </div>
               <h3 className="font-display text-[22px] leading-tight tracking-tight mb-3">{p.title}</h3>
               <p className="text-[14px] text-background/60 leading-relaxed">{p.body}</p>
