@@ -11,7 +11,6 @@ import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
 import Proof from "@/components/Proof";
-import ChapterDivider from "@/components/ChapterDivider";
 import MeVsAgency from "@/components/MeVsAgency";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
