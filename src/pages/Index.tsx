@@ -12,6 +12,7 @@ import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
 import Proof from "@/components/Proof";
 import ChapterDivider from "@/components/ChapterDivider";
+import MeVsAgency from "@/components/MeVsAgency";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
@@ -99,6 +100,7 @@ const Index = () => {
         variant="light"
       />
       <ScrollReveal><HowItWorks /></ScrollReveal>
+      <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
