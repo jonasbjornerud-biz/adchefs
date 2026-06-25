@@ -97,7 +97,7 @@ const TwoWaysToWork = () => {
             eyebrow="FULL SERVICE"
             title={
               <>
-                <span className="text-[#3B82F6]">Editor Placement</span>{" "}
+                <span className="text-primary">Editor Placement</span>{" "}
                 <span className="text-current/50">(If needed)</span>
               </>
             }
@@ -117,7 +117,7 @@ const TwoWaysToWork = () => {
           <Pod
             theme="light"
             eyebrow="EDITOR PLACEMENT"
-            title={<span className="text-[#3B82F6]">Editor Placement</span>}
+            title={<span className="text-primary">Editor Placement</span>}
             description="A vetted direct-response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
             included={[
               "Pay per delivered video, from $100",
