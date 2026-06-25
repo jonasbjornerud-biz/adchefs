@@ -64,7 +64,9 @@ const Pod = ({
         <Button
           variant="cta"
           size="lg"
-          className="w-full h-auto px-6 py-4 tracking-[0.01em] gap-[10px]"
+          className={`w-full h-auto px-6 py-4 tracking-[0.01em] gap-[10px] ${
+            isDark ? "bg-paper text-ink hover:bg-paper/90" : ""
+          }`}
           onClick={scrollToBooking}
         >
           Book a Call
