@@ -13,19 +13,22 @@ const Pod = ({
   description,
   included,
 }: {
-  theme: "dark" | "light";
+  theme: "dark" | "light" | "blue";
   eyebrow: string;
-  title: React.ReactNode;
+  title: string;
   description: string;
   included: string[];
 }) => {
   const isDark = theme === "dark";
+  const isBlue = theme === "blue";
 
   return (
     <div
       className={`flex flex-col h-full rounded-[4px] border p-8 md:p-10 ${
         isDark
           ? "bg-ink text-paper border-paper/10"
+          : isBlue
+          ? "bg-primary text-white border-white/15"
           : "bg-surface text-foreground border-foreground/10"
       }`}
     >
@@ -65,7 +68,7 @@ const Pod = ({
           variant="cta"
           size="lg"
           className={`w-full h-auto px-6 py-4 tracking-[0.01em] gap-[10px] ${
-            isDark ? "bg-paper text-ink hover:bg-paper/90" : ""
+            isDark ? "bg-paper text-ink hover:bg-paper/90" : isBlue ? "bg-ink text-paper hover:bg-ink/90" : ""
           }`}
           onClick={scrollToBooking}
         >
@@ -95,14 +98,10 @@ const TwoWaysToWork = () => {
           <Pod
             theme="dark"
             eyebrow="FULL SERVICE"
-            title={
-              <>
-                <span className="text-primary">Editor Placement</span>{" "}
-                <span className="text-current/50">(If needed)</span>
-              </>
-            }
+            title="Creative Strategy"
             description="I run your creative department from concept to campaign. You get a system, a team, and a weekly operator reading your ad numbers. Editor placement is included, so you do not need to hire separately."
             included={[
+              "Editor Placement (If needed)",
               "In-house system building",
               "A+ team building",
               "60+ creative concepts a month",
@@ -115,9 +114,9 @@ const TwoWaysToWork = () => {
           />
 
           <Pod
-            theme="light"
+            theme="blue"
             eyebrow="EDITOR PLACEMENT"
-            title={<span className="text-primary">Editor Placement</span>}
+            title="Editor Placement"
             description="A vetted direct-response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
             included={[
               "Pay per delivered video, from $100",
