@@ -56,9 +56,10 @@ const Pod = ({
         {included.map((item, i) => (
           <li
             key={i}
-            className="text-[14px] md:text-[15px] leading-snug text-current/80"
+            className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-current/80"
           >
-            {item}
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" aria-hidden />
+            <span>{item}</span>
           </li>
         ))}
       </ul>
