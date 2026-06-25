@@ -33,7 +33,7 @@ const Pricing = () => {
               className="mt-6 text-[16px] leading-relaxed max-w-[520px]"
               style={{ color: "#75726B" }}
             >
-              Traditional agencies charge whether anything gets delivered or not. With AdChefs placement, the only line item is the work: finished videos, hook variations, cutdowns, editing tools, and delivery tracking included.
+              Most agencies invoice you whether anything ships or not. With placement, the only line on the bill is the work. Finished videos, hook variations, cutdowns, tools and delivery tracking, all in.
             </p>
 
             <div
@@ -62,7 +62,7 @@ const Pricing = () => {
                 color: "#75726B",
               }}
             >
-              Direction is scoped on the call.
+              Direction is scoped on the call. Every brand's mess is a little different.
             </p>
 
             <div className="mt-8">
@@ -78,13 +78,13 @@ const Pricing = () => {
             </div>
 
             <p className="mt-5 text-[14px]" style={{ color: "#75726B" }}>
-              Revisions included until final approval. Cancel anytime.
+              Revisions included until you actually approve it. Cancel whenever.
             </p>
             <p
               className="mt-2 text-[13px] max-w-[480px]"
               style={{ color: "#9A968C", fontStyle: "italic", fontFamily: "'Instrument Serif', serif", fontSize: 16, lineHeight: 1.5 }}
             >
-              Built for brands that need consistent creative output without bloated agency retainers.
+              Built for brands that need consistent output, not a fresh six-figure agency contract.
             </p>
           </div>
 

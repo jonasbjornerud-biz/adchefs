@@ -16,7 +16,7 @@ const TwoWaysToWork = () => {
             One operator, <em>two</em> ways in.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
-            Start with an editor and scale into full creative direction, or bring me straight in to direct. Same operator either way.
+            Start with an editor and scale into full creative direction later, or bring me in to direct from day one. Same operator either way.
           </p>
         </div>
 
@@ -32,7 +32,7 @@ const TwoWaysToWork = () => {
               Creative Direction
             </h3>
             <p className="text-[15px] text-muted-foreground leading-relaxed max-w-2xl">
-              I run your creative engine. Research, angles, briefs built with an editor's eye, performance review every week, and the videos produced and shipped. For brands that want someone owning the creative number, not just filling a queue.
+              I run your creative engine end to end. Research, angles, briefs written with an editor's eye, a weekly performance review, and the videos produced and shipped. For brands that want someone owning the creative number, not just filling a queue.
             </p>
           </div>
 
@@ -48,7 +48,7 @@ const TwoWaysToWork = () => {
               Editor Placement
             </h3>
             <p className="text-[14px] text-muted-foreground leading-relaxed max-w-2xl">
-              One vetted editor placed inside your team, trained on direct response, shipping cuts in 24 to 48 hours. You brief, they execute, I manage them in the background.
+              One vetted editor dropped inside your team. Trained on direct response, shipping cuts in 24 to 48 hours. You brief, they execute, I keep them sharp in the background.
             </p>
           </div>
         </div>
