@@ -26,7 +26,7 @@ const Pod = ({
     <div
       className={`flex flex-col h-full rounded-[4px] border p-8 md:p-10 ${
         isDark
-          ? "bg-ink text-paper border-paper/10"
+          ? "bg-[#1a1a1a] text-paper border-paper/10"
           : isBlue
           ? "bg-primary text-white border-white/15"
           : "bg-surface text-foreground border-foreground/10"
