@@ -16,6 +16,17 @@ const Pricing = () => {
           {/* Left column */}
           <div className="md:w-[55%] flex-shrink-0">
             <span className="eyebrow eyebrow-accent">EDITOR PLACEMENT · PRICING</span>
+            <p
+              className="mt-3 text-[12px]"
+              style={{
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#75726B",
+              }}
+            >
+              Pricing for the video editing service
+            </p>
             <h2
               className="mt-6 text-[36px] md:text-[52px] leading-[1.02] tracking-[-0.025em] font-semibold"
               style={{ fontFamily: "'Inter Tight', sans-serif", color: "#1A1A1A" }}
@@ -33,7 +44,7 @@ const Pricing = () => {
               className="mt-6 text-[16px] leading-relaxed max-w-[520px]"
               style={{ color: "#75726B" }}
             >
-              Most agencies invoice you whether anything ships or not. With placement, the only line on the bill is the work. Finished videos, hook variations, cutdowns, tools and delivery tracking, all in.
+              This is pricing for editor placement, the video editing service. Most agencies invoice you whether anything ships or not. Here the only line on the bill is the work: finished videos, hook variations, cutdowns, tools and delivery tracking, all in.
             </p>
 
             <div
