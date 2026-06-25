@@ -9,14 +9,14 @@ const CalendlyBooking = () => {
               Let's see if we're a fit.
             </h2>
             <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-              I onboard 1 to 2 new brands a month to protect quality. Book a 15 minute call and I'll show you how AdChefs would plug into your workflow.
+              I take on 1 to 2 new brands a month. When the slots are gone, they're gone. Book a 15 minute call and I'll show you how AdChefs would plug into what you already have.
             </p>
 
             <div className="mt-8 space-y-6">
               <div>
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">Book a call if</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
-                  <li>· You spend $5K+ a month on ads and need more creative</li>
+                  <li>· You spend $5K+ a month on ads and are short on creative</li>
                   <li>· You want a dedicated editor without hiring in-house</li>
                   <li>· You care about what converts, not just what gets delivered</li>
                 </ul>
@@ -25,14 +25,14 @@ const CalendlyBooking = () => {
               <div>
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">What happens on the call</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
-                  <li>· I ask about your current creative, offer, and performance</li>
-                  <li>· I show how AdChefs would plug into your workflow</li>
-                  <li>· If it's a fit, we scope a trial. If not, I point you somewhere better.</li>
+                  <li>· I ask about your current creative, offer and ad numbers</li>
+                  <li>· I show how I'd plug in without disrupting what works</li>
+                  <li>· If we're a fit, we scope a trial. If not, I point you somewhere better.</li>
                 </ul>
               </div>
 
               <p className="text-[13px] text-foreground/60 italic">
-                No sales pressure. Worst case, you leave with sharper feedback on your current creative.
+                No pitch deck. Worst case, you walk away with sharper feedback on your current creative.
               </p>
             </div>
           </div>
