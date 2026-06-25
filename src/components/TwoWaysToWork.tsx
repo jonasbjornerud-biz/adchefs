@@ -13,19 +13,22 @@ const Pod = ({
   description,
   included,
 }: {
-  theme: "dark" | "light";
+  theme: "dark" | "light" | "blue";
   eyebrow: string;
-  title: React.ReactNode;
+  title: string;
   description: string;
   included: string[];
 }) => {
   const isDark = theme === "dark";
+  const isBlue = theme === "blue";
 
   return (
     <div
       className={`flex flex-col h-full rounded-[4px] border p-8 md:p-10 ${
         isDark
           ? "bg-ink text-paper border-paper/10"
+          : isBlue
+          ? "bg-primary text-white border-white/15"
           : "bg-surface text-foreground border-foreground/10"
       }`}
     >
@@ -65,7 +68,7 @@ const Pod = ({
           variant="cta"
           size="lg"
           className={`w-full h-auto px-6 py-4 tracking-[0.01em] gap-[10px] ${
-            isDark ? "bg-paper text-ink hover:bg-paper/90" : ""
+            isDark ? "bg-paper text-ink hover:bg-paper/90" : isBlue ? "bg-ink text-paper hover:bg-ink/90" : ""
           }`}
           onClick={scrollToBooking}
         >
