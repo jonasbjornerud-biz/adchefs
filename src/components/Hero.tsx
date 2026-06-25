@@ -375,11 +375,11 @@ const Hero = () => {
             <span className="eyebrow self-start w-fit">BUILT FOR E-COM BRANDS · DR CREATIVE</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
-              Your creative, <em>directed</em> by an operator who reads the numbers.
+              Your creative, <em>directed</em> by someone who actually reads the numbers.
             </h1>
 
             <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-              I direct performance creative for ecommerce brands and place the editors who ship it. You get someone who knows why an ad wins, not a rotating freelancer. Pay per video, or bring me in to direct the whole creative engine.
+              I run performance creative for a handful of e-com brands and place the editors who ship it. You get someone who knows why an ad wins, not a freelancer who needs a week to find your brand folder. Pay per video, or hand me the whole engine.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -397,7 +397,7 @@ const Hero = () => {
             <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
               <span>FROM $100 / VIDEO</span>
               <span className="h-3 w-px bg-border" />
-              <span>DIRECTION PRICED ON A CALL</span>
+              <span>DIRECTION SCOPED ON THE CALL</span>
               <span className="h-3 w-px bg-border" />
               <span>CANCEL ANYTIME</span>
             </div>
@@ -427,7 +427,7 @@ const Hero = () => {
             <div className="hero-wall flex flex-col w-full">
               <span className="hero-wall-label hero-wall-edge">
                 <span aria-hidden className="hero-wall-dot" />
-                <span>Live cuts shipping for clients</span>
+                <span>Cuts going live for clients right now</span>
               </span>
               <span aria-hidden className="hero-wall-rule hero-wall-edge" />
 
