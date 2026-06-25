@@ -98,14 +98,10 @@ const TwoWaysToWork = () => {
           <Pod
             theme="dark"
             eyebrow="FULL SERVICE"
-            title={
-              <>
-                <span className="text-primary">Editor Placement</span>{" "}
-                <span className="text-current/50">(If needed)</span>
-              </>
-            }
+            title="Creative Strategy"
             description="I run your creative department from concept to campaign. You get a system, a team, and a weekly operator reading your ad numbers. Editor placement is included, so you do not need to hire separately."
             included={[
+              "Editor Placement (If needed)",
               "In-house system building",
               "A+ team building",
               "60+ creative concepts a month",
