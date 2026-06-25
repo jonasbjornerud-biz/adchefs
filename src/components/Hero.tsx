@@ -375,7 +375,9 @@ const Hero = () => {
             <span className="eyebrow self-start w-fit">BUILT FOR DTC BRANDS</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
-              Creative Strategy for 7 - 9 Figure DTC Brands
+              Creative Strategy for
+              <br />
+              7 - 9 Figure <em>DTC Brands</em>
             </h1>
 
             <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
@@ -487,7 +489,7 @@ const Hero = () => {
               </div>
 
               <span className="hero-wall-disclaimer hero-wall-edge">
-                Video editing only. Brand ownership belongs to respective clients.
+                Includes agencies. Brand ownership belongs to respective clients.
               </span>
             </div>
           </div>
