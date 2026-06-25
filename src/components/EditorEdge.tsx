@@ -37,7 +37,7 @@ const EditorEdge = () => {
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
-            SEE HOW IT WORKS
+            CREATIVE DIRECTION · SEE HOW IT WORKS
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
             Creative decisions driven by <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
