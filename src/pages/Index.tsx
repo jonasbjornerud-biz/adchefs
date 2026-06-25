@@ -11,6 +11,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
 import Proof from "@/components/Proof";
+import ChapterDivider from "@/components/ChapterDivider";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
@@ -80,10 +81,26 @@ const Index = () => {
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
         <ScrollReveal><TwoWaysToWork /></ScrollReveal>
-        <ScrollReveal><HowItWorks /></ScrollReveal>
-        <ScrollReveal><EditorEdge /></ScrollReveal>
-      <ScrollReveal><Proof /></ScrollReveal>
+      <ChapterDivider
+        id="direction"
+        number="01"
+        eyebrow="THE FLAGSHIP"
+        heading={<>I direct the whole creative <em>engine</em>.</>}
+        descriptor="Research, angles, briefs with an editing eye, and the performance owned end to end. Priced on a call."
+        variant="dark"
+      />
+      <ScrollReveal><EditorEdge /></ScrollReveal>
+      <ChapterDivider
+        id="placement"
+        number="02"
+        eyebrow="THE ENTRY POINT"
+        heading={<>Or just place an <em>editor</em>.</>}
+        descriptor="One vetted editor inside your team, shipping cuts in 24 to 48 hours. From $100 per video."
+        variant="light"
+      />
+      <ScrollReveal><HowItWorks /></ScrollReveal>
       <ScrollReveal><Pricing /></ScrollReveal>
+      <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
       <Footer />

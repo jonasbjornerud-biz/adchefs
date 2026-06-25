@@ -27,7 +27,7 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-16 sm:py-32 bg-background">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
-          <span className="eyebrow">HOW IT WORKS</span>
+          <span className="eyebrow">EDITOR PLACEMENT · HOW IT WORKS</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
             Your editor, <em>handled</em> for you.
           </h2>

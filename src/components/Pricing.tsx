@@ -15,7 +15,7 @@ const Pricing = () => {
         <div className="flex flex-col md:flex-row gap-16 md:gap-20 md:items-start">
           {/* Left column */}
           <div className="md:w-[55%] flex-shrink-0">
-            <span className="eyebrow eyebrow-accent">PRICING</span>
+            <span className="eyebrow eyebrow-accent">EDITOR PLACEMENT · PRICING</span>
             <h2
               className="mt-6 text-[36px] md:text-[52px] leading-[1.02] tracking-[-0.025em] font-semibold"
               style={{ fontFamily: "'Inter Tight', sans-serif", color: "#1A1A1A" }}
