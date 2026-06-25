@@ -372,14 +372,14 @@ const Hero = () => {
         <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow self-start w-fit">BUILT FOR E-COM BRANDS · DR CREATIVE</span>
+            <span className="eyebrow self-start w-fit">BUILT FOR DTC BRANDS</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
-              Your creative, <em>directed</em> by someone who actually reads the numbers.
+              Creative Strategy for 7 - 9 Figure DTC Brands
             </h1>
 
             <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-              I run performance creative for a handful of e-com brands and place the editors who ship it. You get someone who knows why an ad wins, not a freelancer who needs a week to find your brand folder. Pay per video, or hand me the whole engine.
+              I scale DTC brands by running their entire creative department from A to Z (yes, the whole damn thing)
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -390,16 +390,6 @@ const Hero = () => {
               <Button size="lg" className="h-auto px-8 py-4 bg-[#9ED8F5] text-[#1A1A1A] border-none font-semibold hover:bg-[#8ecde8]" onClick={() => scrollToSection("how-it-works")}>
                 See how it works
               </Button>
-            </div>
-
-            <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
-
-            <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              <span>FROM $100 / VIDEO</span>
-              <span className="h-3 w-px bg-border" />
-              <span>DIRECTION SCOPED ON THE CALL</span>
-              <span className="h-3 w-px bg-border" />
-              <span>CANCEL ANYTIME</span>
             </div>
 
             {/* Founder row */}
