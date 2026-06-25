@@ -301,7 +301,7 @@ const PrintingReceipt = () => {
                   color: "#9A968C",
                 }}
               >
-                One month · itemized
+                Editor placement · itemized
               </div>
               <div
                 style={{
