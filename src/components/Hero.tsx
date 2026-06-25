@@ -392,15 +392,6 @@ const Hero = () => {
               </Button>
             </div>
 
-            <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-4 mb-4" />
-
-            <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              <span>FROM $100 / VIDEO</span>
-              <span className="h-3 w-px bg-border" />
-              <span>DIRECTION SCOPED ON THE CALL</span>
-              <span className="h-3 w-px bg-border" />
-              <span>CANCEL ANYTIME</span>
-            </div>
 
             {/* Founder row */}
             <div className="mt-6 flex items-center gap-3">
