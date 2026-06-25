@@ -89,7 +89,7 @@ const Index = () => {
         descriptor="Research, angles, briefs with an editing eye, and the performance owned end to end. Priced on a call."
         variant="dark"
       />
-      <EditorEdge />
+      <ScrollReveal><EditorEdge /></ScrollReveal>
       <ChapterDivider
         id="placement"
         number="02"
@@ -98,8 +98,8 @@ const Index = () => {
         descriptor="One vetted editor inside your team, shipping cuts in 24 to 48 hours. From $100 per video."
         variant="light"
       />
-      <HowItWorks />
-      <Pricing />
+      <ScrollReveal><HowItWorks /></ScrollReveal>
+      <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
