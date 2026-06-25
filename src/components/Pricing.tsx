@@ -73,7 +73,7 @@ const Pricing = () => {
                 color: "#75726B",
               }}
             >
-              Direction is scoped on the call. Every brand's mess is a little different.
+              Creative direction is priced separately on the call.
             </p>
 
             <div className="mt-8">
