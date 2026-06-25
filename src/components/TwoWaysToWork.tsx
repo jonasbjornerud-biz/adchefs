@@ -15,7 +15,7 @@ const Pod = ({
 }: {
   theme: "dark" | "light";
   eyebrow: string;
-  title: string;
+  title: React.ReactNode;
   description: string;
   included: string[];
 }) => {
@@ -36,7 +36,7 @@ const Pod = ({
       </span>
 
       <h3 className="mt-7 font-display text-[28px] md:text-[36px] leading-[1.1] tracking-[-0.02em]">
-        <em className="text-current">{title}</em>
+        <em className="text-current not-italic">{title}</em>
       </h3>
 
       <p className="mt-4 text-[15px] leading-relaxed text-current/70">
@@ -95,7 +95,12 @@ const TwoWaysToWork = () => {
           <Pod
             theme="dark"
             eyebrow="FULL SERVICE"
-            title="Creative Strategy"
+            title={
+              <>
+                <span className="text-primary">Editor Placement</span>{" "}
+                <span className="text-current/50">(If needed)</span>
+              </>
+            }
             description="I run your creative department from concept to campaign. You get a system, a team, and a weekly operator reading your ad numbers. Editor placement is included, so you do not need to hire separately."
             included={[
               "In-house system building",
@@ -112,7 +117,7 @@ const TwoWaysToWork = () => {
           <Pod
             theme="light"
             eyebrow="EDITOR PLACEMENT"
-            title="Editor Placement"
+            title={<span className="text-primary">Editor Placement</span>}
             description="A vetted direct-response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
             included={[
               "Pay per delivered video, from $100",
