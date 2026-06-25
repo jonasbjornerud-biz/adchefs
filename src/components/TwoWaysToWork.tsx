@@ -36,7 +36,7 @@ const Pod = ({
       </span>
 
       <h3 className="mt-7 font-display text-[28px] md:text-[36px] leading-[1.1] tracking-[-0.02em]">
-        <em>{title}</em>
+        <em className="text-current">{title}</em>
       </h3>
 
       <p className="mt-4 text-[15px] leading-relaxed text-current/70">
