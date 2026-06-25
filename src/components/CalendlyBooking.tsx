@@ -9,7 +9,7 @@ const CalendlyBooking = () => {
               Let's see if we're a fit.
             </h2>
             <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-              I onboard 2 to 3 new brands a month to protect editor quality. Book a 15 minute call and I'll show you how AdChefs would plug into your workflow.
+              I onboard 1 to 2 new brands a month to protect quality. Book a 15 minute call and I'll show you how AdChefs would plug into your workflow.
             </p>
 
             <div className="mt-8 space-y-6">

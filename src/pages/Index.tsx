@@ -9,6 +9,8 @@ import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
+import TwoWaysToWork from "@/components/TwoWaysToWork";
+import Proof from "@/components/Proof";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
@@ -77,8 +79,10 @@ const Index = () => {
       <Navigation />
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
+        <ScrollReveal><TwoWaysToWork /></ScrollReveal>
         <ScrollReveal><HowItWorks /></ScrollReveal>
         <ScrollReveal><EditorEdge /></ScrollReveal>
+      <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>

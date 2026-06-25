@@ -1,4 +1,5 @@
 import { Search, GraduationCap, Rocket } from "lucide-react";
+import AnimationPlaceholder from "./AnimationPlaceholder";
 
 const steps = [
   {
@@ -28,7 +29,7 @@ const HowItWorks = () => {
         <div className="max-w-2xl mb-14">
           <span className="eyebrow">HOW IT WORKS</span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
-            An <em>in-house editor</em>, handled for you.
+            Your editor, <em>handled</em> for you.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
             Your editor is yours alone. Not shared, not rotating, not freelancing on the side. I hire them, train them, and place them in your team like a contractor you never had to recruit. They sit in your Slack, learn your brand, and grow with your account. The recruiting, the mentoring, and the performance management stay with me.
@@ -36,11 +37,12 @@ const HowItWorks = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-          {steps.map((s) => (
+          {steps.map((s, idx) => (
             <div
               key={s.n}
               className="group rounded-[4px] border border-foreground/10 bg-card p-7 transition-colors hover:border-foreground/30"
             >
+              <AnimationPlaceholder label={`ANIMATION 0${idx + 1}`} className="mb-6" />
               <div className="flex items-center justify-between mb-8">
                 <span className="mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                   Step {s.n}

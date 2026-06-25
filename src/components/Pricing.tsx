@@ -33,7 +33,7 @@ const Pricing = () => {
               className="mt-6 text-[16px] leading-relaxed max-w-[520px]"
               style={{ color: "#75726B" }}
             >
-              Traditional agencies charge whether anything gets delivered or not. With AdChefs, the only line item is the work: finished videos, hook variations, cutdowns, editing tools, and delivery tracking included.
+              Traditional agencies charge whether anything gets delivered or not. With AdChefs placement, the only line item is the work: finished videos, hook variations, cutdowns, editing tools, and delivery tracking included.
             </p>
 
             <div
@@ -52,6 +52,18 @@ const Pricing = () => {
               <span style={{ fontWeight: 700 }}>$100</span>
               <span style={{ color: "#75726B" }}>/ DELIVERED VIDEO</span>
             </div>
+
+            <p
+              className="mt-3 text-[12px]"
+              style={{
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#75726B",
+              }}
+            >
+              Direction is scoped on the call.
+            </p>
 
             <div className="mt-8">
               <a
