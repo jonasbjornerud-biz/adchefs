@@ -28,7 +28,7 @@ const Pod = ({
         isDark
           ? "bg-[#1a1a1a] text-paper border-paper/10"
           : isBlue
-          ? "bg-primary text-white border-white/15"
+          ? "bg-accent text-accent-foreground border-foreground/10"
           : "bg-surface text-foreground border-foreground/10"
       }`}
     >
