@@ -392,7 +392,6 @@ const Hero = () => {
               </Button>
             </div>
 
-
             {/* Founder row */}
             <div className="mt-6 flex items-center gap-3">
               <div className="w-11 h-11 rounded-full overflow-hidden border border-foreground/10 flex-shrink-0">
