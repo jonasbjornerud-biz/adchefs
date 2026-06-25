@@ -21,17 +21,17 @@ const WhyAdChefs = () => {
           <div>
             <span className="eyebrow">HOW IT STARTED</span>
             <h2 className="mt-5 font-display text-[32px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-foreground">
-              Built by an operator, not an agency.
+              Built by an operator, not an <em>agency</em>.
             </h2>
             <div className="mt-6 space-y-4 text-[15px] text-muted-foreground leading-relaxed max-w-xl">
               <p>
-                I'm Jonas. I've spent the last decade editing direct-response ads for e-commerce brands, learning what makes someone stop, watch, and buy.
+                I'm Jonas. I've spent years editing direct response ads for ecommerce brands, then years managing a video department and living in the performance data, learning what makes someone stop, watch, and buy.
               </p>
               <p>
                 Every brand I worked with hit the same wall. Rotating freelancers who relearn the brand from zero. Retainers that bill whether anything ships or not. Briefs that go through a project manager instead of the person doing the work. So I built AdChefs to remove all of it.
               </p>
               <p>
-                I recruit, train, and manage every editor on the roster myself. I vet every brand before we start. And I stay close enough to the work that when an ad underperforms, I know why, and we fix it.
+                Now I direct the creative and manage the editors myself. I read the numbers, build the angles, and brief shot by shot. When an ad underperforms, I know why, and we fix it.
               </p>
             </div>
 

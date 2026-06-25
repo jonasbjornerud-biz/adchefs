@@ -372,14 +372,14 @@ const Hero = () => {
         <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
           {/* LEFT: hero content (vertically centered) */}
           <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow self-start w-fit">BUILT FOR E-COM BRANDS · PAY PER VIDEO</span>
+            <span className="eyebrow self-start w-fit">BUILT FOR E-COM BRANDS · DR CREATIVE</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
-              Your <em>dedicated</em> editor, without the overhead.
+              Your creative, <em>directed</em> by an operator who reads the numbers.
             </h1>
 
             <p className="mt-7 text-[16px] sm:text-[17px] leading-relaxed text-muted-foreground max-w-xl">
-              I place one vetted editor inside your team. They learn your product, your voice, and your winners, then ship new cuts in 24 to 48 hours. You pay per video. Tools, training, and editor management are on me.
+              I direct performance creative for ecommerce brands and place the editors who ship it. You get someone who knows why an ad wins, not a rotating freelancer. Pay per video, or bring me in to direct the whole creative engine.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -397,7 +397,7 @@ const Hero = () => {
             <div className="flex items-center gap-5 mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
               <span>FROM $100 / VIDEO</span>
               <span className="h-3 w-px bg-border" />
-              <span>24-48H TURNAROUND</span>
+              <span>DIRECTION PRICED ON A CALL</span>
               <span className="h-3 w-px bg-border" />
               <span>CANCEL ANYTIME</span>
             </div>

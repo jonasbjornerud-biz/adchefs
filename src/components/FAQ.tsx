@@ -7,6 +7,14 @@ import {
 
 const faqs = [
   {
+    q: "What's the difference between placement and direction?",
+    a: "Placement gives you a dedicated editor who executes your briefs. Direction means I own the creative: research, angles, briefs, and the performance, with the videos produced and shipped. Placement is the entry point, direction is the full engine.",
+  },
+  {
+    q: "Can you just direct, or do you produce too?",
+    a: "Both. Direction includes the produced videos. If you only need hands, placement covers that on its own.",
+  },
+  {
     q: "How does the pay-per-video model work?",
     a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for.",
   },

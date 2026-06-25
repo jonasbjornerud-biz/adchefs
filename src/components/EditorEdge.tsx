@@ -1,31 +1,32 @@
-import { Eye, Gauge, LineChart, Wallet, ArrowRight } from "lucide-react";
+import { Eye, Film, LineChart, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import AnimationPlaceholder from "./AnimationPlaceholder";
 
 const principles = [
   {
     icon: Eye,
-    title: "Trained on your KPIs",
-    body: "Your editor studies your hook rates, hold curves, CPA, and ROAS every week. They learn what your winners share, then engineer more of them.",
+    title: "Angles from the numbers",
+    body: "I read hook rate, hold curve, ROAS and CPA every week, then build the next angles from what your winners share.",
     stat: "HOOK · HOLD · ROAS",
   },
   {
-    icon: Gauge,
-    title: "Delivery you can track",
-    body: "See exactly how many videos were delivered and approved, week by week. Standard turnaround is 24 to 48 hours. No chasing status updates.",
-    stat: "24-48H STANDARD",
+    icon: Film,
+    title: "Briefs with an editing eye",
+    body: "Editors get more than a script. They get direction on how to cut it, because I have spent years in the timeline myself.",
+    stat: "SHOT BY SHOT",
   },
   {
     icon: LineChart,
     title: "Live KPI dashboard",
-    body: "ROAS front and centre. CPA, CTR, hook rate, and hold rate alongside. One live view of what your editor is moving.",
+    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate alongside. One live view of what every video is moving.",
     stat: "INCLUDED FREE",
   },
   {
-    icon: Wallet,
-    title: "The full stack, covered",
-    body: "Higgsfield, ElevenLabs, and professional editing software subscriptions are part of the price. Your editor shows up fully equipped. You never buy a license.",
-    stat: "ALL TOOLS INCLUDED",
+    icon: CheckCircle2,
+    title: "Produced and shipped",
+    body: "Cut, reviewed against the brief, and pushed live. You see exactly what shipped and what it moved.",
+    stat: "REVIEWED",
   },
 ];
 
@@ -38,17 +39,18 @@ const EditorEdge = () => {
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
             SEE HOW IT WORKS
           </span>
-          <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] md:whitespace-nowrap">
-            Editors who understand <em style={{ color: "hsl(var(--accent))" }}>why ads work.</em>
+          <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
+            Creative decisions driven by <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
-            Every brand gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, and delivery in one place, updated in real time. Your editor sees the same numbers you do, so creative decisions come from data, not guesses.
+            Every account gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, and delivery in one place, updated in real time. I direct the creative off the same numbers you see.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-px bg-background/10 border border-background/10 rounded-[4px] overflow-hidden">
-          {principles.map((p) => (
+          {principles.map((p, idx) => (
             <div key={p.title} className="bg-foreground p-8 md:p-10">
+              <AnimationPlaceholder label={`ANIMATION 0${idx + 4}`} className="mb-7" />
               <div className="flex items-center justify-between mb-8">
                 <p.icon className="w-5 h-5 text-accent" />
                 <span className="mono text-[10px] uppercase tracking-[0.18em] text-accent">{p.stat}</span>
