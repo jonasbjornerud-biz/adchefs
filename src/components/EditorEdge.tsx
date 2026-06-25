@@ -6,26 +6,26 @@ import AnimationPlaceholder from "./AnimationPlaceholder";
 const principles = [
   {
     icon: Eye,
-    title: "Angles from the numbers",
-    body: "I read hook rate, hold curve, ROAS and CPA every week, then build the next angles from what your winners share.",
+    title: "Angles pulled from the numbers",
+    body: "Every week I sit with your hook rate, hold curve, ROAS and CPA, then build the next angles from whatever your winners have in common.",
     stat: "HOOK · HOLD · ROAS",
   },
   {
     icon: Film,
-    title: "Briefs with an editing eye",
-    body: "Editors get more than a script. They get direction on how to cut it, because I have spent years in the timeline myself.",
+    title: "Briefs written by an editor",
+    body: "Your editor gets more than a script. They get shot by shot direction, because I have spent enough years in the timeline to know what actually cuts.",
     stat: "SHOT BY SHOT",
   },
   {
     icon: LineChart,
-    title: "Live KPI dashboard",
-    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate alongside. One live view of what every video is moving.",
+    title: "Your live KPI dashboard",
+    body: "ROAS front and centre. CPA, CTR, hook rate and hold rate alongside. One live view of what every video is actually moving. No spreadsheets.",
     stat: "INCLUDED FREE",
   },
   {
     icon: CheckCircle2,
-    title: "Produced and shipped",
-    body: "Cut, reviewed against the brief, and pushed live. You see exactly what shipped and what it moved.",
+    title: "Produced and pushed live",
+    body: "Cut, reviewed against the brief, shipped. You see exactly what went out and exactly what it did.",
     stat: "REVIEWED",
   },
 ];
@@ -40,10 +40,10 @@ const EditorEdge = () => {
             CREATIVE DIRECTION · SEE HOW IT WORKS
           </span>
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
-            Creative decisions driven by <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
+            Creative built on <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
           </h2>
           <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
-            Every account gets a private performance dashboard, free. Hook rate, hold curve, ROAS, CPA, and delivery in one place, updated in real time. I direct the creative off the same numbers you see.
+            Every account gets a private dashboard, free. Hook rate, hold curve, ROAS, CPA and delivery in one place, updated live. I direct the creative off the same numbers you see, so we are always arguing about the same thing.
           </p>
         </div>
 
