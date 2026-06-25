@@ -114,9 +114,9 @@ const TwoWaysToWork = () => {
           />
 
           <Pod
-            theme="light"
+            theme="blue"
             eyebrow="EDITOR PLACEMENT"
-            title={<span className="text-primary">Editor Placement</span>}
+            title="Editor Placement"
             description="A vetted direct-response editor dropped into your workflow. Pay per delivered video. No retainer, no minimum volume, no contract length."
             included={[
               "Pay per delivered video, from $100",
