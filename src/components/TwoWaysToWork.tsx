@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 const scrollToBooking = () => {
   const el = document.getElementById("booking");
@@ -26,7 +26,7 @@ const Pod = ({
     <div
       className={`flex flex-col h-full rounded-[4px] border p-8 md:p-10 ${
         isDark
-          ? "bg-ink text-paper border-paper/10"
+          ? "bg-[#1a1a1a] text-paper border-paper/10"
           : isBlue
           ? "bg-primary text-white border-white/15"
           : "bg-surface text-foreground border-foreground/10"
@@ -56,9 +56,10 @@ const Pod = ({
         {included.map((item, i) => (
           <li
             key={i}
-            className="text-[14px] md:text-[15px] leading-snug text-current/80"
+            className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-current/80"
           >
-            {item}
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" aria-hidden />
+            <span>{item}</span>
           </li>
         ))}
       </ul>
