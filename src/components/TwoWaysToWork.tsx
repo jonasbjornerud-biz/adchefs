@@ -91,7 +91,7 @@ const TwoWaysToWork = () => {
             Pick the engine you <em>need</em>.
           </h2>
           <p className="mt-5 text-[15px] text-muted-foreground leading-relaxed">
-            Most brands start with an editor. When you are ready to scale, I can run the whole creative department.
+            Most brands start with an editor. When they are ready to scale, they loop me into the creative strategy.
           </p>
         </div>
 
