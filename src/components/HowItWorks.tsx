@@ -102,7 +102,7 @@ const HowItWorks = () => {
         <div className="relative">
           {/* Desktop horizontal connector */}
           <div
-            className="hidden md:block absolute top-[52px] left-[calc(16.666%+24px)] right-[calc(16.666%+24px)] h-px"
+            className="hidden md:block absolute top-[48px] left-[16.67%] right-[16.67%] h-px"
             aria-hidden="true"
           >
             <div className="absolute inset-0 bg-foreground/10" />
