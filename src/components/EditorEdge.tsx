@@ -192,16 +192,6 @@ const EditorEdge = () => {
           </ol>
         </div>
 
-        <div className="mt-14 flex justify-center">
-          <Button
-            size="lg"
-            onClick={() => navigate('/mock')}
-            className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
-          >
-            View demo dashboard
-            <ArrowRight className="ml-1 h-4 w-4" />
-          </Button>
-        </div>
       </div>
     </section>
   );
