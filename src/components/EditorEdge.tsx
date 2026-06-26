@@ -1,4 +1,6 @@
-import { ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowRight, ArrowUpRight, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const tileBase =
   "rounded-[4px] border border-white/[0.08] bg-white/[0.02] p-4";
@@ -122,6 +124,7 @@ const steps = [
 ];
 
 const EditorEdge = () => {
+  const navigate = useNavigate();
   return (
     <section className="py-16 sm:py-32 bg-foreground text-background">
       <div className="mx-auto max-w-[1200px] px-6">
@@ -192,6 +195,16 @@ const EditorEdge = () => {
           </ol>
         </div>
 
+        <div className="mt-14 flex justify-center">
+          <Button
+            size="lg"
+            onClick={() => navigate('/mock')}
+            className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
+          >
+            View demo dashboard
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </section>
   );
