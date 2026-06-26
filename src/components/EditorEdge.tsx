@@ -200,6 +200,5 @@ const EditorEdge = () => (
       </div>
     </section>
   );
-};
 
 export default EditorEdge;
