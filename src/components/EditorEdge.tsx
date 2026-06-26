@@ -1,5 +1,4 @@
 import { ArrowUpRight, TrendingUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const tileBase =
   "rounded-[4px] border border-white/[0.08] bg-white/[0.02] p-4";
