@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
 import HowItWorks from "@/components/HowItWorks";
 import EditorEdge from "@/components/EditorEdge";
+import LiveDashboard from "@/components/LiveDashboard";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
