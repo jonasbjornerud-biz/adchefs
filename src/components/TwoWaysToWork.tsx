@@ -76,7 +76,7 @@ const EntryCard = () => {
 
 const ScaleCard = () => {
   return (
-    <div className="relative flex flex-col h-full rounded-[4px] bg-ink text-paper overflow-hidden shadow-[inset_0_1px_0_rgba(247,246,243,0.08),0_0_60px_rgba(158,216,245,0.06)]">
+    <div className="group relative flex flex-col h-full rounded-[4px] bg-ink text-paper overflow-hidden shadow-[inset_0_1px_0_rgba(247,246,243,0.08),0_0_60px_rgba(158,216,245,0.06)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[inset_0_1px_0_rgba(247,246,243,0.08),0_18px_60px_rgba(158,216,245,0.18)]">
       <div className="flex flex-col h-full p-8 md:p-10">
         <span className="self-start font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 rounded-[4px] border border-accent/40 text-accent">
           SCALE · FULL CREATIVE DEPARTMENT
