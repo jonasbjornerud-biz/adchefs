@@ -165,10 +165,8 @@ const StepPanel = ({ step, title, body, visual }: {
   </li>
 );
 
-const EditorEdge = () => {
-  useNavigate();
-  return (
-    <section className="py-16 sm:py-32 bg-[#0E0E10] text-[#F7F6F3]">
+const EditorEdge = () => (
+  <section className="py-16 sm:py-32 bg-[#0E0E10] text-[#F7F6F3]">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
