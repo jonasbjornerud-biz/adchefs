@@ -122,7 +122,6 @@ const steps = [
 ];
 
 const EditorEdge = () => {
-  const navigate = useNavigate();
   return (
     <section className="py-16 sm:py-32 bg-foreground text-background">
       <div className="mx-auto max-w-[1200px] px-6">
