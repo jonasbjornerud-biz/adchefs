@@ -1,6 +1,4 @@
-import { ArrowRight, ArrowUpRight, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { ArrowUpRight, TrendingUp } from "lucide-react";
 
 const tileBase =
   "rounded-[4px] border border-white/[0.08] bg-white/[0.02] p-4";
@@ -123,10 +121,52 @@ const steps = [
   },
 ];
 
-const EditorEdge = () => {
-  const navigate = useNavigate();
-  return (
-    <section className="py-16 sm:py-32 bg-foreground text-background">
+const StepPanel = ({ step, title, body, visual }: {
+  step: string;
+  title: string;
+  body: string;
+  visual: React.ReactNode;
+}) => (
+  <li className="group relative rounded-[4px] bg-[#16161A] border-t border-white/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.35)] overflow-hidden transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.45)] hover:border-white/[0.10]">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr]">
+      {/* Text half */}
+      <div className="relative p-6 md:p-8 flex flex-col justify-center">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40 group-hover:text-white/50 transition-colors">
+          STEP {step}
+        </span>
+        <div className="mt-2 font-mono text-[48px] md:text-[56px] leading-none text-white/20 group-hover:text-white/30 transition-colors">
+          {step}
+        </div>
+        <h3 className="mt-4 font-display text-[22px] md:text-[26px] leading-tight tracking-tight text-[#F7F6F3]">
+          {title}
+        </h3>
+        <p className="mt-3 font-sans text-[14px] text-white/60 leading-relaxed">
+          {body}
+        </p>
+      </div>
+
+      {/* Vertical accent rule on desktop */}
+      <div
+        aria-hidden
+        className="hidden md:block absolute left-1/3 top-0 bottom-0 w-px bg-[#9ED8F5]/20 group-hover:bg-[#9ED8F5]/35 transition-colors"
+      />
+
+      {/* Horizontal accent rule on mobile */}
+      <div
+        aria-hidden
+        className="md:hidden h-px bg-[#9ED8F5]/20 group-hover:bg-[#9ED8F5]/35 transition-colors"
+      />
+
+      {/* Data half */}
+      <div className="p-6 md:p-8 flex items-center">
+        {visual}
+      </div>
+    </div>
+  </li>
+);
+
+const EditorEdge = () => (
+  <section className="py-16 sm:py-32 bg-[#0E0E10] text-[#F7F6F3]">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mb-14">
           <span className="eyebrow" style={{ background: "transparent", borderColor: "hsl(var(--accent))", color: "hsl(var(--accent))" }}>
@@ -135,79 +175,30 @@ const EditorEdge = () => {
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em]">
             Creative built on <em style={{ color: "hsl(var(--accent))" }}>data</em>, not taste.
           </h2>
-          <p className="mt-5 text-[15px] text-background/60 leading-relaxed">
+          <p className="mt-5 text-[15px] text-white/60 leading-relaxed">
             Every account gets a private dashboard, free. Hook rate, hold curve, ROAS, CPA and delivery in one place, updated live. I direct the creative off the same numbers you see, so we are always working from one source of truth.
           </p>
         </div>
 
-        <div className="relative mx-auto max-w-[880px]">
-          {/* Radial glow behind spine */}
+        <div className="relative">
+          {/* Faint accent radial glow behind panels */}
           <div
             aria-hidden
-            className="pointer-events-none absolute left-0 top-0 h-full w-[320px] -translate-x-1/3"
+            className="pointer-events-none absolute -left-20 top-1/2 h-[600px] w-[600px] -translate-y-1/2 rounded-full"
             style={{
               background:
-                "radial-gradient(ellipse at left center, rgba(158,216,245,0.10), transparent 60%)",
-            }}
-          />
-          {/* Vertical spine */}
-          <div
-            aria-hidden
-            className="absolute left-[19px] md:left-[23px] top-2 bottom-2 w-px"
-            style={{
-              background:
-                "linear-gradient(to bottom, rgba(158,216,245,0) 0%, rgba(158,216,245,0.35) 12%, rgba(158,216,245,0.35) 88%, rgba(158,216,245,0) 100%)",
-              boxShadow: "0 0 12px rgba(158,216,245,0.25)",
+                "radial-gradient(circle, rgba(158,216,245,0.04) 0%, transparent 60%)",
             }}
           />
 
-          <ol className="relative space-y-12 md:space-y-16">
+          <ol className="relative space-y-6 md:space-y-8">
             {steps.map((p) => (
-              <li key={p.step} className="relative pl-14 md:pl-20">
-                {/* Node */}
-                <div className="absolute left-0 top-0 flex items-center justify-center">
-                  <div
-                    className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-accent/40 bg-foreground"
-                    style={{ boxShadow: "0 0 0 4px rgba(158,216,245,0.06), 0 0 24px rgba(158,216,245,0.18)" }}
-                  >
-                    <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.12em] text-accent">
-                      {p.step}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-[1fr_320px] gap-6 md:gap-10 items-start">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent/70">
-                      STEP {p.step}
-                    </span>
-                    <h3 className="mt-2 font-display text-[22px] md:text-[26px] leading-tight tracking-tight">
-                      {p.title}
-                    </h3>
-                    <p className="mt-3 text-[14px] text-background/60 leading-relaxed max-w-[460px]">
-                      {p.body}
-                    </p>
-                  </div>
-                  <div className="w-full">{p.visual}</div>
-                </div>
-              </li>
+              <StepPanel key={p.step} {...p} />
             ))}
           </ol>
-        </div>
-
-        <div className="mt-14 flex justify-center">
-          <Button
-            size="lg"
-            onClick={() => navigate('/mock')}
-            className="bg-background text-foreground hover:bg-background/90 rounded-[4px]"
-          >
-            View demo dashboard
-            <ArrowRight className="ml-1 h-4 w-4" />
-          </Button>
         </div>
       </div>
     </section>
   );
-};
 
 export default EditorEdge;
