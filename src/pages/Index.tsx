@@ -84,6 +84,7 @@ const Index = () => {
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <section id="direction" aria-hidden className="h-0" />
       <ScrollReveal><EditorEdge /></ScrollReveal>
+      <ScrollReveal><LiveDashboard /></ScrollReveal>
       <section id="placement" aria-hidden className="h-0" />
       <ScrollReveal><HowItWorks /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
