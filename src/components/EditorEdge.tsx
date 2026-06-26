@@ -1,6 +1,4 @@
-import { ArrowRight, ArrowUpRight, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { ArrowUpRight, TrendingUp } from "lucide-react";
 
 const tileBase =
   "rounded-[4px] border border-white/[0.08] bg-white/[0.02] p-4";
