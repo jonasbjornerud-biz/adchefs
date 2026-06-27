@@ -1,9 +1,13 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import ServiceHero from "@/components/service/ServiceHero";
+import ServiceProcess from "@/components/service/ServiceProcess";
+import ServiceIncludes from "@/components/service/ServiceIncludes";
+import ServiceCTA from "@/components/service/ServiceCTA";
+import Pricing from "@/components/Pricing";
 
 const stages = [
   {
@@ -39,86 +43,60 @@ const EditorPlacement = () => {
       />
       <Navigation />
 
-      <main className="pt-32 pb-24">
-        <div className="mx-auto max-w-[840px] px-6">
-          <Link to="/" className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-3 w-3" />
-            Back to home
-          </Link>
-
-          <span className="mt-10 block mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Entry · Start here
-          </span>
-          <h1 className="mt-4 font-display text-[40px] md:text-[64px] leading-[1.02] tracking-[-0.02em]">
-            Editor <em className="font-serif italic">Placement</em>
-          </h1>
-          <p className="mt-6 text-[17px] md:text-[19px] leading-relaxed text-muted-foreground max-w-[640px]">
-            A dedicated direct response editor, embedded in your team. Pay per delivered video. No retainers, no minimums, no rotating freelancers.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-6">
-            <Button asChild size="lg" variant="cta" className="h-auto px-7 py-4 gap-[10px]">
-              <Link to="/#booking">
-                Book a call
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <div>
-              <div className="font-display text-[34px] leading-none tracking-[-0.02em]">$100</div>
-              <div className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground mt-1">Per delivered video</div>
-            </div>
+      <main>
+        {/* Back link */}
+        <div className="pt-28 pb-2" style={{ background: "#F7F6F3" }}>
+          <div className="mx-auto max-w-[1240px] px-6">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3 w-3" />
+              Back to home
+            </Link>
           </div>
-
-          {/* What's included */}
-          <section className="mt-20">
-            <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">What's included</span>
-            <ul className="mt-6 grid sm:grid-cols-2 gap-x-8 gap-y-3">
-              {includes.map((item) => (
-                <li key={item} className="flex gap-3 text-[15px] leading-snug">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#9ED8F5] shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Pipeline */}
-          <section className="mt-20">
-            <span className="mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">How editors get to your account</span>
-            <h2 className="mt-3 font-display text-[28px] md:text-[36px] leading-tight tracking-[-0.02em]">
-              Vetted, trained, embedded
-            </h2>
-            <ol className="mt-10 space-y-10">
-              {stages.map((s, i) => (
-                <li key={s.title} className="grid grid-cols-[auto_1fr] gap-6 md:gap-10">
-                  <span className="mono text-[12px] tracking-[0.18em] text-[#9ED8F5] pt-1">0{i + 1}</span>
-                  <div>
-                    <h3 className="font-display text-[22px] md:text-[26px] leading-tight tracking-[-0.01em]">{s.title}</h3>
-                    <p className="mt-3 text-[15px] md:text-[16px] leading-relaxed text-muted-foreground">{s.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
-
-          {/* CTA */}
-          <section className="mt-24 rounded-[6px] border border-foreground/10 p-8 md:p-12 text-center">
-            <h2 className="font-display text-[28px] md:text-[36px] leading-tight tracking-[-0.02em]">
-              Get an editor matched this week
-            </h2>
-            <p className="mt-4 text-[15px] text-muted-foreground max-w-[520px] mx-auto">
-              Tell me about the brand and the pace you want. If it's a fit, your editor starts inside a few days.
-            </p>
-            <div className="mt-7">
-              <Button asChild size="lg" variant="cta" className="h-auto px-7 py-4 gap-[10px]">
-                <Link to="/#booking">
-                  Book a call
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </section>
         </div>
+
+        {/* Hero — service intro with signature graphic */}
+        <ServiceHero
+          eyebrow="EDITOR PLACEMENT · OVERVIEW"
+          monoLine="The video editing service"
+          headlinePre="A dedicated editor,"
+          headlineItalic="embedded"
+          headlinePost=" in your team."
+          body="A vetted direct response editor matched to your account. They live in your Slack, your Notion, and your brand folder. You pay per delivered video, not for a retainer."
+          fromLabel="FROM"
+          fromValue="$100"
+          fromUnit="/ DELIVERED VIDEO"
+          monoNote="Pricing below. Creative direction is priced separately on the call."
+          ctaLabel="Book a 15 minute call"
+          tagline="Built for brands that need consistent output, not a fresh six-figure agency contract."
+          graphicKind="receipt"
+        />
+
+        {/* What's included */}
+        <ServiceIncludes
+          eyebrow="What's included"
+          title="Everything that ships with the editor"
+          items={includes}
+        />
+
+        {/* Pipeline / process */}
+        <ServiceProcess
+          eyebrow="How editors get to your account"
+          title="Vetted, trained, embedded."
+          steps={stages}
+        />
+
+        {/* Pricing — the receipt section, scoped to this service */}
+        <Pricing />
+
+        {/* Closing CTA */}
+        <ServiceCTA
+          title="Get an editor matched this week"
+          body="Tell me about the brand and the pace you want. If it's a fit, your editor starts inside a few days."
+          ctaLabel="Book a call"
+        />
       </main>
 
       <Footer />

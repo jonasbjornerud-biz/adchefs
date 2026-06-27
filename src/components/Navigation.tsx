@@ -5,7 +5,6 @@ import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 
 const navLinks = [
   { label: "Services", id: "services" },
-  { label: "Pricing", id: "pricing" },
   { label: "FAQ", id: "faq" },
 ];
 
