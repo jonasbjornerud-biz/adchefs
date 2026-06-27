@@ -79,10 +79,6 @@ const Index = () => {
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
-      <section id="direction" aria-hidden className="h-0" />
-      <ScrollReveal><EditorEdge /></ScrollReveal>
-      <section id="placement" aria-hidden className="h-0" />
-      <ScrollReveal><HowItWorks /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><Proof /></ScrollReveal>
