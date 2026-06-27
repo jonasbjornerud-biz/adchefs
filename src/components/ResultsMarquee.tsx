@@ -140,12 +140,12 @@ const ResultsMarquee = () => {
         {/* Hand-drawn marker circle that highlights the metrics block of the centered card */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-[78%] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
+          className="absolute left-[58%] top-[78%] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
         >
           <svg
-            width="220"
-            height="190"
-            viewBox="0 0 220 190"
+            width="240"
+            height="200"
+            viewBox="0 0 240 200"
             fill="none"
             className="marker-circle"
             style={{ overflow: "visible" }}
@@ -156,23 +156,14 @@ const ResultsMarquee = () => {
               </filter>
             </defs>
             <path
-              d="M110 24 C160 26, 198 55, 194 105 C190 155, 152 182, 100 178 C48 174, 16 140, 22 92 C28 44, 62 22, 110 24"
+              className="marker-stroke"
+              d="M120 28 C138 24, 165 30, 188 48 C210 66, 220 92, 215 120 C210 148, 190 170, 158 180 C126 190, 92 184, 66 166 C40 148, 24 118, 28 88 C32 58, 54 36, 86 30 C96 28, 108 29, 120 28"
               stroke="#FF4D4F"
               strokeWidth="3.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
               filter="url(#marker-glow)"
-            />
-            <path
-              className="marker-stroke"
-              d="M110 24 C160 26, 198 55, 194 105 C190 155, 152 182, 100 178 C48 174, 16 140, 22 92 C28 44, 62 22, 110 24"
-              stroke="#FF4D4F"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-              style={{ opacity: 0.9 }}
             />
           </svg>
         </div>
