@@ -7,7 +7,7 @@ const scrollToBooking = () => {
 };
 
 const GlassCheck = () => (
-  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/40 ring-1 ring-white/70 text-white backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#9ED8F5]/25 ring-1 ring-[#9ED8F5]/40 text-ink backdrop-blur-md">
     <Check className="h-3 w-3" strokeWidth={2.5} />
   </span>
 );
