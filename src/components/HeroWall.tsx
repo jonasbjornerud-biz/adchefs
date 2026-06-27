@@ -359,6 +359,125 @@ const HeroWall = ({
       <span className="hero-wall-disclaimer hero-wall-edge">{disclaimer}</span>
 
       {lightboxSrc && <Lightbox src={lightboxSrc} onClose={closeLightbox} />}
+
+      <style>{`
+        .hero-wall { width: 100%; }
+        .hero-wall-edge { display: block; }
+        .hero-wall-label {
+          display: inline-flex; align-items: center; gap: 8px;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+          color: hsl(var(--muted-foreground));
+        }
+        .hero-wall-dot {
+          width: 6px; height: 6px; border-radius: 9999px; background: #1A1A1A;
+          animation: hero-wall-live 2s ease-in-out infinite;
+        }
+        @keyframes hero-wall-live {
+          0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+        }
+        .hero-wall-rule {
+          height: 1px; background: rgba(26,26,26,0.10);
+          margin-top: 16px; margin-bottom: 16px;
+        }
+        .hero-wall-disclaimer {
+          margin-top: 16px;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+          line-height: 1.6; color: hsl(var(--muted-foreground)); opacity: 0.5;
+        }
+        .hero-wall-card {
+          position: relative; display: block; width: 100%;
+          aspect-ratio: 9 / 16; border-radius: 4px; overflow: hidden;
+          background-color: hsl(var(--secondary));
+          border: 1px solid rgba(26,26,26,0.06);
+          box-shadow: 0 1px 2px rgba(26,26,26,0.04);
+          padding: 0; cursor: pointer;
+        }
+        .hero-wall-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .hero-wall-card-ring {
+          position: absolute; inset: 0; pointer-events: none; border-radius: 4px;
+          box-shadow: inset 0 0 0 1px rgba(26,26,26,0.2);
+          opacity: 0; transition: opacity 200ms ease;
+        }
+        .hero-wall-card:hover .hero-wall-card-ring { opacity: 1; }
+        .hero-wall-card-play {
+          position: absolute; top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          display: inline-flex; align-items: center; gap: 10px;
+          padding: 12px 18px; border-radius: 4px; background: #1A1A1A;
+          font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-weight: 500; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+          color: #F7F6F3; pointer-events: none; opacity: 0;
+          transition: opacity 250ms ease;
+        }
+        .hero-wall-card-play svg { display: block; flex-shrink: 0; }
+        .hero-wall-card:hover .hero-wall-card-play { opacity: 1; }
+        .wall-perspective {
+          perspective: 1200px; height: 85vh; max-height: 760px; position: relative;
+        }
+        .wall-rotated {
+          height: 100%; width: 100%;
+          transform: rotateY(-6deg) rotateX(1deg);
+          transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .wall-clip {
+          height: 100%; width: 100%; overflow: hidden;
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%, #000 88%, transparent 100%);
+        }
+        @media (min-width: 1024px) {
+          .wall-perspective:hover .wall-rotated { transform: rotateY(-1.5deg) rotateX(1deg); }
+        }
+        @media (max-width: 1023px) {
+          .wall-perspective { perspective: none; }
+          .wall-rotated { transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .wall-rotated { transition: none; }
+        }
+        .wall-clip:has(.hero-wall-card:hover) .hero-wall-card,
+        .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
+          filter: blur(2px); opacity: 0.45;
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
+        }
+        .wall-clip .hero-wall-card,
+        .hero-wall-horizontal .hero-wall-card {
+          transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
+        }
+        .wall-clip .hero-wall-card:hover,
+        .hero-wall-horizontal .hero-wall-card:hover {
+          filter: none !important; opacity: 1 !important;
+          border-color: rgba(26,26,26,0.25);
+          box-shadow: 0 24px 60px rgba(26,26,26,0.18);
+        }
+        .hero-lb-chrome {
+          width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+          background: transparent; border: none; color: #F7F6F3; opacity: 0.6; cursor: pointer;
+          transition: opacity 150ms ease;
+        }
+        .hero-lb-chrome:hover { opacity: 1; }
+        .hero-wall-cols, .hero-wall-cols-2 { display: none; gap: 16px; height: 100%; }
+        .hero-wall-col { flex: 1 1 0; min-width: 0; overflow: hidden; }
+        .hero-wall-track {
+          display: flex; flex-direction: column; gap: 16px; will-change: transform;
+        }
+        @media (min-width: 1024px) { .hero-wall-cols { display: flex; } }
+        @media (min-width: 768px) and (max-width: 1023px) { .hero-wall-cols-2 { display: flex; } }
+        .hero-wall-horizontal {
+          display: none; position: relative; height: 40vh; overflow: hidden;
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                  mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+        }
+        .hero-wall-row-track {
+          display: flex; gap: 16px; height: 100%; width: max-content; will-change: transform;
+        }
+        .hero-wall-card-h { height: 100%; width: auto; aspect-ratio: 9 / 16; }
+        @media (max-width: 767px) {
+          .wall-perspective { display: none; }
+          .hero-wall-horizontal { display: block; }
+        }
+      `}</style>
     </div>
   );
 };
