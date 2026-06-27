@@ -40,7 +40,7 @@ const CreativeStrategy = () => {
       <SEO
         title="Creative Strategy for DTC Brands | AdChefs"
         description="One operator owning the creative number end to end. Research, angles, briefs, and produced videos shipped weekly for 7–9 figure DTC brands."
-        canonicalPath="/creative-strategy"
+        path="/creative-strategy"
       />
       <Navigation />
 

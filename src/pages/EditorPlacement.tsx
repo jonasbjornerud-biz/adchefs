@@ -35,7 +35,7 @@ const EditorPlacement = () => {
       <SEO
         title="Editor Placement for DTC Brands | AdChefs"
         description="A vetted direct response video editor embedded in your team. Pay per delivered video. No retainers, no minimums, 24–48h turnaround."
-        canonicalPath="/editor-placement"
+        path="/editor-placement"
       />
       <Navigation />
 
