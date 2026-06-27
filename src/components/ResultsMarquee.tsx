@@ -1,7 +1,7 @@
 /**
- * Results for other brands — premium auto-scrolling marquee of 6 image placeholders.
- * No copy beyond the section header. Cards swerve on a curved baseline and glide
- * across the viewport on an infinite, paused-on-hover loop.
+ * Results for other brands — premium auto-scrolling marquee of 6 case-study screenshots.
+ * No copy beyond the section header. Cards share a uniform aspect ratio and glide
+ * across the viewport on an infinite loop.
  */
 
 const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
@@ -29,26 +29,28 @@ const Card = ({
   ctr: string;
   image?: string;
 }) => {
-  const offsets = [0, -16, 12, -8, 18, -14];
+  const offsets = [0, -12, 10, -6, 14, -10];
   const rotations = [-1.5, 1.2, -0.8, 1.4, -1.3, 1.0];
   const y = offsets[index % offsets.length];
   const r = rotations[index % rotations.length];
 
   return (
     <div
-      className="relative flex-shrink-0 w-[260px] md:w-[320px] aspect-[4/5] rounded-[18px] overflow-hidden bg-white"
+      className="relative flex-shrink-0 w-[220px] md:w-[270px] aspect-[3/4] rounded-[18px] overflow-hidden bg-white"
       style={{
         transform: `translateY(${y}px) rotate(${r}deg)`,
         boxShadow:
           "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
-        backgroundImage: image
-          ? `url(${image})`
-          : `linear-gradient(155deg, ${tint}cc 0%, #ffffff 60%, ${tint}66 100%)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
       }}
     >
-      {!image && (
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          className="w-full h-full object-contain"
+          loading="lazy"
+        />
+      ) : (
         <>
           <div
             aria-hidden
@@ -137,9 +139,6 @@ const ResultsMarquee = () => {
         .results-marquee-track {
           animation: results-marquee 38s linear infinite;
           will-change: transform;
-        }
-        .group:hover .results-marquee-track {
-          animation-play-state: paused;
         }
         @keyframes results-marquee {
           from { transform: translateX(0); }
