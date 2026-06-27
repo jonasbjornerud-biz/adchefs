@@ -148,7 +148,7 @@ const ResultsMarquee = () => {
             viewBox="0 0 240 200"
             fill="none"
             className="marker-circle"
-            style={{ overflow: "visible" }}
+            style={{ overflow: "visible", transform: "rotate(-2deg)" }}
           >
             <defs>
               <filter id="marker-glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -157,7 +157,7 @@ const ResultsMarquee = () => {
             </defs>
             <path
               className="marker-stroke"
-              d="M120 28 C138 24, 165 30, 188 48 C210 66, 220 92, 215 120 C210 148, 190 170, 158 180 C126 190, 92 184, 66 166 C40 148, 24 118, 28 88 C32 58, 54 36, 86 30 C96 28, 108 29, 120 28"
+              d="M118 26 C135 22, 162 28, 185 46 C205 62, 218 88, 212 118 C208 140, 192 162, 165 174 C138 186, 105 182, 76 170 C50 158, 28 134, 26 104 C24 74, 40 48, 68 36 C84 29, 100 27, 118 26"
               stroke="#FF4D4F"
               strokeWidth="3.5"
               strokeLinecap="round"
