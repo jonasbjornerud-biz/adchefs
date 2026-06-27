@@ -10,20 +10,20 @@ const SURFACE = "#EEEDE8";
 const TOOLS = [
   { slug: "notion", label: "Notion" },
   { slug: "slack", label: "Slack" },
-  { slug: "googledrive", label: "Drive" },
+  { slug: "google-drive", label: "Drive" },
   { slug: "clickup", label: "ClickUp" },
   { slug: "asana", label: "Asana" },
-  { slug: "framedotio", label: "Frame" },
-  { slug: "mondaydotcom", label: "Monday" },
+  { slug: "frameio", label: "Frame" },
+  { slug: "monday", label: "Monday" },
 ];
 
 const EDITORS = [
-  { initials: "ED", label: "Editor 1" },
-  { initials: "ED", label: "Editor 2" },
-  { initials: "ED", label: "Editor 3" },
+  { label: "Editor 1" },
+  { label: "Editor 2" },
+  { label: "Editor 3" },
 ];
 
-const EditorNode = ({ initials, label }: { initials: string; label: string }) => (
+const EditorNode = ({ label }: { label: string }) => (
   <div className="flex items-center gap-3">
     <div
       className="h-10 w-10 rounded-full flex items-center justify-center"
@@ -47,9 +47,6 @@ const EditorNode = ({ initials, label }: { initials: string; label: string }) =>
         />
       </svg>
     </div>
-    <span className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: MUTED }}>
-      {initials}
-    </span>
   </div>
 );
 
@@ -102,152 +99,183 @@ const PipelineSection = () => {
           </p>
         </div>
 
-        {/* Diagram */}
-        <div className="relative">
-          {/* Desktop lines */}
+        {/* Desktop diagram */}
+        <div className="hidden md:block relative mx-auto" style={{ maxWidth: "900px", aspectRatio: "1000/420" }}>
           <svg
-            className="absolute inset-0 hidden md:block w-full h-full pointer-events-none"
+            className="absolute inset-0 w-full h-full pointer-events-none"
             viewBox="0 0 1000 420"
-            preserveAspectRatio="none"
+            preserveAspectRatio="xMidYMid meet"
             aria-hidden="true"
           >
-            {/* Left lines: editors → center */}
-            <line x1="75" y1="105" x2="350" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="75" y1="210" x2="350" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="75" y1="315" x2="350" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="60" y1="105" x2="400" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="60" y1="210" x2="400" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="60" y1="315" x2="400" y2="210" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
 
-            {/* Right lines: center → tools */}
-            <line x1="650" y1="210" x2="925" y2="60" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="120" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="180" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="240" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="300" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="360" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="650" y1="210" x2="925" y2="420" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="60" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="120" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="180" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="240" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="300" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="360" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="600" y1="210" x2="940" y2="420" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
           </svg>
 
-          {/* Mobile lines */}
-          <svg
-            className="absolute inset-0 md:hidden w-full h-full pointer-events-none"
-            viewBox="0 0 400 900"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            {/* Editors → Me */}
-            <line x1="200" y1="135" x2="200" y2="280" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="175" x2="200" y2="280" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="215" x2="200" y2="280" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+          {/* Left label */}
+          <div className="absolute left-[6%] top-[0%]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
+              YOUR EDITORS
+            </span>
+          </div>
 
-            {/* Me → Tools */}
-            <line x1="200" y1="560" x2="200" y2="700" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="80" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="320" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="80" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="320" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="80" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="560" x2="320" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-          </svg>
+          {/* Editor nodes */}
+          <div className="absolute left-[6%] top-[19%]">
+            <EditorNode label="Editor 1" />
+          </div>
+          <div className="absolute left-[6%] top-[44%]">
+            <EditorNode label="Editor 2" />
+          </div>
+          <div className="absolute left-[6%] top-[69%]">
+            <EditorNode label="Editor 3" />
+          </div>
 
-          {/* Desktop layout */}
-          <div className="hidden md:grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center min-h-[420px]">
-            {/* Left: editors */}
-            <div className="flex flex-col gap-16 justify-center">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
-                  YOUR EDITORS
-                </span>
-              </div>
-              <div className="flex flex-col gap-10">
-                {EDITORS.map((editor, i) => (
-                  <EditorNode key={i} initials={editor.initials} label={editor.label} />
-                ))}
-              </div>
+          {/* Center node */}
+          <div className="absolute left-1/2 top-[32%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <div
+              className="relative h-[180px] w-[180px] rounded-full overflow-hidden"
+              style={{ boxShadow: `0 0 0 2px ${ACCENT}50, 0 0 0 10px ${ACCENT}12` }}
+            >
+              <img
+                src={ME_PHOTO}
+                alt="Jonas Bjørnerud"
+                className="h-full w-full object-cover"
+              />
             </div>
-
-            {/* Center: me */}
-            <div className="flex flex-col items-center justify-center px-12">
-              <div
-                className="relative h-[180px] w-[180px] rounded-full overflow-hidden"
-                style={{ boxShadow: `0 0 0 2px ${ACCENT}40, 0 0 0 8px ${ACCENT}15` }}
-              >
-                <img
-                  src={ME_PHOTO}
-                  alt="Jonas Bjørnerud"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="mt-5 text-center">
-                <p className="font-display text-[18px] font-semibold text-ink">Me</p>
-                <p className="text-[13px]" style={{ color: MUTED }}>
-                  Creative direction
-                </p>
-              </div>
-            </div>
-
-            {/* Right: tools */}
-            <div className="flex flex-col gap-10 justify-center">
-              <div className="flex items-center justify-end">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
-                  YOUR STACK
-                </span>
-              </div>
-              <div className="flex flex-col gap-5 items-end">
-                {TOOLS.map((tool, i) => (
-                  <ToolIcon key={i} slug={tool.slug} label={tool.label} />
-                ))}
-              </div>
+            <div className="mt-5 text-center">
+              <p className="font-display text-[18px] font-semibold text-ink">Me</p>
+              <p className="text-[13px]" style={{ color: MUTED }}>
+                Creative direction
+              </p>
             </div>
           </div>
 
-          {/* Mobile layout */}
-          <div className="md:hidden flex flex-col items-center gap-12 relative">
-            {/* Editors */}
-            <div className="w-full">
-              <div className="flex justify-center mb-6">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
-                  YOUR EDITORS
-                </span>
-              </div>
-              <div className="flex justify-center gap-8">
-                {EDITORS.map((editor, i) => (
-                  <EditorNode key={i} initials={editor.initials} label={editor.label} />
-                ))}
-              </div>
-            </div>
+          {/* Right label */}
+          <div className="absolute right-[6%] top-[0%]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
+              YOUR STACK
+            </span>
+          </div>
 
-            {/* Me */}
-            <div className="flex flex-col items-center">
-              <div
-                className="relative h-[140px] w-[140px] rounded-full overflow-hidden"
-                style={{ boxShadow: `0 0 0 2px ${ACCENT}40, 0 0 0 8px ${ACCENT}15` }}
-              >
-                <img
-                  src={ME_PHOTO}
-                  alt="Jonas Bjørnerud"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="mt-4 text-center">
-                <p className="font-display text-[17px] font-semibold text-ink">Me</p>
-                <p className="text-[13px]" style={{ color: MUTED }}>
-                  Creative direction
-                </p>
-              </div>
-            </div>
+          {/* Tool icons */}
+          <div className="absolute right-[6%] top-[8%]">
+            <ToolIcon slug={TOOLS[0].slug} label={TOOLS[0].label} />
+          </div>
+          <div className="absolute right-[6%] top-[22%]">
+            <ToolIcon slug={TOOLS[1].slug} label={TOOLS[1].label} />
+          </div>
+          <div className="absolute right-[6%] top-[36%]">
+            <ToolIcon slug={TOOLS[2].slug} label={TOOLS[2].label} />
+          </div>
+          <div className="absolute right-[6%] top-[50%]">
+            <ToolIcon slug={TOOLS[3].slug} label={TOOLS[3].label} />
+          </div>
+          <div className="absolute right-[6%] top-[64%]">
+            <ToolIcon slug={TOOLS[4].slug} label={TOOLS[4].label} />
+          </div>
+          <div className="absolute right-[6%] top-[78%]">
+            <ToolIcon slug={TOOLS[5].slug} label={TOOLS[5].label} />
+          </div>
+          <div className="absolute right-[6%] top-[92%]">
+            <ToolIcon slug={TOOLS[6].slug} label={TOOLS[6].label} />
+          </div>
+        </div>
 
-            {/* Tools */}
-            <div className="w-full">
-              <div className="flex justify-center mb-6">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
-                  YOUR STACK
-                </span>
-              </div>
-              <div className="flex flex-wrap justify-center gap-3">
-                {TOOLS.map((tool, i) => (
-                  <ToolIcon key={i} slug={tool.slug} label={tool.label} />
-                ))}
-              </div>
+        {/* Mobile diagram */}
+        <div className="md:hidden relative mx-auto" style={{ maxWidth: "360px", aspectRatio: "400/900" }}>
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 400 900"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+          >
+            <line x1="200" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="120" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="280" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+
+            <line x1="200" y1="520" x2="200" y2="700" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="80" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="320" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="80" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="320" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="80" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="520" x2="320" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+          </svg>
+
+          {/* Editors label */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-[2%]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
+              YOUR EDITORS
+            </span>
+          </div>
+
+          {/* Editor nodes */}
+          <div className="absolute left-[30%] -translate-x-1/2 top-[12%]">
+            <EditorNode label="Editor 1" />
+          </div>
+          <div className="absolute left-1/2 -translate-x-1/2 top-[12%]">
+            <EditorNode label="Editor 2" />
+          </div>
+          <div className="absolute left-[70%] -translate-x-1/2 top-[12%]">
+            <EditorNode label="Editor 3" />
+          </div>
+
+          {/* Center node */}
+          <div className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <div
+              className="relative h-[140px] w-[140px] rounded-full overflow-hidden"
+              style={{ boxShadow: `0 0 0 2px ${ACCENT}50, 0 0 0 10px ${ACCENT}12` }}
+            >
+              <img
+                src={ME_PHOTO}
+                alt="Jonas Bjørnerud"
+                className="h-full w-full object-cover"
+              />
             </div>
+            <div className="mt-4 text-center">
+              <p className="font-display text-[17px] font-semibold text-ink">Me</p>
+              <p className="text-[13px]" style={{ color: MUTED }}>
+                Creative direction
+              </p>
+            </div>
+          </div>
+
+          {/* Tools label */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-[58%]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: MUTED }}>
+              YOUR STACK
+            </span>
+          </div>
+
+          {/* Tool icons */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-[66%]">
+            <ToolIcon slug={TOOLS[0].slug} label={TOOLS[0].label} />
+          </div>
+          <div className="absolute left-[25%] -translate-x-1/2 top-[72%]">
+            <ToolIcon slug={TOOLS[1].slug} label={TOOLS[1].label} />
+          </div>
+          <div className="absolute left-[75%] -translate-x-1/2 top-[72%]">
+            <ToolIcon slug={TOOLS[2].slug} label={TOOLS[2].label} />
+          </div>
+          <div className="absolute left-[25%] -translate-x-1/2 top-[79%]">
+            <ToolIcon slug={TOOLS[3].slug} label={TOOLS[3].label} />
+          </div>
+          <div className="absolute left-[75%] -translate-x-1/2 top-[79%]">
+            <ToolIcon slug={TOOLS[4].slug} label={TOOLS[4].label} />
+          </div>
+          <div className="absolute left-[25%] -translate-x-1/2 top-[86%]">
+            <ToolIcon slug={TOOLS[5].slug} label={TOOLS[5].label} />
+          </div>
+          <div className="absolute left-[75%] -translate-x-1/2 top-[86%]">
+            <ToolIcon slug={TOOLS[6].slug} label={TOOLS[6].label} />
           </div>
         </div>
       </div>
