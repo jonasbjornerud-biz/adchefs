@@ -137,18 +137,35 @@ const ResultsMarquee = () => {
           ))}
         </div>
 
-        {/* Center metrics scanner — circles the metric area as each card passes through */}
+        {/* Hand-drawn marker circle that highlights the metrics block of the centered card */}
         <div
           aria-hidden
-          className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10"
-          style={{ top: "78%" }}
+          className="absolute left-[58%] top-[78%] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
         >
-          <div className="relative w-[150px] h-[150px] md:w-[180px] md:h-[180px] flex items-center justify-center -translate-y-1/2">
-            <div className="absolute inset-0 rounded-full border-2 border-[#9ED8F5]/70 scanner-ring" />
-            <div className="absolute inset-[-10px] rounded-full border border-[#9ED8F5]/35 scanner-ring-outer" />
-            <div className="absolute w-[18px] h-[18px] rounded-full bg-[#9ED8F5] blur-[2px] scanner-dot" />
-            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(158,216,245,0.15)_0%,transparent_70%)] scanner-pulse" />
-          </div>
+          <svg
+            width="240"
+            height="200"
+            viewBox="0 0 240 200"
+            fill="none"
+            className="marker-circle"
+            style={{ overflow: "visible", transform: "rotate(-2deg)" }}
+          >
+            <defs>
+              <filter id="marker-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="1" stdDeviation="3" floodColor="#FF4D4F" floodOpacity="0.35" />
+              </filter>
+            </defs>
+            <path
+              className="marker-stroke"
+              d="M118 26 C135 22, 162 28, 185 46 C205 62, 218 88, 212 118 C208 140, 192 162, 165 174 C138 186, 105 182, 76 170 C50 158, 28 134, 26 104 C24 74, 40 48, 68 36 C84 29, 100 27, 118 26"
+              stroke="#FF4D4F"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              filter="url(#marker-glow)"
+            />
+          </svg>
         </div>
       </div>
 
@@ -164,40 +181,37 @@ const ResultsMarquee = () => {
         .group:hover .results-marquee-track {
           animation-play-state: paused;
         }
-        .scanner-ring {
-          animation: scanner-pulse 2.6s ease-in-out infinite;
+        .marker-stroke {
+          stroke-dasharray: 750;
+          stroke-dashoffset: 750;
+          animation: marker-draw 3.2s ease-in-out infinite;
         }
-        .scanner-ring-outer {
-          animation: scanner-pulse 2.6s ease-in-out infinite 0.35s;
-        }
-        .scanner-dot {
-          animation: scanner-dot 2.6s ease-in-out infinite;
-        }
-        .scanner-pulse {
-          animation: scanner-glow 2.6s ease-in-out infinite;
+        .marker-circle {
+          opacity: 0;
+          animation: marker-fade 3.2s ease-in-out infinite;
         }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
-        @keyframes scanner-pulse {
-          0%, 100% { transform: scale(0.92); opacity: 0.35; }
-          50% { transform: scale(1); opacity: 1; }
+        @keyframes marker-draw {
+          0% { stroke-dashoffset: 580; }
+          40% { stroke-dashoffset: 0; }
+          80% { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: 0; }
         }
-        @keyframes scanner-dot {
-          0%, 100% { opacity: 0.5; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.2); }
-        }
-        @keyframes scanner-glow {
-          0%, 100% { opacity: 0.25; transform: scale(0.85); }
-          50% { opacity: 0.6; transform: scale(1); }
+        @keyframes marker-fade {
+          0% { opacity: 0; transform: scale(0.92); }
+          15% { opacity: 1; transform: scale(1); }
+          70% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1.02); }
         }
         @media (prefers-reduced-motion: reduce) {
           .results-marquee-track,
-          .scanner-ring,
-          .scanner-ring-outer,
-          .scanner-dot,
-          .scanner-pulse { animation: none; }
+          .marker-stroke,
+          .marker-circle { animation: none; }
+          .marker-circle { opacity: 0.8; }
+          .marker-stroke { stroke-dashoffset: 0; }
         }
       `}</style>
     </section>
