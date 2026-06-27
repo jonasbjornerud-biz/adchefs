@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, X, Sparkles } from "lucide-react";
 
 const rows = [
   "An operator who reads your ad numbers weekly",
@@ -11,13 +11,21 @@ const rows = [
 ];
 
 const GlassCheck = () => (
-  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/30 text-white ring-1 ring-white/70 backdrop-blur-md shadow-[0_4px_12px_-4px_rgba(25,70,110,0.35)]">
-    <Check className="h-3.5 w-3.5" strokeWidth={2.75} />
+  <span
+    className="relative inline-flex h-8 w-8 items-center justify-center rounded-full text-white"
+    style={{
+      background:
+        "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.18) 100%)",
+      boxShadow:
+        "inset 0 1px 1px rgba(255,255,255,0.85), inset 0 -1px 1px rgba(25,70,110,0.25), 0 6px 14px -6px rgba(25,70,110,0.5), 0 0 0 1px rgba(255,255,255,0.55)",
+    }}
+  >
+    <Check className="h-4 w-4 drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)]" strokeWidth={3} />
   </span>
 );
 
 const FadedX = () => (
-  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-ink/[0.04] ring-1 ring-ink/15 text-ink/35">
+  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-ink/[0.035] ring-1 ring-ink/15 text-ink/30">
     <X className="h-3.5 w-3.5" strokeWidth={2.25} />
   </span>
 );
@@ -45,8 +53,11 @@ const MeVsAgency = () => {
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         {/* Header — centered, matching TwoWaysToWork */}
-        <div className="text-center mb-14 md:mb-20">
-          <h2 className="font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
+        <div className="text-center mb-16 md:mb-24">
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            The comparison
+          </span>
+          <h2 className="mt-4 font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
             <em className="font-serif italic !text-ink">Me</em> vs a regular agency
           </h2>
           <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-muted-foreground">
@@ -55,70 +66,125 @@ const MeVsAgency = () => {
         </div>
 
         {/* DESKTOP: single premium card with ME glass column inside */}
-        <div className="hidden md:block relative group">
-          {/* ambient glow */}
+        <div className="hidden md:block relative group mvsa-root">
+          {/* ambient glow under whole card */}
           <div
-            className="absolute -inset-1 rounded-[36px] bg-[#9ED8F5]/25 opacity-60 blur-3xl"
+            className="absolute -inset-2 rounded-[40px] bg-[#9ED8F5]/30 opacity-70 blur-3xl"
+            aria-hidden
+          />
+
+          {/* slow rotating conic glow behind ME column */}
+          <div
+            className="absolute top-1/2 -translate-y-1/2 pointer-events-none mvsa-conic"
+            style={{
+              right: "200px",
+              width: "320px",
+              height: "320px",
+              background:
+                "conic-gradient(from 0deg, rgba(158,216,245,0.0), rgba(158,216,245,0.55), rgba(255,255,255,0.0), rgba(158,216,245,0.45), rgba(158,216,245,0.0))",
+              filter: "blur(40px)",
+              opacity: 0.55,
+              borderRadius: "9999px",
+            }}
             aria-hidden
           />
 
           <div
-            className="relative rounded-[32px] overflow-hidden ring-1 ring-white/70 backdrop-blur-[40px]"
+            className="relative rounded-[32px] ring-1 ring-white/70 backdrop-blur-[40px]"
             style={{
               background:
-                "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.72) 100%)",
+                "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.74) 100%)",
               boxShadow:
-                "inset 0 1px 1px rgba(255,255,255,0.9), 0 30px 80px -24px rgba(25,70,110,0.25), 0 12px 32px -12px rgba(25,70,110,0.12)",
+                "inset 0 1px 1px rgba(255,255,255,0.95), 0 40px 90px -28px rgba(25,70,110,0.28), 0 14px 40px -14px rgba(25,70,110,0.14)",
             }}
           >
-            <div className="grid grid-cols-[1fr_220px_180px] relative">
-              {/* ME glass column — spans full table height behind cells */}
+            <div className="grid grid-cols-[1fr_240px_180px] relative">
+              {/* Floating ME pedestal — extends above and below the card */}
               <div
-                className="absolute top-0 bottom-0 pointer-events-none"
+                className="absolute pointer-events-none mvsa-me-pedestal overflow-hidden"
                 style={{
-                  left: "calc(100% - 220px - 180px)",
-                  width: "220px",
-                  borderRadius: "24px",
-                  margin: "12px 0",
+                  left: "calc(100% - 240px - 180px - 10px)",
+                  width: "260px",
+                  top: "-28px",
+                  bottom: "-28px",
+                  borderRadius: "28px",
                   background:
-                    "linear-gradient(160deg, rgba(105,178,218,0.92) 0%, rgba(78,153,194,0.88) 45%, rgba(45,110,150,0.92) 100%)",
+                    "linear-gradient(160deg, rgba(120,188,224,0.96) 0%, rgba(85,160,200,0.92) 45%, rgba(45,110,150,0.96) 100%)",
                   boxShadow:
-                    "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.22), 0 20px 50px -20px rgba(25,70,110,0.5)",
+                    "inset 0 1px 1px rgba(255,255,255,0.55), inset 0 0 0 1px rgba(255,255,255,0.25), 0 36px 70px -22px rgba(25,70,110,0.55), 0 18px 36px -14px rgba(25,70,110,0.3)",
                 }}
                 aria-hidden
               >
-                {/* iOS glossy top highlight */}
-                <div className="absolute inset-x-0 top-0 h-32 rounded-t-[24px] bg-gradient-to-b from-white/35 via-white/10 to-transparent" />
-                <div className="absolute -top-16 -right-10 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
-                <div className="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-[#9ED8F5]/25 blur-3xl" />
+                {/* Glossy iOS top highlight */}
+                <div className="absolute inset-x-0 top-0 h-44 rounded-t-[28px] bg-gradient-to-b from-white/45 via-white/12 to-transparent" />
+                {/* Edge sheen */}
+                <div
+                  className="absolute inset-0 rounded-[28px]"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 12%, transparent 88%, rgba(255,255,255,0.10) 100%)",
+                  }}
+                />
+                {/* Inner ambient orbs */}
+                <div className="absolute -top-20 -right-10 h-56 w-56 rounded-full bg-white/22 blur-3xl" />
+                <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[#9ED8F5]/30 blur-3xl" />
+                {/* Animated diagonal shimmer */}
+                <div className="absolute inset-0 mvsa-shimmer" />
+              </div>
+
+              {/* Floating "ME" badge above pedestal */}
+              <div
+                className="absolute z-20 pointer-events-none flex items-center gap-2 rounded-full px-4 py-1.5 mvsa-badge"
+                style={{
+                  left: "calc(100% - 240px - 180px - 10px + 130px)",
+                  transform: "translateX(-50%)",
+                  top: "-44px",
+                  background:
+                    "linear-gradient(180deg, #FFFFFF 0%, #F0F4F8 100%)",
+                  boxShadow:
+                    "0 12px 28px -10px rgba(25,70,110,0.4), inset 0 1px 1px rgba(255,255,255,0.9), 0 0 0 1px rgba(255,255,255,0.6)",
+                }}
+                aria-hidden
+              >
+                <Sparkles className="h-3 w-3 text-[#3B86A8]" strokeWidth={2.5} />
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink font-semibold">
+                  The pick
+                </span>
               </div>
 
               {/* Header row */}
-              <div className="px-8 py-6 flex items-center">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              <div className="px-8 py-7 flex items-center">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   What you get
                 </span>
               </div>
-              <div className="px-4 py-6 flex items-center justify-center relative">
-                <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white font-semibold drop-shadow-[0_1px_1px_rgba(0,0,0,0.15)]">
+              <div className="px-4 py-7 flex items-center justify-center relative z-10">
+                <span className="font-serif italic text-[28px] leading-none text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]">
                   Me
                 </span>
               </div>
-              <div className="px-4 py-6 flex items-center justify-center">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/80 text-center leading-tight">
+              <div className="px-4 py-7 flex items-center justify-center">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/80 text-center leading-tight">
                   Creative<br />Agency
                 </span>
               </div>
 
               {rows.map((label, i) => (
-                <div key={label} className="contents">
-                  <div className="flex items-center px-8 py-5 border-t border-ink/5">
+                <div key={label} className="contents mvsa-row" style={{ ['--i' as never]: i }}>
+                  <div
+                    className="flex items-center px-8 py-5 border-t border-ink/[0.06] transition-colors duration-300"
+                    style={
+                      i % 2 === 1
+                        ? { background: "linear-gradient(90deg, rgba(158,216,245,0.04) 0%, transparent 80%)" }
+                        : undefined
+                    }
+                  >
                     <span className="text-[15px] text-ink leading-snug">{label}</span>
                   </div>
-                  <div className="flex items-center justify-center px-4 py-5 relative">
+                  <div className="flex items-center justify-center px-4 py-5 relative z-10">
                     <GlassCheck />
                   </div>
-                  <div className="flex items-center justify-center px-4 py-5 border-t border-ink/5">
+                  <div className="flex items-center justify-center px-4 py-5 border-t border-ink/[0.06]">
                     <FadedX />
                   </div>
                 </div>
@@ -173,6 +239,35 @@ const MeVsAgency = () => {
           Some agencies are excellent. Most are not built for brands that just want video that ships and works.
         </p>
       </div>
+
+      <style>{`
+        @keyframes mvsa-conic-spin {
+          from { transform: translateY(-50%) rotate(0deg); }
+          to   { transform: translateY(-50%) rotate(360deg); }
+        }
+        .mvsa-conic { animation: mvsa-conic-spin 18s linear infinite; }
+        @keyframes mvsa-shimmer-sweep {
+          0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+          20%  { opacity: 1; }
+          80%  { opacity: 1; }
+          100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
+        }
+        .mvsa-shimmer {
+          background: linear-gradient(110deg, transparent 0%, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%, transparent 100%);
+          animation: mvsa-shimmer-sweep 6s ease-in-out infinite;
+          animation-delay: 1.5s;
+        }
+        .mvsa-badge {
+          animation: mvsa-badge-float 5s ease-in-out infinite;
+        }
+        @keyframes mvsa-badge-float {
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50%      { transform: translateX(-50%) translateY(-4px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mvsa-conic, .mvsa-shimmer, .mvsa-badge { animation: none; }
+        }
+      `}</style>
     </section>
   );
 };
