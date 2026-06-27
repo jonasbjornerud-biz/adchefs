@@ -31,81 +31,79 @@ const Card = ({
   variant,
   cta,
 }: CardProps) => {
-  const isDark = variant === "dark";
-  const surface = isDark ? "bg-[#1A1A1A]" : "bg-[#EEEDE8]";
-  const text = isDark ? "text-[#F7F6F3]" : "text-[#1A1A1A]";
-  const subtle = isDark ? "text-[#F7F6F3]/70" : "text-[#75726B]";
-  const divider = isDark ? "bg-white/10" : "bg-[#1A1A1A]/10";
-  const checkBg = isDark ? "bg-[#9ED8F5] text-[#1A1A1A]" : "bg-[#1A1A1A] text-[#F7F6F3]";
+  const popular = variant === "light";
 
   return (
-    <div
-      className={`relative flex flex-col h-full rounded-[6px] ${surface} ${text} p-8 md:p-12 transition-all duration-300 hover:-translate-y-1`}
-    >
-      {/* eyebrow */}
-      <div className="flex items-center gap-3">
-        <span className={`h-1.5 w-1.5 rounded-full bg-[#9ED8F5]`} aria-hidden />
-        <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${subtle}`}>
-          {eyebrow}
-        </span>
-      </div>
+    <div className="relative h-full">
+      {popular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+          <span className="rounded-full bg-[#F7F6F3] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] shadow-[0_6px_20px_rgba(26,26,26,0.18)]">
+            Most Popular
+          </span>
+        </div>
+      )}
 
-      {/* title */}
-      <h3 className="mt-8 font-display text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.015em]">
-        {title}{" "}
-        <em className="font-serif italic font-normal">{serifWord}</em>
-      </h3>
+      <div
+        className="relative flex flex-col h-full text-center rounded-[24px] p-8 md:p-12 text-[#1A1A1A] overflow-hidden
+          bg-white/30 backdrop-blur-2xl
+          ring-1 ring-white/60
+          shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_30px_80px_-20px_rgba(26,26,26,0.25)]
+          transition-all duration-500 hover:-translate-y-1 hover:bg-white/35"
+      >
+        {/* glossy top sheen */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/50 to-transparent"
+          aria-hidden
+        />
 
-      <p className={`mt-4 text-[15px] md:text-[16px] leading-relaxed ${subtle}`}>
-        {tagline}
-      </p>
-
-      {/* price */}
-      <div className="mt-10 flex items-baseline gap-3">
-        <span className="font-display text-[48px] md:text-[56px] leading-none tracking-[-0.02em]">
-          {price}
-        </span>
-        <span className={`font-mono text-[11px] uppercase tracking-[0.16em] ${subtle}`}>
-          {priceNote}
-        </span>
-      </div>
-
-      {/* divider */}
-      <div className={`mt-10 h-px w-full ${divider}`} aria-hidden />
-
-      {/* bullets */}
-      <div className="mt-8 flex-1">
-        <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${subtle}`}>
-          {bulletsHeader}
+        {/* title block */}
+        <h3 className="relative mt-2 font-serif italic font-normal text-[44px] md:text-[56px] leading-[1.0] tracking-[-0.01em] text-[#1A1A1A]">
+          {serifWord}
+        </h3>
+        <p className="relative mt-4 text-[15px] md:text-[16px] leading-snug text-[#1A1A1A]/85 max-w-[34ch] mx-auto">
+          {tagline}
         </p>
-        <ul className="mt-5 space-y-3.5">
-          {bullets.map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug">
-              <span
-                className={`mt-0.5 inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ${checkBg}`}
-              >
-                <Check className="h-2.5 w-2.5" strokeWidth={3} />
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+        <p className="relative mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A]/55">
+          {eyebrow}
+        </p>
 
-      {/* CTA */}
-      <div className="mt-10">
-        <Button
-          size="lg"
-          onClick={scrollToBooking}
-          className={`h-auto w-full md:w-auto rounded-full px-6 py-3 gap-[10px] transition-colors ${
-            isDark
-              ? "bg-[#F7F6F3] text-[#1A1A1A] hover:bg-[#9ED8F5]"
-              : "bg-[#1A1A1A] text-[#F7F6F3] hover:bg-[#9ED8F5] hover:text-[#1A1A1A]"
-          }`}
-        >
-          {cta}
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        {/* price */}
+        <div className="relative mt-10">
+          <div className="font-display text-[56px] md:text-[72px] leading-none tracking-[-0.02em] text-[#1A1A1A]">
+            {price}
+          </div>
+          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A]/55">
+            {priceNote}
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div className="relative mt-8">
+          <Button
+            size="lg"
+            onClick={scrollToBooking}
+            className="h-auto rounded-full bg-[#F7F6F3]/95 text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F7F6F3] px-7 py-3 gap-[10px] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.3)] transition-colors"
+          >
+            {cta}
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* bullets */}
+        <div className="relative mt-10 text-left">
+          <p className="text-[14px] font-medium text-[#1A1A1A]">{bulletsHeader}</p>
+          <ul className="mt-5 space-y-3.5">
+            {bullets.map((item, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-[#1A1A1A]/90"
+              >
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1A1A1A]" strokeWidth={2.5} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
@@ -113,47 +111,51 @@ const Card = ({
 
 const TwoWaysToWork = () => {
   return (
-    <section className="relative py-20 sm:py-32 overflow-hidden bg-[#F7F6F3]">
-      {/* very soft accent wash, matching hero */}
+    <section
+      className="relative py-24 sm:py-36 overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(180deg, #C9E8F7 0%, #9ED8F5 45%, #BDE4F8 100%)",
+      }}
+    >
+      {/* soft cloud layers — pure CSS, no images */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 90% 10%, rgba(158,216,245,0.22), transparent 60%), radial-gradient(ellipse 60% 50% at 0% 100%, rgba(158,216,245,0.16), transparent 60%)",
+            "radial-gradient(ellipse 700px 180px at 12% 22%, rgba(255,255,255,0.85), transparent 60%), radial-gradient(ellipse 520px 150px at 88% 18%, rgba(255,255,255,0.75), transparent 65%), radial-gradient(ellipse 620px 200px at 80% 78%, rgba(255,255,255,0.7), transparent 60%), radial-gradient(ellipse 480px 160px at 8% 85%, rgba(255,255,255,0.6), transparent 65%), radial-gradient(ellipse 380px 120px at 50% 50%, rgba(255,255,255,0.35), transparent 70%)",
         }}
-        aria-hidden
       />
 
+      {/* top + bottom paper fades to blend with neighboring sections */}
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F7F6F3] to-transparent pointer-events-none" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F7F6F3]/60 to-transparent pointer-events-none" aria-hidden />
+
       <div className="relative mx-auto max-w-[1120px] px-6">
-        {/* section header */}
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-3">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#9ED8F5]" aria-hidden />
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#75726B]">
-              How we work together
-            </span>
-          </div>
-          <h2 className="mt-6 font-display text-[40px] md:text-[60px] leading-[1.02] tracking-[-0.02em] text-[#1A1A1A]">
+        {/* section header — Air style: centered, serif italic on key word */}
+        <div className="text-center max-w-3xl mx-auto">
+          <h2 className="font-display text-[40px] md:text-[64px] leading-[1.02] tracking-[-0.02em] text-[#1A1A1A]">
             Two ways I work with{" "}
             <em className="font-serif italic font-normal">brands</em>
           </h2>
-          <p className="mt-5 text-[16px] md:text-[18px] leading-relaxed text-[#75726B]">
+          <p className="mt-5 text-[16px] md:text-[18px] leading-relaxed text-[#1A1A1A]/75">
             Most brands start with an editor then loop me in on creative strategy.
           </p>
         </div>
 
         {/* cards */}
-        <div className="mt-14 md:mt-20 grid md:grid-cols-2 gap-6 md:gap-8 items-stretch">
+        <div className="mt-16 md:mt-24 grid md:grid-cols-2 gap-6 md:gap-8 items-stretch">
           <Card
             variant="light"
             eyebrow="Entry · Start here"
-            title="Editor"
-            serifWord="Placement"
-            tagline="A dedicated, direct response editor embedded in your team. No retainer, no minimum."
+            title="Editor Placement"
+            serifWord="Editor Placement"
+            tagline="A dedicated direct response editor embedded in your team."
             price="$100"
             priceNote="per delivered video"
             cta="Start with an editor"
-            bulletsHeader="What's included"
+            bulletsHeader="Everything you need to ship ads weekly"
             bullets={[
               "Vetted direct response editor matched to your workflow",
               "Pay per delivered video, no retainer or minimum",
@@ -166,9 +168,9 @@ const TwoWaysToWork = () => {
           <Card
             variant="dark"
             eyebrow="Scale · Full creative department"
-            title="Creative"
-            serifWord="Strategy"
-            tagline="One operator owning the creative number end to end. Research, angles, briefs, edits, dashboard."
+            title="Creative Strategy"
+            serifWord="Creative Strategy"
+            tagline="One operator owning the creative number end to end."
             price="Custom"
             priceNote="priced on the call"
             cta="Book a call"
