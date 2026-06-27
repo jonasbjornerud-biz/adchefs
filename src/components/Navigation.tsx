@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 
 const navLinks = [
-  { label: "Direction", id: "direction" },
-  { label: "Placement", id: "placement" },
+  { label: "Services", id: "services" },
   { label: "Pricing", id: "pricing" },
   { label: "FAQ", id: "faq" },
 ];
