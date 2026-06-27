@@ -44,28 +44,30 @@ const GlassCard = ({
 
     {/* soft ambient glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[36px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-2 rounded-[44px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[32px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
+      className="relative flex flex-col h-full rounded-[40px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[80px] ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:ring-white/80"
       style={{
         background:
-          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
+          "linear-gradient(160deg, rgba(105,178,218,0.42) 0%, rgba(78,153,194,0.38) 35%, rgba(55,130,172,0.42) 70%, rgba(45,110,150,0.38) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 30px 80px -24px rgba(25,70,110,0.45), 0 12px 32px -12px rgba(25,70,110,0.25)",
+          "inset 0 1.5px 1px rgba(255,255,255,0.6), inset 0 0 0 1px rgba(255,255,255,0.25), 0 30px 80px -24px rgba(25,70,110,0.35), 0 12px 32px -12px rgba(25,70,110,0.20)",
       }}
     >
-      {/* iOS-style glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 rounded-t-[32px] bg-gradient-to-b from-white/35 via-white/10 to-transparent" aria-hidden />
+      {/* bright liquid-glass top highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 rounded-t-[40px] bg-gradient-to-b from-white/55 via-white/18 to-transparent" aria-hidden />
+      {/* liquid reflection band */}
+      <div className="pointer-events-none absolute inset-x-0 top-6 h-16 rounded-t-[40px] bg-gradient-to-b from-white/30 to-transparent opacity-70" aria-hidden />
       {/* inner bottom shadow for depth */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 rounded-b-[32px] bg-gradient-to-t from-black/10 via-transparent to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 rounded-b-[40px] bg-gradient-to-t from-black/12 via-transparent to-transparent" aria-hidden />
       {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[32px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 15%, transparent 85%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
-      {/* subtle warm inner glow */}
-      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/15 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/20 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 rounded-[40px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, transparent 12%, transparent 88%, rgba(255,255,255,0.10) 100%)" }} aria-hidden />
+      {/* subtle inner glow */}
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/18 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/22 blur-3xl" aria-hidden />
 
       <div className="relative text-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/90">
