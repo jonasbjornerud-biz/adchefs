@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
-import Proof from "@/components/Proof";
+import ResultsMarquee from "@/components/ResultsMarquee";
 import MeVsAgency from "@/components/MeVsAgency";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
@@ -78,8 +78,8 @@ const Index = () => {
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
+      <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
-      <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
       <Footer />
