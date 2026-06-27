@@ -5,12 +5,12 @@
  */
 
 const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
-  { tint: "#9ED8F5", roas: "2.52", ctr: "4.20%" },
-  { tint: "#E8C9A0", roas: "3.10", ctr: "3.85%" },
-  { tint: "#C9B8E8", roas: "2.18", ctr: "5.10%" },
-  { tint: "#A8D8C5", roas: "2.74", ctr: "4.45%" },
-  { tint: "#E8A8B8", roas: "3.42", ctr: "3.95%" },
-  { tint: "#B8D4E8", roas: "2.66", ctr: "4.80%" },
+  { tint: "#9ED8F5", roas: "2.52", ctr: "4.20%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010601_xo9r97.png" },
+  { tint: "#E8C9A0", roas: "3.10", ctr: "3.85%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010629_saeqm2.png" },
+  { tint: "#C9B8E8", roas: "2.18", ctr: "5.10%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010602_skqwxz.png" },
+  { tint: "#A8D8C5", roas: "2.74", ctr: "4.45%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010626_cfpvhd.png" },
+  { tint: "#E8A8B8", roas: "3.42", ctr: "3.95%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010612_fchr9z.png" },
+  { tint: "#B8D4E8", roas: "2.66", ctr: "4.80%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010649_d2vn3p.png" },
 ];
 
 // Duplicate the list so the marquee loops seamlessly.
