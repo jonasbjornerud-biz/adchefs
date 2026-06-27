@@ -68,10 +68,10 @@ const MeVsAgency = () => {
                 "inset 0 1px 1px rgba(255,255,255,0.95), 0 40px 90px -28px rgba(25,70,110,0.18), 0 14px 40px -14px rgba(25,70,110,0.10)",
             }}
           >
-            <div className="grid grid-cols-[1fr_220px_160px]">
+            <div className="grid grid-cols-[1fr_200px_160px]">
               {/* Liquid glass pedestal spanning the entire ME column */}
               <div
-                className="col-start-2 row-span-full -my-16 mx-1 rounded-[32px] relative z-0"
+                className="col-start-2 row-span-full -my-12 mx-1 rounded-[32px] relative z-0"
                 style={{
                   background:
                     "linear-gradient(180deg, #9ED8F5 0%, #74C2EB 50%, #4FA9D8 100%)",
@@ -82,7 +82,7 @@ const MeVsAgency = () => {
                 aria-hidden
               >
                 {/* Floating badge + Me above the card */}
-                <div className="absolute top-6 left-0 right-0 flex flex-col items-center pointer-events-none">
+                <div className="absolute top-2 left-0 right-0 flex flex-col items-center pointer-events-none">
                   <div className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
                     <Sparkles className="h-2.5 w-2.5 text-[#4FA9D8]" strokeWidth={2.5} />
                     <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink font-bold">
@@ -98,13 +98,13 @@ const MeVsAgency = () => {
               </div>
 
               {/* Header row */}
-              <div className="col-start-1 h-[120px] flex items-end px-8 pb-6 z-10">
+              <div className="col-start-1 h-16 flex items-end px-8 pb-6 z-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   What you get
                 </span>
               </div>
-              <div className="col-start-2 h-[120px] z-10" />
-              <div className="col-start-3 h-[120px] flex items-end justify-center px-4 pb-6 z-10">
+              <div className="col-start-2 h-16 z-10" />
+              <div className="col-start-3 h-16 flex items-end justify-center px-4 pb-6 z-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground text-center leading-tight">
                   Creative<br />Agency
                 </span>
