@@ -117,7 +117,7 @@ function VettedVisual() {
   ];
   return (
     <div className="relative mx-auto flex h-40 w-full max-w-[260px] flex-col items-center justify-center gap-1.5">
-      <div className="pointer-events-none absolute inset-0 scale-125 bg-radial from-foreground/[0.04] via-transparent to-transparent blur-xl" />
+      <div className="pointer-events-none absolute inset-0 scale-125 bg-[radial-gradient(circle,_hsl(var(--foreground)/0.05),_transparent_70%)] from-foreground/[0.04] via-transparent to-transparent blur-xl" />
       {rows.map((r, i) => (
         <div
           key={r.label}
@@ -142,7 +142,7 @@ function TrainedVisual() {
   const bars = [22, 34, 28, 46, 58, 54, 72, 86];
   return (
     <div className="relative h-40 w-full">
-      <div className="pointer-events-none absolute inset-0 scale-125 bg-radial from-foreground/[0.04] via-transparent to-transparent blur-xl" />
+      <div className="pointer-events-none absolute inset-0 scale-125 bg-[radial-gradient(circle,_hsl(var(--foreground)/0.05),_transparent_70%)] from-foreground/[0.04] via-transparent to-transparent blur-xl" />
       <div className="absolute left-2 top-2 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
         Hook rate · 8w
       </div>
@@ -171,7 +171,7 @@ function DedicatedVisual() {
   // Single ring with one brand badge inside; competing brand chips orbit dimmed.
   return (
     <div className="relative mx-auto flex h-40 w-full items-center justify-center">
-      <div className="pointer-events-none absolute inset-0 scale-125 bg-radial from-foreground/[0.05] via-transparent to-transparent blur-xl" />
+      <div className="pointer-events-none absolute inset-0 scale-125 bg-[radial-gradient(circle,_hsl(var(--foreground)/0.05),_transparent_70%)] from-foreground/[0.05] via-transparent to-transparent blur-xl" />
       {/* Dashed orbit */}
       <div className="relative flex size-32 items-center justify-center rounded-full border border-dashed border-foreground/20">
         {/* center: the editor */}
@@ -222,7 +222,7 @@ function EmbeddedVisual() {
           </p>
         </div>
       </div>
-      <div className="relative mask-r-from-90% mask-b-from-90%">
+      <div className="relative">
         <div className="absolute right-0 bottom-0 w-[92%] max-w-[320px] rounded-tl-md border border-foreground/10 bg-background p-3 shadow-sm">
           <div className="space-y-2">
             {[
@@ -270,7 +270,7 @@ function ManagedVisual() {
           </p>
         </div>
       </div>
-      <div className="relative mask-r-from-90% mask-b-from-90%">
+      <div className="relative">
         <div className="absolute right-0 bottom-0 w-[92%] max-w-[320px] rounded-tl-md border border-foreground/10 bg-background p-3 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground">
