@@ -29,12 +29,12 @@ const Step = ({ step, title, body, isLast }: {
 }) => (
   <li
     className={[
-      "relative grid grid-cols-[48px_1fr] md:grid-cols-[100px_1fr] gap-4 md:gap-6",
+      "relative grid grid-cols-[88px_1fr] md:grid-cols-[136px_1fr] gap-4",
       isLast ? "pb-20" : "",
     ].join(" ")}
   >
     {/* Timeline dot */}
-    <div className="absolute left-[23px] md:left-[79px] top-[18px] z-10 h-2 w-2 rounded-full bg-[#9ED8F5]" />
+    <div className="absolute left-[88px] md:left-[136px] top-[18px] z-10 h-2 w-2 -translate-x-1/2 rounded-full bg-[#9ED8F5]" />
 
     {/* Ghost number */}
     <div className="relative flex justify-start">
@@ -65,7 +65,7 @@ const EditorEdge = () => (
   <section className="py-20 md:py-[80px]" style={{ backgroundColor: "#1A1A1A" }}>
     <div className="mx-auto max-w-[1100px] px-6">
       {/* Section header */}
-      <div className="mb-16 md:mb-20 pl-16 md:pl-[124px]">
+      <div className="mb-16 md:mb-20 pl-26 md:pl-38">
         <span
           className="inline-block font-mono text-[11px] uppercase tracking-[0.15em] text-[#75726B] px-4 py-2 rounded-[4px] border"
           style={{ borderColor: "#2A2A2A" }}
@@ -84,7 +84,7 @@ const EditorEdge = () => (
       <div className="relative">
         {/* Vertical line */}
         <div
-          className="absolute left-[23px] md:left-[79px] top-4 bottom-4 w-px"
+          className="absolute left-[88px] md:left-[136px] top-4 bottom-4 w-px"
           style={{ backgroundColor: "#2A2A2A" }}
         />
 
