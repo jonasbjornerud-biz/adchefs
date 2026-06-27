@@ -54,9 +54,7 @@ const MeVsAgency = () => {
       <div className="relative mx-auto max-w-[1100px] px-6">
         {/* Header — centered, matching TwoWaysToWork */}
         <div className="text-center mb-16 md:mb-24">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            OPERATOR VS AGENCY
-          </span>
+          <span className="eyebrow">Operator vs Agency</span>
           <h2 className="mt-4 font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
             <em className="font-serif italic !text-ink">Me</em> vs a regular agency
           </h2>
