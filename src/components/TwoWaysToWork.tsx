@@ -118,24 +118,28 @@ const GlassCard = ({
 
 const TwoWaysToWork = () => {
   return (
-    <section className="relative py-20 sm:py-32 overflow-hidden">
-      {/* white base with a single airy brand accent wash */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.16), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.10), transparent 55%)",
-        }}
-        aria-hidden
-      />
+      <section className="relative py-20 sm:py-32 overflow-hidden">
+        {/* brand-blue base with depth gradient */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(160deg, rgba(105,178,218,0.90) 0%, rgba(78,153,194,0.92) 40%, rgba(55,130,172,0.95) 70%, rgba(45,110,150,0.98) 100%)",
+          }}
+          aria-hidden
+        />
+        {/* subtle light shimmer across the blue */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 30% 20%, rgba(255,255,255,0.18), transparent 60%), radial-gradient(ellipse 70% 50% at 80% 80%, rgba(255,255,255,0.10), transparent 55%)",
+          }}
+          aria-hidden
+        />
+        {/* floating glass-light blobs */}
+        <div className="absolute top-20 -left-20 h-80 w-80 rounded-full bg-white/15 blur-[120px]" aria-hidden />
+        <div className="absolute bottom-20 -right-20 h-96 w-96 rounded-full bg-[#9ED8F5]/25 blur-[120px]" aria-hidden />
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         <div className="text-center mb-14 md:mb-20">
