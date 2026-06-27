@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import jonasPhoto from "@/assets/jonas.jpg";
 import HeroBackground from "@/components/HeroBackground";
-import HeroWall from "@/components/HeroWall";
 
 const scrollToBooking = () => {
   const el = document.getElementById("booking");
@@ -35,11 +34,9 @@ const CSHero = () => {
         }}
       />
 
-      <div className="mx-auto max-w-[1200px] px-6 relative z-10 h-full">
-        <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-12 items-stretch lg:h-full">
-          {/* LEFT: hero content */}
-          <div className="flex flex-col justify-center min-w-0 lg:pt-28 lg:pb-16">
-            <span className="eyebrow self-start w-fit">CREATIVE STRATEGY · DTC</span>
+      <div className="mx-auto max-w-[760px] px-6 relative z-10 h-full">
+        <div className="flex flex-col justify-center min-w-0 lg:h-full lg:pt-28 lg:pb-16 items-center text-center">
+            <span className="eyebrow w-fit">CREATIVE STRATEGY · DTC</span>
 
             <h1 className="mt-4 font-display text-[34px] sm:text-[52px] lg:text-[60px] leading-[1.02] lg:leading-[1.0] tracking-[-0.03em] text-foreground">
               One operator
@@ -51,7 +48,7 @@ const CSHero = () => {
               Research, angles, briefs, produced videos, and the weekly read on what is actually moving. Built for 7 to 9 figure DTC brands that want creative run like a department, not a queue of tasks.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-3 justify-center">
               <Button
                 size="lg"
                 variant="cta"
@@ -64,7 +61,7 @@ const CSHero = () => {
             </div>
 
             {/* Founder row */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-6 flex items-center gap-3 justify-center">
               <div className="w-11 h-11 rounded-full overflow-hidden border border-foreground/10 flex-shrink-0">
                 <img
                   src={jonasPhoto}
@@ -72,7 +69,7 @@ const CSHero = () => {
                   className="w-full h-full object-cover grayscale"
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col text-left">
                 <span className="font-sans font-medium text-[14px] text-foreground leading-tight">
                   Jonas Bjørnerud
                 </span>
@@ -81,15 +78,6 @@ const CSHero = () => {
                 </span>
               </div>
             </div>
-          </div>
-
-          {/* RIGHT: scrolling video wall */}
-          <div className="flex min-w-0 justify-center items-center lg:h-full lg:pt-28 lg:pb-8">
-            <HeroWall
-              label="Cuts I've directed for clients"
-              disclaimer="Includes agency work. Brand ownership belongs to respective clients."
-            />
-          </div>
         </div>
       </div>
     </section>
