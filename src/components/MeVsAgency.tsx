@@ -126,8 +126,8 @@ const MeVsAgency = () => {
                 {/* Inner ambient orbs */}
                 <div className="absolute -top-20 -right-10 h-56 w-56 rounded-full bg-white/22 blur-3xl" />
                 <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[#9ED8F5]/30 blur-3xl" />
-                {/* Animated diagonal shimmer */}
-                <div className="absolute inset-0 mvsa-shimmer" />
+                {/* Animated diagonal shimmer — soft, diffused */}
+                <div className="absolute inset-0 mvsa-shimmer blur-[1px]" />
               </div>
 
               {/* Floating "ME" badge above pedestal */}
