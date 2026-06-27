@@ -173,7 +173,7 @@ const PipelineSection = () => {
                 <img
                   src={ME_PHOTO}
                   alt="Jonas Bjørnerud"
-                  className="h-full w-full object-cover grayscale"
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="mt-5 text-center">
@@ -224,7 +224,7 @@ const PipelineSection = () => {
                 <img
                   src={ME_PHOTO}
                   alt="Jonas Bjørnerud"
-                  className="h-full w-full object-cover grayscale"
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="mt-4 text-center">
