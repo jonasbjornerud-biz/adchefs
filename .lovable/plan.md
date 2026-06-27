@@ -1,53 +1,48 @@
-Yes, I can fetch sites — I pulled clickswaves.com and read the whole thing. Here's what's worth stealing, and how I'd weave it in without breaking the existing layout, design system, or scope rules (only `/` gets touched).
 
-## What Clickswaves does well (and what to steal)
+Scope: landing page (`/`) only. Visual + copy. No backend changes.
 
-1. **Then / Now identity flip** — a single side-by-side: old label vs new label, two portraits. Instantly frames the operator.
-2. **Before → Gatekeepers → After → Key Strategies** — a repeatable 4-block diagnostic format. Reads like a case study even without metrics.
-3. **"Me vs Regular Agency" checklist** — a punchy two-column comparison that does the objection-handling for you.
-4. **Two clear offers, side-by-side** — "Consulting" vs "Embedded" — same shape as your Direction vs Placement split.
-5. **Scarcity line that earns the slot** — "Only 1 spot left for Q2" repeated under every CTA.
-6. **Ad metric tiles** — small cards with Spend / ROAS / CTR / Purchase Value. You already have the Proof table; tiles are the more scannable version.
-7. **Playful, "I" voice everywhere** — "I plug in", "I built", "I learned" — never agency-speak.
+### 1. `src/components/WhyAdChefs.tsx` — restyle "How it started"
+- Wrap section in the same airy white-with-blue-wash background used by `TwoWaysToWork` / `MeVsAgency` (white→#F8F9FA gradient + soft `rgba(158,216,245,0.10)` radial wash). Remove the current `bg-secondary border-y` slab.
+- Replace the bare 2‑column layout with a single rounded `32px` glass card (`bg-white/70`, `backdrop-blur-[40px]`, white inner highlight + soft blue shadow) matching the Comparison card treatment, so the section reads as part of the same family.
+- Inside the card: portrait (slightly larger, soft blue ring instead of solid #3B86A8), eyebrow "HOW IT STARTED", same headline, same body copy, signature row preserved.
+- Keep all existing copy untouched.
 
-## What to steal vs skip
+### 2. `src/components/ResultsMarquee.tsx` — case work level-up
+- Add eyebrow above the heading already there ("CASE WORK" — keep) and confirm the heading styling matches other sections.
+- Reframe the cards as ad-stat screenshots placeholders (not phone video cards):
+  - Change aspect to `4/5` (a touch wider) so screenshots fit naturally.
+  - Replace the play glyph with a subtle "Screenshot placeholder" mono label + a tiny faux KPI strip (ROAS / CTR placeholders) so when Jonas drops in real ad-stat images they sit naturally. Keep cards as `<div>` with a `bg-cover` style hook so a future `image` prop swaps the placeholder for real screenshots.
+  - Tighten the swerve (reduce rotation range to ±1.5°, vertical offsets to ±18px) — feels more premium, less crooked.
+  - Card chrome: thinner white ring, slightly deeper soft shadow, rounded `[18px]`.
+- Below the marquee, add a centered disclaimer in muted mono/italic 12–13px:  
+  *"Some case work includes editor placement services with a separate strategist."*
 
-- **Steal:** voice loosening, Then/Now flip, Me vs Agency table, scarcity line, ad metric tiles styling.
-- **Skip:** full case studies (you don't have NDA-cleared client logos/metrics yet), "Apply via Typeform" model (you use Calendly), the wall-of-logos.
+### 3. `src/components/MeVsAgency.tsx` — comparison refinements
+- Reduce shimmer intensity: drop sweep opacity peak from `0.35` white band to ~`0.18`, slow the animation from 6s → 10s, and remove the conic-glow spin (or drop opacity to 0.25) so the pedestal feels calmer.
+- Update the eyebrow above the heading from `"The comparison"` to `"OPERATOR VS AGENCY"` (correct, in line with the section's actual framing).
+- Replace the bottom disclaimer with:  
+  *"Some agencies are great, but most aren't built for brands that value an in-house experience."*
 
-## Voice direction (playful but still operator)
+### 4. `src/components/TwoWaysToWork.tsx` — add missing eyebrow
+- Above the heading add `<span className="eyebrow">SERVICES</span>` (or `"HOW I WORK"` — `SERVICES` is shortest and matches the section `id="services"`).
 
-Current voice is tight and a little stiff ("Direction is scoped on the call", "Creative decisions driven by data"). New voice keeps the operator confidence but adds breath, contractions, and the occasional dry aside. Examples of the shift:
+### 5. `src/components/Footer.tsx` — copy swap
+- Replace the tagline paragraph with:  
+  *"In-house creative strategy from A to Z with dedicated video editors matched to your brand."*
+- Remove the FAQ link from the footer Navigate list (since FAQ section is being removed).
 
-- Before: *"I direct creative for a small number of e-commerce brands."*
-  After: *"I run creative for a handful of e-com brands. Not many. On purpose."*
-- Before: *"Editor placement: I match vetted editors to your team."*
-  After: *"Need an editor instead? I'll hand you one I'd hire myself."*
-- Before: *"Direction is scoped on the call."*
-  After: *"We figure out the scope on the call — every brand's mess is a little different."*
+### 6. `src/pages/Index.tsx` — remove FAQ
+- Remove `import FAQ` and the `<ScrollReveal><FAQ /></ScrollReveal>` line. Leave the `FAQPage` JSON‑LD in place for SEO (still accurate Q&A about the service) — confirm with user only if you'd rather strip it too; default is to keep it.
+- Final flow: Hero → WhyAdChefs → TwoWaysToWork → ResultsMarquee → MeVsAgency → CalendlyBooking → Footer.
 
-Rules I'll keep: "I" voice, British spelling, one italic word per heading, no em/en dashes, no hyphens in headings, no emoji.
+### Eyebrow audit summary (final state)
+- Hero: existing eyebrow `BUILT FOR DTC BRANDS` — unchanged.
+- WhyAdChefs: `HOW IT STARTED` — unchanged.
+- TwoWaysToWork: **add** `SERVICES`.
+- ResultsMarquee: `CASE WORK` — unchanged.
+- MeVsAgency: change to `OPERATOR VS AGENCY`.
+- CalendlyBooking: leave as-is.
 
-## Plan for `/` (copy + 2 small structural adds, zero redesign)
-
-1. **Hero** — loosen subhead and the live-cuts caption. Same layout.
-2. **Operator Story (WhyAdChefs)** — rewrite copy in the looser voice. Add a small **Then / Now** identity flip block above the story (two labels, two muted placeholder portraits, same card styling already in use). Pure additive, fits inside the existing section.
-3. **Two Ways To Work** — rewrite the two cards in the looser voice. Keep the ladder layout.
-4. **Direction + Performance (EditorEdge)** — soften the 4 captions under the placeholders. No structural change.
-5. **Proof table** — rewrite the intro line; keep the table. Optionally also render the first row as 4 metric tiles above the table (Clickswaves style) for scan-ability — flag it as optional.
-6. **NEW: "Me vs a regular agency" block** — drop a tight two-column comparison between Placement section and Pricing. Six rows max. Uses existing card + eyebrow styles. This is the single biggest steal and earns its space.
-7. **Pricing** — rewrite the receipt footnote and the "no retainer" line in looser voice. Numbers untouched.
-8. **Booking (Calendly section)** — rewrite the scarcity copy to a single sharper line: *"I take on 1 to 2 new brands a month. When the slots are gone, they're gone."* Embed untouched.
-9. **FAQ** — loosen the answer voice on the existing questions. No new questions unless you want them.
-10. **Nav / Footer** — untouched.
-
-## Out of scope (will not touch)
-
-`/about`, `/admin`, `/ads`, app.adchefs.com, Calendly embed/integration, backend, edge functions, SEO infra, sitemap, schema, fonts, colors, logo, component styles. Memory's "no Case Studies / no Results section" rule stays — Proof table stays as-is, no case study pages added.
-
-## Questions before I write
-
-1. **Voice dial** — playful-but-dry (Derek Sivers / Basecamp), or playful-with-edge (a few light swipes at agencies, like Clickswaves)? I'd default to the first.
-2. **"Me vs a regular agency" block** — green-light to add it between Placement and Pricing?
-3. **Then / Now flip in the Operator Story** — yes, or skip (you don't have the two portraits yet and we'd use placeholders for now)?
-4. **Proof metric tiles** above the table — add, or leave the table alone?
+### Out of scope
+- No FAQ component deletion (file stays; only removed from `/`). Service pages still link nowhere to FAQ.
+- No changes to backend, navigation, or service subpages.

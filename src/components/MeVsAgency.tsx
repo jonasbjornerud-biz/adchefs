@@ -55,7 +55,7 @@ const MeVsAgency = () => {
         {/* Header — centered, matching TwoWaysToWork */}
         <div className="text-center mb-16 md:mb-24">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            The comparison
+            OPERATOR VS AGENCY
           </span>
           <h2 className="mt-4 font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
             <em className="font-serif italic !text-ink">Me</em> vs a regular agency
@@ -236,7 +236,7 @@ const MeVsAgency = () => {
         </div>
 
         <p className="mt-8 text-center text-[13px] text-muted-foreground italic max-w-xl mx-auto">
-          Some agencies are excellent. Most are not built for brands that just want video that ships and works.
+          Some agencies are great, but most aren't built for brands that value an in-house experience.
         </p>
       </div>
 
@@ -245,7 +245,7 @@ const MeVsAgency = () => {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
         }
-        .mvsa-conic { animation: mvsa-conic-spin 18s linear infinite; }
+        .mvsa-conic { animation: mvsa-conic-spin 30s linear infinite; opacity: 0.25 !important; }
         @keyframes mvsa-shimmer-sweep {
           0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
           20%  { opacity: 1; }
@@ -253,9 +253,9 @@ const MeVsAgency = () => {
           100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
         }
         .mvsa-shimmer {
-          background: linear-gradient(110deg, transparent 0%, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%, transparent 100%);
-          animation: mvsa-shimmer-sweep 6s ease-in-out infinite;
-          animation-delay: 1.5s;
+          background: linear-gradient(110deg, transparent 0%, transparent 42%, rgba(255,255,255,0.18) 50%, transparent 58%, transparent 100%);
+          animation: mvsa-shimmer-sweep 10s ease-in-out infinite;
+          animation-delay: 2s;
         }
         .mvsa-badge {
           animation: mvsa-badge-float 5s ease-in-out infinite;
