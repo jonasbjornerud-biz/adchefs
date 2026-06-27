@@ -128,8 +128,14 @@ const MeVsAgency = () => {
                 {/* Inner ambient orbs */}
                 <div className="absolute -top-20 -right-10 h-56 w-56 rounded-full bg-white/22 blur-3xl" />
                 <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[#9ED8F5]/30 blur-3xl" />
-                {/* Animated diagonal shimmer */}
-                <div className="absolute inset-0 mvsa-shimmer" />
+                {/* Soft static specular highlight along the left edge */}
+                <div
+                  className="absolute inset-y-0 left-0 w-px"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.55) 30%, rgba(255,255,255,0.55) 70%, transparent 100%)",
+                  }}
+                />
               </div>
 
               {/* Floating "ME" badge above pedestal */}
@@ -246,17 +252,6 @@ const MeVsAgency = () => {
           to   { transform: translateY(-50%) rotate(360deg); }
         }
         .mvsa-conic { animation: mvsa-conic-spin 18s linear infinite; }
-        @keyframes mvsa-shimmer-sweep {
-          0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
-          20%  { opacity: 1; }
-          80%  { opacity: 1; }
-          100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
-        }
-        .mvsa-shimmer {
-          background: linear-gradient(110deg, transparent 0%, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%, transparent 100%);
-          animation: mvsa-shimmer-sweep 6s ease-in-out infinite;
-          animation-delay: 1.5s;
-        }
         .mvsa-badge {
           animation: mvsa-badge-float 5s ease-in-out infinite;
         }
@@ -265,7 +260,7 @@ const MeVsAgency = () => {
           50%      { transform: translateX(-50%) translateY(-4px); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .mvsa-conic, .mvsa-shimmer, .mvsa-badge { animation: none; }
+          .mvsa-conic, .mvsa-badge { animation: none; }
         }
       `}</style>
     </section>
