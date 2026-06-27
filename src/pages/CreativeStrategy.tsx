@@ -4,28 +4,10 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import ServiceHero from "@/components/service/ServiceHero";
-import ServiceProcess from "@/components/service/ServiceProcess";
 import ServiceIncludes from "@/components/service/ServiceIncludes";
 import ServiceCTA from "@/components/service/ServiceCTA";
-
-const steps = [
-  {
-    title: "Read the account",
-    body: "I pull up your active ads and go through the data. Hook rate, hold curve, what is staying alive past three seconds and what is not.",
-  },
-  {
-    title: "Build the angle",
-    body: "From the winners, I figure out the pattern. Then I build the next angles from what is already converting in your account.",
-  },
-  {
-    title: "Brief the editor",
-    body: "The editor gets a proper brief. Hook, shot list, pacing, format. I have been in the timeline long enough to write briefs that translate into cuts.",
-  },
-  {
-    title: "Ship and learn",
-    body: "When it goes live, I track what moves. Every round gets a little tighter because we are building off proof, not guessing again from zero.",
-  },
-];
+import CreativeStrategyLoop from "@/components/CreativeStrategyLoop";
+import CreativeStrategyFAQ from "@/components/CreativeStrategyFAQ";
 
 const includes = [
   "Research, angles, and briefs built with an editing eye",
@@ -62,16 +44,16 @@ const CreativeStrategy = () => {
         </div>
 
         <ServiceHero
-          eyebrow="CREATIVE STRATEGY · OVERVIEW"
-          monoLine="The full creative department"
+          eyebrow="CREATIVE STRATEGY"
+          monoLine="THE FULL CREATIVE DEPARTMENT"
           headlinePre="One operator owning the"
-          headlineItalic="creative number"
+          headlineItalic="number"
           headlinePost="."
-          body="Research, angles, briefs, produced videos, and the weekly read on what's actually moving. Built for 7 – 9 figure DTC brands that have outgrown ad-hoc freelancers and want creative run like a department, not a queue of tasks."
+          body="Research, angles, briefs, produced videos, and the weekly read on what is actually moving. Built for 7 to 9 figure DTC brands that have outgrown ad hoc freelancers and want creative run like a department, not a queue of tasks."
           fromLabel="FROM"
           fromValue="Custom"
           fromUnit="/ PRICED ON THE CALL"
-          monoNote="Two to three brands at a time. Editor placement is included."
+          monoNote="TWO TO THREE BRANDS AT A TIME. EDITOR PLACEMENT IS INCLUDED."
           ctaLabel="Book a 15 minute call"
           tagline="Built for operators who want one person on the hook for the creative number, not a deck and a Slack channel."
           graphicKind="brief"
@@ -83,11 +65,9 @@ const CreativeStrategy = () => {
           items={includes}
         />
 
-        <ServiceProcess
-          eyebrow="The process"
-          title="How a week looks when I'm running creative."
-          steps={steps}
-        />
+        <CreativeStrategyLoop />
+
+        <CreativeStrategyFAQ />
 
         <ServiceCTA
           title="Ready to hand creative to one operator?"
