@@ -140,9 +140,6 @@ const ResultsMarquee = () => {
           animation: results-marquee 38s linear infinite;
           will-change: transform;
         }
-        .group:hover .results-marquee-track {
-          animation-play-state: paused;
-        }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
