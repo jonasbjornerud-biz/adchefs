@@ -1,8 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
-import HowItWorks from "@/components/HowItWorks";
-import EditorEdge from "@/components/EditorEdge";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
@@ -81,10 +79,6 @@ const Index = () => {
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
-      <section id="direction" aria-hidden className="h-0" />
-      <ScrollReveal><EditorEdge /></ScrollReveal>
-      <section id="placement" aria-hidden className="h-0" />
-      <ScrollReveal><HowItWorks /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><Proof /></ScrollReveal>
