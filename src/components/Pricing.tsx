@@ -124,7 +124,7 @@ const items: { label: string; value: string; ink?: boolean }[] = [
   { label: "Delivery tracking", value: "Included" },
 ];
 
-const PrintingReceipt = () => {
+export const PrintingReceipt = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [printed, setPrinted] = useState(false);
   const [reduced, setReduced] = useState(false);

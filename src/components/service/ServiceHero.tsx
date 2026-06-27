@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import PrintingReceiptStandalone from "@/components/Pricing";
+import { PrintingReceipt } from "@/components/Pricing";
 import CreativeBriefDoc from "@/components/CreativeBriefDoc";
-import ReceiptOnly from "./ReceiptOnly";
 
 type Props = {
   eyebrow: string;
@@ -148,7 +147,7 @@ const ServiceHero = ({
 
           {/* Right column — signature graphic */}
           <div className="md:w-[45%] flex flex-col items-center md:items-end pt-4 md:pt-10">
-            {graphicKind === "receipt" ? <ReceiptOnly /> : <CreativeBriefDoc />}
+            {graphicKind === "receipt" ? <PrintingReceipt /> : <CreativeBriefDoc />}
           </div>
         </div>
       </div>
