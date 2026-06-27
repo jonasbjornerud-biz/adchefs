@@ -31,74 +31,83 @@ const Card = ({
   variant,
   cta,
 }: CardProps) => {
-  const popular = variant === "light";
+  const popular = variant === "dark";
 
   return (
     <div className="relative h-full">
       {popular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-          <span className="rounded-full bg-[#F7F6F3] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] shadow-[0_6px_20px_rgba(26,26,26,0.18)]">
+          <span className="rounded-full bg-[#9ED8F5] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[#1A1A1A]">
             Most Popular
           </span>
         </div>
       )}
 
       <div
-        className="relative flex flex-col h-full text-center rounded-[24px] p-8 md:p-12 text-[#1A1A1A] overflow-hidden
-          bg-white/30 backdrop-blur-2xl
-          ring-1 ring-white/60
-          shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_30px_80px_-20px_rgba(26,26,26,0.25)]
-          transition-all duration-500 hover:-translate-y-1 hover:bg-white/35"
+        className={`relative flex flex-col h-full rounded-[14px] p-10 md:p-12 overflow-hidden transition-all duration-500 hover:-translate-y-0.5 ${
+          popular
+            ? "bg-white border border-[#1A1A1A]/8 shadow-[0_30px_80px_-30px_rgba(26,26,26,0.25)]"
+            : "bg-[#F7F6F3] border border-[#1A1A1A]/8"
+        }`}
       >
-        {/* glossy top sheen */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/50 to-transparent"
-          aria-hidden
-        />
-
-        {/* title block */}
-        <h3 className="relative mt-2 font-serif italic font-normal text-[44px] md:text-[56px] leading-[1.0] tracking-[-0.01em] text-[#1A1A1A]">
-          {serifWord}
-        </h3>
-        <p className="relative mt-4 text-[15px] md:text-[16px] leading-snug text-[#1A1A1A]/85 max-w-[34ch] mx-auto">
-          {tagline}
-        </p>
-        <p className="relative mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A]/55">
+        {/* eyebrow */}
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#75726B]">
           {eyebrow}
         </p>
 
+        {/* title */}
+        <h3 className="mt-4 font-display text-[32px] md:text-[36px] leading-[1.05] tracking-[-0.015em] text-[#1A1A1A]">
+          <em className="font-serif italic font-normal">{serifWord}</em>
+        </h3>
+
+        <p className="mt-3 text-[15px] leading-relaxed text-[#75726B] max-w-[38ch]">
+          {tagline}
+        </p>
+
         {/* price */}
-        <div className="relative mt-10">
-          <div className="font-display text-[56px] md:text-[72px] leading-none tracking-[-0.02em] text-[#1A1A1A]">
+        <div className="mt-10 flex items-baseline gap-2">
+          <span className="font-display text-[48px] md:text-[56px] leading-none tracking-[-0.02em] text-[#1A1A1A]">
             {price}
-          </div>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A]/55">
+          </span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#75726B]">
             {priceNote}
-          </p>
+          </span>
         </div>
 
         {/* CTA */}
-        <div className="relative mt-8">
+        <div className="mt-8">
           <Button
             size="lg"
             onClick={scrollToBooking}
-            className="h-auto rounded-full bg-[#F7F6F3]/95 text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F7F6F3] px-7 py-3 gap-[10px] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.3)] transition-colors"
+            className={`h-auto w-full rounded-full px-6 py-3 gap-[10px] transition-colors ${
+              popular
+                ? "bg-[#1A1A1A] text-[#F7F6F3] hover:bg-[#1A1A1A]/90"
+                : "bg-transparent text-[#1A1A1A] border border-[#1A1A1A]/15 hover:bg-[#1A1A1A] hover:text-[#F7F6F3] hover:border-[#1A1A1A]"
+            }`}
           >
             {cta}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
 
+        {/* divider */}
+        <div className="mt-10 h-px w-full bg-[#1A1A1A]/8" aria-hidden />
+
         {/* bullets */}
-        <div className="relative mt-10 text-left">
-          <p className="text-[14px] font-medium text-[#1A1A1A]">{bulletsHeader}</p>
-          <ul className="mt-5 space-y-3.5">
+        <div className="mt-8 flex-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#75726B]">
+            {bulletsHeader}
+          </p>
+          <ul className="mt-6 space-y-4">
             {bullets.map((item, i) => (
               <li
                 key={i}
-                className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-[#1A1A1A]/90"
+                className="flex items-start gap-3 text-[14px] md:text-[15px] leading-snug text-[#1A1A1A]"
               >
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1A1A1A]" strokeWidth={2.5} />
+                <Check
+                  className="mt-[3px] h-[14px] w-[14px] shrink-0 text-[#1A1A1A]"
+                  strokeWidth={2.25}
+                />
                 <span>{item}</span>
               </li>
             ))}
@@ -111,41 +120,34 @@ const Card = ({
 
 const TwoWaysToWork = () => {
   return (
-    <section
-      className="relative py-24 sm:py-36 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #C9E8F7 0%, #9ED8F5 45%, #BDE4F8 100%)",
-      }}
-    >
-      {/* soft cloud layers — pure CSS, no images */}
+    <section className="relative py-24 sm:py-36 overflow-hidden bg-[#F7F6F3]">
+      {/* very faint brand accent wash — mirrors hero */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
         style={{
           background:
-            "radial-gradient(ellipse 700px 180px at 12% 22%, rgba(255,255,255,0.85), transparent 60%), radial-gradient(ellipse 520px 150px at 88% 18%, rgba(255,255,255,0.75), transparent 65%), radial-gradient(ellipse 620px 200px at 80% 78%, rgba(255,255,255,0.7), transparent 60%), radial-gradient(ellipse 480px 160px at 8% 85%, rgba(255,255,255,0.6), transparent 65%), radial-gradient(ellipse 380px 120px at 50% 50%, rgba(255,255,255,0.35), transparent 70%)",
+            "radial-gradient(ellipse 60% 40% at 95% 8%, rgba(158,216,245,0.18), transparent 60%), radial-gradient(ellipse 55% 40% at 5% 95%, rgba(158,216,245,0.12), transparent 60%)",
         }}
       />
 
-      {/* top + bottom paper fades to blend with neighboring sections */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F7F6F3] to-transparent pointer-events-none" aria-hidden />
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F7F6F3]/60 to-transparent pointer-events-none" aria-hidden />
-
-      <div className="relative mx-auto max-w-[1120px] px-6">
-        {/* section header — Air style: centered, serif italic on key word */}
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="font-display text-[40px] md:text-[64px] leading-[1.02] tracking-[-0.02em] text-[#1A1A1A]">
+      <div className="relative mx-auto max-w-[1080px] px-6">
+        {/* section header — left aligned, hero style */}
+        <div className="max-w-2xl">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#75726B]">
+            How we work together
+          </p>
+          <h2 className="mt-5 font-display text-[44px] md:text-[64px] leading-[1.02] tracking-[-0.02em] text-[#1A1A1A]">
             Two ways I work with{" "}
             <em className="font-serif italic font-normal">brands</em>
           </h2>
-          <p className="mt-5 text-[16px] md:text-[18px] leading-relaxed text-[#1A1A1A]/75">
+          <p className="mt-5 text-[16px] md:text-[18px] leading-relaxed text-[#75726B]">
             Most brands start with an editor then loop me in on creative strategy.
           </p>
         </div>
 
         {/* cards */}
-        <div className="mt-16 md:mt-24 grid md:grid-cols-2 gap-6 md:gap-8 items-stretch">
+        <div className="mt-16 md:mt-20 grid md:grid-cols-2 gap-5 md:gap-6 items-stretch">
           <Card
             variant="light"
             eyebrow="Entry · Start here"
