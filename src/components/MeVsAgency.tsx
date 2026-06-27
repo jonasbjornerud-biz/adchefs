@@ -54,9 +54,7 @@ const MeVsAgency = () => {
       <div className="relative mx-auto max-w-[1100px] px-6">
         {/* Header — centered, matching TwoWaysToWork */}
         <div className="text-center mb-16 md:mb-24">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            OPERATOR VS AGENCY
-          </span>
+          <span className="eyebrow">Operator vs Agency</span>
           <h2 className="mt-4 font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
             <em className="font-serif italic !text-ink">Me</em> vs a regular agency
           </h2>
@@ -128,8 +126,8 @@ const MeVsAgency = () => {
                 {/* Inner ambient orbs */}
                 <div className="absolute -top-20 -right-10 h-56 w-56 rounded-full bg-white/22 blur-3xl" />
                 <div className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-[#9ED8F5]/30 blur-3xl" />
-                {/* Animated diagonal shimmer */}
-                <div className="absolute inset-0 mvsa-shimmer" />
+                {/* Animated diagonal shimmer — soft, diffused */}
+                <div className="absolute inset-0 mvsa-shimmer blur-[1px]" />
               </div>
 
               {/* Floating "ME" badge above pedestal */}
@@ -245,17 +243,20 @@ const MeVsAgency = () => {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
         }
-        .mvsa-conic { animation: mvsa-conic-spin 30s linear infinite; opacity: 0.25 !important; }
+        .mvsa-conic { animation: mvsa-conic-spin 30s linear infinite; opacity: 0.18 !important; }
         @keyframes mvsa-shimmer-sweep {
-          0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
-          20%  { opacity: 1; }
-          80%  { opacity: 1; }
-          100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
+          0%   { transform: translateX(-140%) skewX(-18deg); opacity: 0; }
+          15%  { opacity: 0.5; }
+          85%  { opacity: 0.5; }
+          100% { transform: translateX(140%) skewX(-18deg); opacity: 0; }
         }
         .mvsa-shimmer {
-          background: linear-gradient(110deg, transparent 0%, transparent 42%, rgba(255,255,255,0.18) 50%, transparent 58%, transparent 100%);
-          animation: mvsa-shimmer-sweep 10s ease-in-out infinite;
+          background: linear-gradient(110deg, transparent 0%, transparent 35%, rgba(255,255,255,0.09) 50%, transparent 65%, transparent 100%);
+          background-size: 200% 100%;
+          animation: mvsa-shimmer-sweep 14s ease-in-out infinite;
           animation-delay: 2s;
+          mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
         }
         .mvsa-badge {
           animation: mvsa-badge-float 5s ease-in-out infinite;
