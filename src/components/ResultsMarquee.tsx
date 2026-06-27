@@ -81,14 +81,22 @@ const Card = ({
 
 const ResultsMarquee = () => {
   return (
-    <section className="py-20 sm:py-32 bg-background relative overflow-hidden">
-      {/* Soft background wash matching brand accent */}
+    <section className="relative py-20 sm:py-32 overflow-hidden">
+      {/* Match TwoWaysToWork: white base + airy brand-accent wash for a seamless transition */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(50% 40% at 20% 30%, rgba(158,216,245,0.12) 0%, transparent 70%), radial-gradient(50% 40% at 85% 70%, rgba(158,216,245,0.08) 0%, transparent 70%)",
+            "linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.16), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.10), transparent 55%)",
         }}
       />
 
