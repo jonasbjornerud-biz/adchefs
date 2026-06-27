@@ -132,24 +132,19 @@ const TwoWaysToWork = () => {
           100% { transform: translateX(160%) translateY(160%) rotate(30deg); }
         }
       `}</style>
-      <section className="relative py-20 sm:py-32 overflow-hidden">
-        {/* white base with a single airy brand accent wash */}
+      <section className="relative py-20 sm:py-32 overflow-hidden bg-paper">
+        {/* ultra-soft blue ambient wash */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(180deg, #FFFFFF 0%, #F7F6F3 50%, #FFFFFF 100%)",
+              "radial-gradient(ellipse 90% 60% at 50% 40%, rgba(158,216,245,0.16), transparent 60%), radial-gradient(ellipse 50% 35% at 85% 15%, rgba(158,216,245,0.10), transparent 50%)",
+            filter: "blur(40px)",
           }}
           aria-hidden
         />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.18), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.12), transparent 55%)",
-          }}
-          aria-hidden
-        />
+        {/* soft top sheen line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" aria-hidden />
 
         <div className="relative mx-auto max-w-[1100px] px-6">
           <div className="text-center mb-14 md:mb-20">
