@@ -1,7 +1,7 @@
 /**
- * Results for other brands — premium auto-scrolling marquee of 6 image placeholders.
- * No copy beyond the section header. Cards swerve on a curved baseline and glide
- * across the viewport on an infinite, paused-on-hover loop.
+ * Results for other brands — premium auto-scrolling marquee of case-study screenshots.
+ * Cards preserve their native aspect ratio, and a centered viewport scanner ring
+ * highlights the metrics area as each card passes through the middle.
  */
 
 const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
@@ -36,20 +36,29 @@ const Card = ({
 
   return (
     <div
-      className="relative flex-shrink-0 w-[260px] md:w-[320px] aspect-[4/5] rounded-[18px] overflow-hidden bg-white"
+      className="relative flex-shrink-0 w-[260px] md:w-[320px] rounded-[18px] overflow-hidden bg-white"
       style={{
         transform: `translateY(${y}px) rotate(${r}deg)`,
         boxShadow:
           "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
-        backgroundImage: image
-          ? `url(${image})`
-          : `linear-gradient(155deg, ${tint}cc 0%, #ffffff 60%, ${tint}66 100%)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
       }}
     >
-      {!image && (
-        <>
+      {image ? (
+        <img
+          src={image}
+          alt="Case study result"
+          className="w-full h-auto block"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div
+          className="relative w-full aspect-[4/5]"
+          style={{
+            background:
+              `linear-gradient(155deg, ${tint}cc 0%, #ffffff 60%, ${tint}66 100%)`,
+          }}
+        >
           <div
             aria-hidden
             className="absolute inset-0"
@@ -73,7 +82,7 @@ const Card = ({
               <div className="text-[13px] font-semibold tabular-nums text-ink leading-none mt-0.5">{ctr}</div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -127,6 +136,19 @@ const ResultsMarquee = () => {
             <Card key={i} index={i} tint={p.tint} roas={p.roas} ctr={p.ctr} image={p.image} />
           ))}
         </div>
+
+        {/* Center metrics scanner — circles the metric area as each card passes through */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
+        >
+          <div className="relative w-[180px] h-[180px] md:w-[220px] md:h-[220px] flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border-2 border-[#9ED8F5]/60 scanner-ring" />
+            <div className="absolute inset-[-12px] rounded-full border border-[#9ED8F5]/30 scanner-ring-outer" />
+            <div className="absolute w-[16px] h-[16px] rounded-full bg-[#9ED8F5]/90 blur-[3px] scanner-dot" />
+            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(158,216,245,0.12)_0%,transparent_70%)] scanner-pulse" />
+          </div>
+        </div>
       </div>
 
       <p className="relative mt-10 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto px-6">
@@ -141,12 +163,40 @@ const ResultsMarquee = () => {
         .group:hover .results-marquee-track {
           animation-play-state: paused;
         }
+        .scanner-ring {
+          animation: scanner-pulse 2.6s ease-in-out infinite;
+        }
+        .scanner-ring-outer {
+          animation: scanner-pulse 2.6s ease-in-out infinite 0.35s;
+        }
+        .scanner-dot {
+          animation: scanner-dot 2.6s ease-in-out infinite;
+        }
+        .scanner-pulse {
+          animation: scanner-glow 2.6s ease-in-out infinite;
+        }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
+        @keyframes scanner-pulse {
+          0%, 100% { transform: scale(0.92); opacity: 0.35; }
+          50% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes scanner-dot {
+          0%, 100% { opacity: 0.5; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes scanner-glow {
+          0%, 100% { opacity: 0.25; transform: scale(0.85); }
+          50% { opacity: 0.6; transform: scale(1); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .results-marquee-track { animation: none; }
+          .results-marquee-track,
+          .scanner-ring,
+          .scanner-ring-outer,
+          .scanner-dot,
+          .scanner-pulse { animation: none; }
         }
       `}</style>
     </section>
