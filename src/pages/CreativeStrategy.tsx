@@ -3,21 +3,11 @@ import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import ServiceIncludes from "@/components/service/ServiceIncludes";
-import ServiceCTA from "@/components/service/ServiceCTA";
 import CreativeStrategyLoop from "@/components/CreativeStrategyLoop";
-import CreativeStrategyFAQ from "@/components/CreativeStrategyFAQ";
-import CreativeStrategyHero from "@/components/CreativeStrategyHero";
-
-const includes = [
-  "Research, angles, and briefs built with an editing eye",
-  "Weekly read on hook, hold, ROAS, CPA",
-  "New creative batches shipped every week",
-  "Produced videos included, not just strategy decks",
-  "Dedicated editor placement included",
-  "Live KPI dashboard, free",
-  "One operator owning the creative number end to end",
-];
+import CSHero from "@/components/cs/CSHero";
+import CSIncludes from "@/components/cs/CSIncludes";
+import CSMath from "@/components/cs/CSMath";
+import CSFinalCTA from "@/components/cs/CSFinalCTA";
 
 const CreativeStrategy = () => {
   return (
@@ -43,23 +33,11 @@ const CreativeStrategy = () => {
           </div>
         </div>
 
-        <CreativeStrategyHero />
-
-        <ServiceIncludes
-          eyebrow="What's included"
-          title="Everything in Editor Placement, plus the strategy layer"
-          items={includes}
-        />
-
+        <CSHero />
+        <CSIncludes />
+        <CSMath />
         <CreativeStrategyLoop />
-
-        <CreativeStrategyFAQ />
-
-        <ServiceCTA
-          title="Ready to hand creative to one operator?"
-          body="Pricing is built around your account on the call. Two to three brands max at a time."
-          ctaLabel="Book a call"
-        />
+        <CSFinalCTA />
       </main>
 
       <Footer />
