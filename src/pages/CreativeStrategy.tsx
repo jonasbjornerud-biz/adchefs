@@ -46,7 +46,7 @@ const CreativeStrategy = () => {
         <ServiceHero
           eyebrow="CREATIVE STRATEGY"
           monoLine="THE FULL CREATIVE DEPARTMENT"
-          headlinePre="One operator owning the"
+          headlinePre="One operator owning the creative"
           headlineItalic="number"
           headlinePost="."
           body="Research, angles, briefs, produced videos, and the weekly read on what is actually moving. Built for 7 to 9 figure DTC brands that have outgrown ad hoc freelancers and want creative run like a department, not a queue of tasks."
