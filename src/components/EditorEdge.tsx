@@ -67,7 +67,7 @@ const EditorEdge = () => (
           CREATIVE DIRECTION
         </span>
         <h2 className="mt-6 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-[#F7F6F3]">
-          Creative built on <em className="font-serif italic" style={{ color: "#F7F6F3 !important" }}>data</em>, not taste.
+          Creative built on <em className="font-serif italic !text-[#F7F6F3]">data</em>, not taste.
         </h2>
         <p className="mt-5 max-w-[480px] font-sans text-[15px] leading-[1.7] text-[#75726B]">
           I go through your account, find what's actually working, and build the next batch of ads from that. Not from gut feel. From your own numbers.
