@@ -71,7 +71,7 @@ const MeVsAgency = () => {
             <div className="grid grid-cols-[1fr_220px_160px]">
               {/* Liquid glass pedestal spanning the entire ME column */}
               <div
-                className="col-start-2 row-span-full -my-8 mx-1 rounded-[32px] relative z-0"
+                className="col-start-2 row-span-full -my-16 mx-1 rounded-[32px] relative z-0"
                 style={{
                   background:
                     "linear-gradient(180deg, #9ED8F5 0%, #74C2EB 50%, #4FA9D8 100%)",
@@ -81,8 +81,20 @@ const MeVsAgency = () => {
                 }}
                 aria-hidden
               >
+                {/* Floating badge + Me above the card */}
+                <div className="absolute top-6 left-0 right-0 flex flex-col items-center pointer-events-none">
+                  <div className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                    <Sparkles className="h-2.5 w-2.5 text-[#4FA9D8]" strokeWidth={2.5} />
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink font-bold">
+                      The Pick
+                    </span>
+                  </div>
+                  <span className="font-serif italic text-4xl text-white mt-4 drop-shadow-sm">
+                    Me
+                  </span>
+                </div>
                 {/* Liquid gloss reflective flare */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/10 to-transparent" />
               </div>
 
               {/* Header row */}
@@ -91,17 +103,7 @@ const MeVsAgency = () => {
                   What you get
                 </span>
               </div>
-              <div className="col-start-2 h-[120px] flex flex-col items-center justify-end px-4 pb-6 z-10">
-                <div className="bg-white px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
-                  <Sparkles className="h-2.5 w-2.5 text-[#4FA9D8]" strokeWidth={2.5} />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink font-bold">
-                    The Pick
-                  </span>
-                </div>
-                <span className="font-serif italic text-4xl text-white mt-4 drop-shadow-sm">
-                  Me
-                </span>
-              </div>
+              <div className="col-start-2 h-[120px] z-10" />
               <div className="col-start-3 h-[120px] flex items-end justify-center px-4 pb-6 z-10">
                 <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground text-center leading-tight">
                   Creative<br />Agency
