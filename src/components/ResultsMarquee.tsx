@@ -190,40 +190,37 @@ const ResultsMarquee = () => {
         .group:hover .results-marquee-track {
           animation-play-state: paused;
         }
-        .scanner-ring {
-          animation: scanner-pulse 2.6s ease-in-out infinite;
+        .marker-stroke {
+          stroke-dasharray: 580;
+          stroke-dashoffset: 580;
+          animation: marker-draw 3.2s ease-in-out infinite;
         }
-        .scanner-ring-outer {
-          animation: scanner-pulse 2.6s ease-in-out infinite 0.35s;
-        }
-        .scanner-dot {
-          animation: scanner-dot 2.6s ease-in-out infinite;
-        }
-        .scanner-pulse {
-          animation: scanner-glow 2.6s ease-in-out infinite;
+        .marker-circle {
+          opacity: 0;
+          animation: marker-fade 3.2s ease-in-out infinite;
         }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
-        @keyframes scanner-pulse {
-          0%, 100% { transform: scale(0.92); opacity: 0.35; }
-          50% { transform: scale(1); opacity: 1; }
+        @keyframes marker-draw {
+          0% { stroke-dashoffset: 580; }
+          40% { stroke-dashoffset: 0; }
+          80% { stroke-dashoffset: 0; }
+          100% { stroke-dashoffset: 0; }
         }
-        @keyframes scanner-dot {
-          0%, 100% { opacity: 0.5; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.2); }
-        }
-        @keyframes scanner-glow {
-          0%, 100% { opacity: 0.25; transform: scale(0.85); }
-          50% { opacity: 0.6; transform: scale(1); }
+        @keyframes marker-fade {
+          0% { opacity: 0; transform: scale(0.92); }
+          15% { opacity: 1; transform: scale(1); }
+          70% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1.02); }
         }
         @media (prefers-reduced-motion: reduce) {
           .results-marquee-track,
-          .scanner-ring,
-          .scanner-ring-outer,
-          .scanner-dot,
-          .scanner-pulse { animation: none; }
+          .marker-stroke,
+          .marker-circle { animation: none; }
+          .marker-circle { opacity: 0.8; }
+          .marker-stroke { stroke-dashoffset: 0; }
         }
       `}</style>
     </section>
