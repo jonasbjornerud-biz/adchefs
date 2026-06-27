@@ -137,18 +137,44 @@ const ResultsMarquee = () => {
           ))}
         </div>
 
-        {/* Center metrics scanner — circles the metric area as each card passes through */}
+        {/* Hand-drawn marker circle that highlights the metrics block of the centered card */}
         <div
           aria-hidden
-          className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10"
-          style={{ top: "78%" }}
+          className="absolute left-1/2 top-[78%] -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
         >
-          <div className="relative w-[150px] h-[150px] md:w-[180px] md:h-[180px] flex items-center justify-center -translate-y-1/2">
-            <div className="absolute inset-0 rounded-full border-2 border-[#9ED8F5]/70 scanner-ring" />
-            <div className="absolute inset-[-10px] rounded-full border border-[#9ED8F5]/35 scanner-ring-outer" />
-            <div className="absolute w-[18px] h-[18px] rounded-full bg-[#9ED8F5] blur-[2px] scanner-dot" />
-            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(158,216,245,0.15)_0%,transparent_70%)] scanner-pulse" />
-          </div>
+          <svg
+            width="220"
+            height="190"
+            viewBox="0 0 220 190"
+            fill="none"
+            className="marker-circle"
+            style={{ overflow: "visible" }}
+          >
+            <defs>
+              <filter id="marker-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="1" stdDeviation="3" floodColor="#FF4D4F" floodOpacity="0.35" />
+              </filter>
+            </defs>
+            <path
+              d="M110 24 C160 26, 198 55, 194 105 C190 155, 152 182, 100 178 C48 174, 16 140, 22 92 C28 44, 62 22, 110 24"
+              stroke="#FF4D4F"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              filter="url(#marker-glow)"
+            />
+            <path
+              className="marker-stroke"
+              d="M110 24 C160 26, 198 55, 194 105 C190 155, 152 182, 100 178 C48 174, 16 140, 22 92 C28 44, 62 22, 110 24"
+              stroke="#FF4D4F"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+              style={{ opacity: 0.9 }}
+            />
+          </svg>
         </div>
       </div>
 
