@@ -102,10 +102,7 @@ const WhyAdChefs = () => {
                 </h2>
               </div>
 
-              <div
-                className="mt-7 space-y-4 text-[15px] md:text-[16px] leading-[1.75] text-ink/85"
-                style={{ fontFamily: "'Caveat', 'Kalam', 'Patrick Hand', Georgia, serif" }}
-              >
+              <div className="mt-7 space-y-4 text-[15px] leading-[1.85] text-ink/80">
                 <p>
                   I'm Jonas. I spent years cutting direct response ads for e-com brands, then more years running a video department and living inside the performance data. Long enough to know what makes someone stop, watch, and actually buy.
                 </p>
