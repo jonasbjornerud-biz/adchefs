@@ -13,7 +13,7 @@ const Footer = () => {
           <div>
             <img src={adchefsLogo.url} alt="AdChefs logo" className="h-12 md:h-14 w-auto" />
             <p className="mt-4 text-[14px] text-background/60 leading-relaxed max-w-sm">
-              A dedicated video editor matched to your e-commerce brand. Pay per video. No retainers, no agency markup, no rotating freelancers.
+              In-house creative strategy from A to Z with dedicated video editors matched to your brand.
             </p>
           </div>
 
@@ -22,7 +22,6 @@ const Footer = () => {
             <ul className="space-y-2.5 text-[14px] text-background/80">
               <li><button onClick={() => scrollTo("how-it-works")} className="hover:text-accent transition-colors">How it works</button></li>
               <li><button onClick={() => scrollTo("pricing")} className="hover:text-accent transition-colors">Pricing</button></li>
-              <li><button onClick={() => scrollTo("faq")} className="hover:text-accent transition-colors">FAQ</button></li>
               <li><button onClick={() => scrollTo("booking")} className="hover:text-accent transition-colors">Book a call</button></li>
               <li><a href="/jobs" className="hover:text-accent transition-colors">Careers</a></li>
             </ul>

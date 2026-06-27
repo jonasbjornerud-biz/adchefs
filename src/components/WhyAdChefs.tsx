@@ -3,11 +3,42 @@ import jonasSignature from "@/assets/jonas-signature.png";
 
 const WhyAdChefs = () => {
   return (
-    <section className="py-16 sm:py-32 bg-secondary border-y border-foreground/5">
-      <div className="mx-auto max-w-[1100px] px-6">
+    <section className="relative py-20 sm:py-32 overflow-hidden">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 20% 30%, rgba(158,216,245,0.14), transparent 65%), radial-gradient(ellipse 50% 40% at 90% 80%, rgba(158,216,245,0.10), transparent 60%)",
+        }}
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-[1100px] px-6">
+        <div
+          className="relative rounded-[32px] ring-1 ring-white/70 backdrop-blur-[40px] p-8 md:p-14"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.70) 100%)",
+            boxShadow:
+              "inset 0 1px 1px rgba(255,255,255,0.95), 0 40px 90px -28px rgba(25,70,110,0.22), 0 14px 40px -14px rgba(25,70,110,0.12)",
+          }}
+        >
         <div className="grid md:grid-cols-[220px_1fr] gap-10 md:gap-16 items-start">
           <div className="flex justify-start">
-            <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-2 border-[#3B86A8]">
+            <div
+              className="w-[200px] h-[200px] rounded-full overflow-hidden ring-1 ring-white/80"
+              style={{
+                boxShadow:
+                  "0 20px 50px -20px rgba(25,70,110,0.35), 0 0 0 6px rgba(158,216,245,0.18)",
+              }}
+            >
               <img
                 src={jonasPhoto}
                 alt="Jonas Bjørnerud, founder of AdChefs"
@@ -50,6 +81,7 @@ const WhyAdChefs = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>

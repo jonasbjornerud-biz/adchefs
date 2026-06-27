@@ -4,67 +4,77 @@
  * across the viewport on an infinite, paused-on-hover loop.
  */
 
-const PLACEHOLDERS = [
-  { hue: 210, tint: "#9ED8F5" },
-  { hue: 30, tint: "#E8C9A0" },
-  { hue: 260, tint: "#C9B8E8" },
-  { hue: 160, tint: "#A8D8C5" },
-  { hue: 350, tint: "#E8A8B8" },
-  { hue: 200, tint: "#B8D4E8" },
+const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
+  { tint: "#9ED8F5", roas: "2.52", ctr: "4.20%" },
+  { tint: "#E8C9A0", roas: "3.10", ctr: "3.85%" },
+  { tint: "#C9B8E8", roas: "2.18", ctr: "5.10%" },
+  { tint: "#A8D8C5", roas: "2.74", ctr: "4.45%" },
+  { tint: "#E8A8B8", roas: "3.42", ctr: "3.95%" },
+  { tint: "#B8D4E8", roas: "2.66", ctr: "4.80%" },
 ];
 
 // Duplicate the list so the marquee loops seamlessly.
 const LOOP = [...PLACEHOLDERS, ...PLACEHOLDERS];
 
-const Card = ({ index, tint }: { index: number; tint: string }) => {
-  // Stagger vertical offset to create a wave / swerve effect along the row
-  const offsets = [0, -28, 18, -14, 28, -22];
-  const rotations = [-2.5, 1.5, -1.2, 2.2, -2, 1.8];
+const Card = ({
+  index,
+  tint,
+  roas,
+  ctr,
+  image,
+}: {
+  index: number;
+  tint: string;
+  roas: string;
+  ctr: string;
+  image?: string;
+}) => {
+  const offsets = [0, -16, 12, -8, 18, -14];
+  const rotations = [-1.5, 1.2, -0.8, 1.4, -1.3, 1.0];
   const y = offsets[index % offsets.length];
   const r = rotations[index % rotations.length];
 
   return (
     <div
-      className="relative flex-shrink-0 w-[240px] md:w-[280px] aspect-[9/14] rounded-[14px] overflow-hidden"
+      className="relative flex-shrink-0 w-[260px] md:w-[320px] aspect-[4/5] rounded-[18px] overflow-hidden bg-white"
       style={{
         transform: `translateY(${y}px) rotate(${r}deg)`,
         boxShadow:
-          "0 30px 60px -28px rgba(26,26,26,0.32), 0 12px 24px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.6)",
-        background: `linear-gradient(155deg, ${tint} 0%, rgba(255,255,255,0.85) 55%, ${tint}55 100%)`,
+          "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
+        backgroundImage: image
+          ? `url(${image})`
+          : `linear-gradient(155deg, ${tint}cc 0%, #ffffff 60%, ${tint}66 100%)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
-      {/* Subtle frame chrome to feel like a phone ad creative */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 70% at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 55%), radial-gradient(120% 80% at 50% 100%, rgba(26,26,26,0.18) 0%, transparent 60%)",
-        }}
-      />
-      {/* Faux play glyph centerpiece */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="h-12 w-12 rounded-full flex items-center justify-center"
-          style={{
-            background: "rgba(255,255,255,0.6)",
-            backdropFilter: "blur(8px)",
-            boxShadow: "0 8px 20px -8px rgba(26,26,26,0.3)",
-          }}
-        >
-          <span
+      {!image && (
+        <>
+          <div
+            aria-hidden
+            className="absolute inset-0"
             style={{
-              display: "inline-block",
-              width: 0,
-              height: 0,
-              borderLeft: "10px solid #1A1A1A",
-              borderTop: "7px solid transparent",
-              borderBottom: "7px solid transparent",
-              marginLeft: 3,
+              background:
+                "radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.5) 0%, transparent 55%)",
             }}
           />
-        </div>
-      </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-ink/35">
+              Screenshot placeholder
+            </span>
+          </div>
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-[10px] bg-white/75 backdrop-blur-md px-3 py-2 ring-1 ring-white/80">
+            <div>
+              <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">ROAS</div>
+              <div className="text-[13px] font-semibold tabular-nums text-ink leading-none mt-0.5">{roas}</div>
+            </div>
+            <div className="text-right">
+              <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">CTR</div>
+              <div className="text-[13px] font-semibold tabular-nums text-ink leading-none mt-0.5">{ctr}</div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -106,10 +116,14 @@ const ResultsMarquee = () => {
           style={{ width: "max-content" }}
         >
           {LOOP.map((p, i) => (
-            <Card key={i} index={i} tint={p.tint} />
+            <Card key={i} index={i} tint={p.tint} roas={p.roas} ctr={p.ctr} image={p.image} />
           ))}
         </div>
       </div>
+
+      <p className="relative mt-10 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto px-6">
+        Some case work includes editor placement services with a separate strategist.
+      </p>
 
       <style>{`
         .results-marquee-track {
