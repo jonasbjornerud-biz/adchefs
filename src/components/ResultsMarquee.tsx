@@ -1,7 +1,7 @@
 /**
- * Results for other brands — premium auto-scrolling marquee of 6 image placeholders.
- * No copy beyond the section header. Cards swerve on a curved baseline and glide
- * across the viewport on an infinite, paused-on-hover loop.
+ * Results for other brands — premium auto-scrolling marquee of 6 case-study screenshots.
+ * No copy beyond the section header. Cards share a uniform aspect ratio and glide
+ * across the viewport on an infinite loop.
  */
 
 const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
