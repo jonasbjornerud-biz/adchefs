@@ -27,7 +27,7 @@ const GlassCard = ({ eyebrow, title, tagline, price, priceNote, popular, bullets
   <div className="relative h-full">
     {popular && (
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-        <span className="rounded-full bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#0a4fb8] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
+        <span className="rounded-full bg-[#F7F6F3] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
           Most Popular
         </span>
       </div>
