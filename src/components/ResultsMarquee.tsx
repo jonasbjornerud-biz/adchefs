@@ -141,9 +141,9 @@ const ResultsMarquee = () => {
         <div
           aria-hidden
           className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-10"
-          style={{ top: "70%" }}
+          style={{ top: "78%" }}
         >
-          <div className="relative w-[140px] h-[140px] md:w-[170px] md:h-[170px] flex items-center justify-center -translate-y-1/2">
+          <div className="relative w-[150px] h-[150px] md:w-[180px] md:h-[180px] flex items-center justify-center -translate-y-1/2">
             <div className="absolute inset-0 rounded-full border-2 border-[#9ED8F5]/70 scanner-ring" />
             <div className="absolute inset-[-10px] rounded-full border border-[#9ED8F5]/35 scanner-ring-outer" />
             <div className="absolute w-[18px] h-[18px] rounded-full bg-[#9ED8F5] blur-[2px] scanner-dot" />
