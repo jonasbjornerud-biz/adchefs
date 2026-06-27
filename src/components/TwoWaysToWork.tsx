@@ -77,27 +77,27 @@ const GlassCard = ({
       <div className="pointer-events-none absolute inset-0 rounded-[24px]" style={{ boxShadow: "inset 0 0 28px rgba(158,216,245,0.12)" }} aria-hidden />
 
       <div className="relative text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/85">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/70">
           {eyebrow}
         </span>
-        <h3 className="mt-4 font-serif italic text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.01em] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.08)]">
+        <h3 className="mt-4 font-serif italic text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.01em] text-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
           {title}
         </h3>
-        <p className="mt-3 text-[14px] md:text-[15px] text-white/90">
+        <p className="mt-3 text-[14px] md:text-[15px] text-ink/80">
           {tagline}
         </p>
 
         <div className="mt-10">
-          <div className="font-display text-[56px] md:text-[64px] leading-none tracking-[-0.02em] text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.12)]">
+          <div className="font-display text-[56px] md:text-[64px] leading-none tracking-[-0.02em] text-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
             {price}
           </div>
-          <p className="mt-2 text-[12px] text-white/80">{priceNote}</p>
+          <p className="mt-2 text-[12px] text-ink/70">{priceNote}</p>
         </div>
 
         <div className="mt-6">
           <Button
             size="lg"
-            className="h-auto px-6 py-3 rounded-full bg-white/95 backdrop-blur-md text-ink hover:bg-white gap-[10px] ring-1 ring-white/70 shadow-[0_6px_20px_-6px_rgba(30,80,140,0.35)] transition-colors"
+            className="h-auto px-6 py-3 rounded-full bg-ink text-paper hover:bg-ink/90 gap-[10px] ring-1 ring-white/50 shadow-[0_6px_20px_-6px_rgba(20,60,100,0.25)] transition-colors"
             onClick={scrollToBooking}
           >
             Book a Call
@@ -106,13 +106,13 @@ const GlassCard = ({
         </div>
       </div>
 
-      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent" aria-hidden />
+      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-ink/15 to-transparent" aria-hidden />
 
       <div className="relative mt-6">
-        <p className="text-[13px] text-white/95 italic">{bulletsHeader}</p>
+        <p className="text-[13px] text-ink/90 italic">{bulletsHeader}</p>
         <ul className="mt-4 space-y-3">
           {bullets.map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-[14px] leading-snug text-white">
+            <li key={i} className="flex items-start gap-3 text-[14px] leading-snug text-ink/90">
               <GlassCheck />
               <span>{item}</span>
             </li>
