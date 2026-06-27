@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
-import ServiceHero from "@/components/service/ServiceHero";
 import ServiceIncludes from "@/components/service/ServiceIncludes";
 import ServiceCTA from "@/components/service/ServiceCTA";
 import CreativeStrategyLoop from "@/components/CreativeStrategyLoop";
 import CreativeStrategyFAQ from "@/components/CreativeStrategyFAQ";
+import CreativeStrategyHero from "@/components/CreativeStrategyHero";
 
 const includes = [
   "Research, angles, and briefs built with an editing eye",
@@ -43,21 +43,7 @@ const CreativeStrategy = () => {
           </div>
         </div>
 
-        <ServiceHero
-          eyebrow="CREATIVE STRATEGY"
-          monoLine="THE FULL CREATIVE DEPARTMENT"
-          headlinePre="One operator owning the creative"
-          headlineItalic="number"
-          headlinePost="."
-          body="Research, angles, briefs, produced videos, and the weekly read on what is actually moving. Built for 7 to 9 figure DTC brands that have outgrown ad hoc freelancers and want creative run like a department, not a queue of tasks."
-          fromLabel="FROM"
-          fromValue="Custom"
-          fromUnit="/ PRICED ON THE CALL"
-          monoNote="TWO TO THREE BRANDS AT A TIME. EDITOR PLACEMENT IS INCLUDED."
-          ctaLabel="Book a 15 minute call"
-          tagline="Built for operators who want one person on the hook for the creative number, not a deck and a Slack channel."
-          graphicKind="brief"
-        />
+        <CreativeStrategyHero />
 
         <ServiceIncludes
           eyebrow="What's included"
