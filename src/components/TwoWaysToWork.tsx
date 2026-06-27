@@ -44,25 +44,25 @@ const GlassCard = ({
 
     {/* soft ambient glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[36px] bg-[#9ED8F5]/25 opacity-60 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-1 rounded-[36px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[32px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:ring-white/80"
+      className="relative flex flex-col h-full rounded-[32px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
       style={{
         background:
-          "linear-gradient(160deg, rgba(125,195,236,0.55) 0%, rgba(105,178,218,0.50) 35%, rgba(85,160,200,0.55) 70%, rgba(70,140,180,0.50) 100%)",
+          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.55), inset 0 0 0 1px rgba(255,255,255,0.25), 0 30px 80px -24px rgba(30,85,130,0.35), 0 12px 32px -12px rgba(30,85,130,0.20)",
+          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 30px 80px -24px rgba(25,70,110,0.45), 0 12px 32px -12px rgba(25,70,110,0.25)",
       }}
     >
       {/* iOS-style glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 rounded-t-[32px] bg-gradient-to-b from-white/45 via-white/10 to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 rounded-t-[32px] bg-gradient-to-b from-white/35 via-white/10 to-transparent" aria-hidden />
       {/* inner bottom shadow for depth */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 rounded-b-[32px] bg-gradient-to-t from-black/10 via-transparent to-transparent" aria-hidden />
       {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[32px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, transparent 15%, transparent 85%, rgba(255,255,255,0.08) 100%)" }} aria-hidden />
+      <div className="pointer-events-none absolute inset-0 rounded-[32px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 15%, transparent 85%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
       {/* subtle warm inner glow */}
       <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/15 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/20 blur-3xl" aria-hidden />
