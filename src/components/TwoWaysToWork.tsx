@@ -7,7 +7,7 @@ const scrollToBooking = () => {
 };
 
 const GlassCheck = () => (
-  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/25 text-white ring-1 ring-white/60 backdrop-blur-md">
+  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/35 text-white ring-1 ring-white/70 backdrop-blur-md">
     <Check className="h-3 w-3" strokeWidth={2.5} />
   </span>
 );
@@ -44,28 +44,30 @@ const GlassCard = ({
 
     {/* soft ambient glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[36px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-2 rounded-[44px] bg-[#9ED8F5]/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[32px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
+      className="relative flex flex-col h-full rounded-[40px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[80px] ring-1 ring-white/40 transition-all duration-300 hover:-translate-y-1 hover:ring-white/60"
       style={{
         background:
-          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
+          "linear-gradient(160deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.18) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 30px 80px -24px rgba(25,70,110,0.45), 0 12px 32px -12px rgba(25,70,110,0.25)",
+          "inset 0 1.5px 1px rgba(255,255,255,0.7), inset 0 0 0 1px rgba(255,255,255,0.3), 0 30px 80px -24px rgba(10,40,70,0.45), 0 12px 32px -12px rgba(10,40,70,0.25)",
       }}
     >
-      {/* iOS-style glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 rounded-t-[32px] bg-gradient-to-b from-white/35 via-white/10 to-transparent" aria-hidden />
+      {/* bright liquid-glass top highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-52 rounded-t-[40px] bg-gradient-to-b from-white/65 via-white/22 to-transparent" aria-hidden />
+      {/* liquid reflection band */}
+      <div className="pointer-events-none absolute inset-x-0 top-6 h-20 rounded-t-[40px] bg-gradient-to-b from-white/40 to-transparent opacity-80" aria-hidden />
       {/* inner bottom shadow for depth */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 rounded-b-[32px] bg-gradient-to-t from-black/10 via-transparent to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 rounded-b-[40px] bg-gradient-to-t from-black/18 via-transparent to-transparent" aria-hidden />
       {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[32px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 15%, transparent 85%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
-      {/* subtle warm inner glow */}
-      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/15 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/20 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 rounded-[40px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 10%, transparent 90%, rgba(255,255,255,0.12) 100%)" }} aria-hidden />
+      {/* subtle inner glow */}
+      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/15 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#9ED8F5]/18 blur-3xl" aria-hidden />
 
       <div className="relative text-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/90">
@@ -116,31 +118,35 @@ const GlassCard = ({
 
 const TwoWaysToWork = () => {
   return (
-    <section className="relative py-20 sm:py-32 overflow-hidden">
-      {/* white base with a single airy brand accent wash */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.16), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.10), transparent 55%)",
-        }}
-        aria-hidden
-      />
+      <section className="relative py-20 sm:py-32 overflow-hidden">
+        {/* brand-blue base with depth gradient */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(160deg, rgba(105,178,218,0.90) 0%, rgba(78,153,194,0.92) 40%, rgba(55,130,172,0.95) 70%, rgba(45,110,150,0.98) 100%)",
+          }}
+          aria-hidden
+        />
+        {/* subtle light shimmer across the blue */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 30% 20%, rgba(255,255,255,0.18), transparent 60%), radial-gradient(ellipse 70% 50% at 80% 80%, rgba(255,255,255,0.10), transparent 55%)",
+          }}
+          aria-hidden
+        />
+        {/* floating glass-light blobs */}
+        <div className="absolute top-20 -left-20 h-80 w-80 rounded-full bg-white/15 blur-[120px]" aria-hidden />
+        <div className="absolute bottom-20 -right-20 h-96 w-96 rounded-full bg-[#9ED8F5]/25 blur-[120px]" aria-hidden />
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         <div className="text-center mb-14 md:mb-20">
-          <h2 className="font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
-            Two ways I work with <em className="font-serif italic !text-ink">brands</em>
+          <h2 className="font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-white">
+            Two ways I work with <em className="font-serif italic !text-white">brands</em>
           </h2>
-          <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-muted-foreground">
+          <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-white/85">
             Most brands start with an editor, then loop me in on creative strategy.
           </p>
         </div>
