@@ -1,50 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
-
-const scrollToBooking = () => {
-  const el = document.getElementById("booking");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
+import { Link } from "react-router-dom";
 
 const GlassCheck = () => (
   <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/25 text-white ring-1 ring-white/60 backdrop-blur-md">
     <Check className="h-3 w-3" strokeWidth={2.5} />
   </span>
 );
-
-const creativeSteps = [
-  {
-    title: "Read the account",
-    body: "I pull up your active ads and go through the data. Hook rate, hold curve, what is staying alive past three seconds and what is not.",
-  },
-  {
-    title: "Build the angle",
-    body: "From the winners, I figure out the pattern. Then I build the next angles from what is already converting in your account.",
-  },
-  {
-    title: "Brief the editor",
-    body: "The editor gets a proper brief. Hook, shot list, pacing, format. I have been in the timeline long enough to write briefs that actually translate into cuts.",
-  },
-  {
-    title: "Ship and learn",
-    body: "When it goes live, I track what moves. Every round gets a little tighter because we are building off proof, not guessing again from zero.",
-  },
-];
-
-const editorStages = [
-  {
-    title: "Vetted",
-    body: "Hundreds in. One out. Skills tests, brand voice trials, paid trial edits. Only editors who can ship make it to your account.",
-  },
-  {
-    title: "Trained",
-    body: "Every editor goes through direct response training. Hook engineering, hold curves, sound design. The work gets sharper the longer they are with you.",
-  },
-  {
-    title: "Embedded",
-    body: "Your editor joins your Slack, your Notion, your brand folder. They work only on your account. I manage quality and performance behind the scenes.",
-  },
-];
 
 type CardProps = {
   eyebrow: string;
@@ -55,8 +17,7 @@ type CardProps = {
   popular?: boolean;
   bullets: string[];
   bulletsHeader: string;
-  processTitle: string;
-  steps: Array<{ title: string; body: string }>;
+  href: string;
 };
 
 const GlassCard = ({
@@ -68,8 +29,7 @@ const GlassCard = ({
   popular,
   bullets,
   bulletsHeader,
-  processTitle,
-  steps,
+  href,
 }: CardProps) => (
   <div className="relative h-full group">
     {popular && (
@@ -125,12 +85,14 @@ const GlassCard = ({
 
         <div className="mt-6">
           <Button
+            asChild
             size="lg"
             className="h-auto px-6 py-3 rounded-full bg-white/90 backdrop-blur-md text-ink hover:bg-white gap-[10px] ring-1 ring-white/60 shadow-[0_6px_24px_-6px_rgba(30,85,130,0.35)] transition-colors"
-            onClick={scrollToBooking}
           >
-            Learn More
-            <ArrowRight className="h-4 w-4" />
+            <Link to={href}>
+              Learn More
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>
@@ -144,21 +106,6 @@ const GlassCard = ({
             <li key={i} className="flex items-start gap-3 text-[14px] leading-snug text-white">
               <GlassCheck />
               <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="relative mt-10">
-        <p className="text-[12px] font-mono uppercase tracking-[0.14em] text-white/70">{processTitle}</p>
-        <ul className="mt-4 space-y-4">
-          {steps.map((item, i) => (
-            <li key={i} className="flex gap-3 text-[14px] leading-snug">
-              <span className="font-mono text-[11px] text-white/80 shrink-0 pt-0.5">0{i + 1}</span>
-              <div>
-                <span className="font-medium text-white">{item.title}</span>
-                <span className="block text-white/80 text-[13px] mt-0.5">{item.body}</span>
-              </div>
             </li>
           ))}
         </ul>
@@ -215,8 +162,7 @@ const TwoWaysToWork = () => {
               "Replaced fast if it is not clicking",
               "Trained on direct response, not wedding cuts",
             ]}
-            processTitle="How it works"
-            steps={editorStages}
+            href="/editor-placement"
           />
           <GlassCard
             eyebrow="SCALE · FULL CREATIVE DEPARTMENT"
@@ -234,8 +180,7 @@ const TwoWaysToWork = () => {
               "Live KPI dashboard, free",
               "One operator owning the creative number end to end",
             ]}
-            processTitle="The process"
-            steps={creativeSteps}
+            href="/creative-strategy"
           />
         </div>
       </div>
