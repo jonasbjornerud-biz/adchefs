@@ -7,7 +7,7 @@ const scrollToBooking = () => {
 };
 
 const GlassCheck = () => (
-  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/45 ring-1 ring-white/70 text-white backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/40 ring-1 ring-white/70 text-white backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
     <Check className="h-3 w-3" strokeWidth={2.5} />
   </span>
 );
@@ -44,38 +44,38 @@ const GlassCard = ({
 
     {/* soft brand-accent glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[26px] bg-[#9ED8F5]/35 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-1 rounded-[26px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[22px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[40px] ring-1 ring-white/45 transition-all duration-300 hover:-translate-y-1 hover:ring-white/65"
+      className="relative flex flex-col h-full rounded-[22px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[40px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
       style={{
         background:
-          "linear-gradient(160deg, rgba(130,195,232,0.66) 0%, rgba(95,165,208,0.58) 35%, rgba(70,140,185,0.64) 70%, rgba(59,134,168,0.56) 100%)",
+          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.55), inset 0 0 0 1px rgba(255,255,255,0.20), 0 30px 80px -25px rgba(30,80,140,0.40), 0 8px 24px -12px rgba(30,80,140,0.22)",
+          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 28px 70px -22px rgba(25,70,110,0.45), 0 8px 24px -12px rgba(25,70,110,0.25)",
       }}
     >
       {/* slow shimmer sweep */}
       <div
-        className="pointer-events-none absolute -inset-[100%] opacity-[0.35] group-hover:opacity-100 transition-opacity duration-500"
+        className="pointer-events-none absolute -inset-[100%] opacity-[0.30] group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.18) 45%, rgba(255,255,255,0.05) 55%, transparent 70%)",
+          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.16) 45%, rgba(255,255,255,0.04) 55%, transparent 70%)",
           animation: "card-shimmer 4.5s ease-in-out infinite",
         }}
         aria-hidden
       />
       {/* glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-white/50 via-white/12 to-transparent" aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-white/30 via-white/8 to-transparent" aria-hidden />
       {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[22px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.14) 0%, transparent 18%, transparent 82%, rgba(255,255,255,0.10) 100%)" }} aria-hidden />
+      <div className="pointer-events-none absolute inset-0 rounded-[22px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, transparent 18%, transparent 82%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
       {/* faint inner specular glows */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/30 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#9ED8F5]/35 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/18 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#9ED8F5]/25 blur-3xl" aria-hidden />
 
       <div className="relative text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/80">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/85">
           {eyebrow}
         </span>
         <h3 className="mt-4 font-serif italic text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.01em] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.08)]">
@@ -104,7 +104,7 @@ const GlassCard = ({
         </div>
       </div>
 
-      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/45 to-transparent" aria-hidden />
+      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent" aria-hidden />
 
       <div className="relative mt-6">
         <p className="text-[13px] text-white/95 italic">{bulletsHeader}</p>
@@ -144,7 +144,7 @@ const TwoWaysToWork = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.22), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.14), transparent 55%)",
+              "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.18), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.12), transparent 55%)",
           }}
           aria-hidden
         />
