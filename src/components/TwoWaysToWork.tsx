@@ -27,7 +27,7 @@ const GlassCard = ({ eyebrow, title, tagline, price, priceNote, popular, bullets
   <div className="relative h-full">
     {popular && (
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-        <span className="rounded-full bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#0a4fb8] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
+        <span className="rounded-full bg-[#F7F6F3] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
           Most Popular
         </span>
       </div>
@@ -59,7 +59,7 @@ const GlassCard = ({ eyebrow, title, tagline, price, priceNote, popular, bullets
           <Button
             variant="cta"
             size="lg"
-            className="h-auto px-6 py-3 rounded-full bg-white text-[#0a4fb8] hover:bg-white/90 gap-[10px]"
+            className="h-auto px-6 py-3 rounded-full bg-[#F7F6F3] text-[#1A1A1A] hover:bg-[#EEEDE8] gap-[10px]"
             onClick={scrollToBooking}
           >
             Book a Call
@@ -87,11 +87,11 @@ const GlassCard = ({ eyebrow, title, tagline, price, priceNote, popular, bullets
 
 const TwoWaysToWork = () => {
   return (
-    <section className="relative py-20 sm:py-32 overflow-hidden bg-[#1769d4]">
-      {/* Liquid gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#2a86ee] via-[#1769d4] to-[#0f4fa8]" aria-hidden />
-      <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-[#69b3ff]/40 blur-3xl" aria-hidden />
-      <div className="absolute -bottom-40 right-1/4 h-[520px] w-[520px] rounded-full bg-[#0a3e8a]/50 blur-3xl" aria-hidden />
+    <section className="relative py-20 sm:py-32 overflow-hidden bg-[#09090f]">
+      {/* Liquid gradient background — brand slate */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0E0E10] via-[#09090f] to-[#0a0a0a]" aria-hidden />
+      <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-[#9ED8F5]/12 blur-3xl" aria-hidden />
+      <div className="absolute -bottom-40 right-1/4 h-[520px] w-[520px] rounded-full bg-[#1a1a1a]/60 blur-3xl" aria-hidden />
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         <div className="text-center mb-14 md:mb-20">
