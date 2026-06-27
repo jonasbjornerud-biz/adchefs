@@ -7,17 +7,14 @@ import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 /* ------------------------------------------------------------------ */
 
 const rows: { label: string; value: string; ink?: boolean }[] = [
-  { label: "Account read", value: "Weekly", ink: true },
+  { label: "Account read", value: "Weekly" },
   { label: "Winning angles", value: "Mapped" },
   { label: "Hook variations", value: "Tested" },
   { label: "Shot list", value: "Briefed" },
   { label: "Editor placement", value: "Included" },
   { label: "Produced videos", value: "Shipped" },
   { label: "KPI dashboard", value: "Live" },
-  { label: "Owned by", value: "One operator" },
 ];
-
-const sparkline = [12, 14, 13, 16, 18, 17, 21, 24, 23, 28, 31, 30, 34, 38, 41, 44, 48, 52];
 
 const CreativeBriefDoc = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -51,18 +48,6 @@ const CreativeBriefDoc = () => {
   }, []);
 
   const lineDelay = (i: number) => (reduced ? 0 : 500 + i * 70);
-
-  // sparkline path
-  const max = Math.max(...sparkline);
-  const min = Math.min(...sparkline);
-  const W = 260;
-  const H = 48;
-  const stepX = W / (sparkline.length - 1);
-  const norm = (v: number) => H - ((v - min) / (max - min)) * H;
-  const linePath = sparkline
-    .map((v, i) => `${i === 0 ? "M" : "L"} ${i * stepX} ${norm(v)}`)
-    .join(" ");
-  const areaPath = `${linePath} L ${W} ${H} L 0 ${H} Z`;
 
   return (
     <div
@@ -275,7 +260,12 @@ const CreativeBriefDoc = () => {
               ))}
             </ul>
 
-            {/* Sparkline chart block */}
+            {/*
+              SWAP TARGET: this OWNED BY / ONE OPERATOR block is the
+              placeholder for a real ROAS chart once a cleared client
+              result is available. Replace the inner block, keep the
+              border-top + spacing wrapper.
+            */}
             <div
               className="relative mt-6 pt-3"
               style={{
@@ -287,61 +277,31 @@ const CreativeBriefDoc = () => {
                   : `opacity 600ms ease ${lineDelay(rows.length + 2)}ms, transform 600ms ease ${lineDelay(rows.length + 2)}ms`,
               }}
             >
-              <div className="flex items-baseline justify-between">
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-                    fontSize: 10,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#1A1A1A",
-                    fontWeight: 700,
-                  }}
-                >
-                  ROAS · 30D
-                </span>
-                <span
-                  style={{
-                    fontFamily: "'Inter Tight', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 22,
-                    letterSpacing: "-0.02em",
-                    color: "#1A1A1A",
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  +318%
-                </span>
-              </div>
-              <svg
-                viewBox={`0 0 ${W} ${H}`}
-                width="100%"
-                height={H}
-                preserveAspectRatio="none"
-                style={{ display: "block", marginTop: 10 }}
+              <div
+                style={{
+                  fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                  fontSize: 10,
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "#9A968C",
+                }}
               >
-                <defs>
-                  <linearGradient id="briefSparkFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#9ED8F5" stopOpacity="0.55" />
-                    <stop offset="100%" stopColor="#9ED8F5" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d={areaPath} fill="url(#briefSparkFill)" />
-                <path
-                  d={linePath}
-                  fill="none"
-                  stroke="#1A1A1A"
-                  strokeWidth={1.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle
-                  cx={(sparkline.length - 1) * stepX}
-                  cy={norm(sparkline[sparkline.length - 1])}
-                  r={3}
-                  fill="#1A1A1A"
-                />
-              </svg>
+                Owned by
+              </div>
+              <div
+                style={{
+                  marginTop: 6,
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 30,
+                  lineHeight: 1.02,
+                  letterSpacing: "-0.02em",
+                  textTransform: "uppercase",
+                  color: "#1A1A1A",
+                }}
+              >
+                One operator
+              </div>
             </div>
 
             {/* Footer / signature */}
