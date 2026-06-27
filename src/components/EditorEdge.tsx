@@ -1,22 +1,22 @@
 const steps = [
   {
     step: "01",
-    title: <>Read the <em className="font-serif italic">account</em></>,
+    title: <>Read the <em className="font-serif italic" style={{ color: "#F7F6F3 !important" }}>account</em></>,
     body: "I pull up your active ads and go through the data. Hook rate, hold curve, what's staying alive past three seconds and what's not. Before I touch anything, I need to know what the account is already telling us.",
   },
   {
     step: "02",
-    title: <>Build the <em className="font-serif italic">angle</em></>,
+    title: <>Build the <em className="font-serif italic" style={{ color: "#F7F6F3 !important" }}>angle</em></>,
     body: "From the winners, I figure out the pattern. What problem are they leading with, what proof is landing. Then I build the next angles from that. Not from what's trending. From what's already converting in your account.",
   },
   {
     step: "03",
-    title: <>Brief the <em className="font-serif italic">editor</em></>,
+    title: <>Brief the <em className="font-serif italic" style={{ color: "#F7F6F3 !important" }}>editor</em></>,
     body: "The editor gets a proper brief. Hook, shot list, pacing, format. I've been in the timeline long enough to write briefs that actually translate into cuts, so we're not burning rounds on revisions.",
   },
   {
     step: "04",
-    title: <>Ship and <em className="font-serif italic">learn</em></>,
+    title: <>Ship and <em className="font-serif italic" style={{ color: "#F7F6F3 !important" }}>learn</em></>,
     body: "When it goes live, I track what moves. The data from this batch feeds into the next one. Every round gets a little tighter because we're building off proof, not guessing again from zero.",
   },
 ];
