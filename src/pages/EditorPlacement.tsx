@@ -7,7 +7,7 @@ import ServiceHero from "@/components/service/ServiceHero";
 import ServiceProcess from "@/components/service/ServiceProcess";
 import ServiceIncludes from "@/components/service/ServiceIncludes";
 import ServiceCTA from "@/components/service/ServiceCTA";
-import Pricing from "@/components/Pricing";
+import EditorPlacementFAQ from "@/components/EditorPlacementFAQ";
 
 const stages = [
   {
@@ -59,16 +59,16 @@ const EditorPlacement = () => {
 
         {/* Hero — service intro with signature graphic */}
         <ServiceHero
-          eyebrow="EDITOR PLACEMENT · OVERVIEW"
-          monoLine="The video editing service"
+          eyebrow="EDITOR PLACEMENT"
+          monoLine="THE VIDEO EDITING SERVICE"
           headlinePre="A dedicated editor,"
           headlineItalic="embedded"
           headlinePost=" in your team."
-          body="A vetted direct response editor matched to your account. They live in your Slack, your Notion, and your brand folder. You pay per delivered video, not for a retainer."
+          body="A vetted direct response editor matched to your account. They live in your Slack, your Notion, and your brand folder. You pay per delivered video, never a retainer."
           fromLabel="FROM"
           fromValue="$100"
           fromUnit="/ DELIVERED VIDEO"
-          monoNote="Pricing below. Creative direction is priced separately on the call."
+          monoNote="CREATIVE DIRECTION IS PRICED SEPARATELY ON THE CALL"
           ctaLabel="Book a 15 minute call"
           tagline="Built for brands that need consistent output, not a fresh six-figure agency contract."
           graphicKind="receipt"
@@ -88,8 +88,8 @@ const EditorPlacement = () => {
           steps={stages}
         />
 
-        {/* Pricing — the receipt section, scoped to this service */}
-        <Pricing />
+        {/* FAQ */}
+        <EditorPlacementFAQ />
 
         {/* Closing CTA */}
         <ServiceCTA
