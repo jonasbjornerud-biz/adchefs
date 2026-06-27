@@ -243,17 +243,20 @@ const MeVsAgency = () => {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
         }
-        .mvsa-conic { animation: mvsa-conic-spin 30s linear infinite; opacity: 0.25 !important; }
+        .mvsa-conic { animation: mvsa-conic-spin 30s linear infinite; opacity: 0.18 !important; }
         @keyframes mvsa-shimmer-sweep {
-          0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
-          20%  { opacity: 1; }
-          80%  { opacity: 1; }
-          100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
+          0%   { transform: translateX(-140%) skewX(-18deg); opacity: 0; }
+          15%  { opacity: 0.5; }
+          85%  { opacity: 0.5; }
+          100% { transform: translateX(140%) skewX(-18deg); opacity: 0; }
         }
         .mvsa-shimmer {
-          background: linear-gradient(110deg, transparent 0%, transparent 42%, rgba(255,255,255,0.18) 50%, transparent 58%, transparent 100%);
-          animation: mvsa-shimmer-sweep 10s ease-in-out infinite;
+          background: linear-gradient(110deg, transparent 0%, transparent 35%, rgba(255,255,255,0.09) 50%, transparent 65%, transparent 100%);
+          background-size: 200% 100%;
+          animation: mvsa-shimmer-sweep 14s ease-in-out infinite;
           animation-delay: 2s;
+          mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
+          -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 82%, transparent 100%);
         }
         .mvsa-badge {
           animation: mvsa-badge-float 5s ease-in-out infinite;
