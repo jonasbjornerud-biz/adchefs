@@ -182,8 +182,8 @@ const ResultsMarquee = () => {
           animation-play-state: paused;
         }
         .marker-stroke {
-          stroke-dasharray: 650;
-          stroke-dashoffset: 650;
+          stroke-dasharray: 750;
+          stroke-dashoffset: 750;
           animation: marker-draw 3.2s ease-in-out infinite;
         }
         .marker-circle {
