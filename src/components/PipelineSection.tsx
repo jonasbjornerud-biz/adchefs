@@ -236,17 +236,17 @@ const PipelineSection = () => {
             preserveAspectRatio="xMidYMid meet"
             aria-hidden="true"
           >
-            <line x1="200" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="120" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="280" y1="160" x2="200" y2="320" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="120" y1="160" x2="200" y2="420" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="160" x2="200" y2="420" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="280" y1="160" x2="200" y2="420" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
 
-            <line x1="200" y1="520" x2="200" y2="700" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="80" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="320" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="80" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="320" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="80" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
-            <line x1="200" y1="520" x2="320" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="200" y2="700" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="80" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="320" y2="740" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="80" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="320" y2="810" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="80" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
+            <line x1="200" y1="420" x2="320" y2="880" stroke={ACCENT} strokeWidth="1.5" opacity="0.7" />
           </svg>
 
           {/* Editors label */}
