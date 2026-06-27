@@ -143,10 +143,10 @@ const TwoWaysToWork = () => {
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         <div className="text-center mb-14 md:mb-20">
-          <h2 className="font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
-            Two ways I work with <em className="font-serif italic !text-ink">brands</em>
+          <h2 className="font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-white">
+            Two ways I work with <em className="font-serif italic !text-white">brands</em>
           </h2>
-          <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-muted-foreground">
+          <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-white/85">
             Most brands start with an editor, then loop me in on creative strategy.
           </p>
         </div>
