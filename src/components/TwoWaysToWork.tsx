@@ -7,7 +7,7 @@ const scrollToBooking = () => {
 };
 
 const GlassCheck = () => (
-  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/40 ring-1 ring-white/70 text-white backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#9ED8F5]/25 ring-1 ring-[#9ED8F5]/40 text-ink backdrop-blur-md">
     <Check className="h-3 w-3" strokeWidth={2.5} />
   </span>
 );
@@ -44,58 +44,60 @@ const GlassCard = ({
 
     {/* soft brand-accent glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[26px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-1 rounded-[28px] bg-[#9ED8F5]/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[22px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[40px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
+      className="relative flex flex-col h-full rounded-[24px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:ring-white/80"
       style={{
         background:
-          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
+          "linear-gradient(165deg, rgba(255,255,255,0.58) 0%, rgba(255,255,255,0.42) 35%, rgba(200,232,250,0.40) 65%, rgba(158,216,245,0.36) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 28px 70px -22px rgba(25,70,110,0.45), 0 8px 24px -12px rgba(25,70,110,0.25)",
+          "inset 0 1.5px 1px rgba(255,255,255,0.75), inset 0 0 0 1px rgba(255,255,255,0.28), 0 32px 80px -24px rgba(20,60,100,0.28), 0 12px 32px -8px rgba(20,60,100,0.16)",
       }}
     >
-      {/* slow shimmer sweep */}
+      {/* slow liquid shimmer sweep */}
       <div
-        className="pointer-events-none absolute -inset-[100%] opacity-[0.30] group-hover:opacity-100 transition-opacity duration-500"
+        className="pointer-events-none absolute -inset-[100%] opacity-[0.20] group-hover:opacity-[0.45] transition-opacity duration-500"
         style={{
-          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.16) 45%, rgba(255,255,255,0.04) 55%, transparent 70%)",
-          animation: "card-shimmer 4.5s ease-in-out infinite",
+          background: "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.28) 48%, rgba(255,255,255,0.06) 58%, transparent 70%)",
+          animation: "card-shimmer 5s ease-in-out infinite",
         }}
         aria-hidden
       />
-      {/* glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-white/30 via-white/8 to-transparent" aria-hidden />
-      {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[22px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, transparent 18%, transparent 82%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
+      {/* glossy top highlight — iOS specular */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-white/50 via-white/15 to-transparent" aria-hidden />
+      {/* curved edge sheen */}
+      <div className="pointer-events-none absolute inset-0 rounded-[24px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, transparent 14%, transparent 86%, rgba(255,255,255,0.10) 100%)" }} aria-hidden />
       {/* faint inner specular glows */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/18 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#9ED8F5]/25 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/22 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/22 blur-3xl" aria-hidden />
+      {/* inner liquid edge glow */}
+      <div className="pointer-events-none absolute inset-0 rounded-[24px]" style={{ boxShadow: "inset 0 0 28px rgba(158,216,245,0.12)" }} aria-hidden />
 
       <div className="relative text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/85">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/70">
           {eyebrow}
         </span>
-        <h3 className="mt-4 font-serif italic text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.01em] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.08)]">
+        <h3 className="mt-4 font-serif italic text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.01em] text-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
           {title}
         </h3>
-        <p className="mt-3 text-[14px] md:text-[15px] text-white/90">
+        <p className="mt-3 text-[14px] md:text-[15px] text-ink/80">
           {tagline}
         </p>
 
         <div className="mt-10">
-          <div className="font-display text-[56px] md:text-[64px] leading-none tracking-[-0.02em] text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.12)]">
+          <div className="font-display text-[56px] md:text-[64px] leading-none tracking-[-0.02em] text-ink drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">
             {price}
           </div>
-          <p className="mt-2 text-[12px] text-white/80">{priceNote}</p>
+          <p className="mt-2 text-[12px] text-ink/70">{priceNote}</p>
         </div>
 
         <div className="mt-6">
           <Button
             size="lg"
-            className="h-auto px-6 py-3 rounded-full bg-white/95 backdrop-blur-md text-ink hover:bg-white gap-[10px] ring-1 ring-white/70 shadow-[0_6px_20px_-6px_rgba(30,80,140,0.35)] transition-colors"
+            className="h-auto px-6 py-3 rounded-full bg-ink text-paper hover:bg-ink/90 gap-[10px] ring-1 ring-white/50 shadow-[0_6px_20px_-6px_rgba(20,60,100,0.25)] transition-colors"
             onClick={scrollToBooking}
           >
             Book a Call
@@ -104,13 +106,13 @@ const GlassCard = ({
         </div>
       </div>
 
-      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent" aria-hidden />
+      <div className="relative mt-10 h-px w-full bg-gradient-to-r from-transparent via-ink/15 to-transparent" aria-hidden />
 
       <div className="relative mt-6">
-        <p className="text-[13px] text-white/95 italic">{bulletsHeader}</p>
+        <p className="text-[13px] text-ink/90 italic">{bulletsHeader}</p>
         <ul className="mt-4 space-y-3">
           {bullets.map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-[14px] leading-snug text-white">
+            <li key={i} className="flex items-start gap-3 text-[14px] leading-snug text-ink/90">
               <GlassCheck />
               <span>{item}</span>
             </li>
@@ -130,24 +132,19 @@ const TwoWaysToWork = () => {
           100% { transform: translateX(160%) translateY(160%) rotate(30deg); }
         }
       `}</style>
-      <section className="relative py-20 sm:py-32 overflow-hidden">
-        {/* white base with a single airy brand accent wash */}
+      <section className="relative py-20 sm:py-32 overflow-hidden bg-paper">
+        {/* ultra-soft blue ambient wash */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(180deg, #FFFFFF 0%, #F7F6F3 50%, #FFFFFF 100%)",
+              "radial-gradient(ellipse 90% 60% at 50% 40%, rgba(158,216,245,0.16), transparent 60%), radial-gradient(ellipse 50% 35% at 85% 15%, rgba(158,216,245,0.10), transparent 50%)",
+            filter: "blur(40px)",
           }}
           aria-hidden
         />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 55% at 50% 50%, rgba(158,216,245,0.18), transparent 65%), radial-gradient(ellipse 60% 40% at 90% 10%, rgba(158,216,245,0.12), transparent 55%)",
-          }}
-          aria-hidden
-        />
+        {/* soft top sheen line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" aria-hidden />
 
         <div className="relative mx-auto max-w-[1100px] px-6">
           <div className="text-center mb-14 md:mb-20">
