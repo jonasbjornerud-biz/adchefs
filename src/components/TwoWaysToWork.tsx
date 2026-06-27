@@ -44,35 +44,37 @@ const GlassCard = ({
 
     {/* soft brand-accent glow behind card */}
     <div
-      className="absolute -inset-1 rounded-[26px] bg-[#9ED8F5]/30 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+      className="absolute -inset-1 rounded-[28px] bg-[#9ED8F5]/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
       aria-hidden
     />
 
     <div
-      className="relative flex flex-col h-full rounded-[22px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[40px] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-1 hover:ring-white/70"
+      className="relative flex flex-col h-full rounded-[24px] p-8 md:p-10 text-white overflow-hidden backdrop-blur-[60px] ring-1 ring-white/60 transition-all duration-300 hover:-translate-y-1 hover:ring-white/80"
       style={{
         background:
-          "linear-gradient(160deg, rgba(105,178,218,0.82) 0%, rgba(78,153,194,0.78) 35%, rgba(55,130,172,0.82) 70%, rgba(45,110,150,0.78) 100%)",
+          "linear-gradient(165deg, rgba(255,255,255,0.58) 0%, rgba(255,255,255,0.42) 35%, rgba(200,232,250,0.40) 65%, rgba(158,216,245,0.36) 100%)",
         boxShadow:
-          "inset 0 1px 1px rgba(255,255,255,0.45), inset 0 0 0 1px rgba(255,255,255,0.20), 0 28px 70px -22px rgba(25,70,110,0.45), 0 8px 24px -12px rgba(25,70,110,0.25)",
+          "inset 0 1.5px 1px rgba(255,255,255,0.75), inset 0 0 0 1px rgba(255,255,255,0.28), 0 32px 80px -24px rgba(20,60,100,0.28), 0 12px 32px -8px rgba(20,60,100,0.16)",
       }}
     >
-      {/* slow shimmer sweep */}
+      {/* slow liquid shimmer sweep */}
       <div
-        className="pointer-events-none absolute -inset-[100%] opacity-[0.30] group-hover:opacity-100 transition-opacity duration-500"
+        className="pointer-events-none absolute -inset-[100%] opacity-[0.20] group-hover:opacity-[0.45] transition-opacity duration-500"
         style={{
-          background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.16) 45%, rgba(255,255,255,0.04) 55%, transparent 70%)",
-          animation: "card-shimmer 4.5s ease-in-out infinite",
+          background: "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.28) 48%, rgba(255,255,255,0.06) 58%, transparent 70%)",
+          animation: "card-shimmer 5s ease-in-out infinite",
         }}
         aria-hidden
       />
-      {/* glossy top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-white/30 via-white/8 to-transparent" aria-hidden />
-      {/* edge sheen */}
-      <div className="pointer-events-none absolute inset-0 rounded-[22px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, transparent 18%, transparent 82%, rgba(255,255,255,0.07) 100%)" }} aria-hidden />
+      {/* glossy top highlight — iOS specular */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-white/50 via-white/15 to-transparent" aria-hidden />
+      {/* curved edge sheen */}
+      <div className="pointer-events-none absolute inset-0 rounded-[24px]" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, transparent 14%, transparent 86%, rgba(255,255,255,0.10) 100%)" }} aria-hidden />
       {/* faint inner specular glows */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/18 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#9ED8F5]/25 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/22 blur-3xl" aria-hidden />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9ED8F5]/22 blur-3xl" aria-hidden />
+      {/* inner liquid edge glow */}
+      <div className="pointer-events-none absolute inset-0 rounded-[24px]" style={{ boxShadow: "inset 0 0 28px rgba(158,216,245,0.12)" }} aria-hidden />
 
       <div className="relative text-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/85">
