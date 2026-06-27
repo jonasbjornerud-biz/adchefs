@@ -8,7 +8,6 @@ import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
 import ResultsMarquee from "@/components/ResultsMarquee";
 import MeVsAgency from "@/components/MeVsAgency";
-import PipelineSection from "@/components/PipelineSection";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
@@ -78,7 +77,6 @@ const Index = () => {
       <Hero />
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
-      <ScrollReveal><PipelineSection /></ScrollReveal>
       <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
