@@ -1,7 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
-import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import CalendlyBooking from "@/components/CalendlyBooking";
 import Footer from "@/components/Footer";
@@ -80,7 +79,6 @@ const Index = () => {
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
-      <ScrollReveal><Pricing /></ScrollReveal>
       <ScrollReveal><Proof /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
