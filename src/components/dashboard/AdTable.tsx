@@ -25,8 +25,14 @@ function InlineBar({ value, max = 100 }: { value: number; max?: number; color?: 
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs font-medium text-[#1A1A1A] tabular-nums w-10 text-right">{value}%</span>
-      <div className="flex-1 h-[3px] rounded-full bg-[#E2E0D9] overflow-hidden">
-        <div className="h-full rounded-full bg-[#1A1A1A] transition-all duration-300" style={{ width: `${pct}%` }} />
+      <div className="flex-1 h-[4px] rounded-full bg-[rgba(26,26,26,0.08)] overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-300"
+          style={{
+            width: `${pct}%`,
+            background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 60%, #1A1A1A 100%)',
+          }}
+        />
       </div>
     </div>
   );
@@ -56,9 +62,9 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
   };
 
   const statusConfig: Record<string, { dot: string; pill: string }> = {
-    active: { dot: "bg-[#9ED8F5]", pill: "bg-[#9ED8F5]/25 text-[#1A1A1A] border border-[#9ED8F5]" },
-    paused: { dot: "bg-[#75726B]", pill: "bg-[#F7F6F3] text-[#75726B] border border-[#E2E0D9]" },
-    ended: { dot: "bg-destructive", pill: "bg-destructive/10 text-destructive border border-destructive/30" },
+    active: { dot: "bg-[#9ED8F5]", pill: "glass-badge glass-badge-up" },
+    paused: { dot: "bg-[#75726B]", pill: "glass-badge text-[#75726B] border-[rgba(26,26,26,0.1)]" },
+    ended:  { dot: "bg-destructive", pill: "glass-badge glass-badge-down" },
   };
 
   const isEmpty = sorted.length === 0;
@@ -136,7 +142,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                     <InlineBar value={ad.holdRate} />
                   </td>
                   <td className="px-4 py-5">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] ${statusConfig[ad.status]?.pill}`}>
+                    <span className={`inline-flex items-center gap-1.5 ${statusConfig[ad.status]?.pill}`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${statusConfig[ad.status]?.dot}`} />
                       {ad.status}
                     </span>
