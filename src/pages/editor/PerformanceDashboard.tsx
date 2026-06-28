@@ -159,7 +159,7 @@ export default function PerformanceDashboard() {
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
     // Column A = brief name, Column B = editor, Column C = approved month (empty if not approved)
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     return rows.filter(r => {
       const approvedMonth = r[2]?.trim();
       return approvedMonth && approvedMonth.toLowerCase() === month.toLowerCase();
@@ -168,7 +168,7 @@ export default function PerformanceDashboard() {
 
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     return rows
       .filter(r => r[2]?.trim()?.toLowerCase() === month.toLowerCase())
       .map(r => ({
@@ -182,7 +182,7 @@ export default function PerformanceDashboard() {
 
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const map: Record<string, number> = {};
     rows.forEach(r => {
@@ -272,7 +272,7 @@ export default function PerformanceDashboard() {
         deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
       });
     const approvedMap: Record<string, number> = {};
-    data.paymentRaw.slice(1).forEach(r => {
+    data.paymentRaw.slice(4).forEach(r => {
       const editorName = r[1]?.trim();
       const approvedMonth = r[2]?.trim();
       if (!editorName || !approvedMonth) return;
