@@ -110,7 +110,7 @@ export default function PerformanceDashboard() {
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
-    const cacheKey = `adchefs_perf_full_v2_${sheetId}`;
+    const cacheKey = `adchefs_perf_full_v3_${sheetId}`;
     if (!force) {
       try {
         const cached = localStorage.getItem(cacheKey);
