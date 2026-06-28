@@ -11,7 +11,7 @@ import { AdMetric } from "@/data/mockAds";
 import { useMetaAds } from "@/hooks/useMetaAds";
 import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import AmbientBackground from "@/components/backend/AmbientBackground";
+import HeroBackground from "@/components/HeroBackground";
 
 const MetaAdsDashboard = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const MetaAdsDashboard = () => {
 
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      <AmbientBackground />
+      <HeroBackground />
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">

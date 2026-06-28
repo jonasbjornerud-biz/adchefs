@@ -20,6 +20,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
+const AXIS_TICK = {
+  fill: "#75726B",
+  fontSize: 10,
+  fontFamily: "'JetBrains Mono', monospace",
+  letterSpacing: "0.12em",
+} as const;
+
 export function OverviewChart({ ads }: OverviewChartProps) {
   const dateMap = new Map<string, { spend: number; revenue: number }>();
   ads.forEach((ad) =>
@@ -39,10 +46,10 @@ export function OverviewChart({ ads }: OverviewChartProps) {
 
   return (
     <div
-      className="relative rounded-[4px] p-6 animate-card-enter overflow-hidden bg-white border border-[#E2E0D9]"
+      className="relative glass-card p-6 animate-card-enter overflow-hidden"
       style={{ animationDelay: "300ms" }}
     >
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+      <span aria-hidden className="glass-rail" />
 
       <div className="flex items-start justify-between mb-5 relative">
         <div>
@@ -68,7 +75,7 @@ export function OverviewChart({ ads }: OverviewChartProps) {
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="overviewSpend" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.6} />
@@ -79,19 +86,19 @@ export function OverviewChart({ ads }: OverviewChartProps) {
                 <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="date" tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
-            <YAxis tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '3 3' }} />
-            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
-            <Area type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} />
+            <CartesianGrid stroke="rgba(26,26,26,0.09)" strokeDasharray="2 4" vertical={true} horizontal={true} />
+            <XAxis dataKey="date" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).slice(5).toUpperCase()} />
+            <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(158,216,245,0.4)', strokeWidth: 1, strokeDasharray: '2 4' }} />
+            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2.25} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} style={{ filter: 'drop-shadow(0 5px 10px rgba(110, 184, 224, 0.24))' }} />
+            <Area type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={1.5} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} />
           </AreaChart>
         </ResponsiveContainer>
       )}
 
       <div className="flex gap-5 mt-4 relative">
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
-          <span className="w-2 h-2 rounded-full bg-[#9ED8F5]" /> Spend
+          <span className="w-2 h-2 rounded-full bg-[#9ED8F5] shadow-[0_2px_6px_rgba(110,184,224,0.35)]" /> Spend
         </div>
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
           <span className="w-2 h-2 rounded-full bg-[#1A1A1A]" /> Revenue
