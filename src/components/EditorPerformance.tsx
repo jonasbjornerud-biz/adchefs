@@ -292,8 +292,8 @@ export default function EditorPerformance() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyByWeek} barCategoryGap="20%">
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="day" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
                     <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                     {weekKeys.map((wk, i) => (
@@ -317,8 +317,8 @@ export default function EditorPerformance() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="week" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="week" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip {...chartTooltipStyle} />
                     <Bar dataKey="total" fill="url(#barGradLight)" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -335,8 +335,8 @@ export default function EditorPerformance() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={cumulative}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <XAxis dataKey="day" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip {...chartTooltipStyle} />
                   <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                   {editor === '(All Editors)' ? (
