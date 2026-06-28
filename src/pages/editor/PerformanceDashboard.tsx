@@ -381,7 +381,7 @@ export default function PerformanceDashboard() {
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-              <div className="[&>div]:!bg-[#9ED8F5] [&>div]:!border-[3px] [&>div]:!border-solid [&>div]:!border-[#1A1A1A] [&>div]:!rounded-[24px] [&>div]:!backdrop-blur-0 [&>div]:!backdrop-saturate-100 [&>div]:!bg-none [&>div>span]:!hidden [&>div>span:first-of-type]:!hidden">
+              <div className="[&>div]:!bg-[#9ED8F5] [&>div]:!border-[3px] [&>div]:!border-solid [&>div]:!border-[#1A1A1A] [&>div]:!rounded-[24px] [&>div]:!backdrop-blur-0 [&>div]:!backdrop-saturate-100 [&>div]:!bg-none">
                 <KpiCard label="Delivered" value={`${kpis.delivered}`} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} />
               </div>
               <KpiCard label="Approved" value={`${kpis.approved}`} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} />
