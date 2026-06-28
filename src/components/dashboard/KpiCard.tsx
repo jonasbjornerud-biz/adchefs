@@ -1,8 +1,9 @@
 import { ReactNode, useId } from "react";
+import { useCountUp } from "@/lib/useCountUp";
 
 interface KpiCardProps {
   label: string;
-  value: string | null | undefined;
+  value: string | number | null | undefined;
   icon: ReactNode;
   trend?: { value: number; positive: boolean };
   delay?: number;
@@ -50,7 +51,13 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCard
   // skeleton shimmer + mono caption instead of a stark zero.
   const hasValue =
     value !== null && value !== undefined && value !== "" && value !== "—";
-  const display = hasValue ? (value as string) : "";
+  const isNumeric = typeof value === "number" && Number.isFinite(value);
+  const animated = useCountUp(isNumeric ? (value as number) : null);
+  const display = hasValue
+    ? (isNumeric
+        ? Math.round(animated as number).toLocaleString()
+        : String(value))
+    : "";
 
   return (
     <div
