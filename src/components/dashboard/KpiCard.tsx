@@ -9,6 +9,8 @@ interface KpiCardProps {
   delay?: number;
   spark?: number[];
   accent?: "purple" | "emerald" | "pink" | "blue";
+  /** Optional horizontal threshold drawn over the sparkline (e.g. BEROAS). */
+  threshold?: { value: number; label?: string };
 }
 
 function responsiveSize(value: string): string {
@@ -17,16 +19,18 @@ function responsiveSize(value: string): string {
   return "text-[40px]";
 }
 
-function Sparkline({ data, gradId }: { data: number[]; gradId: string }) {
+function Sparkline({ data, gradId, threshold }: { data: number[]; gradId: string; threshold?: { value: number; label?: string } }) {
   if (!data || data.length < 2) return null;
   const w = 120;
   const h = 42;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
+  const thresholdVal = threshold?.value;
+  const min = Math.min(...data, ...(thresholdVal !== undefined ? [thresholdVal] : []));
+  const max = Math.max(...data, ...(thresholdVal !== undefined ? [thresholdVal] : []));
   const range = max - min || 1;
   const step = w / (data.length - 1);
   const points = data.map((v, i) => `${i * step},${h - ((v - min) / range) * h}`).join(" ");
   const area = `0,${h} ${points} ${w},${h}`;
+  const thY = thresholdVal !== undefined ? h - ((thresholdVal - min) / range) * h : 0;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-10 overflow-visible" preserveAspectRatio="none">
       <defs>
@@ -41,11 +45,19 @@ function Sparkline({ data, gradId }: { data: number[]; gradId: string }) {
       </defs>
       <polygon points={area} fill={`url(#${gradId})`} />
       <polyline points={points} fill="none" stroke={`url(#${gradId}-line)`} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+      {thresholdVal !== undefined && (
+        <g>
+          <line x1={0} x2={w} y1={thY} y2={thY} stroke="#75726B" strokeWidth={0.75} strokeDasharray="2 3" vectorEffect="non-scaling-stroke" />
+          {threshold?.label && (
+            <text x={w - 2} y={Math.max(8, thY - 3)} textAnchor="end" fontSize="7" fontFamily="'JetBrains Mono', monospace" fill="#75726B">{threshold.label}</text>
+          )}
+        </g>
+      )}
     </svg>
   );
 }
 
-export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCardProps) {
+export function KpiCard({ label, value, icon, trend, delay = 0, spark, threshold }: KpiCardProps) {
   const uid = useId().replace(/:/g, "");
   // "Awaiting data" branch — null/undefined or unwired sentinel ("—") render a
   // skeleton shimmer + mono caption instead of a stark zero.
@@ -108,7 +120,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCard
 
       {spark && spark.length > 1 && (
         <div className="relative -mx-1 -mb-1 mt-auto">
-          <Sparkline data={spark} gradId={`spark-${uid}`} />
+          <Sparkline data={spark} gradId={`spark-${uid}`} threshold={threshold} />
         </div>
       )}
     </div>

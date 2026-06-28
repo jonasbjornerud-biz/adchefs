@@ -1,5 +1,5 @@
 import { AdMetric } from "@/data/mockAds";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface OverviewChartProps {
   ads: AdMetric[];
@@ -69,24 +69,20 @@ export function OverviewChart({ ads }: OverviewChartProps) {
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
+          <ComposedChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="overviewSpend" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.6} />
+                <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
                 <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
               </linearGradient>
-              <linearGradient id="overviewRev" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1A1A1A" stopOpacity={0.25} />
-                <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0} />
-              </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="2 5" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
             <YAxis tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '3 3' }} />
-            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
-            <Area type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} />
-          </AreaChart>
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '2 5' }} />
+            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
+            <Line type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2.25} dot={false} name="Revenue" activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} strokeLinecap="round" />
+          </ComposedChart>
         </ResponsiveContainer>
       )}
 
