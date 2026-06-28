@@ -334,19 +334,10 @@ export default function PerformanceDashboard() {
 
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
-        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
-      />
+      {/* Marketing-site hero background — reused for surface parity */}
+      <div className="absolute inset-x-0 top-0 h-[640px] pointer-events-none z-[1] overflow-hidden">
+        <HeroBackground />
+      </div>
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">
@@ -425,12 +416,12 @@ export default function PerformanceDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <XAxis dataKey="day" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
+                      <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
+                      <Legend wrapperStyle={{ fontSize: 9, color: '#75726B', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.12em', textTransform: 'uppercase' }} />
                       {weekKeys.map((wk, i) => (
-                        <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[2, 2, 0, 0]} />
+                        <Bar key={wk} dataKey={wk} fill={ACCENT} fillOpacity={WEEK_OPACITIES[i % WEEK_OPACITIES.length]} radius={[2, 2, 0, 0]} />
                       ))}
                     </BarChart>
                   </ResponsiveContainer>
@@ -445,17 +436,11 @@ export default function PerformanceDashboard() {
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={weeklyOutputAll}>
-                        <defs>
-                          <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#1A1A1A" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0.55} />
-                          </linearGradient>
-                        </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                        <XAxis dataKey="week" tick={{ fill: '#75726B', fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
-                        <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                        <XAxis dataKey="week" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} tickFormatter={(v) => String(v).toUpperCase()} />
+                        <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
-                        <Bar dataKey="total" fill="url(#barGradDark)" radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="total" fill={ACCENT} radius={[2, 2, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -475,17 +460,11 @@ export default function PerformanceDashboard() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={monthlyApproved}>
-                      <defs>
-                        <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#9ED8F5" stopOpacity={1} />
-                          <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                        </linearGradient>
-                      </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="month" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
+                      <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="count" fill="url(#approvedGrad)" radius={[2, 2, 0, 0]} name="Approved" />
+                      <Bar dataKey="count" fill={ACCENT} radius={[2, 2, 0, 0]} name="Approved" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
