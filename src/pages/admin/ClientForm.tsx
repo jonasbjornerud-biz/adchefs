@@ -88,7 +88,7 @@ export default function ClientForm() {
             {/* Form column */}
             <div className="space-y-8">
               {/* Brand identity */}
-              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+              <section className="relative glass-card overflow-hidden">
                 <span
                   aria-hidden
                   className="absolute top-0 left-0 right-0 h-[2px]"
@@ -119,7 +119,7 @@ export default function ClientForm() {
               </section>
 
               {/* Editor performance source */}
-              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+              <section className="relative glass-card overflow-hidden">
                 <span
                   aria-hidden
                   className="absolute top-0 left-0 right-0 h-[2px]"
@@ -154,7 +154,7 @@ export default function ClientForm() {
               </section>
 
               {/* Meta Ads */}
-              <section className="relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden">
+              <section className="relative glass-card overflow-hidden">
                 <span
                   aria-hidden
                   className="absolute top-0 left-0 right-0 h-[2px]"
@@ -216,7 +216,7 @@ export default function ClientForm() {
 
             {/* Side panel: what they get */}
             <aside className="lg:sticky lg:top-20 self-start">
-              <div className="relative rounded-[6px] border border-[#E2E0D9] bg-white p-5 overflow-hidden">
+              <div className="relative glass-card p-5 overflow-hidden">
                 <span
                   aria-hidden
                   className="absolute top-0 left-0 right-0 h-[2px]"
@@ -254,7 +254,7 @@ export default function ClientForm() {
           </div>
         ) : (
           <div className="max-w-xl">
-            <div className="relative rounded-[6px] border border-[#E2E0D9] bg-white p-7 overflow-hidden">
+            <div className="relative glass-card p-7 overflow-hidden">
               <span
                 aria-hidden
                 className="absolute top-0 left-0 right-0 h-[2px]"
