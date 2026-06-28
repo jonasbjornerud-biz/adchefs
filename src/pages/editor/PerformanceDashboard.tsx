@@ -5,9 +5,9 @@ import { Client } from '@/types/playbook';
 import Papa from 'papaparse';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  Legend, ResponsiveContainer,
+  Legend, ResponsiveContainer, AreaChart, Area, Line, ComposedChart,
 } from 'recharts';
-import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
+import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, ArrowLeft, CheckCircle2, Sparkles, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 
@@ -17,7 +17,9 @@ interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; 
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#1A1A1A', '#9ED8F5', '#75726B', '#3B86A8', '#C2BCAF', '#1A1A1A', '#9ED8F5', '#75726B'];
+// Monochrome blue ramp derived from brand Accent (#9ED8F5) + Ink.
+// Used for grouped/stacked bar series across the backend dashboards.
+const BLUE_RAMP = ['#9ED8F5', '#4FA8DC', '#1A1A1A', '#75726B', '#C7E9F8', '#3B86A8'];
 
 const CARD_SHADOW = 'none';
 const CARD_SHADOW_HOVER = 'none';
@@ -192,10 +194,52 @@ export default function PerformanceDashboard() {
   const kpis = useMemo(() => {
     const delivered = filteredEod.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
     const uniqueDays = new Set(filteredEod.map(r => r.Date)).size;
-    const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
-    const activeEditors = new Set(filteredEod.map(r => r.Name).filter(Boolean)).size;
-    return { delivered, approved: approvedCount, avg, activeEditors };
+    const avg = uniqueDays > 0 ? Number((delivered / uniqueDays).toFixed(1)) : null;
+    // "First cut approval rate" replaces the dead Active Editors stat:
+    // approved videos in the month / videos delivered in the month.
+    const fcar = delivered > 0 ? Math.round((approvedCount / delivered) * 100) : null;
+    return { delivered, approved: approvedCount, avg, fcar };
   }, [filteredEod, approvedCount]);
+
+  // Sparkline series, derived from existing aggregates (no new queries).
+  const sparks = useMemo(() => {
+    const weeklySorted = [...weeklyOutputAll].map(w => w.total);
+    const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const approvedSeries = monthlyApproved
+      .slice()
+      .sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month))
+      .map(m => m.count);
+    return { delivered: weeklySorted, approved: approvedSeries };
+  }, [weeklyOutputAll, monthlyApproved]);
+
+  // Per-editor leaderboard for the selected month — delivered + approval rate.
+  const leaderboard = useMemo(() => {
+    if (!data) return [] as Array<{ name: string; delivered: number; approved: number; approvalRate: number }>;
+    const monthLower = month.toLowerCase();
+    const deliveredMap: Record<string, number> = {};
+    data.eod
+      .filter(r => r.Month?.toLowerCase() === monthLower)
+      .forEach(r => {
+        const n = r.Name?.trim();
+        if (!n) return;
+        deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
+      });
+    const approvedMap: Record<string, number> = {};
+    data.paymentRaw.slice(1).forEach(r => {
+      const editorName = r[1]?.trim();
+      const approvedMonth = r[2]?.trim();
+      if (!editorName || !approvedMonth) return;
+      if (approvedMonth.toLowerCase() !== monthLower) return;
+      approvedMap[editorName] = (approvedMap[editorName] || 0) + 1;
+    });
+    return Object.entries(deliveredMap)
+      .map(([name, delivered]) => {
+        const approved = approvedMap[name] || 0;
+        const approvalRate = delivered > 0 ? Math.round((approved / delivered) * 100) : 0;
+        return { name, delivered, approved, approvalRate };
+      })
+      .sort((a, b) => b.delivered - a.delivered);
+  }, [data, month]);
 
   const dailyByWeek = useMemo(() => {
     const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
