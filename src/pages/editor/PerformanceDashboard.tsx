@@ -85,10 +85,26 @@ export default function PerformanceDashboard() {
   async function loadClient() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate('/login'); return; }
-    const { data: clientData } = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
-    if (!clientData || !(clientData as any).spreadsheet_id) { navigate('/dashboard'); return; }
+
+    // Admin preview path: ?clientId=<uuid> takes precedence over the user's own client.
+    const params = new URLSearchParams(window.location.search);
+    const overrideId = params.get('clientId');
+
+    let clientData: any = null;
+    if (overrideId) {
+      const res = await supabase.from('clients').select('*').eq('id', overrideId).maybeSingle();
+      clientData = res.data;
+    } else {
+      const res = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
+      clientData = res.data;
+    }
+
+    if (!clientData || !clientData.spreadsheet_id) {
+      navigate(overrideId ? `/admin/clients/${overrideId}` : '/dashboard');
+      return;
+    }
     setClient(clientData as Client);
-    fetchData((clientData as any).spreadsheet_id);
+    fetchData(clientData.spreadsheet_id);
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
