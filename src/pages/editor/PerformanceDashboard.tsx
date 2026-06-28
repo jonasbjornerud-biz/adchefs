@@ -455,58 +455,91 @@ export default function PerformanceDashboard() {
 
               {/* Weekly Output */}
               <PremiumCard className="p-6">
-                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Output</em></h4>
+                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
                 <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Total videos per week (all time)</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={weeklyOutputAll}>
+                      <ComposedChart data={weeklyOutputAll}>
                         <defs>
-                          <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#1A1A1A" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0.55} />
+                          <linearGradient id="weeklyArea" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
+                            <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
+                        <CartesianGrid strokeDasharray="2 5" stroke="rgba(26,26,26,0.06)" vertical={false} />
                         <XAxis dataKey="week" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
                         <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
-                        <Bar dataKey="total" fill="url(#barGradDark)" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                        <Area type="monotone" dataKey="total" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#weeklyArea)" name="Videos" />
+                        <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#F7F6F3', strokeWidth: 1.5, r: 3 }} activeDot={{ r: 5, stroke: '#F7F6F3', strokeWidth: 2 }} name="Videos" strokeLinecap="round" />
+                      </ComposedChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
               </PremiumCard>
             </div>
 
-            {/* Monthly Approved Videos */}
-            <PremiumCard className="p-6">
-              <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Monthly <em>Approved</em> Videos</h4>
-              <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Approved videos per month (all time)</p>
-              {monthlyApproved.length === 0 ? (
-                <div className="flex items-center justify-center h-64">
-                  <p className="text-[#75726B] text-sm">No approval data available</p>
+            {/* Per-editor Leaderboard — replaces the old Monthly Approved bar.
+                Horizontal bars ranked by delivered, with approval rate inline. */}
+            <div>
+              <div className="flex items-end justify-between gap-4 mb-4">
+                <div>
+                  <span className="eyebrow inline-flex items-center gap-2">
+                    <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
+                  </span>
+                  <p className="mt-2 text-[12px] text-[#75726B]">
+                    Delivered volume and approval rate for {month}.
+                  </p>
                 </div>
-              ) : (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyApproved}>
-                      <defs>
-                        <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#9ED8F5" stopOpacity={1} />
-                          <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="month" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                      <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="count" fill="url(#approvedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              )}
-            </PremiumCard>
+                <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+                  {leaderboard.length} editors
+                </span>
+              </div>
+              <PremiumCard className="p-6">
+                {leaderboard.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-3">
+                    <span className="glass-skeleton h-2 w-48" aria-hidden />
+                    <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
+                  </div>
+                ) : (
+                  <ul className="space-y-3.5">
+                    {leaderboard.map((ed, i) => {
+                      const max = Math.max(...leaderboard.map(e => e.delivered), 1);
+                      const pct = (ed.delivered / max) * 100;
+                      const isTop = i === 0;
+                      return (
+                        <li key={ed.name} className="grid grid-cols-[28px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
+                          <span className="mono text-[10px] tabular-nums text-[#8A8780]">{String(i + 1).padStart(2, '0')}</span>
+                          <span className="text-[13px] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                            {ed.name}
+                          </span>
+                          <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(26,26,26,0.06)' }}>
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${pct}%`,
+                                background: isTop
+                                  ? 'linear-gradient(90deg, #9ED8F5 0%, #4FA8DC 60%, #1A1A1A 100%)'
+                                  : 'linear-gradient(90deg, #C7E9F8 0%, #4FA8DC 100%)',
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center gap-3 justify-end min-w-[150px]">
+                            <span className="tabular-nums text-[15px] text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                              {ed.delivered}
+                            </span>
+                            <span className={`glass-badge ${ed.approvalRate >= 60 ? 'glass-badge-accent' : ''} text-[10px] font-mono uppercase tracking-[0.1em] px-2 py-0.5 tabular-nums`}>
+                              {ed.approvalRate}% appr
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </PremiumCard>
+            </div>
 
             {/* Editor Breakdown Table */}
             {editorBreakdown.length > 0 && (
