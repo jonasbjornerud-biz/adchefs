@@ -352,23 +352,9 @@ export default function PerformanceDashboard() {
   }
 
   return (
-    <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
-        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
-      />
-
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A] relative">
       {/* Header */}
-      <header className="sticky top-0 z-40 glass-topbar">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-sm border-b border-[#E5E3DC]">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -376,7 +362,7 @@ export default function PerformanceDashboard() {
                 const cid = new URLSearchParams(window.location.search).get('clientId');
                 navigate(cid ? `/admin/clients/${cid}` : '/dashboard');
               }}
-              className="w-8 h-8 rounded-[4px] flex items-center justify-center hover:bg-white transition-all duration-200 cursor-pointer border border-[#E2E0D9] hover:border-[#1A1A1A]"
+              className="w-8 h-8 rounded-[6px] flex items-center justify-center hover:bg-[#F2F1EC] transition-colors cursor-pointer border border-[#E2E0D9]"
             >
               <ArrowLeft className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />
             </button>
@@ -384,13 +370,13 @@ export default function PerformanceDashboard() {
           </div>
           <div className="flex items-center gap-3">
             {data && (
-              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] hidden sm:inline">
+              <span className="text-[11px] text-[#8B887F] hidden sm:inline">
                 Synced {new Date(data.lastSynced).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#FAFAF7] bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-all duration-200 cursor-pointer"
+              className="h-9 px-4 rounded-[6px] text-sm font-medium text-white bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-colors cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.5} /> Sync
             </button>
@@ -398,19 +384,17 @@ export default function PerformanceDashboard() {
         </div>
       </header>
 
-      {/* Hero band */}
-      <section className="relative z-10 max-w-[1280px] mx-auto px-5 md:px-8 pt-16 pb-10">
-        <span className="eyebrow eyebrow-accent">Editor Output — {month}</span>
-        <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
-          Editor <em>performance</em>.
+      {/* Title */}
+      <section className="max-w-[1280px] mx-auto px-5 md:px-8 pt-10 pb-6">
+        <h1 className="text-[28px] font-semibold tracking-tight text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+          Editor performance
         </h1>
-        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
-          Daily and weekly output, approvals, and per-editor breakdown — straight from the production sheet.
+        <p className="mt-2 text-sm text-[#75726B]">
+          Daily and weekly output, approvals, and per-editor breakdown for {month}.
         </p>
-        <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
       </section>
 
-      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-16 space-y-7 relative z-10">
+      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-16 space-y-6">
         {/* Filters */}
         <div className="flex justify-end items-center gap-2">
           <DarkSelect value={editor} onChange={setEditor} options={data?.editors || []} />
