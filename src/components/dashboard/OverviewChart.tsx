@@ -8,7 +8,7 @@ interface OverviewChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-[4px] p-3 text-sm bg-white border border-[#1A1A1A] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.25)]">
+    <div className="glass-dropdown p-3 text-sm">
       <p className="text-[#75726B] text-[10px] uppercase tracking-[0.15em] mb-2 font-mono">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} className="text-[#75726B] text-xs font-medium flex items-center gap-2">
@@ -39,10 +39,10 @@ export function OverviewChart({ ads }: OverviewChartProps) {
 
   return (
     <div
-      className="relative rounded-[4px] p-6 animate-card-enter overflow-hidden bg-white border border-[#E2E0D9]"
+      className="relative glass-card p-6 animate-card-enter"
       style={{ animationDelay: "300ms" }}
     >
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+      <span aria-hidden className="glass-rail" />
 
       <div className="flex items-start justify-between mb-5 relative">
         <div>
@@ -54,7 +54,7 @@ export function OverviewChart({ ads }: OverviewChartProps) {
             <div className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Spend</div>
             <div className="text-sm font-semibold text-[#1A1A1A] tracking-tight tabular-nums">${totalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
           </div>
-          <div className="w-px h-8 bg-[#E2E0D9]" />
+          <div className="w-px h-8 bg-[rgba(26,26,26,0.08)]" />
           <div className="text-right">
             <div className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Revenue</div>
             <div className="text-sm font-semibold text-[#1A1A1A] tracking-tight tabular-nums">${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
@@ -63,8 +63,9 @@ export function OverviewChart({ ads }: OverviewChartProps) {
       </div>
 
       {isEmpty ? (
-        <div className="flex items-center justify-center h-[300px]">
-          <p className="text-[#75726B] text-sm">No data available for this date range</p>
+        <div className="flex flex-col items-center justify-center h-[300px] gap-3">
+          <span className="glass-skeleton h-2 w-48" aria-hidden />
+          <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={300}>
