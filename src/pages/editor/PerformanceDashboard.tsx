@@ -124,7 +124,8 @@ export default function PerformanceDashboard() {
     try {
       const [eodRes, payRes, helpRes] = await Promise.all([
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=EOD-Report`),
-        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Payment Tracking`),
+        // headers=0 prevents gviz from collapsing the first data row ("Founder Story") into the header block.
+        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&headers=0&sheet=Payment Tracking`),
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=_Helpers`),
       ]);
       if (!eodRes.ok || !payRes.ok || !helpRes.ok) throw new Error('Failed to fetch sheet data');
@@ -134,8 +135,10 @@ export default function PerformanceDashboard() {
       const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
 
-      const editorsA = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
-      const editors = ['(All Editors)', ...new Set(editorsA)];
+      const editorsHelpers = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
+      // Payment Tracking: real rows start at sheet row 5 (index 4 after headers=0).
+      const editorsPayment = paymentRaw.slice(4).map(r => r[1]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
+      const editors = ['(All Editors)', ...Array.from(new Set([...editorsHelpers, ...editorsPayment]))];
       const months = helpers.map(r => r[1]).filter(Boolean).filter(m => m !== 'undefined');
 
       const cached: CachedData = { eod, payment, paymentRaw, editors, months, lastSynced: Date.now() };
