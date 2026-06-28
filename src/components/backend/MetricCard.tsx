@@ -32,24 +32,13 @@ export function MetricCard({
     <Tag
       onClick={onClick}
       className={cn(
-        "group relative w-full text-left rounded-[6px] border bg-white px-5 pt-5 pb-4 overflow-hidden",
-        "transition-[transform,box-shadow,border-color] duration-200",
-        interactive || onClick ? "cursor-pointer hover:-translate-y-px" : "",
-        active
-          ? "border-[#1A1A1A] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_12px_28px_-16px_rgba(26,26,26,0.18)]"
-          : "border-[#E2E0D9] hover:border-[#1A1A1A]/40 hover:shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_24px_-14px_rgba(26,26,26,0.12)]",
+        "group glass-card w-full text-left px-5 pt-5 pb-4 overflow-hidden",
+        interactive || onClick ? "cursor-pointer glass-card-hover" : "",
+        active && "ring-1 ring-[#9ED8F5]/60 shadow-[0_0_0_1px_rgba(158,216,245,0.45),0_28px_60px_-28px_rgba(40,72,110,0.32)]",
         className,
       )}
     >
-      <span
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-200"
-        style={{
-          background:
-            "linear-gradient(90deg,#9ED8F5 0%,#3B86A8 50%,transparent 100%)",
-          opacity: active ? 1 : 0.35,
-        }}
-      />
+      <span aria-hidden className="glass-rail" style={{ opacity: active ? 1 : 0.45 }} />
       <div className="flex items-center justify-between mb-3">
         <span className="mono text-[10px] uppercase tracking-[0.18em] text-[#75726B]">
           {label}
