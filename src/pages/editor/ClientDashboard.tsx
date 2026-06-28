@@ -168,45 +168,24 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
   ];
 
   return (
-    <div className={`${hideChrome ? '' : 'min-h-screen admin-bloom'} text-[#1A1A1A] relative overflow-hidden`}>
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      {/* Soft top-right accent wash */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          background:
-            'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.30) 0%, transparent 55%)',
-        }}
-      />
-
+    <div className={`${hideChrome ? '' : 'min-h-screen bg-[#FAFAF7]'} text-[#1A1A1A] relative`}>
       {/* Header */}
       {!hideChrome && (
-      <header className="sticky top-0 z-40 glass-topbar">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-sm border-b border-[#E5E3DC]">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#1A1A1A] text-xs font-semibold border border-[#1A1A1A]/15 bg-[#9ED8F5] overflow-hidden">
+            <div className="w-8 h-8 rounded-[6px] flex items-center justify-center text-[#1A1A1A] text-xs font-semibold border border-[#E5E3DC] bg-white overflow-hidden">
               {logoSrc ? (
                 <img src={logoSrc} alt={client.brand_name} className="w-full h-full object-cover" />
               ) : (
                 client.brand_name.charAt(0)
               )}
             </div>
-            <span className="text-sm font-medium tracking-tight">
-              {client.brand_name}
-              <span className="text-[#9ED8F5]">.</span>
-            </span>
+            <span className="text-sm font-medium tracking-tight">{client.brand_name}</span>
           </div>
           <button
             onClick={() => { logout(); navigate('/login'); }}
-            className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.15em] text-[#75726B] hover:text-[#1A1A1A] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-[#75726B] hover:text-[#1A1A1A] transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" /> Sign out
           </button>
@@ -214,41 +193,16 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
       </header>
       )}
 
-      {/* Hero band — dark, matches job detail */}
-      <section className="relative z-10 bg-foreground text-background overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(hsl(var(--accent)) 1px, transparent 1.5px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-        <div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 65%)',
-            filter: 'blur(40px)',
-          }}
-        />
-        <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-20">
-          {logoSrc && (
-            <img src={logoSrc} alt={client.brand_name} className="w-16 h-16 rounded-[8px] object-cover mb-6 border border-background/20" />
-          )}
-          <h1 className="font-display text-[48px] sm:text-[64px] md:text-[76px] leading-[1.0] tracking-[-0.03em] max-w-4xl">
-            Welcome back,{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'hsl(var(--accent))' }}>
-              {client.brand_name}
-            </em>
-            .
-          </h1>
-          <p className="mt-6 text-[15px] text-background/65 max-w-xl leading-relaxed">
-            Here's where things stand today.
-          </p>
-        </div>
+      {/* Title */}
+      <section className="max-w-6xl mx-auto px-6 pt-12 pb-8">
+        <h1 className="text-[32px] font-semibold tracking-tight text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+          Welcome back, {client.brand_name}
+        </h1>
+        <p className="mt-2 text-sm text-[#75726B]">Here's where things stand today.</p>
       </section>
 
       {/* Cards */}
-      <main className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24">
+      <main className="max-w-6xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {cards.map((card, idx) => {
             const Icon = card.icon;
@@ -267,53 +221,36 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
                   navigate(target);
                 }}
                 disabled={!enabled}
-                className={`group text-left relative overflow-hidden glass-card p-8 ${
-                  enabled ? 'glass-card-hover cursor-pointer' : 'cursor-not-allowed opacity-55'
+                className={`group text-left relative overflow-hidden bg-white border border-[#E5E3DC] rounded-[10px] p-7 transition-colors ${
+                  enabled ? 'hover:border-[#1A1A1A]/25 cursor-pointer' : 'cursor-not-allowed opacity-55'
                 }`}
               >
-                <span aria-hidden className="glass-rail" />
-                {/* Soft corner glow */}
-                {enabled && (
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -right-24 -top-24 w-72 h-72 rounded-full opacity-60 transition-opacity duration-500 group-hover:opacity-100"
-                    style={{ background: 'radial-gradient(circle, rgba(158,216,245,0.18) 0%, transparent 65%)' }}
-                  />
-                )}
-
-                <div className="relative flex flex-col h-full min-h-[280px]">
+                <div className="relative flex flex-col h-full min-h-[260px]">
                   {/* Header row */}
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center justify-center w-9 h-9 rounded-[8px] bg-white border border-[#E5E3DC] text-[#3B86A8] shadow-[0_1px_0_rgba(255,255,255,0.8)_inset]">
-                        <Icon className="w-4 h-4" strokeWidth={1.5} />
-                      </span>
-                      <span className="mono text-[10px] uppercase tracking-[0.22em] text-[#8A8780]">
-                        0{idx + 1} / 02
-                      </span>
-                    </div>
-                    <span className="w-9 h-9 rounded-full flex items-center justify-center border border-transparent group-hover:border-[#1A1A1A]/15 transition-all duration-300">
-                      <ArrowRight className="w-4 h-4 text-[#1A1A1A] transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.75} />
+                  <div className="flex items-start justify-between mb-6">
+                    <span className="inline-flex items-center justify-center w-9 h-9 rounded-[8px] bg-[#F2F1EC] text-[#2E6BE6]">
+                      <Icon className="w-4 h-4" strokeWidth={1.75} />
+                    </span>
+                    <span className="text-[#75726B] transition-transform duration-200 group-hover:translate-x-0.5">
+                      <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-[30px] leading-[1.02] tracking-[-0.025em] font-semibold mb-3" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>
-                    {card.titlePrefix} <em>{card.emphasis}</em>
+                  <h3 className="text-[22px] leading-tight tracking-tight font-semibold mb-2 text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                    {card.title}
                   </h3>
-                  <p className="text-[14px] text-[#75726B] leading-relaxed max-w-sm">
+                  <p className="text-[13.5px] text-[#75726B] leading-relaxed max-w-sm">
                     {enabled ? card.description : 'Not yet configured. Contact your account manager to enable this dashboard.'}
                   </p>
 
                   {/* Stats strip */}
                   {enabled && (
-                    <div className="mt-7 mb-6 grid grid-cols-2 gap-px rounded-[10px] overflow-hidden border border-[#E5E3DC]" style={{ background: '#E5E3DC' }}>
+                    <div className="mt-6 mb-5 grid grid-cols-2 gap-6 pt-5 border-t border-[#F0EEE7]">
                       {card.stats.map((s, i) => (
-                        <div key={i} className="px-4 py-4" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)' }}>
-                          <div className="text-[9px] uppercase tracking-[0.22em] font-mono text-[#8A8780] mb-1.5">
-                            {s.label}
-                          </div>
-                          <div className="text-[22px] tracking-[-0.025em] tabular-nums text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                        <div key={i}>
+                          <div className="text-[11px] uppercase tracking-[0.08em] text-[#8A8780] mb-1.5">{s.label}</div>
+                          <div className="text-[20px] tracking-tight tabular-nums text-[#0F0F0F] font-semibold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                             {wtdData.loading ? (
                               <span className="inline-block w-14 h-6 rounded-sm bg-[#EFEEE8] animate-pulse" />
                             ) : (
@@ -326,26 +263,22 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
                   )}
 
                   {/* Footer: status + range */}
-                  <div className="flex items-center justify-between pt-5 border-t border-[#E2E0D9] mt-auto">
-                    <div className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
+                  <div className="flex items-center justify-between pt-4 border-t border-[#F0EEE7] mt-auto">
+                    <div className="inline-flex items-center gap-2 text-[11px] text-[#75726B]">
                       {enabled ? (
                         <>
-                          <span className="relative flex w-1.5 h-1.5">
-                            <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
-                            <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
-                          </span>
-                          <StatusIcon className="w-3 h-3" strokeWidth={1.5} />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
                           {card.statusLabel}
                         </>
                       ) : (
                         <>
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#75726B]/40" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C4C2BC]" />
                           Not configured
                         </>
                       )}
                     </div>
                     {enabled && (
-                      <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#1A1A1A]">
+                      <span className="text-[11px] text-[#1A1A1A] font-medium">
                         {card.rangeLabel}
                       </span>
                     )}
@@ -358,8 +291,8 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
 
 
         {/* Footer trust line */}
-        <div className="mt-10 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
-          <span>AdChefs<span className="text-[#9ED8F5]">.</span> Client Portal</span>
+        <div className="mt-10 flex items-center justify-between text-[11px] text-[#75726B]">
+          <span>AdChefs Client Portal</span>
           <span>v1.0 · {new Date().getFullYear()}</span>
         </div>
       </main>

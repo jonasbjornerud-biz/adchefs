@@ -66,10 +66,7 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative glass-card overflow-hidden ${className}`}>
-      <span aria-hidden className="glass-rail" />
-      {children}
-    </div>
+    <div className={`relative bg-white border border-[#E5E3DC] rounded-[8px] overflow-hidden ${className}`}>{children}</div>
   );
 }
 
@@ -352,23 +349,9 @@ export default function PerformanceDashboard() {
   }
 
   return (
-    <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
-        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
-      />
-
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A] relative">
       {/* Header */}
-      <header className="sticky top-0 z-40 glass-topbar">
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-sm border-b border-[#E5E3DC]">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -376,7 +359,7 @@ export default function PerformanceDashboard() {
                 const cid = new URLSearchParams(window.location.search).get('clientId');
                 navigate(cid ? `/admin/clients/${cid}` : '/dashboard');
               }}
-              className="w-8 h-8 rounded-[4px] flex items-center justify-center hover:bg-white transition-all duration-200 cursor-pointer border border-[#E2E0D9] hover:border-[#1A1A1A]"
+              className="w-8 h-8 rounded-[6px] flex items-center justify-center hover:bg-[#F2F1EC] transition-colors cursor-pointer border border-[#E2E0D9]"
             >
               <ArrowLeft className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />
             </button>
@@ -384,13 +367,13 @@ export default function PerformanceDashboard() {
           </div>
           <div className="flex items-center gap-3">
             {data && (
-              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] hidden sm:inline">
+              <span className="text-[11px] text-[#8B887F] hidden sm:inline">
                 Synced {new Date(data.lastSynced).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#FAFAF7] bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-all duration-200 cursor-pointer"
+              className="h-9 px-4 rounded-[6px] text-sm font-medium text-white bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-colors cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.5} /> Sync
             </button>
@@ -398,19 +381,17 @@ export default function PerformanceDashboard() {
         </div>
       </header>
 
-      {/* Hero band */}
-      <section className="relative z-10 max-w-[1280px] mx-auto px-5 md:px-8 pt-16 pb-10">
-        <span className="eyebrow eyebrow-accent">Editor Output — {month}</span>
-        <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
-          Editor <em>performance</em>.
+      {/* Title */}
+      <section className="max-w-[1280px] mx-auto px-5 md:px-8 pt-10 pb-6">
+        <h1 className="text-[28px] font-semibold tracking-tight text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+          Editor performance
         </h1>
-        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
-          Daily and weekly output, approvals, and per-editor breakdown — straight from the production sheet.
+        <p className="mt-2 text-sm text-[#75726B]">
+          Daily and weekly output, approvals, and per-editor breakdown for {month}.
         </p>
-        <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
       </section>
 
-      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-16 space-y-7 relative z-10">
+      <main className="max-w-[1280px] mx-auto px-5 md:px-8 pb-16 space-y-6">
         {/* Filters */}
         <div className="flex justify-end items-center gap-2">
           <DarkSelect value={editor} onChange={setEditor} options={data?.editors || []} />
@@ -438,8 +419,8 @@ export default function PerformanceDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Daily by Week */}
               <PremiumCard className="p-6">
-                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Daily <em>Deliveries</em> by Week</h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Grouped by weekday</p>
+                <h4 className="text-[15px] font-semibold text-[#1A1A1A] tracking-tight">Daily deliveries by week</h4>
+                <p className="text-xs text-[#8B887F] mt-1 mb-4">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
@@ -458,8 +439,8 @@ export default function PerformanceDashboard() {
 
               {/* Weekly Output */}
               <PremiumCard className="p-6">
-                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Total videos per week (all time)</p>
+                <h4 className="text-[15px] font-semibold text-[#1A1A1A] tracking-tight">Weekly trend</h4>
+                <p className="text-xs text-[#8B887F] mt-1 mb-4">Total videos per week</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -488,53 +469,33 @@ export default function PerformanceDashboard() {
             <div>
               <div className="flex items-end justify-between gap-4 mb-4">
                 <div>
-                  <span className="eyebrow inline-flex items-center gap-2">
-                    <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
-                  </span>
-                  <p className="mt-2 text-[12px] text-[#8B887F]">
-                    Delivered volume and approval rate for {month}.
-                  </p>
+                  <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F]">Editor leaderboard</h2>
+                  <p className="mt-1 text-[12px] text-[#8B887F]">Delivered volume and approval rate for {month}.</p>
                 </div>
-                <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
+                <span className="hidden md:inline text-[11px] text-[#8B887F]">
                   {leaderboard.length} editors
                 </span>
               </div>
               <PremiumCard className="p-6">
                 {leaderboard.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 gap-3">
-                    <span className="glass-skeleton h-2 w-48" aria-hidden />
-                    <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
-                  </div>
+                  <p className="text-center py-12 text-sm text-[#9A988F]">No editor data yet.</p>
                 ) : (
                   <ul className="space-y-3.5">
                     {leaderboard.map((ed, i) => {
                       const max = Math.max(...leaderboard.map(e => e.delivered), 1);
                       const pct = (ed.delivered / max) * 100;
-                      const isTop = i === 0;
                       return (
-                        <li key={ed.name} className="grid grid-cols-[28px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
-                          <span className="mono text-[10px] tabular-nums text-[#8A8780]">{String(i + 1).padStart(2, '0')}</span>
-                          <span className="text-[13px] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                        <li key={ed.name} className="grid grid-cols-[24px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
+                          <span className="text-[12px] tabular-nums text-[#8A8780]">{i + 1}</span>
+                          <span className="text-[13px] font-medium text-[#1A1A1A] truncate">
                             {ed.name}
                           </span>
-                          <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(26,26,26,0.06)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${pct}%`,
-                                background: isTop
-                                  ? 'linear-gradient(90deg, #2E6BE6 0%, #2E6BE6 60%, #1A1A1A 100%)'
-                                  : 'linear-gradient(90deg, #DDE7FA 0%, #2E6BE6 100%)',
-                              }}
-                            />
+                          <div className="h-[6px] rounded-full overflow-hidden bg-[#F0EEE7]">
+                            <div className="h-full rounded-full bg-[#2E6BE6] transition-all duration-500" style={{ width: `${pct}%` }} />
                           </div>
-                          <div className="flex items-center gap-3 justify-end min-w-[150px]">
-                            <span className="tabular-nums text-[15px] text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
-                              {ed.delivered}
-                            </span>
-                            <span className={`glass-badge ${ed.approvalRate >= 60 ? 'glass-badge-accent' : ''} text-[10px] font-mono uppercase tracking-[0.1em] px-2 py-0.5 tabular-nums`}>
-                              {ed.approvalRate}% appr
-                            </span>
+                          <div className="flex items-center gap-4 justify-end min-w-[130px]">
+                            <span className="tabular-nums text-[14px] font-semibold text-[#0F0F0F]">{ed.delivered}</span>
+                            <span className="text-[11px] tabular-nums text-[#75726B] w-[70px] text-right">{ed.approvalRate}% appr.</span>
                           </div>
                         </li>
                       );
@@ -549,18 +510,10 @@ export default function PerformanceDashboard() {
               <div>
                 <div className="flex items-end justify-between gap-4 mb-4">
                   <div>
-                    <span className="eyebrow">Editor Breakdown</span>
-                    <p className="mt-2 text-[12px] text-[#8B887F]">
-                      Per-editor output for {month}. Sorted by delivered volume.
-                    </p>
+                    <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F]">Editor breakdown</h2>
+                    <p className="mt-1 text-[12px] text-[#8B887F]">Per-editor output for {month}. Sorted by delivered volume.</p>
                   </div>
-                  <div className="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" /> Top performer
-                    </span>
-                    <span className="text-[#D8D7D2]">·</span>
-                    <span>{editorBreakdown.length} editors</span>
-                  </div>
+                  <span className="hidden md:inline text-[11px] text-[#8B887F]">{editorBreakdown.length} editors</span>
                 </div>
                 <PremiumCard className="overflow-hidden">
                   <div className="overflow-x-auto">
@@ -675,12 +628,10 @@ export default function PerformanceDashboard() {
             {/* Approved Videos Table */}
             {filteredPayment.length > 0 && (
               <div>
-                <span className="eyebrow mb-4 inline-block">Approved Videos</span>
+                <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F] mb-4">Approved videos</h2>
                 <PremiumCard className="overflow-hidden">
                   <div className="px-6 py-4 border-b border-[#E2E0D9]">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">
-                      <span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}
-                    </p>
+                    <p className="text-xs text-[#75726B]"><span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}</p>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">

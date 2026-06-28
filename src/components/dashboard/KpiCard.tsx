@@ -14,10 +14,10 @@ interface KpiCardProps {
 }
 
 function responsiveSize(value: string): string {
-  // Editorial serif headline — large, confident, but tightens for long numbers.
-  if (value.length > 8) return "text-[44px]";
-  if (value.length > 6) return "text-[52px]";
-  return "text-[64px]";
+  // Clean sans headline — readable, tightens for long numbers.
+  if (value.length > 8) return "text-[28px]";
+  if (value.length > 6) return "text-[32px]";
+  return "text-[36px]";
 }
 
 function Sparkline({ data, gradId, threshold }: { data: number[]; gradId: string; threshold?: { value: number; label?: string } }) {
@@ -70,36 +70,32 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, threshold
 
   return (
     <div
-      className="group glass-card glass-card-hover p-6 flex flex-col gap-5 cursor-default animate-card-enter min-w-[200px] flex-1 flex-shrink-0 relative"
+      className="group bg-white border border-[#E5E3DC] rounded-[8px] p-5 flex flex-col gap-4 cursor-default animate-card-enter min-w-[200px] flex-1 flex-shrink-0 relative transition-colors hover:border-[#1A1A1A]/25"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-start justify-between">
-        <span className="text-[10px] uppercase tracking-[0.14em] font-mono font-medium text-[#8B887F]">
+        <span className="text-[11px] uppercase tracking-[0.1em] font-medium text-[#75726B]">
           {label}
         </span>
-        <span className="w-6 h-6 flex items-center justify-center text-[#A8A59E]">
+        <span className="w-5 h-5 flex items-center justify-center text-[#A8A59E]">
           {icon}
         </span>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex items-baseline gap-3">
         {hasValue ? (
           <span
-            className={`ed-numeral whitespace-nowrap ${responsiveSize(display)}`}
+            className={`whitespace-nowrap font-semibold tracking-tight tabular-nums text-[#0F0F0F] ${responsiveSize(display)}`}
+            style={{ fontFamily: "'Inter Tight', sans-serif" }}
           >
             {display}
           </span>
         ) : (
-          <>
-            <span className="ed-numeral text-[56px] text-[#D8D5CC] leading-none">—</span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#A8A59E]">
-              Awaiting data
-            </span>
-          </>
+          <span className="text-[32px] font-semibold text-[#D8D5CC] leading-none" style={{ fontFamily: "'Inter Tight', sans-serif" }}>—</span>
         )}
         {hasValue && trend && (
           <span
-            className={`glass-badge self-start ${trend.positive ? "glass-badge-up" : "glass-badge-down"}`}
+            className={`text-[11px] font-medium tabular-nums ${trend.positive ? "text-[#1F8A4C]" : "text-[#C0463A]"}`}
           >
             {trend.positive ? "▲" : "▼"} {Math.abs(trend.value)}%
           </span>
@@ -107,7 +103,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, threshold
       </div>
 
       {spark && spark.length > 1 && (
-        <div className="relative mt-auto pt-2 border-t border-[#F0EEE7]">
+        <div className="relative mt-auto pt-3 border-t border-[#F0EEE7]">
           <Sparkline data={spark} gradId={`spark-${uid}`} threshold={threshold} />
         </div>
       )}
