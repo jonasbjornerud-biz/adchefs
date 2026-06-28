@@ -110,7 +110,7 @@ export default function PerformanceDashboard() {
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
-    const cacheKey = `adchefs_perf_full_v2_${sheetId}`;
+    const cacheKey = `adchefs_perf_full_v3_${sheetId}`;
     if (!force) {
       try {
         const cached = localStorage.getItem(cacheKey);
@@ -124,7 +124,8 @@ export default function PerformanceDashboard() {
     try {
       const [eodRes, payRes, helpRes] = await Promise.all([
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=EOD-Report`),
-        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Payment Tracking`),
+        // headers=0 prevents gviz from collapsing the first data row ("Founder Story") into the header block.
+        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&headers=0&sheet=Payment Tracking`),
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=_Helpers`),
       ]);
       if (!eodRes.ok || !payRes.ok || !helpRes.ok) throw new Error('Failed to fetch sheet data');
@@ -134,8 +135,10 @@ export default function PerformanceDashboard() {
       const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
 
-      const editorsA = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
-      const editors = ['(All Editors)', ...new Set(editorsA)];
+      const editorsHelpers = helpers.slice(1).map(r => r[0]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
+      // Payment Tracking: real rows start at sheet row 5 (index 4 after headers=0).
+      const editorsPayment = paymentRaw.slice(4).map(r => r[1]?.trim()).filter(Boolean).filter(n => n !== 'undefined');
+      const editors = ['(All Editors)', ...Array.from(new Set([...editorsHelpers, ...editorsPayment]))];
       const months = helpers.map(r => r[1]).filter(Boolean).filter(m => m !== 'undefined');
 
       const cached: CachedData = { eod, payment, paymentRaw, editors, months, lastSynced: Date.now() };
@@ -156,7 +159,7 @@ export default function PerformanceDashboard() {
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
     // Column A = brief name, Column B = editor, Column C = approved month (empty if not approved)
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     return rows.filter(r => {
       const approvedMonth = r[2]?.trim();
       return approvedMonth && approvedMonth.toLowerCase() === month.toLowerCase();
@@ -165,7 +168,7 @@ export default function PerformanceDashboard() {
 
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     return rows
       .filter(r => r[2]?.trim()?.toLowerCase() === month.toLowerCase())
       .map(r => ({
@@ -179,7 +182,7 @@ export default function PerformanceDashboard() {
 
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw.slice(4).filter(r => r[0]?.trim());
     const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const map: Record<string, number> = {};
     rows.forEach(r => {
@@ -269,7 +272,7 @@ export default function PerformanceDashboard() {
         deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
       });
     const approvedMap: Record<string, number> = {};
-    data.paymentRaw.slice(1).forEach(r => {
+    data.paymentRaw.slice(4).forEach(r => {
       const editorName = r[1]?.trim();
       const approvedMonth = r[2]?.trim();
       if (!editorName || !approvedMonth) return;
