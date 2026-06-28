@@ -53,7 +53,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-white">
+    <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden admin-bloom">
       <SEO
         title="Sign in — AdChefs"
         description="Sign in to your AdChefs dashboard."
@@ -82,7 +82,7 @@ export default function Login() {
 
       <div className="relative w-full max-w-[420px]">
         {/* Card */}
-        <div className="relative rounded-[4px] border border-foreground/10 bg-white/70 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(15,40,70,0.18)] p-8">
+        <div className="relative glass-card p-8">
           <div className="mb-7">
             <h1 className="font-display text-[28px] leading-tight text-foreground font-semibold tracking-tight">
               Welcome back.
