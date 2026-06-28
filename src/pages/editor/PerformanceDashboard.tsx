@@ -64,8 +64,8 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative bg-white rounded-[4px] border border-[#E2E0D9] transition-colors duration-200 hover:border-[#1A1A1A]/40 ${className}`}>
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+    <div className={`relative glass-card overflow-hidden ${className}`}>
+      <span aria-hidden className="glass-rail" />
       {children}
     </div>
   );
