@@ -2,14 +2,14 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  Legend, ResponsiveContainer,
+  Legend, ResponsiveContainer, ComposedChart, Area, Line,
 } from 'recharts';
-import { FileBarChart, TrendingUp, ArrowLeft, CheckCircle2, Users } from 'lucide-react';
+import { FileBarChart, TrendingUp, ArrowLeft, CheckCircle2, Sparkles, Trophy } from 'lucide-react';
 import { KpiCard } from '@/components/dashboard/KpiCard';
 import { generateMockPerformanceData, MockPerformanceData } from '@/data/mockDemoData';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#1A1A1A', '#9ED8F5', '#75726B', '#3B86A8', '#C2BCAF', '#1A1A1A', '#9ED8F5', '#75726B'];
+const BLUE_RAMP = ['#9ED8F5', '#4FA8DC', '#1A1A1A', '#75726B', '#C7E9F8', '#3B86A8'];
 
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -71,9 +71,9 @@ export default function MockPerformanceDashboard() {
   const kpis = useMemo(() => {
     const delivered = filteredEod.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
     const uniqueDays = new Set(filteredEod.map(r => r.Date)).size;
-    const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
-    const activeEditors = new Set(filteredEod.map(r => r.Name).filter(Boolean)).size;
-    return { delivered, approved: approvedCount, avg, activeEditors };
+    const avg = uniqueDays > 0 ? Number((delivered / uniqueDays).toFixed(1)) : null;
+    const fcar = delivered > 0 ? Math.round((approvedCount / delivered) * 100) : null;
+    return { delivered, approved: approvedCount, avg, fcar };
   }, [filteredEod, approvedCount]);
 
   const dailyByWeek = useMemo(() => {
@@ -107,6 +107,35 @@ export default function MockPerformanceDashboard() {
     data.paymentRows.filter(r => r.approved).forEach(r => { map[r.month] = (map[r.month] || 0) + 1; });
     return monthOrder.filter(m => map[m]).map(month => ({ month, count: map[month] }));
   }, [data]);
+
+  const sparks = useMemo(() => {
+    return {
+      delivered: weeklyOutputAll.map(w => w.total),
+      approved: monthlyApproved.map(m => m.count),
+      avg: weeklyOutputAll.map(w => w.total),
+    };
+  }, [weeklyOutputAll, monthlyApproved]);
+
+  const leaderboard = useMemo(() => {
+    const monthLower = month.toLowerCase();
+    const deliveredMap: Record<string, number> = {};
+    data.eod.filter(r => r.Month.toLowerCase() === monthLower).forEach(r => {
+      const n = r.Name?.trim();
+      if (!n) return;
+      deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
+    });
+    const approvedMap: Record<string, number> = {};
+    data.paymentRows.filter(r => r.approved && r.month.toLowerCase() === monthLower).forEach(r => {
+      const n = (r as any).editor?.trim?.() || '';
+      if (!n) return;
+      approvedMap[n] = (approvedMap[n] || 0) + 1;
+    });
+    return Object.entries(deliveredMap).map(([name, delivered]) => {
+      const approved = approvedMap[name] || 0;
+      const approvalRate = delivered > 0 ? Math.round((approved / delivered) * 100) : 0;
+      return { name, delivered, approved, approvalRate };
+    }).sort((a, b) => b.delivered - a.delivered);
+  }, [data, month]);
 
   const editorBreakdown = useMemo(() => {
     const monthFiltered = data.eod.filter(r => r.Month.toLowerCase() === month.toLowerCase());
@@ -185,10 +214,10 @@ export default function MockPerformanceDashboard() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-          <KpiCard label="Delivered" value={kpis.delivered ?? null} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} />
-          <KpiCard label="Approved" value={kpis.approved ?? null} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} />
-          <KpiCard label="Avg/Day" value={kpis.avg ?? null} icon={<TrendingUp className="w-3.5 h-3.5" />} delay={200} />
-          <KpiCard label="Active Editors" value={kpis.activeEditors ?? null} icon={<Users className="w-3.5 h-3.5" />} delay={300} />
+          <KpiCard label="Delivered" value={kpis.delivered ?? null} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} spark={sparks.delivered} />
+          <KpiCard label="Approved" value={kpis.approved ?? null} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} spark={sparks.approved} />
+          <KpiCard label="Avg/Day" value={kpis.avg ?? null} icon={<TrendingUp className="w-3.5 h-3.5" />} delay={200} spark={sparks.avg} />
+          <KpiCard label="First Cut Approval" value={kpis.fcar !== null ? `${kpis.fcar}%` : null} icon={<Sparkles className="w-3.5 h-3.5" />} delay={300} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -204,7 +233,7 @@ export default function MockPerformanceDashboard() {
                   <Tooltip content={<ChartTooltip />} />
                   <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                   {weekKeys.map((wk, i) => (
-                    <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} />
+                    <Bar key={wk} dataKey={wk} fill={BLUE_RAMP[i % BLUE_RAMP.length]} radius={[4, 4, 0, 0]} />
                   ))}
                 </BarChart>
               </ResponsiveContainer>
@@ -212,51 +241,86 @@ export default function MockPerformanceDashboard() {
           </PremiumCard>
 
           <PremiumCard className="p-6">
-            <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Output</em></h4>
+            <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
             <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Total videos per week (all time)</p>
             <div className="h-56 overflow-x-auto">
               <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={weeklyOutputAll}>
+                  <ComposedChart data={weeklyOutputAll}>
                     <defs>
-                      <linearGradient id="mockBarGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#1A1A1A" stopOpacity={1} />
-                        <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0.55} />
+                      <linearGradient id="mockWeeklyArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
+                        <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
+                    <CartesianGrid strokeDasharray="2 5" stroke="rgba(26,26,26,0.06)" vertical={false} />
                     <XAxis dataKey="week" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} />
                     <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip content={<ChartTooltip />} />
-                    <Bar dataKey="total" fill="url(#mockBarGrad)" radius={[4, 4, 0, 0]} />
-                  </BarChart>
+                    <Area type="monotone" dataKey="total" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#mockWeeklyArea)" name="Videos" />
+                    <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#F7F6F3', strokeWidth: 1.5, r: 3 }} name="Videos" strokeLinecap="round" />
+                  </ComposedChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </PremiumCard>
         </div>
 
-        <PremiumCard className="p-6">
-          <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Monthly <em>Approved</em> Videos</h4>
-          <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Approved videos per month</p>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyApproved}>
-                <defs>
-                  <linearGradient id="mockApprovedGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#9ED8F5" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                <XAxis dataKey="month" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="count" fill="url(#mockApprovedGrad)" radius={[4, 4, 0, 0]} name="Approved" />
-              </BarChart>
-            </ResponsiveContainer>
+        <div>
+          <div className="flex items-end justify-between gap-4 mb-4">
+            <div>
+              <span className="eyebrow inline-flex items-center gap-2">
+                <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
+              </span>
+              <p className="mt-2 text-[12px] text-[#75726B]">
+                Delivered volume and approval rate for {month}.
+              </p>
+            </div>
+            <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+              {leaderboard.length} editors
+            </span>
           </div>
-        </PremiumCard>
+          <PremiumCard className="p-6">
+            {leaderboard.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <span className="glass-skeleton h-2 w-48" aria-hidden />
+                <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
+              </div>
+            ) : (
+              <ul className="space-y-3.5">
+                {leaderboard.map((ed, i) => {
+                  const max = Math.max(...leaderboard.map(e => e.delivered), 1);
+                  const pct = (ed.delivered / max) * 100;
+                  const isTop = i === 0;
+                  return (
+                    <li key={ed.name} className="grid grid-cols-[28px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
+                      <span className="mono text-[10px] tabular-nums text-[#8A8780]">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="text-[13px] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                        {ed.name}
+                      </span>
+                      <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(26,26,26,0.06)' }}>
+                        <div className="h-full rounded-full transition-all duration-500" style={{
+                          width: `${pct}%`,
+                          background: isTop
+                            ? 'linear-gradient(90deg, #9ED8F5 0%, #4FA8DC 60%, #1A1A1A 100%)'
+                            : 'linear-gradient(90deg, #C7E9F8 0%, #4FA8DC 100%)',
+                        }} />
+                      </div>
+                      <div className="flex items-center gap-3 justify-end min-w-[150px]">
+                        <span className="tabular-nums text-[15px] text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                          {ed.delivered}
+                        </span>
+                        <span className={`glass-badge ${ed.approvalRate >= 60 ? 'glass-badge-accent' : ''} text-[10px] font-mono uppercase tracking-[0.1em] px-2 py-0.5 tabular-nums`}>
+                          {ed.approvalRate}% appr
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </PremiumCard>
+        </div>
 
         {editorBreakdown.length > 0 && (
           <div>
