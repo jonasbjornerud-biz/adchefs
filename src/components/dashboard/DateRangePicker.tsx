@@ -42,7 +42,7 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
           variant="outline"
           className={cn(
             "justify-start text-left font-normal h-9 px-3 text-sm cursor-pointer transition-all duration-200",
-            "glass-dark hover:opacity-90 rounded-[4px]",
+            "bg-[#111118] border-white/10 text-white/60 hover:bg-white/[0.04] hover:text-white/80",
             !dateRange && "text-white/30"
           )}
         >
@@ -61,17 +61,17 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0 glass-dropdown border-0"
+        className="w-auto p-0 bg-[#111118] border-white/10 backdrop-blur-xl"
         align="start"
       >
         <div className="flex">
-          <div className="border-r border-[rgba(26,26,26,0.08)] p-3 space-y-1 min-w-[140px]">
-            <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B] mb-2 px-2">Presets</p>
+          <div className="border-r border-white/[0.06] p-3 space-y-1 min-w-[140px]">
+            <p className="text-xs font-medium text-white/30 uppercase tracking-wider mb-2">Presets</p>
             {presets.map((preset) => (
               <button
                 key={preset.days}
                 onClick={() => handlePreset(preset.days)}
-                className="block w-full text-left text-sm px-2 py-1.5 rounded-[4px] text-[#1A1A1A] hover:bg-[#9ED8F5]/20 transition-all duration-150 cursor-pointer"
+                className="block w-full text-left text-sm px-2 py-1.5 rounded-md text-white/60 hover:text-white hover:bg-[#9ED8F5]/10 transition-all duration-200 cursor-pointer"
               >
                 {preset.label}
               </button>
@@ -87,17 +87,17 @@ export function DateRangePicker({ dateRange, onDateRangeChange }: DateRangePicke
             className={cn("p-3 pointer-events-auto")}
             disabled={(date) => date > new Date()}
             classNames={{
-              caption_label: "text-sm font-medium text-[#1A1A1A]",
-              nav_button: "h-7 w-7 bg-transparent p-0 text-[#75726B] hover:text-[#1A1A1A] hover:bg-white/60 rounded-[4px] inline-flex items-center justify-center transition-colors",
-              head_cell: "text-[#75726B] rounded-[4px] w-9 font-mono text-[10px] uppercase tracking-[0.15em]",
-              day: "h-9 w-9 p-0 font-normal text-[#1A1A1A] hover:bg-[#9ED8F5]/20 rounded-[4px] inline-flex items-center justify-center transition-colors aria-selected:opacity-100 cursor-pointer",
-              day_selected: "bg-[#1A1A1A] text-[#F7F6F3] hover:bg-[#1A1A1A] hover:text-[#F7F6F3] focus:bg-[#1A1A1A] focus:text-[#F7F6F3]",
-              day_today: "bg-white/70 text-[#1A1A1A] ring-1 ring-[#9ED8F5]/60",
-              day_outside: "text-[#9A988F] aria-selected:text-[#75726B]",
-              day_disabled: "text-[#C2BFB6] opacity-50 cursor-not-allowed",
-              day_range_middle: "aria-selected:bg-[#9ED8F5]/25 aria-selected:text-[#1A1A1A] rounded-none",
-              day_range_start: "aria-selected:bg-[#1A1A1A] aria-selected:text-[#F7F6F3] rounded-l-[4px]",
-              day_range_end: "aria-selected:bg-[#1A1A1A] aria-selected:text-[#F7F6F3] rounded-r-[4px]",
+              caption_label: "text-sm font-medium text-white",
+              nav_button: "h-7 w-7 bg-transparent p-0 text-white/70 hover:text-white hover:bg-white/[0.06] rounded-md inline-flex items-center justify-center transition-colors",
+              head_cell: "text-white/40 rounded-md w-9 font-normal text-[0.7rem] uppercase tracking-wider",
+              day: "h-9 w-9 p-0 font-normal text-white/85 hover:bg-[#9ED8F5]/15 hover:text-white rounded-md inline-flex items-center justify-center transition-colors aria-selected:opacity-100 cursor-pointer",
+              day_selected: "bg-[#9ED8F5] text-white hover:bg-[#9ED8F5] hover:text-white focus:bg-[#9ED8F5] focus:text-white",
+              day_today: "bg-white/[0.08] text-white ring-1 ring-[#9ED8F5]/40",
+              day_outside: "text-white/25 aria-selected:text-white/40",
+              day_disabled: "text-white/20 opacity-50 cursor-not-allowed",
+              day_range_middle: "aria-selected:bg-[#9ED8F5]/20 aria-selected:text-white rounded-none",
+              day_range_start: "aria-selected:bg-[#9ED8F5] aria-selected:text-white rounded-l-md",
+              day_range_end: "aria-selected:bg-[#9ED8F5] aria-selected:text-white rounded-r-md",
               cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
             }}
           />

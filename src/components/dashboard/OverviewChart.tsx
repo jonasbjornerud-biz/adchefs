@@ -1,5 +1,5 @@
 import { AdMetric } from "@/data/mockAds";
-import { ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface OverviewChartProps {
   ads: AdMetric[];
@@ -8,7 +8,7 @@ interface OverviewChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-dropdown p-3 text-sm">
+    <div className="rounded-[4px] p-3 text-sm bg-white border border-[#1A1A1A] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.25)]">
       <p className="text-[#75726B] text-[10px] uppercase tracking-[0.15em] mb-2 font-mono">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} className="text-[#75726B] text-xs font-medium flex items-center gap-2">
@@ -39,10 +39,10 @@ export function OverviewChart({ ads }: OverviewChartProps) {
 
   return (
     <div
-      className="relative glass-card p-6 animate-card-enter"
+      className="relative rounded-[4px] p-6 animate-card-enter overflow-hidden bg-white border border-[#E2E0D9]"
       style={{ animationDelay: "300ms" }}
     >
-      <span aria-hidden className="glass-rail" />
+      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
 
       <div className="flex items-start justify-between mb-5 relative">
         <div>
@@ -54,7 +54,7 @@ export function OverviewChart({ ads }: OverviewChartProps) {
             <div className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Spend</div>
             <div className="text-sm font-semibold text-[#1A1A1A] tracking-tight tabular-nums">${totalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
           </div>
-          <div className="w-px h-8 bg-[rgba(26,26,26,0.08)]" />
+          <div className="w-px h-8 bg-[#E2E0D9]" />
           <div className="text-right">
             <div className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Revenue</div>
             <div className="text-sm font-semibold text-[#1A1A1A] tracking-tight tabular-nums">${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
@@ -63,32 +63,35 @@ export function OverviewChart({ ads }: OverviewChartProps) {
       </div>
 
       {isEmpty ? (
-        <div className="flex flex-col items-center justify-center h-[300px] gap-3">
-          <span className="glass-skeleton h-2 w-48" aria-hidden />
-          <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
+        <div className="flex items-center justify-center h-[300px]">
+          <p className="text-[#75726B] text-sm">No data available for this date range</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="overviewSpend" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2E6BE6" stopOpacity={0.10} />
-                <stop offset="100%" stopColor="#2E6BE6" stopOpacity={0} />
+                <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.6} />
+                <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="overviewRev" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#1A1A1A" stopOpacity={0.25} />
+                <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="2 5" vertical={false} />
-            <XAxis dataKey="date" tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
-            <YAxis tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '2 5' }} />
-            <Area type="monotone" dataKey="spend" stroke="#2E6BE6" strokeWidth={1.5} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#2E6BE6", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
-            <Line type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2.25} dot={false} name="Revenue" activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} strokeLinecap="round" />
-          </ComposedChart>
+            <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="date" tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
+            <YAxis tick={{ fill: "#75726B", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '3 3' }} />
+            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={2} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
+            <Area type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2} fill="url(#overviewRev)" name="Revenue" dot={false} activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} />
+          </AreaChart>
         </ResponsiveContainer>
       )}
 
       <div className="flex gap-5 mt-4 relative">
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
-          <span className="w-2 h-2 rounded-full bg-[#2E6BE6]" /> Spend
+          <span className="w-2 h-2 rounded-full bg-[#9ED8F5]" /> Spend
         </div>
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
           <span className="w-2 h-2 rounded-full bg-[#1A1A1A]" /> Revenue

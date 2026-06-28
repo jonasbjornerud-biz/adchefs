@@ -196,18 +196,16 @@
 
   .glass-card {
     position: relative;
-    border-radius: 16px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.55) 100%);
-    backdrop-filter: blur(28px) saturate(140%);
-    -webkit-backdrop-filter: blur(28px) saturate(140%);
-    border: 1px solid rgba(255,255,255,0.65);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.58) 100%);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.7);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.75),
-      0 1px 1px rgba(26,26,26,0.04),
-      0 4px 12px rgba(26,26,26,0.04),
-      0 16px 40px rgba(26,26,26,0.06);
+      0 1px 0 rgba(255,255,255,0.9) inset,
+      0 0 0 1px rgba(26,26,26,0.04),
+      0 22px 50px -30px rgba(40,72,110,0.22);
     transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-    overflow: hidden;
   }
   .glass-card::before {
     content: "";
@@ -217,137 +215,18 @@
     pointer-events: none;
     background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 38%);
     mix-blend-mode: overlay;
-    opacity: .7;
+    opacity: .8;
   }
   .glass-card-hover:hover {
     transform: translateY(-2px);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.85),
-      0 1px 1px rgba(26,26,26,0.05),
-      0 6px 16px rgba(26,26,26,0.06),
-      0 22px 56px rgba(26,26,26,0.09);
-    border-color: rgba(255,255,255,0.85);
-  }
-  /* Sheen sweep on hover — diagonal white wash, runs once */
-  .glass-card-hover::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
-    transform: translateX(-120%);
-    transition: transform 0s;
-    opacity: 0;
-  }
-  .glass-card-hover:hover::after {
-    transform: translateX(120%);
-    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
-    opacity: 1;
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 1px rgba(26,26,26,0.06),
+      0 28px 60px -28px rgba(40,72,110,0.30);
+    border-color: rgba(158,216,245,0.55);
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .glass-card { background: #FFFFFF; }
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    .glass-card { background: #FBFAF6; backdrop-filter: none; -webkit-backdrop-filter: none; }
-    .glass-card::before { display: none; }
-  }
-
-  /* Large frosted section panel */
-  .glass-panel {
-    position: relative;
-    border-radius: 16px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.74) 0%, rgba(255,255,255,0.58) 100%);
-    backdrop-filter: blur(28px) saturate(140%);
-    -webkit-backdrop-filter: blur(28px) saturate(140%);
-    border: 1px solid rgba(255,255,255,0.65);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.75),
-      0 1px 1px rgba(26,26,26,0.04),
-      0 18px 44px rgba(26,26,26,0.06);
-    overflow: hidden;
-  }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .glass-panel { background: #FFFFFF; }
-  }
-
-  /* Inner chip — for icon containers, mini-stat tiles */
-  .glass-chip {
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.55) 100%);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border: 1px solid rgba(255,255,255,0.7);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.85),
-      0 1px 2px rgba(26,26,26,0.04);
-  }
-  .glass-chip-accent {
-    background: linear-gradient(180deg, rgba(158,216,245,0.32) 0%, rgba(158,216,245,0.16) 100%);
-    border-color: rgba(158,216,245,0.55);
-  }
-
-  /* Small frosted badge — for trend deltas, status pills */
-  .glass-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-    border: 1px solid rgba(255,255,255,0.6);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-  }
-  .glass-badge-up   { background: rgba(158,216,245,0.32); color: #1A4A6B; border-color: rgba(158,216,245,0.55); }
-  .glass-badge-down { background: rgba(232,197,197,0.32); color: #7C2A2A; border-color: rgba(232,197,197,0.55); }
-
-  /* Glass dropdown menu */
-  .glass-dropdown {
-    background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.7) 100%);
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
-    border: 1px solid rgba(255,255,255,0.7);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.8),
-      0 10px 30px -10px rgba(26,26,26,0.18),
-      0 2px 6px rgba(26,26,26,0.06);
-    border-radius: 12px;
-  }
-
-  /* Glass side-sheet (right-side drill-in) */
-  .glass-sheet {
-    background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.62) 100%);
-    backdrop-filter: blur(36px) saturate(150%);
-    -webkit-backdrop-filter: blur(36px) saturate(150%);
-    border-left: 1px solid rgba(255,255,255,0.7);
-    box-shadow:
-      inset 1px 0 0 rgba(255,255,255,0.7),
-      -24px 0 60px -20px rgba(26,26,26,0.18);
-  }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .glass-sheet, .glass-dropdown { background: #FBFAF6; }
-  }
-
-  /* Scrim behind the sheet — dim + blur the page */
-  .glass-scrim {
-    background: rgba(26,26,26,0.18);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-
-  /* Dark glass variant — for the date-range pill / ink chips */
-  .glass-dark {
-    background: rgba(26,26,26,0.88);
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    color: #F7F6F3;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   .glass-rail {
@@ -370,34 +249,9 @@
     box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
   }
 
-  /* Skeleton shimmer for unwired metrics */
-  @keyframes glass-shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  .glass-skeleton {
-    display: inline-block;
-    border-radius: 6px;
-    background: linear-gradient(90deg, rgba(26,26,26,0.05) 0%, rgba(26,26,26,0.10) 50%, rgba(26,26,26,0.05) 100%);
-    background-size: 200% 100%;
-    animation: glass-shimmer 1.6s ease-in-out infinite;
-  }
-
-  /* Sheet slide-in spring */
-  @keyframes sheet-in {
-    from { transform: translateX(8%); opacity: 0; }
-    to   { transform: translateX(0);  opacity: 1; }
-  }
-  .animate-sheet-in { animation: sheet-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-
   @media (prefers-reduced-motion: reduce) {
     .glass-card,
     .glass-card-hover { transition: none; }
-    .glass-card-hover:hover { transform: none; }
-    .glass-card-hover::after { display: none; }
-    .glass-skeleton { animation: none; }
-    .animate-sheet-in { animation: none; }
-    .animate-card-enter { animation: none; }
   }
 }
 
@@ -859,6 +713,18 @@
     100% { transform: translateX(220%); }
   }
 
+  /* ── Glass card ── */
+  .glass-card {
+    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: hsl(var(--accent) / 0.3);
+    box-shadow: 0 8px 32px hsl(var(--accent) / 0.08);
+    transform: translateY(-2px);
+  }
+
   /* ── Section divider ── */
   .section-divider {
     @apply w-12 h-px bg-accent/40 mx-auto;
@@ -996,178 +862,3 @@
     transition: none !important;
   }
 }
-
-/* ============================================================
-   Backend — Linear / Vercel Editorial System (wins cascade)
-   Off-white canvas, hairline rules, restrained color, big serif
-   numerical headlines. Replaces the prior liquid-glass recipe.
-   ============================================================ */
-:root {
-  --ed-canvas: #FAFAF7;
-  --ed-surface: #FFFFFF;
-  --ed-sub: #F5F4F0;
-  --ed-line: #E8E6E0;
-  --ed-ink: #111111;
-  --ed-muted: #6B6862;
-  --ed-faint: #A8A59E;
-  --ed-meta: #8B887F;
-  --ed-signal: #2E6BE6;
-  --ed-warn: #B8841C;
-  --ed-hover: rgba(17,17,17,0.04);
-}
-
-.admin-bloom {
-  background: var(--ed-canvas) !important;
-  background-image: none !important;
-  background-attachment: scroll !important;
-}
-.admin-bloom::before { display: none !important; }
-
-/* Surfaces — flat white, single hairline, no shadow, no blur */
-.glass-card,
-.glass-panel,
-.glass-surface {
-  background: var(--ed-surface) !important;
-  background-image: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-line) !important;
-  border-radius: 10px !important;
-  box-shadow: none !important;
-  transition: border-color 180ms ease, background-color 180ms ease !important;
-}
-.glass-card::before,
-.glass-card::after,
-.glass-panel::before,
-.glass-panel::after,
-.glass-surface::before,
-.glass-surface::after { display: none !important; }
-
-.glass-card-hover { transition: border-color 180ms ease, background-color 180ms ease !important; }
-.glass-card-hover:hover,
-.glass-card:hover {
-  transform: none !important;
-  border-color: #D8D5CC !important;
-  background: #FCFCFA !important;
-  box-shadow: none !important;
-}
-
-.glass-rail { display: none !important; }
-
-.glass-chip {
-  background: var(--ed-sub) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-line) !important;
-  box-shadow: none !important;
-  border-radius: 6px !important;
-  color: var(--ed-muted) !important;
-}
-.glass-chip-accent { background: rgba(46,107,230,0.08) !important; border-color: rgba(46,107,230,0.22) !important; color: var(--ed-signal) !important; }
-
-/* Tables inside panels — hairline rows, mono headers, subtle hover */
-.glass-panel table, .glass-surface table { border-collapse: collapse !important; }
-.glass-panel thead th, .glass-surface thead th {
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  color: var(--ed-meta) !important;
-  border-bottom: 1px solid var(--ed-line) !important;
-  background: transparent !important;
-}
-.glass-panel tbody tr, .glass-surface tbody tr { border-bottom: 1px solid var(--ed-line) !important; }
-.glass-panel tbody tr:last-child, .glass-surface tbody tr:last-child { border-bottom: 0 !important; }
-.glass-panel tbody tr:hover, .glass-surface tbody tr:hover { background: var(--ed-hover) !important; }
-.glass-panel td, .glass-panel th, .glass-surface td, .glass-surface th { border-color: var(--ed-line) !important; }
-
-/* Top bar — single hairline, no fill */
-.glass-topbar {
-  background: var(--ed-canvas) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-bottom: 1px solid var(--ed-line) !important;
-  box-shadow: none !important;
-}
-
-/* Dark control surface — used by date-range pill */
-.glass-dark {
-  background: var(--ed-ink) !important;
-  color: #FAFAF7 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-ink) !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
-}
-
-/* Badges — mono, 1px border, no glass */
-.glass-badge {
-  background: var(--ed-surface) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-line) !important;
-  border-radius: 4px !important;
-  color: var(--ed-muted) !important;
-  box-shadow: none !important;
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-  font-size: 10px !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  padding: 2px 8px !important;
-}
-.glass-badge-up { color: var(--ed-signal) !important; border-color: rgba(46,107,230,0.30) !important; background: rgba(46,107,230,0.06) !important; }
-.glass-badge-down { color: var(--ed-warn) !important; border-color: rgba(184,132,28,0.30) !important; background: rgba(184,132,28,0.06) !important; }
-.glass-badge-accent, .glass-badge.is-active { background: var(--ed-ink) !important; color: #FAFAF7 !important; border-color: var(--ed-ink) !important; }
-
-/* Sheets & dropdowns — flat white card */
-.glass-sheet, .glass-dropdown {
-  background: var(--ed-surface) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-line) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 1px 0 var(--ed-line), 0 12px 32px rgba(17,17,17,0.06) !important;
-}
-.glass-scrim { background: rgba(17,17,17,0.20) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-
-/* Skeleton — quiet wash, no shimmer race */
-.glass-skeleton {
-  background: var(--ed-sub) !important;
-  background-image: linear-gradient(90deg, var(--ed-sub) 0%, #EDECE6 50%, var(--ed-sub) 100%) !important;
-  background-size: 200% 100% !important;
-  border-radius: 4px !important;
-}
-
-/* Editorial serif KPI numeral */
-.ed-numeral {
-  font-family: 'Instrument Serif', Georgia, serif !important;
-  font-weight: 400 !important;
-  font-style: normal !important;
-  letter-spacing: -0.02em !important;
-  color: var(--ed-ink) !important;
-  line-height: 0.95 !important;
-  font-variant-numeric: lining-nums tabular-nums !important;
-}
-
-/* Recharts — editorial palette */
-.recharts-cartesian-grid line { stroke: rgba(17,17,17,0.06) !important; stroke-dasharray: 1 4 !important; }
-.recharts-cartesian-axis-line, .recharts-cartesian-axis-tick-line { stroke: transparent !important; }
-.recharts-cartesian-axis-tick-value, .recharts-text {
-  fill: var(--ed-meta) !important;
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-  font-size: 10px !important;
-  letter-spacing: 0.04em !important;
-}
-.recharts-default-tooltip, .recharts-tooltip-wrapper > div {
-  background: var(--ed-surface) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid var(--ed-line) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 8px 24px rgba(17,17,17,0.08) !important;
-  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-  font-size: 11px !important;
-}
-.recharts-legend-item-text { color: var(--ed-muted) !important; font-family: 'JetBrains Mono', ui-monospace, monospace !important; font-size: 10px !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; }

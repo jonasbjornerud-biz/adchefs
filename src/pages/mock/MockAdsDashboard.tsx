@@ -50,7 +50,7 @@ const MockAdsDashboard = () => {
   }, [ads]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
@@ -66,7 +66,7 @@ const MockAdsDashboard = () => {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#FAFAF7]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -77,10 +77,10 @@ const MockAdsDashboard = () => {
             </button>
             <span className="text-sm font-medium text-[#1A1A1A] tracking-tight">KPI Dashboard</span>
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] inline-flex items-center gap-1.5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] inline-flex items-center gap-1.5">
             <span className="relative flex w-1.5 h-1.5">
-              <span className="absolute inset-0 rounded-full bg-[#2E6BE6] animate-ping opacity-60" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
+              <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
             </span>
             <Wifi className="w-3 h-3" strokeWidth={1.5} /> Demo
           </span>
@@ -93,7 +93,7 @@ const MockAdsDashboard = () => {
         <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
           Ad <em>performance</em>, at a glance.
         </h1>
-        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
+        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
           A demo view with sample Meta Ads data — ROAS, CPA, hook rate, hold rate. Drill into any individual ad to see daily trends.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
@@ -105,7 +105,7 @@ const MockAdsDashboard = () => {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
-          <KpiCard label="ROAS" value={`${metrics.avgROAS}x`} icon={<TrendingUp className="w-3.5 h-3.5" />} trend={{ value: 8.7, positive: true }} delay={0} spark={sparks.roas} accent="emerald" threshold={{ value: 1, label: "BEROAS" }} />
+          <KpiCard label="ROAS" value={`${metrics.avgROAS}x`} icon={<TrendingUp className="w-3.5 h-3.5" />} trend={{ value: 8.7, positive: true }} delay={0} spark={sparks.roas} accent="emerald" />
           <KpiCard label="CPA" value={`$${metrics.avgCPA}`} icon={<DollarSign className="w-3.5 h-3.5" />} trend={{ value: 5.1, positive: false }} delay={80} spark={sparks.cpa} accent="pink" />
           <KpiCard label="CTR" value={`${metrics.avgCTR}%`} icon={<MousePointerClick className="w-3.5 h-3.5" />} trend={{ value: 12.3, positive: true }} delay={160} spark={sparks.ctr} accent="purple" />
           <KpiCard label="Hook Rate" value={`${metrics.avgHookRate}%`} icon={<Eye className="w-3.5 h-3.5" />} trend={{ value: 3.2, positive: true }} delay={240} spark={sparks.hook} accent="blue" />

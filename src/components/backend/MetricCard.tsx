@@ -28,8 +28,6 @@ export function MetricCard({
   className?: string;
 }) {
   const Tag = (interactive || onClick ? "button" : "div") as any;
-  const hasValue =
-    value !== null && value !== undefined && value !== "" && value !== "—";
   return (
     <Tag
       onClick={onClick}
@@ -46,30 +44,28 @@ export function MetricCard({
           {label}
         </span>
         {icon && (
-          <span className="w-7 h-7 glass-chip flex items-center justify-center text-[#3B86A8]">
+          <span className="text-[#75726B] group-hover:text-[#3B86A8] transition-colors">
             {icon}
           </span>
         )}
       </div>
-      {hasValue ? (
-        <div
-          className="text-[28px] leading-none tabular-nums tracking-[-0.025em] text-[#0F0F0F]"
-          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
-        >
-          {value}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1.5">
-          <span className="glass-skeleton h-7 w-20" aria-hidden />
-          <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#9A988F]">
-            Awaiting data
-          </span>
-        </div>
-      )}
+      <div
+        className="text-[28px] leading-none tabular-nums tracking-[-0.025em] text-[#0F0F0F]"
+        style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+      >
+        {value}
+      </div>
       <div className="mt-3 flex items-end justify-between gap-3 min-h-[20px]">
         <div className="flex items-center gap-2">
-          {hasValue && delta && (
-            <span className={cn("glass-badge", delta.positive ? "glass-badge-up" : "glass-badge-down")}>
+          {delta && (
+            <span
+              className={cn(
+                "mono text-[10px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-[3px]",
+                delta.positive
+                  ? "text-[#1F5A3D] bg-[#ECFDF3]"
+                  : "text-[#7C2A2A] bg-[#FCEDED]",
+              )}
+            >
               {delta.positive ? "▲" : "▼"} {Math.abs(delta.value)}%
             </span>
           )}

@@ -18,13 +18,20 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "relative glass-card px-8 py-14 text-center",
+        "relative rounded-[6px] border border-[#E2E0D9] bg-white px-8 py-14 text-center overflow-hidden",
         className,
       )}
     >
-      <span aria-hidden className="glass-rail" />
+      <span
+        aria-hidden
+        className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-24 rounded-b"
+        style={{
+          background:
+            "linear-gradient(90deg,transparent 0%,#9ED8F5 50%,transparent 100%)",
+        }}
+      />
       {icon && (
-        <div className="mx-auto mb-4 w-10 h-10 glass-chip flex items-center justify-center text-[#3B86A8]">
+        <div className="mx-auto mb-4 w-10 h-10 rounded-[6px] border border-[#E2E0D9] bg-[#FAF8F3] flex items-center justify-center text-[#3B86A8]">
           {icon}
         </div>
       )}

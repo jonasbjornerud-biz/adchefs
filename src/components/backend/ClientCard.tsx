@@ -38,8 +38,16 @@ export function ClientCard({
 }) {
   const logo = useLogo(client.logo_url);
   return (
-    <div className="group relative glass-card glass-card-hover">
-      <span aria-hidden className="glass-rail" />
+    <div className="group relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-px hover:border-[#1A1A1A]/30 hover:shadow-[0_1px_2px_rgba(26,26,26,0.04),0_14px_30px_-16px_rgba(26,26,26,0.18)]">
+      <span
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-[2px]"
+        style={{
+          background:
+            "linear-gradient(90deg,#9ED8F5 0%,#3B86A8 40%,transparent 100%)",
+          opacity: 0.55,
+        }}
+      />
       <button
         type="button"
         onClick={onOpen}

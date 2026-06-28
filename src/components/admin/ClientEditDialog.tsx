@@ -173,7 +173,7 @@ export default function ClientEditDialog({ client, open, onOpenChange, onSaved, 
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto glass-sheet border-0">
+      <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto bg-[#F7F6F3] border-l border-[#E2E0D9]">
         <SheetHeader className="text-left">
           <div>
             <span className="inline-block mono text-[11px] uppercase tracking-[0.15em] text-[#3B86A8] border border-[#3B86A8] rounded-[4px] px-[14px] py-[6px]">
