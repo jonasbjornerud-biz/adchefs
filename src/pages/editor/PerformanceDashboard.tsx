@@ -201,46 +201,6 @@ export default function PerformanceDashboard() {
     return { delivered, approved: approvedCount, avg, fcar };
   }, [filteredEod, approvedCount]);
 
-  // Sparkline series, derived from existing aggregates (no new queries).
-  const sparks = useMemo(() => {
-    const weeklySorted = [...weeklyOutputAll].map(w => w.total);
-    const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const approvedSeries = monthlyApproved
-      .slice()
-      .sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month))
-      .map(m => m.count);
-    return { delivered: weeklySorted, approved: approvedSeries };
-  }, [weeklyOutputAll, monthlyApproved]);
-
-  // Per-editor leaderboard for the selected month — delivered + approval rate.
-  const leaderboard = useMemo(() => {
-    if (!data) return [] as Array<{ name: string; delivered: number; approved: number; approvalRate: number }>;
-    const monthLower = month.toLowerCase();
-    const deliveredMap: Record<string, number> = {};
-    data.eod
-      .filter(r => r.Month?.toLowerCase() === monthLower)
-      .forEach(r => {
-        const n = r.Name?.trim();
-        if (!n) return;
-        deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
-      });
-    const approvedMap: Record<string, number> = {};
-    data.paymentRaw.slice(1).forEach(r => {
-      const editorName = r[1]?.trim();
-      const approvedMonth = r[2]?.trim();
-      if (!editorName || !approvedMonth) return;
-      if (approvedMonth.toLowerCase() !== monthLower) return;
-      approvedMap[editorName] = (approvedMap[editorName] || 0) + 1;
-    });
-    return Object.entries(deliveredMap)
-      .map(([name, delivered]) => {
-        const approved = approvedMap[name] || 0;
-        const approvalRate = delivered > 0 ? Math.round((approved / delivered) * 100) : 0;
-        return { name, delivered, approved, approvalRate };
-      })
-      .sort((a, b) => b.delivered - a.delivered);
-  }, [data, month]);
-
   const dailyByWeek = useMemo(() => {
     const weeks = [...new Set(filteredEod.map(r => r.Week))].sort((a, b) => parseInt(a) - parseInt(b));
     const dayMap: Record<string, Record<string, number>> = {};
