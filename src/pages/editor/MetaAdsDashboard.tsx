@@ -71,7 +71,7 @@ const MetaAdsDashboard = () => {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 glass-topbar">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button

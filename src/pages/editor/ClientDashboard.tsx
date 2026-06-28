@@ -189,7 +189,7 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
 
       {/* Header */}
       {!hideChrome && (
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 glass-topbar">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#1A1A1A] text-xs font-semibold border border-[#1A1A1A]/15 bg-[#9ED8F5] overflow-hidden">
