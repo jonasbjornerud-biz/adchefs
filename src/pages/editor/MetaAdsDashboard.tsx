@@ -11,6 +11,7 @@ import { AdMetric } from "@/data/mockAds";
 import { useMetaAds } from "@/hooks/useMetaAds";
 import { MousePointerClick, DollarSign, TrendingUp, Eye, Play, Wifi, WifiOff, Loader2, Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import AmbientBackground from "@/components/backend/AmbientBackground";
 
 const MetaAdsDashboard = () => {
   const navigate = useNavigate();
@@ -56,19 +57,7 @@ const MetaAdsDashboard = () => {
 
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
-        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
-      />
+      <AmbientBackground />
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">
