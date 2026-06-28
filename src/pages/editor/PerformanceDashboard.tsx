@@ -4,13 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Client } from '@/types/playbook';
 import Papa from 'papaparse';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer,
 } from 'recharts';
 import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KpiCard } from '@/components/dashboard/KpiCard';
-import HeroBackground from '@/components/HeroBackground';
+import AmbientBackground, { ChartPatternDefs } from '@/components/backend/AmbientBackground';
 
 interface EodRow { Month: string; Week: string; Date: string; Name: string; Editor: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
 interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved Month': string; [k: string]: string; }
@@ -18,9 +18,9 @@ interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; 
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-// Consistent accent for all charts. Weeks vary by opacity only.
+const INK = '#1A1A1A';
 const ACCENT = '#9ED8F5';
-const WEEK_OPACITIES = [1, 0.78, 0.58, 0.42, 0.3, 0.22];
+const HAIRLINE = 'url(#hairline-ink)';
 
 const AXIS_TICK = {
   fill: '#75726B',
@@ -335,9 +335,7 @@ export default function PerformanceDashboard() {
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
       {/* Marketing-site hero background — reused for surface parity */}
-      <div className="absolute inset-x-0 top-0 h-[640px] pointer-events-none z-[1] overflow-hidden">
-        <HeroBackground />
-      </div>
+      <AmbientBackground />
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">
@@ -414,15 +412,33 @@ export default function PerformanceDashboard() {
                 <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dailyByWeek} barCategoryGap="20%">
+                    <BarChart
+                      data={dailyByWeek}
+                      barCategoryGap="22%"
+                      barGap={3}
+                      margin={{ top: 8, right: 8, left: 0, bottom: 4 }}
+                    >
+                      <ChartPatternDefs />
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
                       <XAxis dataKey="day" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
                       <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
                       <Legend wrapperStyle={{ fontSize: 9, color: '#75726B', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.12em', textTransform: 'uppercase' }} />
-                      {weekKeys.map((wk, i) => (
-                        <Bar key={wk} dataKey={wk} fill={ACCENT} fillOpacity={WEEK_OPACITIES[i % WEEK_OPACITIES.length]} radius={[2, 2, 0, 0]} />
-                      ))}
+                      {weekKeys.map((wk, i) => {
+                        const isLatest = i === weekKeys.length - 1;
+                        return (
+                          <Bar
+                            key={wk}
+                            dataKey={wk}
+                            fill={isLatest ? ACCENT : HAIRLINE}
+                            stroke={isLatest ? 'none' : INK}
+                            strokeOpacity={isLatest ? 0 : 0.45}
+                            strokeWidth={isLatest ? 0 : 0.75}
+                            radius={[2, 2, 0, 0]}
+                            maxBarSize={28}
+                          />
+                        );
+                      })}
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -435,12 +451,16 @@ export default function PerformanceDashboard() {
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={weeklyOutputAll}>
+                      <BarChart data={weeklyOutputAll} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
                         <XAxis dataKey="week" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} tickFormatter={(v) => String(v).toUpperCase()} />
                         <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
-                        <Bar dataKey="total" fill={ACCENT} radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="total" radius={[2, 2, 0, 0]} maxBarSize={36}>
+                          {weeklyOutputAll.map((_, i) => (
+                            <Cell key={i} fill={i === weeklyOutputAll.length - 1 ? ACCENT : INK} />
+                          ))}
+                        </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -459,12 +479,16 @@ export default function PerformanceDashboard() {
               ) : (
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyApproved}>
+                    <BarChart data={monthlyApproved} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
                       <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
                       <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="count" fill={ACCENT} radius={[2, 2, 0, 0]} name="Approved" />
+                      <Bar dataKey="count" radius={[2, 2, 0, 0]} name="Approved" maxBarSize={48}>
+                        {monthlyApproved.map((m, i) => (
+                          <Cell key={i} fill={m.month.toLowerCase() === month.toLowerCase() ? ACCENT : INK} />
+                        ))}
+                      </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
