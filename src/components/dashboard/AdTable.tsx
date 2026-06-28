@@ -65,12 +65,12 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
 
   return (
     <div
-      className="relative rounded-[4px] overflow-hidden animate-card-enter bg-white border border-[#E2E0D9]"
+      className="relative glass-panel animate-card-enter"
       style={{ animationDelay: "400ms" }}
     >
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+      <span aria-hidden className="glass-rail" />
       {/* Search bar */}
-      <div className="px-4 py-3 border-b border-[#E2E0D9] flex items-center gap-2 relative">
+      <div className="px-4 py-3 border-b border-[rgba(26,26,26,0.06)] flex items-center gap-2 relative">
         <div className="relative flex-1 max-w-md">
           <Search className="w-3.5 h-3.5 text-[#75726B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" strokeWidth={1.5} />
           <input
@@ -78,7 +78,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search ad name or campaign…"
-            className="w-full h-9 pl-9 pr-3 rounded-[4px] bg-[#F7F6F3] border border-[#E2E0D9] text-sm text-[#1A1A1A] placeholder:text-[#75726B] focus:outline-none focus:border-[#1A1A1A] transition-colors"
+            className="w-full h-9 pl-9 pr-3 rounded-[4px] bg-white/60 border border-white/70 backdrop-blur-md text-sm text-[#1A1A1A] placeholder:text-[#75726B] focus:outline-none focus:border-[#9ED8F5] transition-colors"
           />
         </div>
         <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] ml-auto">{sorted.length} {sorted.length === 1 ? 'ad' : 'ads'}</span>
@@ -89,10 +89,10 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
           <p className="text-[#75726B] text-sm">{query ? `No ads match "${query}"` : 'No ads found for this date range'}</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-[#F7F6F3]">
+              <tr className="bg-white/40">
                 {([
                   { key: "name" as SortKey, label: "Ad Name" },
                   { key: "spend" as SortKey, label: "Spend" },
@@ -122,7 +122,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                 <tr
                   key={ad.id}
                   onClick={() => onSelect(ad)}
-                  className="cursor-pointer transition-colors duration-200 hover:bg-[#F7F6F3] border-b border-[#E2E0D9] last:border-b-0"
+                  className="cursor-pointer transition-colors duration-150 hover:bg-[rgba(238,237,232,0.6)] border-b border-[rgba(26,26,26,0.05)] last:border-b-0"
                 >
                   <td className="px-4 py-5 whitespace-nowrap text-[#1A1A1A] font-medium">{ad.name}</td>
                   <td className="px-4 py-5 whitespace-nowrap font-semibold text-[#1A1A1A] tabular-nums">${ad.spend.toLocaleString()}</td>
@@ -148,7 +148,7 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       title="Open in Meta Ad Library"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] text-[#1A1A1A] bg-[#F7F6F3] hover:bg-[#9ED8F5]/30 border border-[#E2E0D9] hover:border-[#1A1A1A] transition-all"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] text-[#1A1A1A] bg-white/60 hover:bg-[#9ED8F5]/30 border border-white/70 hover:border-[#9ED8F5] backdrop-blur-md transition-all"
                     >
                       <ExternalLink className="w-3 h-3" strokeWidth={1.5} /> Library
                     </a>
