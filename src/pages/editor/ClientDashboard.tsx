@@ -168,7 +168,7 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
   ];
 
   return (
-    <div className={`${hideChrome ? '' : 'min-h-screen'} bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden`}>
+    <div className={`${hideChrome ? '' : 'min-h-screen admin-bloom'} text-[#1A1A1A] relative overflow-hidden`}>
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"

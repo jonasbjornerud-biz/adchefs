@@ -859,18 +859,6 @@
     100% { transform: translateX(220%); }
   }
 
-  /* ── Glass card ── */
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  }
-
-  .glass-card:hover {
-    border-color: hsl(var(--accent) / 0.3);
-    box-shadow: 0 8px 32px hsl(var(--accent) / 0.08);
-    transform: translateY(-2px);
-  }
-
   /* ── Section divider ── */
   .section-divider {
     @apply w-12 h-px bg-accent/40 mx-auto;
