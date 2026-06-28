@@ -1,48 +1,93 @@
+# Backend visual overhaul — Linear / Vercel editorial
 
-Scope: landing page (`/`) only. Visual + copy. No backend changes.
+A complete restyle of every authenticated surface. Light-mode, off-white canvas, hairline rules, restrained color, big numerical headlines with quiet sparklines. No more frosted glass, no more radial blooms, no more dark slate — that direction is retired for the backend.
 
-### 1. `src/components/WhyAdChefs.tsx` — restyle "How it started"
-- Wrap section in the same airy white-with-blue-wash background used by `TwoWaysToWork` / `MeVsAgency` (white→#F8F9FA gradient + soft `rgba(158,216,245,0.10)` radial wash). Remove the current `bg-secondary border-y` slab.
-- Replace the bare 2‑column layout with a single rounded `32px` glass card (`bg-white/70`, `backdrop-blur-[40px]`, white inner highlight + soft blue shadow) matching the Comparison card treatment, so the section reads as part of the same family.
-- Inside the card: portrait (slightly larger, soft blue ring instead of solid #3B86A8), eyebrow "HOW IT STARTED", same headline, same body copy, signature row preserved.
-- Keep all existing copy untouched.
+Scope locked to backend only. The marketing site (`/`, `/about`, `/creative-strategy`, `/editor-placement`) is untouched.
 
-### 2. `src/components/ResultsMarquee.tsx` — case work level-up
-- Add eyebrow above the heading already there ("CASE WORK" — keep) and confirm the heading styling matches other sections.
-- Reframe the cards as ad-stat screenshots placeholders (not phone video cards):
-  - Change aspect to `4/5` (a touch wider) so screenshots fit naturally.
-  - Replace the play glyph with a subtle "Screenshot placeholder" mono label + a tiny faux KPI strip (ROAS / CTR placeholders) so when Jonas drops in real ad-stat images they sit naturally. Keep cards as `<div>` with a `bg-cover` style hook so a future `image` prop swaps the placeholder for real screenshots.
-  - Tighten the swerve (reduce rotation range to ±1.5°, vertical offsets to ±18px) — feels more premium, less crooked.
-  - Card chrome: thinner white ring, slightly deeper soft shadow, rounded `[18px]`.
-- Below the marquee, add a centered disclaimer in muted mono/italic 12–13px:  
-  *"Some case work includes editor placement services with a separate strategist."*
+## Design system (the new look)
 
-### 3. `src/components/MeVsAgency.tsx` — comparison refinements
-- Reduce shimmer intensity: drop sweep opacity peak from `0.35` white band to ~`0.18`, slow the animation from 6s → 10s, and remove the conic-glow spin (or drop opacity to 0.25) so the pedestal feels calmer.
-- Update the eyebrow above the heading from `"The comparison"` to `"OPERATOR VS AGENCY"` (correct, in line with the section's actual framing).
-- Replace the bottom disclaimer with:  
-  *"Some agencies are great, but most aren't built for brands that value an in-house experience."*
+**Canvas**
+- Background: `#FAFAF7` (off-white paper)
+- Card / panel: pure `#FFFFFF` with a 1px hairline border `#E8E6E0` and **no shadow**
+- Inner sub-panel: `#F5F4F0`
+- Section divider: 1px hairline `#E8E6E0`, never a shadow
+- Selection / hover wash: `rgba(26,26,26,0.04)`
 
-### 4. `src/components/TwoWaysToWork.tsx` — add missing eyebrow
-- Above the heading add `<span className="eyebrow">SERVICES</span>` (or `"HOW I WORK"` — `SERVICES` is shortest and matches the section `id="services"`).
+**Type**
+- Display numbers: Instrument Serif, 56–72px, tracking -0.02em (the hero of every KPI card)
+- UI / body: Inter, 13–14px, tracking -0.01em
+- Eyebrows / meta / axes: JetBrains Mono, 10–11px, uppercase, tracking 0.08em, color `#8B887F`
+- Primary text: `#111111`. Muted: `#6B6862`. Faint: `#A8A59E`.
 
-### 5. `src/components/Footer.tsx` — copy swap
-- Replace the tagline paragraph with:  
-  *"In-house creative strategy from A to Z with dedicated video editors matched to your brand."*
-- Remove the FAQ link from the footer Navigate list (since FAQ section is being removed).
+**Accent (used sparingly, one per card max)**
+- Signal blue `#2E6BE6` for deltas-up, primary lines, focus rings
+- Warning amber `#B8841C` for deltas-down
+- Everything else stays mono. No gradients on surfaces. No glow.
 
-### 6. `src/pages/Index.tsx` — remove FAQ
-- Remove `import FAQ` and the `<ScrollReveal><FAQ /></ScrollReveal>` line. Leave the `FAQPage` JSON‑LD in place for SEO (still accurate Q&A about the service) — confirm with user only if you'd rather strip it too; default is to keep it.
-- Final flow: Hero → WhyAdChefs → TwoWaysToWork → ResultsMarquee → MeVsAgency → CalendlyBooking → Footer.
+**Charts**
+- Background: transparent on white card
+- Gridlines: 1px dotted `rgba(17,17,17,0.06)`
+- Axes: JetBrains Mono 10px, `#8B887F`
+- Primary series: Ink `#111111`, 1.5px line
+- Secondary series: Signal blue `#2E6BE6`, 1.5px line
+- Area fills: 6% opacity of the line color, no gradient stops
+- Bars: solid Ink with 4px rounded top caps, hover state lifts to `#2E6BE6`
+- Threshold lines: 1px dotted `#A8A59E`
 
-### Eyebrow audit summary (final state)
-- Hero: existing eyebrow `BUILT FOR DTC BRANDS` — unchanged.
-- WhyAdChefs: `HOW IT STARTED` — unchanged.
-- TwoWaysToWork: **add** `SERVICES`.
-- ResultsMarquee: `CASE WORK` — unchanged.
-- MeVsAgency: change to `OPERATOR VS AGENCY`.
-- CalendlyBooking: leave as-is.
+**Motion**
+- 180ms ease-out on hover, 240ms ease-out on mount
+- Count-up on KPI numbers (already wired) — keep
+- No shimmer, no specular, no rotating glow
 
-### Out of scope
-- No FAQ component deletion (file stays; only removed from `/`). Service pages still link nowhere to FAQ.
-- No changes to backend, navigation, or service subpages.
+## What changes, file by file
+
+**Global tokens**
+- Replace the "Liquid Glass" CSS block in `src/index.css` (`.admin-bloom`, `.glass-card`, `.glass-panel`, `.glass-badge`, `.glass-dark`, recharts overrides) with the new editorial recipe. Keep the class names so consuming components don't need to be rewritten — they just get a new look. The `.admin-bloom` background becomes a flat `#FAFAF7` with a single hairline top border on scroll.
+
+**Shell**
+- `AdminShell.tsx`: thin left rail, mono section labels, current route as a 1px left accent bar (not a filled pill). Top bar collapses to a hairline.
+- `Login.tsx`: centered card, big serif "Sign in", mono field labels.
+
+**KPI dashboard (`/dashboard`, `/ads`)**
+- `KpiCard.tsx`: serif headline number, mono eyebrow, sparkline below at 24px height, delta pill in mono with up/down chevron. Threshold rendered as a dotted hairline through the sparkline.
+- `OverviewChart.tsx`: Revenue as bold Ink line, Spend as Signal-blue line + 6% area, BEROAS as dotted muted threshold. Legend as mono chips, top-right.
+- `MetaAdsDashboard.tsx` + `AdTable.tsx`: rows on white, alternating wash `#FAFAF7`, status pills as 1px-bordered mono chips, hook/hold as 4px Ink-to-Signal gradient bars on a `#F5F4F0` track.
+- `DateRangePicker.tsx`: white card, mono caption, single Ink accent on the active range.
+
+**Editor performance (`/performance`)**
+- Hero strip: 4 KPI cards in the new style.
+- "Daily deliveries by week": bars in Ink with mono week chips below, dotted gridlines, no gradient.
+- "Weekly output": single Ink line with 6% fill.
+- "Editor leaderboard": horizontal bars on white, name in Inter, count in serif at the row end, approval-rate badge as mono chip.
+- "Editor breakdown" table: hairline rows, mono headers, share-% drawn as a 2px Ink underline beneath the row.
+- "Awaiting data" state: serif "—" with a single mono caption underneath.
+
+**/admin landing + Client list**
+- Clients shown as a hairline table (not cards), columns: brand, owner, spend last 30d, last sync, status. Status as mono pill. Row click → client detail.
+- Top: one big serif KPI strip — total brands, total spend MTD, active editors, deliveries this week.
+
+**Client home (when a client logs in at `/dashboard`)**
+- Same KPI strip + Overview chart on top, ad table below — all in the new editorial style. Identical to the admin view, just scoped to their data.
+
+**Mock dashboards**
+- `MockPerformanceDashboard.tsx` and `MockAdsDashboard.tsx` mirror the real ones so the demo stays visually consistent.
+
+## What I will NOT touch
+
+- Marketing routes (`/`, `/about`, `/creative-strategy`, `/editor-placement`, all their components)
+- Supabase schema, RLS, edge functions, queries
+- Auth, routing, data fetching logic
+- The Payment Tracking / `_Helpers` fix I just shipped — already done in this turn
+
+## Out of scope for this pass (call out so you can decide later)
+
+- New chart types (e.g. cohort grids, funnel)
+- Adding new KPIs or data sources
+- Mobile-specific layouts for the backend (it stays desktop-first)
+
+## Technical notes
+
+- All color, radius, and shadow values land as semantic tokens in `src/index.css`. Components keep using `glass-card`, `glass-panel`, `glass-badge`, `glass-dark` — those class names get redefined to the editorial recipe so the change propagates without touching every component.
+- Recharts overrides go in one place in `src/index.css` under `.recharts-*` selectors.
+- Count-up hook (`src/lib/useCountUp.ts`) stays as-is.
+- One commit, presentational only.

@@ -14,15 +14,16 @@ interface KpiCardProps {
 }
 
 function responsiveSize(value: string): string {
-  if (value.length > 8) return "text-[26px]";
-  if (value.length > 6) return "text-[32px]";
-  return "text-[40px]";
+  // Editorial serif headline — large, confident, but tightens for long numbers.
+  if (value.length > 8) return "text-[44px]";
+  if (value.length > 6) return "text-[52px]";
+  return "text-[64px]";
 }
 
 function Sparkline({ data, gradId, threshold }: { data: number[]; gradId: string; threshold?: { value: number; label?: string } }) {
   if (!data || data.length < 2) return null;
   const w = 120;
-  const h = 42;
+  const h = 28;
   const thresholdVal = threshold?.value;
   const min = Math.min(...data, ...(thresholdVal !== undefined ? [thresholdVal] : []));
   const max = Math.max(...data, ...(thresholdVal !== undefined ? [thresholdVal] : []));
@@ -32,24 +33,20 @@ function Sparkline({ data, gradId, threshold }: { data: number[]; gradId: string
   const area = `0,${h} ${points} ${w},${h}`;
   const thY = thresholdVal !== undefined ? h - ((thresholdVal - min) / range) * h : 0;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-10 overflow-visible" preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-7 overflow-visible" preserveAspectRatio="none">
       <defs>
         <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
-          <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
-        </linearGradient>
-        <linearGradient id={`${gradId}-line`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#3B86A8" />
-          <stop offset="100%" stopColor="#1A1A1A" />
+          <stop offset="0%" stopColor="#111111" stopOpacity={0.10} />
+          <stop offset="100%" stopColor="#111111" stopOpacity={0} />
         </linearGradient>
       </defs>
       <polygon points={area} fill={`url(#${gradId})`} />
-      <polyline points={points} fill="none" stroke={`url(#${gradId}-line)`} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="#111111" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
       {thresholdVal !== undefined && (
         <g>
-          <line x1={0} x2={w} y1={thY} y2={thY} stroke="#75726B" strokeWidth={0.75} strokeDasharray="2 3" vectorEffect="non-scaling-stroke" />
+          <line x1={0} x2={w} y1={thY} y2={thY} stroke="#A8A59E" strokeWidth={0.75} strokeDasharray="1 3" vectorEffect="non-scaling-stroke" />
           {threshold?.label && (
-            <text x={w - 2} y={Math.max(8, thY - 3)} textAnchor="end" fontSize="7" fontFamily="'JetBrains Mono', monospace" fill="#75726B">{threshold.label}</text>
+            <text x={w - 2} y={Math.max(7, thY - 2)} textAnchor="end" fontSize="6.5" fontFamily="'JetBrains Mono', monospace" fill="#8B887F">{threshold.label}</text>
           )}
         </g>
       )}
@@ -73,38 +70,29 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, threshold
 
   return (
     <div
-      className="group glass-card glass-card-hover p-5 flex flex-col gap-4 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0 overflow-hidden"
+      className="group glass-card glass-card-hover p-6 flex flex-col gap-5 cursor-default animate-card-enter min-w-[200px] flex-1 flex-shrink-0 relative"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span aria-hidden className="glass-rail" />
-      {/* Subtle wash bottom-right */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-12 -bottom-12 w-40 h-40 rounded-full opacity-50"
-        style={{ background: 'radial-gradient(circle, rgba(158,216,245,0.18) 0%, transparent 65%)' }}
-      />
-
-      <div className="flex items-start justify-between relative">
-        <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-medium text-[#75726B]">
+      <div className="flex items-start justify-between">
+        <span className="text-[10px] uppercase tracking-[0.14em] font-mono font-medium text-[#8B887F]">
           {label}
         </span>
-        <span className="w-7 h-7 glass-chip flex items-center justify-center text-[#3B86A8]">
+        <span className="w-6 h-6 flex items-center justify-center text-[#A8A59E]">
           {icon}
         </span>
       </div>
 
-      <div className="flex flex-col gap-2 relative">
+      <div className="flex flex-col gap-3">
         {hasValue ? (
           <span
-            className={`font-semibold text-[#0F0F0F] leading-none whitespace-nowrap tracking-[-0.03em] tabular-nums ${responsiveSize(display)}`}
-            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+            className={`ed-numeral whitespace-nowrap ${responsiveSize(display)}`}
           >
             {display}
           </span>
         ) : (
           <>
-            <span className="glass-skeleton h-9 w-24" aria-hidden />
-            <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#9A988F]">
+            <span className="ed-numeral text-[56px] text-[#D8D5CC] leading-none">—</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#A8A59E]">
               Awaiting data
             </span>
           </>
@@ -119,7 +107,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark, threshold
       </div>
 
       {spark && spark.length > 1 && (
-        <div className="relative -mx-1 -mb-1 mt-auto">
+        <div className="relative mt-auto pt-2 border-t border-[#F0EEE7]">
           <Sparkline data={spark} gradId={`spark-${uid}`} threshold={threshold} />
         </div>
       )}

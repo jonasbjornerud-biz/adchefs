@@ -17,9 +17,9 @@ interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; 
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-// Monochrome blue ramp derived from brand Accent (#9ED8F5) + Ink.
+// Monochrome blue ramp derived from brand Accent (#2E6BE6) + Ink.
 // Used for grouped/stacked bar series across the backend dashboards.
-const BLUE_RAMP = ['#9ED8F5', '#4FA8DC', '#1A1A1A', '#75726B', '#C7E9F8', '#3B86A8'];
+const BLUE_RAMP = ['#2E6BE6', '#2E6BE6', '#1A1A1A', '#8B887F', '#DDE7FA', '#2E6BE6'];
 
 const CARD_SHADOW = 'none';
 const CARD_SHADOW_HOVER = 'none';
@@ -35,11 +35,11 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="glass-dropdown px-3 py-2 text-xs">
-      <p className="text-[#75726B] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">{label}</p>
+      <p className="text-[#8B887F] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-[#75726B]">{p.name}:</span>
+          <span className="text-[#8B887F]">{p.name}:</span>
           <span className="text-[#1A1A1A] font-semibold tabular-nums">{p.value}</span>
         </div>
       ))}
@@ -53,7 +53,7 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="appearance-none h-9 px-3 pr-8 rounded-[4px] text-xs font-medium text-[#1A1A1A] cursor-pointer transition-all duration-200 focus:outline-none bg-white/65 backdrop-blur-md border border-white/70 hover:border-[#9ED8F5] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
+        className="appearance-none h-9 px-3 pr-8 rounded-[4px] text-xs font-medium text-[#1A1A1A] cursor-pointer transition-all duration-200 focus:outline-none bg-white/65 backdrop-blur-md border border-white/70 hover:border-[#2E6BE6] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
       >
         {options.map(o => <option key={o} value={o} className="bg-white text-[#1A1A1A]">{o}</option>)}
       </select>
@@ -335,15 +335,15 @@ export default function PerformanceDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F7F6F3]">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
         <div className="flex flex-col items-center gap-4 relative z-10">
           <div className="w-14 h-14 rounded-[4px] bg-destructive/10 flex items-center justify-center border border-destructive/30">
             <AlertCircle className="w-6 h-6 text-destructive" />
           </div>
           <p className="text-sm text-[#1A1A1A]">Failed to load performance data</p>
-          <p className="text-xs text-[#75726B]">{error}</p>
+          <p className="text-xs text-[#8B887F]">{error}</p>
           <Button variant="outline" size="sm" onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-            className="rounded-[4px] text-xs bg-white border-[#E2E0D9] text-[#1A1A1A] hover:bg-[#F7F6F3] hover:border-[#1A1A1A] cursor-pointer">
+            className="rounded-[4px] text-xs bg-white border-[#E2E0D9] text-[#1A1A1A] hover:bg-[#FAFAF7] hover:border-[#1A1A1A] cursor-pointer">
             <RefreshCw className="w-3 h-3 mr-1.5" /> Retry
           </Button>
         </div>
@@ -384,13 +384,13 @@ export default function PerformanceDashboard() {
           </div>
           <div className="flex items-center gap-3">
             {data && (
-              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] hidden sm:inline">
+              <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] hidden sm:inline">
                 Synced {new Date(data.lastSynced).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
             <button
               onClick={() => client?.spreadsheet_id && fetchData(client.spreadsheet_id, true)}
-              className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#F7F6F3] bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-all duration-200 cursor-pointer"
+              className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#FAFAF7] bg-[#1A1A1A] hover:bg-black flex items-center gap-2 transition-all duration-200 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.5} /> Sync
             </button>
@@ -404,7 +404,7 @@ export default function PerformanceDashboard() {
         <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
           Editor <em>performance</em>.
         </h1>
-        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
+        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
           Daily and weekly output, approvals, and per-editor breakdown — straight from the production sheet.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
@@ -419,8 +419,8 @@ export default function PerformanceDashboard() {
 
         {noData ? (
           <PremiumCard className="flex flex-col items-center justify-center py-20 gap-3">
-            <FileBarChart className="w-10 h-10 text-[#75726B]/50" strokeWidth={1.25} />
-            <p className="text-sm text-[#75726B]">
+            <FileBarChart className="w-10 h-10 text-[#8B887F]/50" strokeWidth={1.25} />
+            <p className="text-sm text-[#8B887F]">
               No data yet for <span className="text-[#1A1A1A] font-medium">{editor}</span> in <span className="text-[#1A1A1A] font-medium">{month}</span>
             </p>
           </PremiumCard>
@@ -439,15 +439,15 @@ export default function PerformanceDashboard() {
               {/* Daily by Week */}
               <PremiumCard className="p-6">
                 <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Daily <em>Deliveries</em> by Week</h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Grouped by weekday</p>
+                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="day" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <XAxis dataKey="day" tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
+                      <Legend wrapperStyle={{ fontSize: 10, color: '#8B887F' }} />
                       {weekKeys.map((wk, i) => (
                         <Bar key={wk} dataKey={wk} fill={BLUE_RAMP[i % BLUE_RAMP.length]} radius={[4, 4, 0, 0]} />
                       ))}
@@ -459,23 +459,23 @@ export default function PerformanceDashboard() {
               {/* Weekly Output */}
               <PremiumCard className="p-6">
                 <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Total videos per week (all time)</p>
+                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Total videos per week (all time)</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <ComposedChart data={weeklyOutputAll}>
                         <defs>
                           <linearGradient id="weeklyArea" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                            <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
+                            <stop offset="0%" stopColor="#2E6BE6" stopOpacity={0.10} />
+                            <stop offset="100%" stopColor="#2E6BE6" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="2 5" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                        <XAxis dataKey="week" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
-                        <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                        <XAxis dataKey="week" tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
+                        <YAxis tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
-                        <Area type="monotone" dataKey="total" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#weeklyArea)" name="Videos" />
-                        <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#F7F6F3', strokeWidth: 1.5, r: 3 }} activeDot={{ r: 5, stroke: '#F7F6F3', strokeWidth: 2 }} name="Videos" strokeLinecap="round" />
+                        <Area type="monotone" dataKey="total" stroke="#2E6BE6" strokeWidth={1.5} fill="url(#weeklyArea)" name="Videos" />
+                        <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#FAFAF7', strokeWidth: 1.5, r: 3 }} activeDot={{ r: 5, stroke: '#FAFAF7', strokeWidth: 2 }} name="Videos" strokeLinecap="round" />
                       </ComposedChart>
                     </ResponsiveContainer>
                   </div>
@@ -491,11 +491,11 @@ export default function PerformanceDashboard() {
                   <span className="eyebrow inline-flex items-center gap-2">
                     <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
                   </span>
-                  <p className="mt-2 text-[12px] text-[#75726B]">
+                  <p className="mt-2 text-[12px] text-[#8B887F]">
                     Delivered volume and approval rate for {month}.
                   </p>
                 </div>
-                <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+                <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
                   {leaderboard.length} editors
                 </span>
               </div>
@@ -523,8 +523,8 @@ export default function PerformanceDashboard() {
                               style={{
                                 width: `${pct}%`,
                                 background: isTop
-                                  ? 'linear-gradient(90deg, #9ED8F5 0%, #4FA8DC 60%, #1A1A1A 100%)'
-                                  : 'linear-gradient(90deg, #C7E9F8 0%, #4FA8DC 100%)',
+                                  ? 'linear-gradient(90deg, #2E6BE6 0%, #2E6BE6 60%, #1A1A1A 100%)'
+                                  : 'linear-gradient(90deg, #DDE7FA 0%, #2E6BE6 100%)',
                               }}
                             />
                           </div>
@@ -550,13 +550,13 @@ export default function PerformanceDashboard() {
                 <div className="flex items-end justify-between gap-4 mb-4">
                   <div>
                     <span className="eyebrow">Editor Breakdown</span>
-                    <p className="mt-2 text-[12px] text-[#75726B]">
+                    <p className="mt-2 text-[12px] text-[#8B887F]">
                       Per-editor output for {month}. Sorted by delivered volume.
                     </p>
                   </div>
-                  <div className="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+                  <div className="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
                     <span className="inline-flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#3B86A8]" /> Top performer
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" /> Top performer
                     </span>
                     <span className="text-[#D8D7D2]">·</span>
                     <span>{editorBreakdown.length} editors</span>
@@ -597,8 +597,8 @@ export default function PerformanceDashboard() {
                                   className="inline-flex items-center justify-center w-7 h-6 rounded-[4px] mono text-[10px] tabular-nums"
                                   style={
                                     isTop
-                                      ? { background: 'linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 100%)', color: '#9ED8F5', boxShadow: '0 0 8px rgba(158,216,245,0.25)' }
-                                      : { background: '#F2F1EC', color: '#75726B' }
+                                      ? { background: 'linear-gradient(180deg, #1A1A1A 0%, #2D2D2D 100%)', color: '#2E6BE6', boxShadow: '0 0 8px rgba(158,216,245,0.25)' }
+                                      : { background: '#F2F1EC', color: '#8B887F' }
                                   }
                                 >
                                   {String(i + 1).padStart(2, '0')}
@@ -612,7 +612,7 @@ export default function PerformanceDashboard() {
                                       background: isTop
                                         ? 'linear-gradient(135deg, #BFE3F5 0%, #ECF7FD 100%)'
                                         : 'linear-gradient(135deg, #F2F1EC 0%, #FAF8F3 100%)',
-                                      color: isTop ? '#1A4A6B' : '#75726B',
+                                      color: isTop ? '#1A4A6B' : '#8B887F',
                                       border: '1px solid #E5E3DC',
                                       fontFamily: "'Inter Tight', sans-serif",
                                       fontWeight: 600,
@@ -628,7 +628,7 @@ export default function PerformanceDashboard() {
                                       {ed.name}
                                     </p>
                                     {isTop && (
-                                      <p className="mt-0.5 mono text-[9px] uppercase tracking-[0.2em] text-[#3B86A8]">
+                                      <p className="mt-0.5 mono text-[9px] uppercase tracking-[0.2em] text-[#2E6BE6]">
                                         Top performer
                                       </p>
                                     )}
@@ -649,19 +649,19 @@ export default function PerformanceDashboard() {
                                       style={{
                                         width: `${sharePct}%`,
                                         background: isTop
-                                          ? 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 100%)'
+                                          ? 'linear-gradient(90deg, #2E6BE6 0%, #2E6BE6 100%)'
                                           : 'linear-gradient(90deg, #C8E9F7 0%, #6FB8E0 100%)',
                                         boxShadow: isTop ? '0 0 6px rgba(158,216,245,0.5)' : 'none',
                                       }}
                                     />
                                   </div>
-                                  <span className="mono text-[11px] tabular-nums text-[#75726B] w-10 text-right">
+                                  <span className="mono text-[11px] tabular-nums text-[#8B887F] w-10 text-right">
                                     {sharePct}%
                                   </span>
                                 </div>
                               </td>
                               <td className="px-5 py-4 text-right tabular-nums text-[#1A1A1A] text-[13px]">{ed.avg}</td>
-                              <td className="px-5 py-4 text-right tabular-nums text-[#75726B] text-[13px]">{ed.activeDays}</td>
+                              <td className="px-5 py-4 text-right tabular-nums text-[#8B887F] text-[13px]">{ed.activeDays}</td>
                             </tr>
                           );
                         })}
@@ -678,35 +678,35 @@ export default function PerformanceDashboard() {
                 <span className="eyebrow mb-4 inline-block">Approved Videos</span>
                 <PremiumCard className="overflow-hidden">
                   <div className="px-6 py-4 border-b border-[#E2E0D9]">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
+                    <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">
                       <span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}
                     </p>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-[#F7F6F3]">
-                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Brief Name</th>
-                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Editor</th>
-                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Month</th>
-                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Status</th>
+                        <tr className="bg-[#FAFAF7]">
+                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Brief Name</th>
+                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Editor</th>
+                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Month</th>
+                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredPayment.map((row, i) => (
-                          <tr key={i} className="hover:bg-[#F7F6F3] transition-colors duration-200 border-b border-[#E2E0D9] last:border-b-0">
+                          <tr key={i} className="hover:bg-[#FAFAF7] transition-colors duration-200 border-b border-[#E2E0D9] last:border-b-0">
                             <td className="py-5 px-6 text-[#1A1A1A]">{row.brief}</td>
-                            <td className="py-5 px-6 text-[#75726B]">{row.editor || '—'}</td>
-                            <td className="py-5 px-6 text-[#75726B]">{row.month}</td>
+                            <td className="py-5 px-6 text-[#8B887F]">{row.editor || '—'}</td>
+                            <td className="py-5 px-6 text-[#8B887F]">{row.month}</td>
                             <td className="py-5 px-6">
                               {row.approved ? (
-                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#9ED8F5]/25 text-[#1A1A1A] border border-[#9ED8F5]">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#2E6BE6]/25 text-[#1A1A1A] border border-[#2E6BE6]">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
                                   Approved
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#F7F6F3] text-[#75726B] border border-[#E2E0D9]">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#75726B]" />
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#FAFAF7] text-[#8B887F] border border-[#E2E0D9]">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#8B887F]" />
                                   Pending
                                 </span>
                               )}

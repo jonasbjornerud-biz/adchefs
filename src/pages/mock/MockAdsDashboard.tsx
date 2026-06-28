@@ -50,7 +50,7 @@ const MockAdsDashboard = () => {
   }, [ads]);
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A] relative overflow-hidden">
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
@@ -66,7 +66,7 @@ const MockAdsDashboard = () => {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#FAFAF7]/85 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -77,10 +77,10 @@ const MockAdsDashboard = () => {
             </button>
             <span className="text-sm font-medium text-[#1A1A1A] tracking-tight">KPI Dashboard</span>
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] inline-flex items-center gap-1.5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] inline-flex items-center gap-1.5">
             <span className="relative flex w-1.5 h-1.5">
-              <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+              <span className="absolute inset-0 rounded-full bg-[#2E6BE6] animate-ping opacity-60" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
             </span>
             <Wifi className="w-3 h-3" strokeWidth={1.5} /> Demo
           </span>
@@ -93,7 +93,7 @@ const MockAdsDashboard = () => {
         <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
           Ad <em>performance</em>, at a glance.
         </h1>
-        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
+        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
           A demo view with sample Meta Ads data — ROAS, CPA, hook rate, hold rate. Drill into any individual ad to see daily trends.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />

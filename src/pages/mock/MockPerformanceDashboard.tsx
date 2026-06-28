@@ -9,17 +9,17 @@ import { KpiCard } from '@/components/dashboard/KpiCard';
 import { generateMockPerformanceData, MockPerformanceData } from '@/data/mockDemoData';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const BLUE_RAMP = ['#9ED8F5', '#4FA8DC', '#1A1A1A', '#75726B', '#C7E9F8', '#3B86A8'];
+const BLUE_RAMP = ['#2E6BE6', '#2E6BE6', '#1A1A1A', '#8B887F', '#DDE7FA', '#2E6BE6'];
 
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-[4px] px-3 py-2 text-xs bg-white border border-[#1A1A1A] shadow-[0_8px_24px_-8px_rgba(26,26,26,0.25)]">
-      <p className="text-[#75726B] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">{label}</p>
+      <p className="text-[#8B887F] text-[10px] font-mono uppercase tracking-[0.15em] mb-1">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-[#75726B]">{p.name}:</span>
+          <span className="text-[#8B887F]">{p.name}:</span>
           <span className="text-[#1A1A1A] font-semibold tabular-nums">{p.value}</span>
         </div>
       ))}
@@ -158,7 +158,7 @@ export default function MockPerformanceDashboard() {
   }, [data, month]);
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#FAFAF7] text-[#1A1A1A] relative overflow-hidden">
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
@@ -174,7 +174,7 @@ export default function MockPerformanceDashboard() {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#FAFAF7]/85 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -185,10 +185,10 @@ export default function MockPerformanceDashboard() {
             </button>
             <span className="text-sm font-medium text-[#1A1A1A] tracking-tight">Editor Performance</span>
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] inline-flex items-center gap-1.5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] inline-flex items-center gap-1.5">
             <span className="relative flex w-1.5 h-1.5">
-              <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
-              <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+              <span className="absolute inset-0 rounded-full bg-[#2E6BE6] animate-ping opacity-60" />
+              <span className="relative w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
             </span>
             Demo
           </span>
@@ -201,7 +201,7 @@ export default function MockPerformanceDashboard() {
         <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
           Editor <em>performance</em>.
         </h1>
-        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
+        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
           Sample data showing daily and weekly output, approvals, and per-editor breakdown — exactly what your client portal looks like.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
@@ -223,15 +223,15 @@ export default function MockPerformanceDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <PremiumCard className="p-6">
             <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Daily <em>Deliveries</em> by Week</h4>
-            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Grouped by weekday</p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Grouped by weekday</p>
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={dailyByWeek} barCategoryGap="20%">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                  <XAxis dataKey="day" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <XAxis dataKey="day" tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip content={<ChartTooltip />} />
-                  <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
+                  <Legend wrapperStyle={{ fontSize: 10, color: '#8B887F' }} />
                   {weekKeys.map((wk, i) => (
                     <Bar key={wk} dataKey={wk} fill={BLUE_RAMP[i % BLUE_RAMP.length]} radius={[4, 4, 0, 0]} />
                   ))}
@@ -242,23 +242,23 @@ export default function MockPerformanceDashboard() {
 
           <PremiumCard className="p-6">
             <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
-            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B] mb-4">Total videos per week (all time)</p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Total videos per week (all time)</p>
             <div className="h-56 overflow-x-auto">
               <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <ComposedChart data={weeklyOutputAll}>
                     <defs>
                       <linearGradient id="mockWeeklyArea" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                        <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#2E6BE6" stopOpacity={0.10} />
+                        <stop offset="100%" stopColor="#2E6BE6" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="2 5" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                    <XAxis dataKey="week" tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} />
-                    <YAxis tick={{ fill: '#75726B', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                    <XAxis dataKey="week" tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} />
+                    <YAxis tick={{ fill: '#8B887F', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
                     <Tooltip content={<ChartTooltip />} />
-                    <Area type="monotone" dataKey="total" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#mockWeeklyArea)" name="Videos" />
-                    <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#F7F6F3', strokeWidth: 1.5, r: 3 }} name="Videos" strokeLinecap="round" />
+                    <Area type="monotone" dataKey="total" stroke="#2E6BE6" strokeWidth={1.5} fill="url(#mockWeeklyArea)" name="Videos" />
+                    <Line type="monotone" dataKey="total" stroke="#1A1A1A" strokeWidth={2} dot={{ fill: '#1A1A1A', stroke: '#FAFAF7', strokeWidth: 1.5, r: 3 }} name="Videos" strokeLinecap="round" />
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
@@ -272,11 +272,11 @@ export default function MockPerformanceDashboard() {
               <span className="eyebrow inline-flex items-center gap-2">
                 <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
               </span>
-              <p className="mt-2 text-[12px] text-[#75726B]">
+              <p className="mt-2 text-[12px] text-[#8B887F]">
                 Delivered volume and approval rate for {month}.
               </p>
             </div>
-            <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#75726B]">
+            <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
               {leaderboard.length} editors
             </span>
           </div>
@@ -302,8 +302,8 @@ export default function MockPerformanceDashboard() {
                         <div className="h-full rounded-full transition-all duration-500" style={{
                           width: `${pct}%`,
                           background: isTop
-                            ? 'linear-gradient(90deg, #9ED8F5 0%, #4FA8DC 60%, #1A1A1A 100%)'
-                            : 'linear-gradient(90deg, #C7E9F8 0%, #4FA8DC 100%)',
+                            ? 'linear-gradient(90deg, #2E6BE6 0%, #2E6BE6 60%, #1A1A1A 100%)'
+                            : 'linear-gradient(90deg, #DDE7FA 0%, #2E6BE6 100%)',
                         }} />
                       </div>
                       <div className="flex items-center gap-3 justify-end min-w-[150px]">
@@ -329,12 +329,12 @@ export default function MockPerformanceDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#F7F6F3]">
-                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Editor</th>
-                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Delivered</th>
-                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Active Days</th>
-                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Avg/Day</th>
-                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Output</th>
+                    <tr className="bg-[#FAFAF7]">
+                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Editor</th>
+                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Delivered</th>
+                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Active Days</th>
+                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Avg/Day</th>
+                      <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Output</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -342,11 +342,11 @@ export default function MockPerformanceDashboard() {
                       const maxDelivered = Math.max(...editorBreakdown.map(e => e.delivered), 1);
                       const pct = (ed.delivered / maxDelivered) * 100;
                       return (
-                        <tr key={ed.name} className="border-b border-[#E2E0D9] last:border-b-0 hover:bg-[#F7F6F3] transition-colors duration-200">
+                        <tr key={ed.name} className="border-b border-[#E2E0D9] last:border-b-0 hover:bg-[#FAFAF7] transition-colors duration-200">
                           <td className="px-4 py-5 text-[#1A1A1A] font-medium">{ed.name}</td>
                           <td className="px-4 py-5 font-semibold text-[#1A1A1A] tabular-nums">{ed.delivered}</td>
-                          <td className="px-4 py-5 text-[#75726B] tabular-nums">{ed.activeDays}</td>
-                          <td className="px-4 py-5 text-[#75726B] tabular-nums">{ed.avg}</td>
+                          <td className="px-4 py-5 text-[#8B887F] tabular-nums">{ed.activeDays}</td>
+                          <td className="px-4 py-5 text-[#8B887F] tabular-nums">{ed.avg}</td>
                           <td className="px-4 py-5 min-w-[160px]">
                             <div className="flex items-center gap-2">
                               <div className="flex-1 h-[3px] rounded-full bg-[#E2E0D9] overflow-hidden">
@@ -369,35 +369,35 @@ export default function MockPerformanceDashboard() {
             <span className="eyebrow mb-4 inline-block">Approved Videos</span>
             <PremiumCard className="overflow-hidden">
               <div className="px-6 py-4 border-b border-[#E2E0D9]">
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
+                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">
                   <span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#F7F6F3]">
-                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Brief Name</th>
-                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Approval Date</th>
-                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Month</th>
-                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Status</th>
+                    <tr className="bg-[#FAFAF7]">
+                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Brief Name</th>
+                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Approval Date</th>
+                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Month</th>
+                      <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredPayment.map((row, i) => (
-                      <tr key={i} className="hover:bg-[#F7F6F3] transition-colors duration-200 border-b border-[#E2E0D9] last:border-b-0">
+                      <tr key={i} className="hover:bg-[#FAFAF7] transition-colors duration-200 border-b border-[#E2E0D9] last:border-b-0">
                         <td className="py-5 px-6 text-[#1A1A1A]">{row.brief}</td>
-                        <td className="py-5 px-6 text-[#75726B] tabular-nums">{row.date || '—'}</td>
-                        <td className="py-5 px-6 text-[#75726B]">{row.month}</td>
+                        <td className="py-5 px-6 text-[#8B887F] tabular-nums">{row.date || '—'}</td>
+                        <td className="py-5 px-6 text-[#8B887F]">{row.month}</td>
                         <td className="py-5 px-6">
                           {row.approved ? (
-                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#9ED8F5]/25 text-[#1A1A1A] border border-[#9ED8F5]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#2E6BE6]/25 text-[#1A1A1A] border border-[#2E6BE6]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
                               Approved
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#F7F6F3] text-[#75726B] border border-[#E2E0D9]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#75726B]" />
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] text-[10px] font-mono uppercase tracking-[0.1em] bg-[#FAFAF7] text-[#8B887F] border border-[#E2E0D9]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#8B887F]" />
                               Pending
                             </span>
                           )}
