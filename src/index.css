@@ -996,3 +996,68 @@
     transition: none !important;
   }
 }
+
+/* ============================================================
+   Backend Dashboard Visual Rework — wins the cascade
+   Liquid glass surfaces + premium chart system.
+   ============================================================ */
+.admin-bloom {
+  background-color: #F7F6F3 !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+    radial-gradient(1000px 680px at 88% -8%, rgba(158,216,245,0.30), transparent 60%),
+    radial-gradient(820px 720px at -12% 112%, rgba(158,216,245,0.20), transparent 55%),
+    linear-gradient(180deg, #F7F6F3 0%, #F1F0EB 100%) !important;
+  background-blend-mode: soft-light, normal, normal, normal !important;
+  background-size: 200px 200px, auto, auto, auto !important;
+  background-attachment: fixed !important;
+}
+.glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.74), rgba(255,255,255,0.50)) !important;
+  backdrop-filter: blur(40px) saturate(185%) brightness(1.04) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(185%) brightness(1.04) !important;
+  border: 1px solid rgba(255,255,255,0.72) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 16px rgba(26,26,26,0.05), 0 22px 50px rgba(26,26,26,0.07),
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+.glass-card:hover, .glass-card-hover:hover { transform: translateY(-3px) !important; }
+.glass-panel, .glass-surface {
+  background: linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.46)) !important;
+  backdrop-filter: blur(36px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.65) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(26,26,26,0.05), inset 0 1px 0 rgba(255,255,255,0.85) !important;
+}
+.glass-panel tbody tr:hover, .glass-surface tbody tr:hover { background: rgba(238,237,232,0.55) !important; }
+.glass-panel td, .glass-panel th { border-color: rgba(26,26,26,0.05) !important; }
+.glass-topbar, .glass-rail {
+  background: linear-gradient(180deg, rgba(250,249,245,0.82), rgba(250,249,245,0.55)) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+.glass-dark {
+  background: rgba(26,26,26,0.86) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  color: #F7F6F3 !important; border-radius: 4px !important;
+}
+.glass-badge {
+  background: rgba(255,255,255,0.55) !important; backdrop-filter: blur(12px) saturate(160%) !important;
+  border: 1px solid rgba(255,255,255,0.6) !important; border-radius: 4px !important;
+}
+.glass-badge-accent, .glass-badge.is-active {
+  background: rgba(158,216,245,0.26) !important; border: 1px solid rgba(158,216,245,0.55) !important; color: #1A1A1A !important;
+}
+.recharts-cartesian-grid line { stroke: rgba(26,26,26,0.06) !important; stroke-dasharray: 2 5 !important; }
+.recharts-cartesian-axis-line, .recharts-cartesian-axis-tick-line { stroke: transparent !important; }
+.recharts-cartesian-axis-tick-value, .recharts-text {
+  fill: #75726B !important; font-family: 'JetBrains Mono', monospace !important; font-size: 10px !important;
+}
+.recharts-default-tooltip, .recharts-tooltip-wrapper > div {
+  background: rgba(255,255,255,0.72) !important; backdrop-filter: blur(18px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.65) !important; border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(26,26,26,0.14) !important;
+}
