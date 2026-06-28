@@ -336,7 +336,7 @@ export default function PerformanceDashboard() {
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
       {/* Marketing-site hero background — reused for surface parity */}
-      <AmbientBackground />
+      <HeroBackground />
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">
@@ -376,7 +376,7 @@ export default function PerformanceDashboard() {
           Editor <em>performance</em>.
         </h1>
         <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
-          Daily and weekly output, approvals, and per-editor breakdown — straight from the production sheet.
+          Daily and weekly output, approvals, and per-editor breakdown.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
       </section>
