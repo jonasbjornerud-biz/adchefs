@@ -625,16 +625,9 @@ function Pipeline() {
         </p>
       </div>
 
-      {/* Stage counters */}
-      <div
-        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 rounded-[10px] overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(250,248,243,0.6) 100%)',
-          border: '1px solid #E5E3DC',
-          boxShadow: '0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 24px -16px rgba(26,26,26,0.12)',
-          backdropFilter: 'blur(10px)',
-        }}
-      >
+      {/* Stage counters — segmented control */}
+      <div className="glass-panel grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 overflow-hidden">
+        <span aria-hidden className="glass-rail" />
         {([['all', 'All', apps.length] as const, ...STAT_STAGES.map(st => [st, STAGE_LABEL[st], counts[st]] as const)]).map(([key, label, count], idx, arr) => {
           const active = stageFilter === key;
           const last = idx === arr.length - 1;
@@ -709,15 +702,8 @@ function Pipeline() {
         </span>
       </div>
 
-      <div
-        className="rounded-[10px] border w-full overflow-hidden"
-        style={{
-          borderColor: '#E5E3DC',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)',
-          boxShadow: '0 1px 0 rgba(255,255,255,0.8) inset, 0 12px 32px -20px rgba(26,26,26,0.14)',
-          overflowX: 'auto',
-        }}
-      >
+      <div className="glass-panel w-full overflow-hidden" style={{ overflowX: 'auto' }}>
+        <span aria-hidden className="glass-rail" />
         <table className="w-full text-sm" style={{ minWidth: '1052px', width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse' }}>
           <colgroup>
             <col style={{ width: '40px' }} />

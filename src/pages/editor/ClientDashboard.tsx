@@ -267,27 +267,11 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
                   navigate(target);
                 }}
                 disabled={!enabled}
-                className={`group text-left relative overflow-hidden rounded-[12px] p-8 transition-all duration-500 border ${
-                  enabled
-                    ? 'cursor-pointer border-[#E5E3DC] hover:border-[#1A1A1A]/30 hover:-translate-y-[3px]'
-                    : 'cursor-not-allowed opacity-55 border-[#E2E0D9]'
+                className={`group text-left relative overflow-hidden glass-card p-8 ${
+                  enabled ? 'glass-card-hover cursor-pointer' : 'cursor-not-allowed opacity-55'
                 }`}
-                style={{
-                  background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)',
-                  boxShadow: enabled
-                    ? '0 1px 0 rgba(255,255,255,0.9) inset, 0 18px 40px -28px rgba(26,26,26,0.25)'
-                    : '0 1px 0 rgba(255,255,255,0.7) inset',
-                }}
               >
-                {/* Top accent rail */}
-                <span
-                  className="absolute top-0 left-0 h-[2px] transition-all duration-500 group-hover:w-full"
-                  style={{
-                    width: enabled ? '80px' : '24px',
-                    background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 50%, transparent 100%)',
-                    boxShadow: enabled ? '0 0 10px rgba(158,216,245,0.5)' : 'none',
-                  }}
-                />
+                <span aria-hidden className="glass-rail" />
                 {/* Soft corner glow */}
                 {enabled && (
                   <span
