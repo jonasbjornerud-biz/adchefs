@@ -275,7 +275,7 @@ export default function PerformanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F6F3]">
+      <div className="min-h-screen admin-bloom">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 py-8 space-y-6 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => <div key={i} className="h-[100px] rounded-[4px] bg-[#EEEDE8] animate-pulse" />)}
@@ -305,7 +305,7 @@ export default function PerformanceDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
