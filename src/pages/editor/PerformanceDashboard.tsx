@@ -66,10 +66,7 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative glass-card overflow-hidden ${className}`}>
-      <span aria-hidden className="glass-rail" />
-      {children}
-    </div>
+    <div className={`relative bg-white border border-[#E5E3DC] rounded-[8px] overflow-hidden ${className}`}>{children}</div>
   );
 }
 
@@ -422,8 +419,8 @@ export default function PerformanceDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Daily by Week */}
               <PremiumCard className="p-6">
-                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Daily <em>Deliveries</em> by Week</h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Grouped by weekday</p>
+                <h4 className="text-[15px] font-semibold text-[#1A1A1A] tracking-tight">Daily deliveries by week</h4>
+                <p className="text-xs text-[#8B887F] mt-1 mb-4">Grouped by weekday</p>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
@@ -442,8 +439,8 @@ export default function PerformanceDashboard() {
 
               {/* Weekly Output */}
               <PremiumCard className="p-6">
-                <h4 className="text-base font-semibold text-[#1A1A1A] mb-1 tracking-tight">Weekly <em>Trend</em></h4>
-                <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F] mb-4">Total videos per week (all time)</p>
+                <h4 className="text-[15px] font-semibold text-[#1A1A1A] tracking-tight">Weekly trend</h4>
+                <p className="text-xs text-[#8B887F] mt-1 mb-4">Total videos per week</p>
                 <div className="h-56 overflow-x-auto">
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -472,53 +469,33 @@ export default function PerformanceDashboard() {
             <div>
               <div className="flex items-end justify-between gap-4 mb-4">
                 <div>
-                  <span className="eyebrow inline-flex items-center gap-2">
-                    <Trophy className="w-3 h-3" strokeWidth={1.5} /> Editor Leaderboard
-                  </span>
-                  <p className="mt-2 text-[12px] text-[#8B887F]">
-                    Delivered volume and approval rate for {month}.
-                  </p>
+                  <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F]">Editor leaderboard</h2>
+                  <p className="mt-1 text-[12px] text-[#8B887F]">Delivered volume and approval rate for {month}.</p>
                 </div>
-                <span className="hidden md:inline text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
+                <span className="hidden md:inline text-[11px] text-[#8B887F]">
                   {leaderboard.length} editors
                 </span>
               </div>
               <PremiumCard className="p-6">
                 {leaderboard.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 gap-3">
-                    <span className="glass-skeleton h-2 w-48" aria-hidden />
-                    <p className="text-[#9A988F] text-[10px] font-mono uppercase tracking-[0.22em]">Awaiting data</p>
-                  </div>
+                  <p className="text-center py-12 text-sm text-[#9A988F]">No editor data yet.</p>
                 ) : (
                   <ul className="space-y-3.5">
                     {leaderboard.map((ed, i) => {
                       const max = Math.max(...leaderboard.map(e => e.delivered), 1);
                       const pct = (ed.delivered / max) * 100;
-                      const isTop = i === 0;
                       return (
-                        <li key={ed.name} className="grid grid-cols-[28px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
-                          <span className="mono text-[10px] tabular-nums text-[#8A8780]">{String(i + 1).padStart(2, '0')}</span>
-                          <span className="text-[13px] text-[#1A1A1A] truncate" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
+                        <li key={ed.name} className="grid grid-cols-[24px_minmax(140px,1.4fr)_minmax(0,3fr)_auto] items-center gap-3 md:gap-5">
+                          <span className="text-[12px] tabular-nums text-[#8A8780]">{i + 1}</span>
+                          <span className="text-[13px] font-medium text-[#1A1A1A] truncate">
                             {ed.name}
                           </span>
-                          <div className="h-[6px] rounded-full overflow-hidden" style={{ background: 'rgba(26,26,26,0.06)' }}>
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${pct}%`,
-                                background: isTop
-                                  ? 'linear-gradient(90deg, #2E6BE6 0%, #2E6BE6 60%, #1A1A1A 100%)'
-                                  : 'linear-gradient(90deg, #DDE7FA 0%, #2E6BE6 100%)',
-                              }}
-                            />
+                          <div className="h-[6px] rounded-full overflow-hidden bg-[#F0EEE7]">
+                            <div className="h-full rounded-full bg-[#2E6BE6] transition-all duration-500" style={{ width: `${pct}%` }} />
                           </div>
-                          <div className="flex items-center gap-3 justify-end min-w-[150px]">
-                            <span className="tabular-nums text-[15px] text-[#0F0F0F]" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>
-                              {ed.delivered}
-                            </span>
-                            <span className={`glass-badge ${ed.approvalRate >= 60 ? 'glass-badge-accent' : ''} text-[10px] font-mono uppercase tracking-[0.1em] px-2 py-0.5 tabular-nums`}>
-                              {ed.approvalRate}% appr
-                            </span>
+                          <div className="flex items-center gap-4 justify-end min-w-[130px]">
+                            <span className="tabular-nums text-[14px] font-semibold text-[#0F0F0F]">{ed.delivered}</span>
+                            <span className="text-[11px] tabular-nums text-[#75726B] w-[70px] text-right">{ed.approvalRate}% appr.</span>
                           </div>
                         </li>
                       );
