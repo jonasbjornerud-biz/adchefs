@@ -245,6 +245,46 @@ export default function PerformanceDashboard() {
       .map(([week, total]) => ({ week: `Wk ${week}`, total }));
   }, [data, editor]);
 
+  // Sparkline series derived from existing aggregates (no new queries).
+  const sparks = useMemo(() => {
+    const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const approvedSeries = monthlyApproved
+      .slice()
+      .sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month))
+      .map(m => m.count);
+    const deliveredSeries = weeklyOutputAll.map(w => w.total);
+    return { delivered: deliveredSeries, approved: approvedSeries, avg: deliveredSeries };
+  }, [weeklyOutputAll, monthlyApproved]);
+
+  // Per-editor leaderboard for the selected month — delivered + approval rate.
+  const leaderboard = useMemo(() => {
+    if (!data) return [] as Array<{ name: string; delivered: number; approved: number; approvalRate: number }>;
+    const monthLower = month.toLowerCase();
+    const deliveredMap: Record<string, number> = {};
+    data.eod
+      .filter(r => r.Month?.toLowerCase() === monthLower)
+      .forEach(r => {
+        const n = r.Name?.trim();
+        if (!n) return;
+        deliveredMap[n] = (deliveredMap[n] || 0) + (parseInt(r['Videos Delivered']) || 0);
+      });
+    const approvedMap: Record<string, number> = {};
+    data.paymentRaw.slice(1).forEach(r => {
+      const editorName = r[1]?.trim();
+      const approvedMonth = r[2]?.trim();
+      if (!editorName || !approvedMonth) return;
+      if (approvedMonth.toLowerCase() !== monthLower) return;
+      approvedMap[editorName] = (approvedMap[editorName] || 0) + 1;
+    });
+    return Object.entries(deliveredMap)
+      .map(([name, delivered]) => {
+        const approved = approvedMap[name] || 0;
+        const approvalRate = delivered > 0 ? Math.round((approved / delivered) * 100) : 0;
+        return { name, delivered, approved, approvalRate };
+      })
+      .sort((a, b) => b.delivered - a.delivered);
+  }, [data, month]);
+
   // Editor breakdown table
   const editorBreakdown = useMemo(() => {
     if (!data) return [];
@@ -385,10 +425,10 @@ export default function PerformanceDashboard() {
           <>
             {/* KPI Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
-              <KpiCard label="Delivered" value={kpis.delivered ?? null} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} />
-              <KpiCard label="Approved" value={kpis.approved ?? null} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} />
-              <KpiCard label="Avg/Day" value={kpis.avg ?? null} icon={<TrendingUp className="w-3.5 h-3.5" />} delay={200} />
-              <KpiCard label="Active Editors" value={kpis.activeEditors ?? null} icon={<Users className="w-3.5 h-3.5" />} delay={300} />
+              <KpiCard label="Delivered" value={kpis.delivered ?? null} icon={<FileBarChart className="w-3.5 h-3.5" />} delay={0} spark={sparks.delivered} trend={undefined} />
+              <KpiCard label="Approved" value={kpis.approved ?? null} icon={<CheckCircle2 className="w-3.5 h-3.5" />} delay={100} spark={sparks.approved} />
+              <KpiCard label="Avg/Day" value={kpis.avg ?? null} icon={<TrendingUp className="w-3.5 h-3.5" />} delay={200} spark={sparks.avg} />
+              <KpiCard label="First Cut Approval" value={kpis.fcar !== null ? `${kpis.fcar}%` : null} icon={<Sparkles className="w-3.5 h-3.5" />} delay={300} />
             </div>
 
             {/* Charts row */}
@@ -406,7 +446,7 @@ export default function PerformanceDashboard() {
                       <Tooltip content={<ChartTooltip />} />
                       <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
                       {weekKeys.map((wk, i) => (
-                        <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} />
+                        <Bar key={wk} dataKey={wk} fill={BLUE_RAMP[i % BLUE_RAMP.length]} radius={[4, 4, 0, 0]} />
                       ))}
                     </BarChart>
                   </ResponsiveContainer>
