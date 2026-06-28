@@ -153,23 +153,23 @@ export default function PerformanceDashboard() {
 
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
-    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
+    // Column A = brief name, Column B = editor, Column C = approved month (empty if not approved)
+    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
     return rows.filter(r => {
-      const hasDate = r[2]?.trim();
-      const approvedMonth = r[3]?.trim();
-      return hasDate && approvedMonth?.toLowerCase() === month.toLowerCase();
+      const approvedMonth = r[2]?.trim();
+      return approvedMonth && approvedMonth.toLowerCase() === month.toLowerCase();
     }).length;
   }, [data, month]);
 
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
+    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
     return rows
-      .filter(r => r[3]?.trim()?.toLowerCase() === month.toLowerCase())
+      .filter(r => r[2]?.trim()?.toLowerCase() === month.toLowerCase())
       .map(r => ({
-        brief: r[1]?.trim() || '',
-        date: r[2]?.trim() || '',
-        month: r[3]?.trim() || '',
+        brief: r[0]?.trim() || '',
+        editor: r[1]?.trim() || '',
+        month: r[2]?.trim() || '',
         approved: !!r[2]?.trim(),
       }))
       .filter(r => r.brief);
@@ -177,13 +177,12 @@ export default function PerformanceDashboard() {
 
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[1]?.trim());
+    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
     const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const map: Record<string, number> = {};
     rows.forEach(r => {
-      const hasDate = r[2]?.trim();
-      const m = r[3]?.trim();
-      if (hasDate && m) map[m] = (map[m] || 0) + 1;
+      const m = r[2]?.trim();
+      if (m) map[m] = (map[m] || 0) + 1;
     });
     return Object.entries(map)
       .sort(([a], [b]) => monthOrder.indexOf(a) - monthOrder.indexOf(b))
@@ -608,7 +607,7 @@ export default function PerformanceDashboard() {
                       <thead>
                         <tr className="bg-[#F7F6F3]">
                           <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Brief Name</th>
-                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Approval Date</th>
+                          <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Editor</th>
                           <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Month</th>
                           <th className="text-left py-3 px-6 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">Status</th>
                         </tr>
@@ -617,7 +616,7 @@ export default function PerformanceDashboard() {
                         {filteredPayment.map((row, i) => (
                           <tr key={i} className="hover:bg-[#F7F6F3] transition-colors duration-200 border-b border-[#E2E0D9] last:border-b-0">
                             <td className="py-5 px-6 text-[#1A1A1A]">{row.brief}</td>
-                            <td className="py-5 px-6 text-[#75726B] tabular-nums">{row.date || '—'}</td>
+                            <td className="py-5 px-6 text-[#75726B]">{row.editor || '—'}</td>
                             <td className="py-5 px-6 text-[#75726B]">{row.month}</td>
                             <td className="py-5 px-6">
                               {row.approved ? (
