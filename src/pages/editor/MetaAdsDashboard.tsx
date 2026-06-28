@@ -75,7 +75,10 @@ const MetaAdsDashboard = () => {
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {
+                const cid = new URLSearchParams(window.location.search).get('clientId');
+                navigate(cid ? `/admin/clients/${cid}` : '/dashboard');
+              }}
               className="w-8 h-8 rounded-[4px] flex items-center justify-center hover:bg-white transition-all duration-200 cursor-pointer border border-[#E2E0D9] hover:border-[#1A1A1A]"
             >
               <ArrowLeft className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />

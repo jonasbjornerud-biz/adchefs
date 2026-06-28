@@ -53,21 +53,18 @@ export function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
         return;
       }
     } else {
-      // Editor route — check this user is a non-admin client
+      // Editor route — admins are allowed through (they can preview any client).
       const { data: client } = await supabase
         .from('clients')
         .select('is_admin')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (client?.is_admin) {
-        navigate('/admin');
-        return;
-      }
       if (!client) {
         navigate('/login');
         return;
       }
+      // Admins fall through to the editor page; the page itself handles ?clientId=.
     }
 
     setAuthorized(true);

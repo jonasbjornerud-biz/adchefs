@@ -85,10 +85,26 @@ export default function PerformanceDashboard() {
   async function loadClient() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate('/login'); return; }
-    const { data: clientData } = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
-    if (!clientData || !(clientData as any).spreadsheet_id) { navigate('/dashboard'); return; }
+
+    // Admin preview path: ?clientId=<uuid> takes precedence over the user's own client.
+    const params = new URLSearchParams(window.location.search);
+    const overrideId = params.get('clientId');
+
+    let clientData: any = null;
+    if (overrideId) {
+      const res = await supabase.from('clients').select('*').eq('id', overrideId).maybeSingle();
+      clientData = res.data;
+    } else {
+      const res = await supabase.from('clients').select('*').eq('user_id', user.id).maybeSingle();
+      clientData = res.data;
+    }
+
+    if (!clientData || !clientData.spreadsheet_id) {
+      navigate(overrideId ? `/admin/clients/${overrideId}` : '/dashboard');
+      return;
+    }
     setClient(clientData as Client);
-    fetchData((clientData as any).spreadsheet_id);
+    fetchData(clientData.spreadsheet_id);
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
@@ -310,7 +326,10 @@ export default function PerformanceDashboard() {
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {
+                const cid = new URLSearchParams(window.location.search).get('clientId');
+                navigate(cid ? `/admin/clients/${cid}` : '/dashboard');
+              }}
               className="w-8 h-8 rounded-[4px] flex items-center justify-center hover:bg-white transition-all duration-200 cursor-pointer border border-[#E2E0D9] hover:border-[#1A1A1A]"
             >
               <ArrowLeft className="w-4 h-4 text-[#1A1A1A]" strokeWidth={1.5} />

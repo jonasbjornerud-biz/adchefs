@@ -257,7 +257,15 @@ export default function ClientDashboard({ clientOverride, hideChrome = false }: 
             return (
               <button
                 key={card.title}
-                onClick={() => enabled && navigate(card.route)}
+                onClick={() => {
+                  if (!enabled) return;
+                  // When admin is previewing a client, pass the clientId so the
+                  // sub-page loads that client's data instead of the admin's own.
+                  const target = clientOverride
+                    ? `${card.route}?clientId=${clientOverride.id}`
+                    : card.route;
+                  navigate(target);
+                }}
                 disabled={!enabled}
                 className={`group text-left relative overflow-hidden rounded-[12px] p-8 transition-all duration-500 border ${
                   enabled
