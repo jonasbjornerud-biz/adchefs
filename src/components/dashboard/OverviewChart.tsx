@@ -72,15 +72,15 @@ export function OverviewChart({ ads }: OverviewChartProps) {
           <ComposedChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="overviewSpend" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0} />
+                <stop offset="0%" stopColor="#2E6BE6" stopOpacity={0.10} />
+                <stop offset="100%" stopColor="#2E6BE6" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="rgba(26,26,26,0.06)" strokeDasharray="2 5" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => v.slice(5)} />
             <YAxis tick={{ fill: "#75726B", fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
             <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(26,26,26,0.2)', strokeWidth: 1, strokeDasharray: '2 5' }} />
-            <Area type="monotone" dataKey="spend" stroke="#9ED8F5" strokeWidth={1.5} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#9ED8F5", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
+            <Area type="monotone" dataKey="spend" stroke="#2E6BE6" strokeWidth={1.5} fill="url(#overviewSpend)" name="Spend" dot={false} activeDot={{ fill: "#2E6BE6", stroke: "#1A1A1A", strokeWidth: 2, r: 5 }} />
             <Line type="monotone" dataKey="revenue" stroke="#1A1A1A" strokeWidth={2.25} dot={false} name="Revenue" activeDot={{ fill: "#1A1A1A", stroke: "#F7F6F3", strokeWidth: 2, r: 5 }} strokeLinecap="round" />
           </ComposedChart>
         </ResponsiveContainer>
@@ -88,7 +88,7 @@ export function OverviewChart({ ads }: OverviewChartProps) {
 
       <div className="flex gap-5 mt-4 relative">
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
-          <span className="w-2 h-2 rounded-full bg-[#9ED8F5]" /> Spend
+          <span className="w-2 h-2 rounded-full bg-[#2E6BE6]" /> Spend
         </div>
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
           <span className="w-2 h-2 rounded-full bg-[#1A1A1A]" /> Revenue
