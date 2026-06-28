@@ -85,14 +85,14 @@ const MetaAdsDashboard = () => {
             </button>
             <span className="text-sm font-medium text-[#1A1A1A] tracking-tight">KPI Dashboard</span>
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#75726B]">
+          <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">
             {isLoading ? (
               <span className="inline-flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Loading</span>
             ) : isLive ? (
               <span className="inline-flex items-center gap-1.5">
                 <span className="relative flex w-1.5 h-1.5">
-                  <span className="absolute inset-0 rounded-full bg-[#9ED8F5] animate-ping opacity-60" />
-                  <span className="relative w-1.5 h-1.5 rounded-full bg-[#9ED8F5]" />
+                  <span className="absolute inset-0 rounded-full bg-[#2E6BE6] animate-ping opacity-60" />
+                  <span className="relative w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" />
                 </span>
                 <Wifi className="w-3 h-3" strokeWidth={1.5} /> Live
               </span>
@@ -109,7 +109,7 @@ const MetaAdsDashboard = () => {
         <h1 className="mt-6 text-5xl md:text-6xl leading-[0.95] tracking-tight font-semibold max-w-3xl">
           Ad <em>performance</em>, at a glance.
         </h1>
-        <p className="mt-5 text-[15px] text-[#75726B] max-w-xl leading-relaxed">
+        <p className="mt-5 text-[15px] text-[#8B887F] max-w-xl leading-relaxed">
           ROAS, CPA, hook rate, hold rate — pulled live from Meta. Pick a date range, fetch, and drill into any individual ad.
         </p>
         <hr className="w-[100px] h-px bg-[#E2E0D9] border-0 mt-8" />
@@ -121,7 +121,7 @@ const MetaAdsDashboard = () => {
           <button
             onClick={triggerFetch}
             disabled={isLoading || !dateRange?.from || !dateRange?.to}
-            className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#1A1A1A] bg-[#1A1A1A] !text-[#F7F6F3] hover:bg-[#000] flex items-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-9 px-4 rounded-[4px] text-sm font-medium text-[#1A1A1A] bg-[#1A1A1A] !text-[#FAFAF7] hover:bg-[#000] flex items-center gap-2 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" strokeWidth={1.5} />}
             Fetch
