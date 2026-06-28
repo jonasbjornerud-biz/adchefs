@@ -21,7 +21,7 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const INK = '#1A1A1A';
 const ACCENT = '#9ED8F5';
 const ACCENT_DEEP = '#6FB8E0';
-const BAR_SHADOW = 'drop-shadow(0 2px 4px rgba(110, 184, 224, 0.28))';
+const BAR_SHADOW = 'drop-shadow(0 5px 10px rgba(110, 184, 224, 0.24))';
 
 const AXIS_TICK = {
   fill: '#75726B',
@@ -415,8 +415,8 @@ export default function PerformanceDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={dailyByWeek}
-                      barCategoryGap="45%"
-                      barGap={2}
+                      barCategoryGap="22%"
+                      barGap={6}
                       margin={{ top: 8, right: 8, left: 0, bottom: 4 }}
                     >
                       <CartesianGrid strokeDasharray="2 4" stroke="rgba(26,26,26,0.09)" vertical={true} horizontal={true} />
@@ -432,8 +432,8 @@ export default function PerformanceDashboard() {
                             dataKey={wk}
                             fill={isLatest ? ACCENT : ACCENT_DEEP}
                             fillOpacity={isLatest ? 1 : 0.55}
-                            radius={[2, 2, 0, 0]}
-                            maxBarSize={22}
+                            radius={[4, 4, 0, 0]}
+                            maxBarSize={40}
                             style={{ filter: BAR_SHADOW }}
                           />
                         );
@@ -455,7 +455,7 @@ export default function PerformanceDashboard() {
                         <XAxis dataKey="week" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} tickFormatter={(v) => String(v).toUpperCase()} padding={{ left: 40, right: 40 }} />
                         <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} tickCount={9} />
                         <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(158,216,245,0.08)' }} />
-                        <Bar dataKey="total" radius={[2, 2, 0, 0]} maxBarSize={28} style={{ filter: BAR_SHADOW }}>
+                        <Bar dataKey="total" radius={[4, 4, 0, 0]} maxBarSize={48} style={{ filter: BAR_SHADOW }}>
                           {weeklyOutputAll.map((_, i) => (
                             <Cell key={i} fill={i === weeklyOutputAll.length - 1 ? ACCENT : ACCENT_DEEP} fillOpacity={i === weeklyOutputAll.length - 1 ? 1 : 0.55} />
                           ))}
@@ -483,7 +483,7 @@ export default function PerformanceDashboard() {
                       <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} padding={{ left: 30, right: 30 }} />
                       <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} tickCount={9} />
                       <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(158,216,245,0.08)' }} />
-                      <Bar dataKey="count" radius={[2, 2, 0, 0]} name="Approved" maxBarSize={32} style={{ filter: BAR_SHADOW }}>
+                      <Bar dataKey="count" radius={[4, 4, 0, 0]} name="Approved" maxBarSize={52} style={{ filter: BAR_SHADOW }}>
                         {monthlyApproved.map((m, i) => (
                           <Cell key={i} fill={m.month.toLowerCase() === month.toLowerCase() ? ACCENT : ACCENT_DEEP} fillOpacity={m.month.toLowerCase() === month.toLowerCase() ? 1 : 0.55} />
                         ))}

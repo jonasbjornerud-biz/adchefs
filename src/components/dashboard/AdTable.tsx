@@ -25,8 +25,8 @@ function InlineBar({ value, max = 100 }: { value: number; max?: number; color?: 
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs font-medium text-[#1A1A1A] tabular-nums w-10 text-right">{value}%</span>
-      <div className="flex-1 h-[3px] rounded-full bg-[#E2E0D9] overflow-hidden">
-        <div className="h-full rounded-full bg-[#1A1A1A] transition-all duration-300" style={{ width: `${pct}%` }} />
+      <div className="flex-1 h-1 rounded-full bg-[#E2E0D9] overflow-hidden">
+        <div className="h-full rounded-full bg-[#9ED8F5] transition-all duration-300 shadow-[0_2px_6px_rgba(110,184,224,0.35)]" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -65,10 +65,10 @@ export function AdTable({ ads, onSelect }: AdTableProps) {
 
   return (
     <div
-      className="relative rounded-[4px] overflow-hidden animate-card-enter bg-white border border-[#E2E0D9]"
+      className="relative glass-card overflow-hidden animate-card-enter"
       style={{ animationDelay: "400ms" }}
     >
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+      <span aria-hidden className="glass-rail" />
       {/* Search bar */}
       <div className="px-4 py-3 border-b border-[#E2E0D9] flex items-center gap-2 relative">
         <div className="relative flex-1 max-w-md">
