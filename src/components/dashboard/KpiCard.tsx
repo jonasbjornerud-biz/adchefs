@@ -49,21 +49,10 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCard
 
   return (
     <div
-      className="group relative rounded-[10px] p-5 flex flex-col gap-4 transition-all duration-300 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0 overflow-hidden border border-[#E5E3DC] hover:border-[#1A1A1A]/30 hover:-translate-y-[2px]"
-      style={{
-        animationDelay: `${delay}ms`,
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.9) inset, 0 12px 32px -24px rgba(26,26,26,0.18)',
-      }}
+      className="group glass-card glass-card-hover p-5 flex flex-col gap-4 cursor-default animate-card-enter min-w-[180px] flex-1 flex-shrink-0 overflow-hidden"
+      style={{ animationDelay: `${delay}ms` }}
     >
-      {/* Top accent rail */}
-      <span
-        className="absolute top-0 left-0 h-[2px] w-12 transition-all duration-500 group-hover:w-full opacity-90"
-        style={{
-          background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 50%, transparent 100%)',
-          boxShadow: '0 0 8px rgba(158,216,245,0.45)',
-        }}
-      />
+      <span aria-hidden className="glass-rail" />
       {/* Subtle wash bottom-right */}
       <span
         aria-hidden
@@ -75,7 +64,7 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCard
         <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-medium text-[#75726B]">
           {label}
         </span>
-        <span className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#3B86A8] bg-white border border-[#E5E3DC] shadow-[0_1px_0_rgba(255,255,255,0.8)_inset]">
+        <span className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#3B86A8] bg-white/70 backdrop-blur-md border border-white/70 shadow-[0_1px_0_rgba(255,255,255,0.85)_inset]">
           {icon}
         </span>
       </div>
