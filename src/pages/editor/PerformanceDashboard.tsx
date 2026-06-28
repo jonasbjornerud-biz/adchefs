@@ -510,18 +510,10 @@ export default function PerformanceDashboard() {
               <div>
                 <div className="flex items-end justify-between gap-4 mb-4">
                   <div>
-                    <span className="eyebrow">Editor Breakdown</span>
-                    <p className="mt-2 text-[12px] text-[#8B887F]">
-                      Per-editor output for {month}. Sorted by delivered volume.
-                    </p>
+                    <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F]">Editor breakdown</h2>
+                    <p className="mt-1 text-[12px] text-[#8B887F]">Per-editor output for {month}. Sorted by delivered volume.</p>
                   </div>
-                  <div className="hidden md:flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-[#8B887F]">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#2E6BE6]" /> Top performer
-                    </span>
-                    <span className="text-[#D8D7D2]">·</span>
-                    <span>{editorBreakdown.length} editors</span>
-                  </div>
+                  <span className="hidden md:inline text-[11px] text-[#8B887F]">{editorBreakdown.length} editors</span>
                 </div>
                 <PremiumCard className="overflow-hidden">
                   <div className="overflow-x-auto">
@@ -636,12 +628,10 @@ export default function PerformanceDashboard() {
             {/* Approved Videos Table */}
             {filteredPayment.length > 0 && (
               <div>
-                <span className="eyebrow mb-4 inline-block">Approved Videos</span>
+                <h2 className="text-[16px] font-semibold tracking-tight text-[#0F0F0F] mb-4">Approved videos</h2>
                 <PremiumCard className="overflow-hidden">
                   <div className="px-6 py-4 border-b border-[#E2E0D9]">
-                    <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8B887F]">
-                      <span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}
-                    </p>
+                    <p className="text-xs text-[#75726B]"><span className="text-[#1A1A1A] font-semibold">{filteredPayment.filter(r => r.approved).length}</span> approved in {month}</p>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
