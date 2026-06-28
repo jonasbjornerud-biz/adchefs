@@ -25,12 +25,12 @@ function InlineBar({ value, max = 100 }: { value: number; max?: number; color?: 
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs font-medium text-[#1A1A1A] tabular-nums w-10 text-right">{value}%</span>
-      <div className="flex-1 h-[4px] rounded-full bg-[rgba(26,26,26,0.08)] overflow-hidden">
+      <div className="flex-1 h-[4px] rounded-full bg-[#F0EEE7] overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-300"
+          className="h-full rounded-full transition-[width] duration-300"
           style={{
             width: `${pct}%`,
-            background: 'linear-gradient(90deg, #9ED8F5 0%, #3B86A8 60%, #1A1A1A 100%)',
+            background: 'linear-gradient(90deg, #2E6BE6 0%, #111111 100%)',
           }}
         />
       </div>
