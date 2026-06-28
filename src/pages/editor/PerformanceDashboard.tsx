@@ -10,7 +10,7 @@ import {
 import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KpiCard } from '@/components/dashboard/KpiCard';
-import AmbientBackground, { ChartPatternDefs } from '@/components/backend/AmbientBackground';
+import HeroBackground from '@/components/HeroBackground';
 
 interface EodRow { Month: string; Week: string; Date: string; Name: string; Editor: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
 interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved Month': string; [k: string]: string; }
@@ -20,7 +20,8 @@ const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const INK = '#1A1A1A';
 const ACCENT = '#9ED8F5';
-const HAIRLINE = 'url(#hairline-ink)';
+const ACCENT_DEEP = '#6FB8E0';
+const BAR_SHADOW = 'drop-shadow(0 2px 4px rgba(110, 184, 224, 0.28))';
 
 const AXIS_TICK = {
   fill: '#75726B',
