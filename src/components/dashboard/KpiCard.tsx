@@ -2,7 +2,7 @@ import { ReactNode, useId } from "react";
 
 interface KpiCardProps {
   label: string;
-  value: string;
+  value: string | null | undefined;
   icon: ReactNode;
   trend?: { value: number; positive: boolean };
   delay?: number;
@@ -46,6 +46,11 @@ function Sparkline({ data, gradId }: { data: number[]; gradId: string }) {
 
 export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCardProps) {
   const uid = useId().replace(/:/g, "");
+  // "Awaiting data" branch — null/undefined or unwired sentinel ("—") render a
+  // skeleton shimmer + mono caption instead of a stark zero.
+  const hasValue =
+    value !== null && value !== undefined && value !== "" && value !== "—";
+  const display = hasValue ? (value as string) : "";
 
   return (
     <div
@@ -64,24 +69,31 @@ export function KpiCard({ label, value, icon, trend, delay = 0, spark }: KpiCard
         <span className="text-[10px] uppercase tracking-[0.2em] font-mono font-medium text-[#75726B]">
           {label}
         </span>
-        <span className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#3B86A8] bg-white/70 backdrop-blur-md border border-white/70 shadow-[0_1px_0_rgba(255,255,255,0.85)_inset]">
+        <span className="w-7 h-7 glass-chip flex items-center justify-center text-[#3B86A8]">
           {icon}
         </span>
       </div>
 
       <div className="flex flex-col gap-2 relative">
-        <span
-          className={`font-semibold text-[#0F0F0F] leading-none whitespace-nowrap tracking-[-0.03em] tabular-nums ${responsiveSize(value)}`}
-          style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
-        >
-          {value}
-        </span>
-        {trend && (
-          <span className={`inline-flex items-center gap-1 self-start rounded-full px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.12em] ${
-            trend.positive
-              ? "bg-[#ECF7FD] text-[#1A4A6B] ring-1 ring-[#9ED8F5]/40"
-              : "bg-[#F5EDED] text-[#6B1A1A] ring-1 ring-[#E8C5C5]/60"
-          }`}>
+        {hasValue ? (
+          <span
+            className={`font-semibold text-[#0F0F0F] leading-none whitespace-nowrap tracking-[-0.03em] tabular-nums ${responsiveSize(display)}`}
+            style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}
+          >
+            {display}
+          </span>
+        ) : (
+          <>
+            <span className="glass-skeleton h-9 w-24" aria-hidden />
+            <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#9A988F]">
+              Awaiting data
+            </span>
+          </>
+        )}
+        {hasValue && trend && (
+          <span
+            className={`glass-badge self-start ${trend.positive ? "glass-badge-up" : "glass-badge-down"}`}
+          >
             {trend.positive ? "▲" : "▼"} {Math.abs(trend.value)}%
           </span>
         )}
