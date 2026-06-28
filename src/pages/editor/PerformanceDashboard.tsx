@@ -10,14 +10,24 @@ import {
 import { RefreshCw, AlertCircle, FileBarChart, TrendingUp, Calendar, ArrowLeft, CheckCircle2, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KpiCard } from '@/components/dashboard/KpiCard';
+import HeroBackground from '@/components/HeroBackground';
 
-interface EodRow { Month: string; Week: string; Date: string; Name: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
+interface EodRow { Month: string; Week: string; Date: string; Name: string; Editor: string; 'Videos Delivered': string; 'Select the working day the report is for': string; [k: string]: string; }
 interface PaymentRow { 'Brief Name': string; 'Approval Date': string; 'Approved Month': string; [k: string]: string; }
 interface CachedData { eod: EodRow[]; payment: PaymentRow[]; editors: string[]; months: string[]; lastSynced: number; paymentRaw: string[][]; }
 
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const COLORS = ['#1A1A1A', '#9ED8F5', '#75726B', '#3B86A8', '#C2BCAF', '#1A1A1A', '#9ED8F5', '#75726B'];
+// Consistent accent for all charts. Weeks vary by opacity only.
+const ACCENT = '#9ED8F5';
+const WEEK_OPACITIES = [1, 0.78, 0.58, 0.42, 0.3, 0.22];
+
+const AXIS_TICK = {
+  fill: '#75726B',
+  fontSize: 10,
+  fontFamily: "'JetBrains Mono', monospace",
+  letterSpacing: '0.12em',
+} as const;
 
 const CARD_SHADOW = 'none';
 const CARD_SHADOW_HOVER = 'none';
@@ -108,7 +118,7 @@ export default function PerformanceDashboard() {
   }
 
   const fetchData = useCallback(async (sheetId: string, force = false) => {
-    const cacheKey = `adchefs_perf_full_v2_${sheetId}`;
+    const cacheKey = `adchefs_perf_full_v4_${sheetId}`;
     if (!force) {
       try {
         const cached = localStorage.getItem(cacheKey);
@@ -122,12 +132,16 @@ export default function PerformanceDashboard() {
     try {
       const [eodRes, payRes, helpRes] = await Promise.all([
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=EOD-Report`),
-        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Payment Tracking`),
+        // range=A4:C skips the metadata/header lines that gviz otherwise folds into the
+        // header row (which was eating the first real data row — e.g. "Founder Story").
+        fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Payment Tracking&range=A4:C`),
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=_Helpers`),
       ]);
       if (!eodRes.ok || !payRes.ok || !helpRes.ok) throw new Error('Failed to fetch sheet data');
       const [eodText, payText, helpText] = await Promise.all([eodRes.text(), payRes.text(), helpRes.text()]);
-      const eod = parseCSV<EodRow>(eodText);
+      const eodRaw = parseCSV<EodRow>(eodText);
+      // Editor name is in the 6th column, which gviz emits as "Column 6". Normalise it.
+      const eod = eodRaw.map(r => ({ ...r, Editor: (r['Column 6'] || r.Name || '').toString().trim() }));
       const payment = parseCSV<PaymentRow>(payText);
       const paymentRaw = Papa.parse(payText, { header: false, skipEmptyLines: true }).data as string[][];
       const helpers = Papa.parse(helpText, { header: false, skipEmptyLines: true }).data as string[][];
@@ -146,26 +160,33 @@ export default function PerformanceDashboard() {
     if (!data) return [];
     return data.eod.filter(r => {
       const matchMonth = r.Month?.toLowerCase() === month.toLowerCase();
-      const matchEditor = editor === '(All Editors)' || r.Name === editor;
+      const editorName = (r.Editor || r['Column 6'] || r.Name || '').toString().trim();
+      const matchEditor = editor === '(All Editors)' || editorName === editor;
       return matchMonth && matchEditor;
     });
   }, [data, editor, month]);
 
   const approvedCount = useMemo(() => {
     if (!data?.paymentRaw) return 0;
-    // Column A = brief name, Column B = editor, Column C = approved month (empty if not approved)
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    // Column A = brief, B = editor, C = approved month. paymentRaw is already trimmed
+    // to A4:C via gviz `range`, so row 0 is the header "Brief Name/Editor/Approved Month".
+    const rows = data.paymentRaw
+      .filter(r => r[0]?.trim() && r[0]?.trim().toLowerCase() !== 'brief name');
     return rows.filter(r => {
       const approvedMonth = r[2]?.trim();
-      return approvedMonth && approvedMonth.toLowerCase() === month.toLowerCase();
+      if (!approvedMonth) return false;
+      if (editor !== '(All Editors)' && r[1]?.trim() !== editor) return false;
+      return approvedMonth.toLowerCase() === month.toLowerCase();
     }).length;
-  }, [data, month]);
+  }, [data, month, editor]);
 
   const filteredPayment = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw
+      .filter(r => r[0]?.trim() && r[0]?.trim().toLowerCase() !== 'brief name');
     return rows
       .filter(r => r[2]?.trim()?.toLowerCase() === month.toLowerCase())
+      .filter(r => editor === '(All Editors)' || r[1]?.trim() === editor)
       .map(r => ({
         brief: r[0]?.trim() || '',
         editor: r[1]?.trim() || '',
@@ -173,27 +194,31 @@ export default function PerformanceDashboard() {
         approved: !!r[2]?.trim(),
       }))
       .filter(r => r.brief);
-  }, [data, month]);
+  }, [data, month, editor]);
 
   const monthlyApproved = useMemo(() => {
     if (!data?.paymentRaw) return [];
-    const rows = data.paymentRaw.slice(1).filter(r => r[0]?.trim());
+    const rows = data.paymentRaw
+      .filter(r => r[0]?.trim() && r[0]?.trim().toLowerCase() !== 'brief name');
     const monthOrder = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const map: Record<string, number> = {};
     rows.forEach(r => {
       const m = r[2]?.trim();
+      if (editor !== '(All Editors)' && r[1]?.trim() !== editor) return;
       if (m) map[m] = (map[m] || 0) + 1;
     });
     return Object.entries(map)
       .sort(([a], [b]) => monthOrder.indexOf(a) - monthOrder.indexOf(b))
       .map(([month, count]) => ({ month, count }));
-  }, [data]);
+  }, [data, editor]);
 
   const kpis = useMemo(() => {
     const delivered = filteredEod.reduce((s, r) => s + (parseInt(r['Videos Delivered']) || 0), 0);
     const uniqueDays = new Set(filteredEod.map(r => r.Date)).size;
     const avg = uniqueDays > 0 ? (delivered / uniqueDays).toFixed(1) : '—';
-    const activeEditors = new Set(filteredEod.map(r => r.Name).filter(Boolean)).size;
+    const activeEditors = new Set(
+      filteredEod.map(r => (r.Editor || r['Column 6'] || r.Name || '').toString().trim()).filter(Boolean)
+    ).size;
     return { delivered, approved: approvedCount, avg, activeEditors };
   }, [filteredEod, approvedCount]);
 
@@ -230,7 +255,10 @@ export default function PerformanceDashboard() {
 
   const weeklyOutputAll = useMemo(() => {
     if (!data) return [];
-    const editorFiltered = data.eod.filter(r => editor === '(All Editors)' || r.Name === editor);
+    const editorFiltered = data.eod.filter(r => {
+      const name = (r.Editor || r['Column 6'] || r.Name || '').toString().trim();
+      return editor === '(All Editors)' || name === editor;
+    });
     const map: Record<string, number> = {};
     editorFiltered.forEach(r => {
       const w = r.Week;
@@ -247,7 +275,7 @@ export default function PerformanceDashboard() {
     const monthFiltered = data.eod.filter(r => r.Month?.toLowerCase() === month.toLowerCase());
     const map: Record<string, { delivered: number; days: Set<string>; weeks: Set<string> }> = {};
     monthFiltered.forEach(r => {
-      const name = r.Name;
+      const name = (r.Editor || r['Column 6'] || r.Name || '').toString().trim();
       if (!name) return;
       if (!map[name]) map[name] = { delivered: 0, days: new Set(), weeks: new Set() };
       map[name].delivered += parseInt(r['Videos Delivered']) || 0;
@@ -306,19 +334,10 @@ export default function PerformanceDashboard() {
 
   return (
     <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
-      {/* Subtle paper grain */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")",
-          backgroundSize: '200px 200px',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[420px] pointer-events-none z-[1]"
-        style={{ background: 'radial-gradient(ellipse at 90% 0%, rgba(158, 216, 245, 0.28) 0%, transparent 55%)' }}
-      />
+      {/* Marketing-site hero background — reused for surface parity */}
+      <div className="absolute inset-x-0 top-0 h-[640px] pointer-events-none z-[1] overflow-hidden">
+        <HeroBackground />
+      </div>
 
       {/* Header */}
       <header className="sticky top-0 z-40 glass-topbar">
@@ -397,12 +416,12 @@ export default function PerformanceDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={dailyByWeek} barCategoryGap="20%">
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="day" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <XAxis dataKey="day" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
+                      <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Legend wrapperStyle={{ fontSize: 10, color: '#75726B' }} />
+                      <Legend wrapperStyle={{ fontSize: 9, color: '#75726B', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.12em', textTransform: 'uppercase' }} />
                       {weekKeys.map((wk, i) => (
-                        <Bar key={wk} dataKey={wk} fill={COLORS[i % COLORS.length]} radius={[2, 2, 0, 0]} />
+                        <Bar key={wk} dataKey={wk} fill={ACCENT} fillOpacity={WEEK_OPACITIES[i % WEEK_OPACITIES.length]} radius={[2, 2, 0, 0]} />
                       ))}
                     </BarChart>
                   </ResponsiveContainer>
@@ -417,17 +436,11 @@ export default function PerformanceDashboard() {
                   <div style={{ minWidth: weeklyOutputAll.length > 12 ? `${weeklyOutputAll.length * 40}px` : '100%', height: '100%' }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={weeklyOutputAll}>
-                        <defs>
-                          <linearGradient id="barGradDark" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#1A1A1A" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#1A1A1A" stopOpacity={0.55} />
-                          </linearGradient>
-                        </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                        <XAxis dataKey="week" tick={{ fill: '#75726B', fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} />
-                        <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                        <XAxis dataKey="week" tick={AXIS_TICK} axisLine={false} tickLine={false} interval={0} angle={weeklyOutputAll.length > 15 ? -45 : 0} textAnchor={weeklyOutputAll.length > 15 ? 'end' : 'middle'} tickFormatter={(v) => String(v).toUpperCase()} />
+                        <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                         <Tooltip content={<ChartTooltip />} />
-                        <Bar dataKey="total" fill="url(#barGradDark)" radius={[2, 2, 0, 0]} />
+                        <Bar dataKey="total" fill={ACCENT} radius={[2, 2, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -447,17 +460,11 @@ export default function PerformanceDashboard() {
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={monthlyApproved}>
-                      <defs>
-                        <linearGradient id="approvedGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#9ED8F5" stopOpacity={1} />
-                          <stop offset="100%" stopColor="#9ED8F5" stopOpacity={0.55} />
-                        </linearGradient>
-                      </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,26,26,0.06)" vertical={false} />
-                      <XAxis dataKey="month" tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fill: '#75726B', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <XAxis dataKey="month" tick={AXIS_TICK} axisLine={false} tickLine={false} tickFormatter={(v) => String(v).toUpperCase()} />
+                      <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                       <Tooltip content={<ChartTooltip />} />
-                      <Bar dataKey="count" fill="url(#approvedGrad)" radius={[2, 2, 0, 0]} name="Approved" />
+                      <Bar dataKey="count" fill={ACCENT} radius={[2, 2, 0, 0]} name="Approved" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
