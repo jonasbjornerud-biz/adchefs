@@ -64,8 +64,8 @@ function DarkSelect({ value, onChange, options }: { value: string; onChange: (v:
 
 function PremiumCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative bg-white rounded-[4px] border border-[#E2E0D9] transition-colors duration-200 hover:border-[#1A1A1A]/40 ${className}`}>
-      <span className="absolute top-0 left-0 h-px w-16 bg-[#9ED8F5]" />
+    <div className={`relative glass-card overflow-hidden ${className}`}>
+      <span aria-hidden className="glass-rail" />
       {children}
     </div>
   );
@@ -275,7 +275,7 @@ export default function PerformanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F6F3]">
+      <div className="min-h-screen admin-bloom">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 py-8 space-y-6 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => <div key={i} className="h-[100px] rounded-[4px] bg-[#EEEDE8] animate-pulse" />)}
@@ -305,7 +305,7 @@ export default function PerformanceDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen admin-bloom text-[#1A1A1A] relative">
       {/* Subtle paper grain */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04] z-[1]"
@@ -321,7 +321,7 @@ export default function PerformanceDashboard() {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#E2E0D9] bg-[#F7F6F3]/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 glass-topbar">
         <div className="max-w-[1280px] mx-auto px-5 md:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button

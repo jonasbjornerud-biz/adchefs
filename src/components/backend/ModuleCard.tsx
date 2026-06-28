@@ -37,17 +37,11 @@ export function ModuleCard({
       onClick={() => enabled && onClick?.()}
       disabled={!enabled}
       className={cn(
-        "group text-left relative overflow-hidden rounded-[12px] p-8 transition-all duration-500 border w-full",
+        "group text-left relative overflow-hidden rounded-[16px] p-8 transition-all duration-500 w-full glass-card",
         enabled
-          ? "cursor-pointer border-[#E5E3DC] hover:border-[#1A1A1A]/30 hover:-translate-y-[3px]"
-          : "cursor-not-allowed opacity-60 border-[#E2E0D9]",
+          ? "cursor-pointer glass-card-hover"
+          : "cursor-not-allowed opacity-60",
       )}
-      style={{
-        background: "linear-gradient(180deg,#FFFFFF 0%, #FBFAF6 100%)",
-        boxShadow: enabled
-          ? "0 1px 0 rgba(255,255,255,0.9) inset, 0 18px 40px -28px rgba(26,26,26,0.25)"
-          : "0 1px 0 rgba(255,255,255,0.7) inset",
-      }}
     >
       <span
         className="absolute top-0 left-0 h-[2px] transition-all duration-500 group-hover:w-full"

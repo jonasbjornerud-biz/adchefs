@@ -21,22 +21,13 @@ export function ChartCard({
   return (
     <section
       className={cn(
-        "relative rounded-[6px] border border-[#E2E0D9] bg-white overflow-hidden",
-        "shadow-[0_1px_2px_rgba(26,26,26,0.04)]",
+        "relative glass-card overflow-hidden",
         className,
       )}
     >
-      <span
-        aria-hidden
-        className="absolute top-0 left-0 right-0 h-[2px]"
-        style={{
-          background:
-            "linear-gradient(90deg,#9ED8F5 0%,#3B86A8 35%,transparent 100%)",
-          opacity: 0.6,
-        }}
-      />
+      <span aria-hidden className="glass-rail" />
       {(title || eyebrow || actions) && (
-        <header className="flex items-end justify-between gap-4 px-6 pt-6 pb-4 border-b border-[#EEEDE8]">
+        <header className="relative flex items-end justify-between gap-4 px-6 pt-6 pb-4 border-b border-[rgba(26,26,26,0.06)]">
           <div className="min-w-0">
             {eyebrow && (
               <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#75726B] mb-1.5">

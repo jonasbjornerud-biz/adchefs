@@ -200,10 +200,10 @@ type Props = {
 export default function AdminShell({ children, eyebrow, actions }: Props) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full admin-bg">
+      <div className="min-h-screen flex w-full admin-bloom relative">
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center justify-between border-b border-[#E5E3DC]/70 bg-[#FAF8F3]/60 backdrop-blur-xl px-4 sticky top-0 z-30">
+          <header className="glass-topbar h-14 flex items-center justify-between px-4 sticky top-0 z-30">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="text-[#75726B] hover:text-[#1A1A1A] h-8 w-8 rounded-[6px] hover:bg-[#EEEDE8]" />
               <span className="h-4 w-px bg-[#D8D7D2]" />

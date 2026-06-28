@@ -156,6 +156,103 @@
   .brand-wash-strong {
     background: linear-gradient(90deg, #BFE3F5 0%, #ECF7FD 100%);
   }
+
+  /* ── Liquid glass system (admin / authenticated app) ── */
+  .admin-bloom {
+    background-color: #F4F2EC;
+    background-image:
+      radial-gradient(ellipse 1200px 800px at 92% -4%, rgba(158, 216, 245, 0.55) 0%, transparent 58%),
+      radial-gradient(ellipse 1000px 700px at -6% 8%, rgba(189, 231, 250, 0.40) 0%, transparent 62%),
+      radial-gradient(ellipse 1100px 700px at 50% 110%, rgba(120, 196, 232, 0.30) 0%, transparent 60%),
+      radial-gradient(ellipse 700px 500px at 50% 40%, rgba(255, 255, 255, 0.45) 0%, transparent 72%);
+    background-attachment: fixed;
+  }
+  .admin-bloom::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+
+  /* Liquid glass surface — translucent white over the bloom */
+  .glass-surface {
+    background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.62) 100%);
+    backdrop-filter: blur(28px) saturate(150%);
+    -webkit-backdrop-filter: blur(28px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.65);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.85) inset,
+      0 0 0 1px rgba(26,26,26,0.04),
+      0 18px 50px -28px rgba(40,72,110,0.22);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-surface { background: #FBFAF6; }
+  }
+
+  .glass-card {
+    position: relative;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.58) 100%);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.9) inset,
+      0 0 0 1px rgba(26,26,26,0.04),
+      0 22px 50px -30px rgba(40,72,110,0.22);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, transparent 38%);
+    mix-blend-mode: overlay;
+    opacity: .8;
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 1px rgba(26,26,26,0.06),
+      0 28px 60px -28px rgba(40,72,110,0.30);
+    border-color: rgba(158,216,245,0.55);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass-card { background: #FFFFFF; }
+  }
+
+  .glass-rail {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    background: linear-gradient(90deg,#9ED8F5 0%,#3B86A8 50%,transparent 100%);
+    opacity: .55;
+    pointer-events: none;
+  }
+
+  /* Glass top bar — used in admin/editor shells */
+  .glass-topbar {
+    background: linear-gradient(180deg, rgba(250,248,243,0.78) 0%, rgba(250,248,243,0.55) 100%);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border-bottom: 1px solid rgba(26,26,26,0.06);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-card,
+    .glass-card-hover { transition: none; }
+  }
 }
 
 @layer utilities {
