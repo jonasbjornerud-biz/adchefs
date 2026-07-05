@@ -18,6 +18,8 @@ export default {
         display: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Times New Roman', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        archivo: ['Archivo', 'system-ui', 'sans-serif'],
+        plex: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
