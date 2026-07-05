@@ -1,17 +1,13 @@
+import Navigation from "@/components/Navigation";
+import Hero from "@/components/Hero";
+import WhyAdChefs from "@/components/WhyAdChefs";
+import CalendlyBooking from "@/components/CalendlyBooking";
+import Footer from "@/components/Footer";
+import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
-import EditNav from "@/components/edit/EditNav";
-import TimelineBar from "@/components/edit/TimelineBar";
-import EditHero from "@/components/edit/EditHero";
-import EditProof from "@/components/edit/EditProof";
-import EditStory from "@/components/edit/EditStory";
-import EditWeekly from "@/components/edit/EditWeekly";
-import EditServices from "@/components/edit/EditServices";
-import EditCaseWork from "@/components/edit/EditCaseWork";
-import EditComparison from "@/components/edit/EditComparison";
-import EditBooking from "@/components/edit/EditBooking";
-import EditFaq from "@/components/edit/EditFaq";
-import EditFinalCta from "@/components/edit/EditFinalCta";
-import EditFooter from "@/components/edit/EditFooter";
+import TwoWaysToWork from "@/components/TwoWaysToWork";
+import ResultsMarquee from "@/components/ResultsMarquee";
+import MeVsAgency from "@/components/MeVsAgency";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
@@ -26,7 +22,7 @@ const FAQ_ITEMS: Array<{ q: string; a: string }> = [
 
 const Index = () => {
   return (
-    <div className="edit-suite min-h-screen">
+    <div className="min-h-screen bg-background text-foreground">
       <SEO
         title="AdChefs — Scale ad creative without hiring"
         description="Dedicated video editors for e-commerce brands doing over €5k/month in ad spend. Pay per delivered video. No retainers, no rotating freelancers."
@@ -77,21 +73,14 @@ const Index = () => {
           },
         ]}
       />
-      <EditNav />
-      <TimelineBar />
-      <main style={{ paddingTop: 96 /* nav 64 + timeline 32 */ }}>
-        <EditHero />
-        <EditProof />
-        <EditStory />
-        <EditWeekly />
-        <EditServices />
-        <EditCaseWork />
-        <EditComparison />
-        <EditBooking />
-        <EditFaq />
-        <EditFinalCta />
-      </main>
-      <EditFooter />
+      <Navigation />
+      <Hero />
+      <ScrollReveal><WhyAdChefs /></ScrollReveal>
+      <ScrollReveal><TwoWaysToWork /></ScrollReveal>
+      <ScrollReveal><ResultsMarquee /></ScrollReveal>
+      <ScrollReveal><MeVsAgency /></ScrollReveal>
+      <ScrollReveal><CalendlyBooking /></ScrollReveal>
+      <Footer />
     </div>
   );
 };
