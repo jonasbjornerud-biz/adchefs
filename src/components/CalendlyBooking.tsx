@@ -16,8 +16,8 @@ const CalendlyBooking = () => {
               <div>
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">Book a call if</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
-                  <li>· You spend $5K+ a month on ads and are short on creative</li>
-                  <li>· You want a dedicated editor without hiring in-house</li>
+                  <li>· You spend $5K+ a month on ads and your winners fatigue faster than you can replace them</li>
+                  <li>· You want strategy and production owned by one person, not split across an agency</li>
                   <li>· You care about what converts, not just what gets delivered</li>
                 </ul>
               </div>
@@ -25,9 +25,9 @@ const CalendlyBooking = () => {
               <div>
                 <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">What happens on the call</p>
                 <ul className="space-y-2 text-[14px] text-foreground/85">
-                  <li>· I ask about your current creative, offer and ad numbers</li>
-                  <li>· I show how I'd plug in without disrupting what works</li>
-                  <li>· If we're a fit, we scope a trial. If not, I point you somewhere better.</li>
+                  <li>· I read your current creative mix and tell you where the concept gaps are</li>
+                  <li>· I show how the weekly loop would plug into your account</li>
+                  <li>· If we are a fit, we scope a Sprint. If not, I point you somewhere better.</li>
                 </ul>
               </div>
 
