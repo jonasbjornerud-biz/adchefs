@@ -1,82 +1,50 @@
 /**
- * Case work carousel — screenshot cards with a metrics overlay that slides up
- * on hover. Auto-marquee with edge fades. Touch devices show metrics expanded.
+ * Case work marquee — a curated wall of full uncropped screenshots that
+ * drifts horizontally. Alternating rotation and vertical offset give it an
+ * editorial pinboard feel. No hover state, no labels, no overlay text.
  */
 
-type CaseItem = {
-  image: string;
-  label: string;
-  spend: string;
-  roas: string;
-  value: string;
-  ctr: string;
-  win?: boolean;
-};
+type CaseItem = { image: string };
 
 const CASES: CaseItem[] = [
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010601_xo9r97.png", label: "TD · UK · B091", spend: "$142K", roas: "2.52", value: "$358K", ctr: "4.20%" },
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010629_saeqm2.png", label: "NS · DE · B074", spend: "$96K", roas: "3.10", value: "$298K", ctr: "3.85%", win: true },
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010602_skqwxz.png", label: "PG · US · B112", spend: "$210K", roas: "2.18", value: "$458K", ctr: "5.10%" },
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010626_cfpvhd.png", label: "RC · NO · B058", spend: "$68K", roas: "2.74", value: "$186K", ctr: "4.45%" },
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010612_fchr9z.png", label: "HH · US · B088", spend: "$124K", roas: "3.42", value: "$424K", ctr: "3.95%", win: true },
-  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010649_d2vn3p.png", label: "OW · UK · B103", spend: "$88K", roas: "2.66", value: "$234K", ctr: "4.80%" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010601_xo9r97.png" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010629_saeqm2.png" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010602_skqwxz.png" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010626_cfpvhd.png" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010612_fchr9z.png" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010649_d2vn3p.png" },
 ];
 
 const LOOP = [...CASES, ...CASES];
 
-const Row = ({ k, v, chip }: { k: string; v: string; chip?: boolean }) => (
-  <div className="flex items-center justify-between py-1.5 border-b border-white/10 last:border-b-0">
-    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/60">{k}</span>
-    {chip ? (
-      <span
-        className="font-mono text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-[3px]"
-        style={{ background: "#9ED8F5", color: "#1A1A1A" }}
-      >
-        {v}
-      </span>
-    ) : (
-      <span className="text-[12px] font-semibold tabular-nums text-white">{v}</span>
-    )}
-  </div>
-);
+// Alternating tilt + vertical drift for an editorial pinboard feel.
+const TILTS = [-2, 1.4, -1, 2, -1.6, 1];
+const OFFSETS = [0, 26, -18, 14, -10, 22];
 
-const Card = ({ c }: { c: CaseItem }) => (
-  <div
-    className="case-card group/case relative flex-shrink-0 w-[240px] md:w-[280px] aspect-[4/5] rounded-[4px] overflow-hidden bg-white"
-    style={{
-      boxShadow:
-        "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
-    }}
-  >
-    <img
-      src={c.image}
-      alt={c.label}
-      className="w-full h-full object-cover"
-      loading="lazy"
-    />
-    <div className="absolute top-3 left-3 rounded-[3px] bg-black/60 backdrop-blur-md px-2 py-1 ring-1 ring-white/20">
-      <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/90">
-        {c.label}
-      </span>
-    </div>
-
+const Card = ({ c, i }: { c: CaseItem; i: number }) => {
+  const rot = TILTS[i % TILTS.length];
+  const dy = OFFSETS[i % OFFSETS.length];
+  return (
     <div
-      className="case-overlay absolute inset-x-0 bottom-0 p-4"
+      className="relative flex-shrink-0"
       style={{
-        background:
-          "linear-gradient(180deg, rgba(26,26,26,0) 0%, rgba(26,26,26,0.85) 40%, rgba(26,26,26,0.95) 100%)",
+        transform: `translateY(${dy}px) rotate(${rot}deg)`,
       }}
     >
-      <div className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/50 mb-1.5">
-        Verified account data
-      </div>
-      <Row k="Spend" v={c.spend} />
-      <Row k="ROAS" v={c.roas} chip={c.win} />
-      <Row k="Value" v={c.value} />
-      <Row k="CTR" v={c.ctr} />
+      <img
+        src={c.image}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="block w-auto h-[320px] md:h-[380px] max-w-none rounded-[4px]"
+        style={{
+          boxShadow:
+            "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), 0 0 0 1px rgba(26,26,26,0.06)",
+        }}
+      />
     </div>
-  </div>
-);
+  );
+};
 
 const ResultsMarquee = () => {
   return (
@@ -108,7 +76,7 @@ const ResultsMarquee = () => {
       </div>
 
       <div
-        className="relative mt-16 group"
+        className="relative mt-20 md:mt-24"
         style={{
           maskImage:
             "linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%)",
@@ -117,11 +85,11 @@ const ResultsMarquee = () => {
         }}
       >
         <div
-          className="flex items-center gap-8 md:gap-10 py-12 results-marquee-track"
+          className="flex items-center gap-10 md:gap-14 py-20 results-marquee-track"
           style={{ width: "max-content" }}
         >
           {LOOP.map((c, i) => (
-            <Card key={i} c={c} />
+            <Card key={i} c={c} i={i} />
           ))}
         </div>
       </div>
@@ -135,22 +103,12 @@ const ResultsMarquee = () => {
           animation: results-marquee 60s linear infinite;
           will-change: transform;
         }
-        .results-marquee-track:hover { animation-play-state: paused; }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
-        .case-overlay {
-          transform: translateY(72%);
-          transition: transform 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
-        }
-        .case-card:hover .case-overlay { transform: translateY(0%); }
-        @media (hover: none) {
-          .case-overlay { transform: translateY(0%); }
-        }
         @media (prefers-reduced-motion: reduce) {
           .results-marquee-track { animation: none; }
-          .case-overlay { transform: translateY(0%); transition: none; }
         }
       `}</style>
     </section>
