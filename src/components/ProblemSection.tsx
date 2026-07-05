@@ -119,9 +119,10 @@ const ProblemSection = () => {
               className="mt-7 max-w-[420px] leading-[1.7]"
               style={{ color: "rgba(247,246,243,0.6)", fontSize: "16.5px" }}
             >
-              Five cutdowns of the same idea send Meta a single signal. When that
-              winner fatigues, the account hits a wall. You don't need more versions
-              — you need distinct concepts.
+              Five similar looking variations of the same concept sends Meta a
+              single signal. When that winner fatigues, the account hits a wall.
+              You don't need more versions, you need distinct concepts and new
+              iteration strategies.
             </p>
           </div>
 
