@@ -82,7 +82,8 @@ const ProblemSection = () => {
             className="text-[36px] md:text-[52px] leading-[1.05] tracking-[-0.02em] font-medium"
             style={{ fontFamily: "'Inter Tight', sans-serif" }}
           >
-            Why creative <em>stalls</em>.
+            Why creative{" "}
+            <em style={{ color: "#F7F6F3" }}>stalls</em>.
           </h2>
           <p
             className="mt-6 text-[15px] md:text-[17px] leading-relaxed max-w-[600px]"
