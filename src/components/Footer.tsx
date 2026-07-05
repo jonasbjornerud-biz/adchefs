@@ -13,7 +13,7 @@ const Footer = () => {
           <div>
             <img src={adchefsLogo.url} alt="AdChefs logo" className="h-12 md:h-14 w-auto" />
             <p className="mt-4 text-[14px] text-background/60 leading-relaxed max-w-sm">
-              In-house creative strategy from A to Z with dedicated video editors matched to your brand.
+              Creative strategy and production for DTC brands. Concepts engineered from performance data, shipped as finished videos.
             </p>
           </div>
 
