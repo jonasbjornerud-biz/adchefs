@@ -8,16 +8,19 @@ import SEO from "@/components/SEO";
 import TwoWaysToWork from "@/components/TwoWaysToWork";
 import ResultsMarquee from "@/components/ResultsMarquee";
 import MeVsAgency from "@/components/MeVsAgency";
+import ProblemSection from "@/components/ProblemSection";
+import CreativeStrategyLoop from "@/components/CreativeStrategyLoop";
+import FAQ from "@/components/FAQ";
+import CSFinalCTA from "@/components/cs/CSFinalCTA";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
-  { q: "How does the pay-per-video model work?", a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. If you ship ten videos one month and two the next, that's what you pay for." },
-  { q: "What's included in the price?", a: "The editor, their management, all software. Higgsfield, ElevenLabs, and professional editing subscriptions are covered by me. The performance dashboard is free. The only thing you pay for is delivered videos." },
-  { q: "How fast is turnaround?", a: "24 to 48 hours standard per video. Complex or longer form work gets scoped on the call." },
-  { q: "Can you match our existing brand style?", a: "Yes. Your editor goes through your brand folder, your past winners, and your ad account before the first cut. Matching your style is part of onboarding, not an extra." },
-  { q: "Who owns the footage and final videos?", a: "You do. Everything delivered belongs to your brand. AdChefs is video editing only." },
-  { q: "What if I don't click with the editor?", a: "Tell me and I replace them. Because I run the recruiting funnel continuously, a replacement is matched fast, and they onboard from your existing brand documentation rather than from zero." },
-  { q: "What tools do your editors use?", a: "Premiere Pro, CapCut, or DaVinci Resolve depending on your format, plus Higgsfield and ElevenLabs where they lift performance. All licenses are on me." },
-  { q: "Do you sign NDAs?", a: "Yes, standard practice. Your data, footage, and numbers stay inside your account." },
+  { q: "What counts as a concept?", a: "A genuinely distinct angle: new story, new format, or new awareness level. Hook variations and cutdowns of the same concept are included with it, not counted separately." },
+  { q: "Do I get finished videos or just briefs?", a: "Finished videos. Every concept ships as a ready-to-launch ad in the ratios you need. Strategy decks alone do not move ROAS." },
+  { q: "How often do batches ship?", a: "Weekly. New concepts are briefed every week and built from the previous week's read." },
+  { q: "What data do you need access to?", a: "Read access to your Meta ad account. I build angles from your own winners and your competitors' public ad libraries." },
+  { q: "Who does the editing?", a: "A vetted editor I recruited, trained on direct response, and embedded in your Slack and Notion. They work only on your account. I manage quality and performance behind the scenes." },
+  { q: "What if a concept flops?", a: "Some will. Only a small share of ads becomes a real winner at any spend level, which is why the loop exists. Losers tell the next batch what to make instead." },
+  { q: "Is there a contract or minimum?", a: "Monthly. Pause or cancel before the next batch is briefed." },
 ];
 
 const Index = () => {
@@ -75,11 +78,15 @@ const Index = () => {
       />
       <Navigation />
       <Hero />
+      <ScrollReveal><ProblemSection /></ScrollReveal>
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
+      <ScrollReveal><CreativeStrategyLoop /></ScrollReveal>
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
+      <ScrollReveal><FAQ /></ScrollReveal>
+      <ScrollReveal><CSFinalCTA /></ScrollReveal>
       <Footer />
     </div>
   );
