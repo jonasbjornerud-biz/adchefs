@@ -80,7 +80,7 @@ const Index = () => {
       <Hero />
       <ScrollReveal><ProblemSection /></ScrollReveal>
       <ScrollReveal><WhyAdChefs /></ScrollReveal>
-      <ScrollReveal><CreativeStrategyLoop /></ScrollReveal>
+      
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
