@@ -149,18 +149,17 @@ const TwoWaysToWork = () => {
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-stretch">
           <GlassCard
-            eyebrow="START HERE · CREATIVE SPRINT"
-            title="Creative Sprint"
-            tagline="Weekly net-new ad concepts, briefed by me, shipped as finished videos by your dedicated editor."
-            priceLine="Scoped on the call"
-            bulletsHeader="What ships every week."
+            eyebrow="START HERE · EDITOR ENGINE"
+            title="Editor Engine"
+            tagline="A vetted direct-response editor wired into your workflow, turning raw assets into finished ads."
+            priceLine="Starting at $100 per video"
+            bulletsHeader="Includes"
             bullets={[
-              "Net-new concepts briefed every week, mapped to customer awareness",
-              "Every concept delivered as a finished, ready-to-launch video",
-              "Dedicated vetted editor embedded in your Slack and Notion",
-              "Built from your account data and your competitors' ad libraries",
-              "Hook variations and platform cutdowns included",
-              "Pause or cancel monthly",
+              "A vetted direct response editor, integrated to their workflow and tools",
+              "In-house experience with A+ team building",
+              "24 to 48 hour turnaround standard",
+              "Trained on my direct response master class",
+              "Replaced fast if it's not clicking",
             ]}
             href="/#booking"
             ctaLabel="Book a call"
