@@ -12,24 +12,24 @@ type CardProps = {
   eyebrow: string;
   title: string;
   tagline: string;
-  price: string;
-  priceNote: string;
+  priceLine: string;
   popular?: boolean;
   bullets: string[];
   bulletsHeader: string;
   href: string;
+  ctaLabel?: string;
 };
 
 const GlassCard = ({
   eyebrow,
   title,
   tagline,
-  price,
-  priceNote,
+  priceLine,
   popular,
   bullets,
   bulletsHeader,
   href,
+  ctaLabel,
 }: CardProps) => (
   <div className="relative h-full group">
     {popular && (
@@ -76,11 +76,12 @@ const GlassCard = ({
           {tagline}
         </p>
 
-        <div className="mt-10">
-          <div className="font-display text-[56px] md:text-[64px] leading-none tracking-[-0.02em] text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.08)]">
-            {price}
+        <div className="mt-8 mb-2">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-md px-4 py-2 ring-1 ring-white/40">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white">
+              {priceLine}
+            </span>
           </div>
-          <p className="mt-2 text-[12px] text-white/85">{priceNote}</p>
         </div>
 
         <div className="mt-6">
@@ -90,7 +91,7 @@ const GlassCard = ({
             className="h-auto px-6 py-3 rounded-full bg-white/90 backdrop-blur-md text-ink hover:bg-white gap-[10px] ring-1 ring-white/60 shadow-[0_6px_24px_-6px_rgba(30,85,130,0.35)] transition-colors"
           >
             <Link to={href}>
-              Learn More
+              {ctaLabel ?? "Book a call"}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -139,49 +140,47 @@ const TwoWaysToWork = () => {
         <div className="text-center mb-14 md:mb-20">
           <span className="eyebrow">SERVICES</span>
           <h2 className="mt-4 font-display text-[34px] md:text-[52px] leading-[1.05] tracking-[-0.02em] text-ink">
-            Two ways I work with <em className="font-serif italic !text-ink">brands</em>
+            Two ways I run your <em className="font-serif italic !text-ink">creative</em>.
           </h2>
           <p className="mt-5 max-w-2xl mx-auto text-[15px] md:text-[18px] text-muted-foreground">
-            Most brands start with an editor, then loop me in on creative strategy.
+            Both ship finished videos with a dedicated editor embedded in your team. The difference is how deep the strategy layer goes.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-stretch">
           <GlassCard
-            popular
-            eyebrow="ENTRY · START HERE"
-            title="Editor Placement"
-            tagline="A dedicated editor, embedded in your team."
-            price="$100"
-            priceNote="per delivered video"
-            bulletsHeader="Everything you need to ship ads weekly."
+            eyebrow="START HERE · CREATIVE SPRINT"
+            title="Creative Sprint"
+            tagline="Weekly net-new ad concepts, briefed by me, shipped as finished videos by your dedicated editor."
+            priceLine="Scoped on the call"
+            bulletsHeader="What ships every week."
             bullets={[
-              "Vetted direct response editor matched to your workflow",
-              "Pay per delivered video, no retainer or minimum",
-              "24 to 48 hour turnaround standard",
-              "All editing software covered by AdChefs",
-              "Replaced fast if it is not clicking",
-              "Trained on direct response, not wedding cuts",
+              "Net-new concepts briefed every week, mapped to customer awareness",
+              "Every concept delivered as a finished, ready-to-launch video",
+              "Dedicated vetted editor embedded in your Slack and Notion",
+              "Built from your account data and your competitors' ad libraries",
+              "Hook variations and platform cutdowns included",
+              "Pause or cancel monthly",
             ]}
-            href="/editor-placement"
+            href="/#booking"
+            ctaLabel="Book a call"
           />
           <GlassCard
-            eyebrow="SCALE · FULL CREATIVE DEPARTMENT"
-            title="Creative Strategy"
-            tagline="One operator owning the creative number."
-            price="Custom"
-            priceNote="priced on the call"
-            bulletsHeader="Everything in Editor Placement, plus"
+            popular
+            eyebrow="SCALE · CREATIVE ENGINE"
+            title="Creative Engine"
+            tagline="Your full creative department. Strategy, production, and the weekly read, owned by one operator."
+            priceLine="Scoped on the call"
+            bulletsHeader="Everything in Creative Sprint, plus"
             bullets={[
-              "Research, angles, and briefs built with an editing eye",
-              "Weekly read on hook, hold, ROAS, CPA",
-              "New creative batches shipped every week",
-              "Produced videos included, not just strategy decks",
-              "Dedicated editor placement included",
+              "Weekly read on hook, hold, ROAS, and CPA",
+              "Creative direction across your whole account, not just my batches",
               "Live KPI dashboard, free",
+              "Editor capacity scales with your spend",
               "One operator owning the creative number end to end",
             ]}
-            href="/creative-strategy"
+            href="/#booking"
+            ctaLabel="Book a call"
           />
         </div>
       </div>
