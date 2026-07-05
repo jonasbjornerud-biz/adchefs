@@ -1,48 +1,81 @@
 
-Scope: landing page (`/`) only. Visual + copy. No backend changes.
+# The Edit Suite — Landing Page Redesign
 
-### 1. `src/components/WhyAdChefs.tsx` — restyle "How it started"
-- Wrap section in the same airy white-with-blue-wash background used by `TwoWaysToWork` / `MeVsAgency` (white→#F8F9FA gradient + soft `rgba(158,216,245,0.10)` radial wash). Remove the current `bg-secondary border-y` slab.
-- Replace the bare 2‑column layout with a single rounded `32px` glass card (`bg-white/70`, `backdrop-blur-[40px]`, white inner highlight + soft blue shadow) matching the Comparison card treatment, so the section reads as part of the same family.
-- Inside the card: portrait (slightly larger, soft blue ring instead of solid #3B86A8), eyebrow "HOW IT STARTED", same headline, same body copy, signature row preserved.
-- Keep all existing copy untouched.
+Full visual redesign of the home route (`/`) with a new design system inspired by video editing suites and Meta Ads Manager. Backend, routes, Calendly wiring, and automations stay untouched. Shared components (nav, footer, buttons) get restyled so subpages inherit the system, but subpage content is not restructured in this pass.
 
-### 2. `src/components/ResultsMarquee.tsx` — case work level-up
-- Add eyebrow above the heading already there ("CASE WORK" — keep) and confirm the heading styling matches other sections.
-- Reframe the cards as ad-stat screenshots placeholders (not phone video cards):
-  - Change aspect to `4/5` (a touch wider) so screenshots fit naturally.
-  - Replace the play glyph with a subtle "Screenshot placeholder" mono label + a tiny faux KPI strip (ROAS / CTR placeholders) so when Jonas drops in real ad-stat images they sit naturally. Keep cards as `<div>` with a `bg-cover` style hook so a future `image` prop swaps the placeholder for real screenshots.
-  - Tighten the swerve (reduce rotation range to ±1.5°, vertical offsets to ±18px) — feels more premium, less crooked.
-  - Card chrome: thinner white ring, slightly deeper soft shadow, rounded `[18px]`.
-- Below the marquee, add a centered disclaimer in muted mono/italic 12–13px:  
-  *"Some case work includes editor placement services with a separate strategist."*
+## Design system (added to `src/index.css` + `tailwind.config.ts`)
 
-### 3. `src/components/MeVsAgency.tsx` — comparison refinements
-- Reduce shimmer intensity: drop sweep opacity peak from `0.35` white band to ~`0.18`, slow the animation from 6s → 10s, and remove the conic-glow spin (or drop opacity to 0.25) so the pedestal feels calmer.
-- Update the eyebrow above the heading from `"The comparison"` to `"OPERATOR VS AGENCY"` (correct, in line with the section's actual framing).
-- Replace the bottom disclaimer with:  
-  *"Some agencies are great, but most aren't built for brands that value an in-house experience."*
+- **Colors**: Studio White `#F5F5F4`, Ink `#111110`, Graphite `#52514D`, Frame `#E4E3DF`, Playhead Red `#E5484D`, Signal Green `#1F9D55`. All wired as HSL semantic tokens (`--background`, `--foreground`, `--muted-foreground`, `--border`, `--accent`, `--success`).
+- **Type**: Archivo (with Expanded width axis, weights 400/700/900) for display + body, IBM Plex Mono (400/500) for data/labels. Loaded via Google Fonts in `index.html`. No serif, no italic accent.
+- **Radius**: 2px everywhere (`--radius: 0.125rem`).
+- **Buttons**: Primary = Ink fill / Studio White text, hover shows leading red `▸`. Secondary = 1px Ink border, transparent. No gradients.
+- **Eyebrows**: `.timecode-label` utility — mono, uppercase, Graphite, red 16px tick prefix (`01 · HOW IT WORKS`).
+- **Metric chips**: mono tabular, Frame bg default, Signal Green bg when a win.
+- **Focus ring**: 2px Playhead Red, 2px offset.
+- **Motion**: single `reveal` (fade up 12px, 250ms, 50ms stagger), playhead scroll link, weekly-loop sweep, hover states. All gated on `prefers-reduced-motion`.
 
-### 4. `src/components/TwoWaysToWork.tsx` — add missing eyebrow
-- Above the heading add `<span className="eyebrow">SERVICES</span>` (or `"HOW I WORK"` — `SERVICES` is shortest and matches the section `id="services"`).
+## New / rewritten components
 
-### 5. `src/components/Footer.tsx` — copy swap
-- Replace the tagline paragraph with:  
-  *"In-house creative strategy from A to Z with dedicated video editors matched to your brand."*
-- Remove the FAQ link from the footer Navigate list (since FAQ section is being removed).
+- `TimelineBar.tsx` — fixed 32px full-width bar under nav. Renders section clip segments (HERO, PROOF, METHOD, SERVICES, WORK, COMPARE, BOOK, FAQ), 2px red playhead line driven by scroll, running timecode (`00:00:14:03`, IBM Plex Mono, right-aligned). Clicking a segment scrolls to that section. Mobile: timecode-only.
+- `Navigation.tsx` — restyled: Studio White, 64px tall, no bottom border (timeline bar is the border). Logo left; Services, FAQ, `Book a call` right.
+- `Hero.tsx` — two-column program monitor. Left: `00 · BUILT FOR DTC BRANDS` label, Archivo Expanded Black H1 "Creative strategy for 7 to 9 figure DTC brands", Graphite subline, primary CTA with mono microcopy `1 TO 2 NEW BRANDS PER MONTH`, founder row. Right: existing `HeroWall` grid reframed inside 1px Ink border with header strip (pulsing red REC dot, `CUTS GOING LIVE FOR CLIENTS`, live timecode). Capped height so hero fits one viewport.
+- `ProofRow.tsx` — full-width Ink band. Large Ads Manager row: SPEND `$17K`, ROAS `2.52`, CTR `4.20%`, PURCHASES `848`. Mono headers, Archivo Expanded numerals, ROAS + CTR wear Signal Green chips. Left mono label `RITUEL · SE.80 · VERIFIED CAMPAIGN DATA`. Hairline column dividers.
+- `OperatorStory.tsx` — Ink-bordered "session notes" panel on Studio White, mono header `SESSION NOTES · HOW IT STARTED`, small Jonas photo, existing three paragraphs preserved verbatim, signature block, mono file footer `JONAS BJØRNERUD · OPERATOR · TRONDHEIM NO`. Max 680px.
+- `WeeklyLoop.tsx` — dark Ink section, H2 "How a week looks when I run creative.", four clips on a horizontal timeline (MON/TUE/WED/THU-FRI in-points), red playhead sweeps across once on scroll-in, end cap `LOOPS BACK TO 01 · NEXT WEEK`. Mobile stacks with left-rail track.
+- `Services.tsx` (replaces current `TwoWaysToWork` styling) — two panels: Editor Placement (light) + Creative Strategy (Ink, featured, red chip `MOST BRANDS END UP HERE`). Preserve existing feature lists and route links `/editor-placement`, `/creative-strategy`.
+- `CaseWork.tsx` — horizontal scroll strip restyled as clip cards: thumbnail with mono timecode chip overlay, compact metric table under (SPEND / ROAS / PURCHASE VALUE / CTR), winning values in Signal Green chips. Draggable, slow auto-scroll, pause on hover, disabled under reduced motion. Keep strategist disclaimer in 10px mono. Sourced from existing `ResultsMarquee` data.
+- `Comparison.tsx` — restyled `MeVsAgency` as a clean spec table on Studio White. ME column header: red 2px top border + `THE PICK` mono label. Red `▸` for wins, Graphite `✕` for agency misses. Hairline row dividers, no fills. Preserve seven current capability rows and footnote.
+- `Booking.tsx` — restyled `CalendlyBooking`. Left: `07 · GET STARTED` label, H2, scarcity line, two mono-headed lists (BOOK A CALL IF / WHAT HAPPENS ON THE CALL), "No pitch deck" footnote. Right: existing Calendly embed untouched inside 1px Ink border with mono header strip `15 MINUTE DISCOVERY · LIVE SLOTS`.
+- `FAQ.tsx` — accordion with hairline dividers, no boxes. Active item: red 2px left rail, `+` rotates to `–`. Preserve all current Q&A verbatim.
+- `FinalCTA.tsx` — full-width Ink band. Archivo Expanded H2 "Ready to hand creative to one operator?", Graphite-tone subline, primary-inverted CTA, right-aligned mono `2 TO 3 BRANDS MAX AT A TIME`.
+- `Footer.tsx` — Ink, three columns (brand blurb, NAVIGATE, CONTACT). Bottom row: mono copyright + `END OF REEL · 00:00:58:12`. 1px top border white/10%.
 
-### 6. `src/pages/Index.tsx` — remove FAQ
-- Remove `import FAQ` and the `<ScrollReveal><FAQ /></ScrollReveal>` line. Leave the `FAQPage` JSON‑LD in place for SEO (still accurate Q&A about the service) — confirm with user only if you'd rather strip it too; default is to keep it.
-- Final flow: Hero → WhyAdChefs → TwoWaysToWork → ResultsMarquee → MeVsAgency → CalendlyBooking → Footer.
+## `Index.tsx` composition
 
-### Eyebrow audit summary (final state)
-- Hero: existing eyebrow `BUILT FOR DTC BRANDS` — unchanged.
-- WhyAdChefs: `HOW IT STARTED` — unchanged.
-- TwoWaysToWork: **add** `SERVICES`.
-- ResultsMarquee: `CASE WORK` — unchanged.
-- MeVsAgency: change to `OPERATOR VS AGENCY`.
-- CalendlyBooking: leave as-is.
+```
+<Navigation />
+<TimelineBar />
+<Hero />               id="hero"
+<ProofRow />           id="proof"
+<OperatorStory />      id="method-story"
+<WeeklyLoop />         id="method"
+<Services />           id="services"
+<CaseWork />           id="work"
+<Comparison />         id="compare"
+<Booking />            id="booking"
+<FAQ />                id="faq"
+<FinalCTA />
+<Footer />
+```
 
-### Out of scope
-- No FAQ component deletion (file stays; only removed from `/`). Service pages still link nowhere to FAQ.
-- No changes to backend, navigation, or service subpages.
+Anchor IDs match existing scroll targets (`booking`, `faq`, `services`) so nav links keep working. Section ordering follows the spec.
+
+## Copy rules enforced across all rewritten copy
+
+- First person singular. No "we" / "our team".
+- No em/en dashes anywhere. Existing copy is audited and rewritten with commas or restructured sentences where those dashes appear.
+- Metric-first phrasing preserved in Proof and Case Work.
+
+## Rhythm
+
+- Section padding: 120px desktop / 64px mobile.
+- Max content width: 1200px; story panel: 680px.
+- Background alternation: White → Ink (Proof) → White → Ink (Weekly Loop) → White → White → White → White → White → Ink (Final CTA) → Ink (Footer). No two Ink sections adjacent except CTA→Footer.
+- Responsive down to 360px: hero stacks, monitor grid → 2 cols, tables scroll horizontally, timeline bar collapses to timecode.
+
+## Out of scope (explicitly not changing)
+
+- Supabase, edge functions, auth, dashboards, admin, editor pages.
+- Route structure and page files other than the landing composition.
+- Calendly embed component internals — only its surrounding frame.
+- Subpage content (`/editor-placement`, `/creative-strategy`, `/about`, jobs, etc.) — they will inherit new button/nav/footer styles automatically but layout stays as-is.
+
+## Technical notes
+
+- Fonts loaded in `index.html` via Google Fonts with `display=swap`, weights limited to Archivo 400/700/900 + width axis + IBM Plex Mono 400/500.
+- Tailwind config extended with `fontFamily.display`, `fontFamily.mono`, `colors.ink`, `colors.frame`, `colors.playhead`, `colors.signal` (all HSL tokens).
+- All colors used via semantic tokens — no hardcoded hex in components.
+- Timeline bar uses `IntersectionObserver` for active-clip tracking and `requestAnimationFrame` for playhead position; timecode format `HH:MM:SS:FF` derived from `scrollY / scrollHeight`.
+- Reveal animation via a small `useReveal` hook + `IntersectionObserver`, honoring `prefers-reduced-motion`.
+
+At the end I will list every changed/added file.
