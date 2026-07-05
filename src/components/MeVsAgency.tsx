@@ -2,11 +2,11 @@ import { Check, X, Sparkles } from "lucide-react";
 
 const rows = [
   "An operator who reads your ad numbers weekly",
-  "Briefs written by someone who can actually edit",
+  "Briefs written by someone with 7 years of DR editing experience",
+  "Net-new concepts engineered from your data, not a content calendar",
   "Shot by shot direction, not just a script",
-  "Live KPI dashboard, included free",
+  "Finished videos included, not strategy decks",
   "New creative batches shipped every week",
-  "Fast creative iterations, no month long wait to launch",
   "One person who owns the result end to end",
 ];
 

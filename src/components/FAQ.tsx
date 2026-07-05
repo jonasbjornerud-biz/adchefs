@@ -7,44 +7,32 @@ import {
 
 const faqs = [
   {
-    q: "What's the difference between placement and direction?",
-    a: "Placement gives you a dedicated editor who runs your briefs. Direction means I own the creative end to end: research, angles, briefs, performance, and the videos shipped. Placement is the entry point, direction is the full engine.",
+    q: "What counts as a concept?",
+    a: "A genuinely distinct angle: new story, new format, or new awareness level. Hook variations and cutdowns of the same concept are included with it, not counted separately.",
   },
   {
-    q: "Can you just direct, or do you produce too?",
-    a: "Both. Direction includes the produced videos. If you only need hands, placement covers that on its own.",
+    q: "Do I get finished videos or just briefs?",
+    a: "Finished videos. Every concept ships as a ready-to-launch ad in the ratios you need. Strategy decks alone do not move ROAS.",
   },
   {
-    q: "How does the pay-per-video model work?",
-    a: "You brief your editor, they deliver, you approve, you pay. From $100 per delivered video. No retainer, no minimum volume, no contract length. Ship ten videos one month and two the next, that's what you pay for.",
+    q: "How often do batches ship?",
+    a: "Weekly. New concepts are briefed every week and built from the previous week's read.",
   },
   {
-    q: "What's included in the price?",
-    a: "The editor, their management, every license. Higgsfield, ElevenLabs and the professional editing subscriptions are on me. The performance dashboard is free. The only thing you pay for is delivered videos.",
+    q: "What data do you need access to?",
+    a: "Read access to your Meta ad account. I build angles from your own winners and your competitors' public ad libraries.",
   },
   {
-    q: "How fast is turnaround?",
-    a: "24 to 48 hours standard per video. Anything bigger or longer form gets scoped on the call.",
+    q: "Who does the editing?",
+    a: "A vetted editor I recruited, trained on direct response, and embedded in your Slack and Notion. They work only on your account. I manage quality and performance behind the scenes.",
   },
   {
-    q: "Can you match our existing brand style?",
-    a: "Yes. Your editor goes through your brand folder, your past winners and your ad account before the first cut. Matching the style is part of onboarding, not a line item.",
+    q: "What if a concept flops?",
+    a: "Some will. Only a small share of ads becomes a real winner at any spend level, which is why the loop exists. Losers tell the next batch what to make instead.",
   },
   {
-    q: "Who owns the footage and final videos?",
-    a: "You do. Everything delivered belongs to your brand. AdChefs is video editing only.",
-  },
-  {
-    q: "What if I don't click with the editor?",
-    a: "Tell me and I swap them. I run the recruiting funnel continuously, so a replacement is matched fast and onboards from your existing brand docs, not from zero.",
-  },
-  {
-    q: "What tools do your editors use?",
-    a: "Premiere Pro, CapCut or DaVinci Resolve depending on the format, plus Higgsfield and ElevenLabs where they lift performance. All licenses are on me.",
-  },
-  {
-    q: "Do you sign NDAs?",
-    a: "Yes, standard practice. Your data, footage and numbers stay inside your account.",
+    q: "Is there a contract or minimum?",
+    a: "Monthly. Pause or cancel before the next batch is briefed.",
   },
 ];
 
