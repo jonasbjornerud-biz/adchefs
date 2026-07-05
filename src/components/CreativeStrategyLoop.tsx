@@ -43,7 +43,7 @@ const CreativeStrategyLoop = () => {
             className="mt-4 text-[15px] md:text-[16px] leading-relaxed"
             style={{ color: "rgba(247,246,243,0.72)" }}
           >
-            Each loop starts from the last loop's winners, so every round gets tighter.
+            Each loop starts from the last loop's winners, so every batch is built on proof, not guesses.
           </p>
         </div>
 
