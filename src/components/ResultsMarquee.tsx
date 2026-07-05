@@ -1,90 +1,86 @@
 /**
- * Results for other brands — premium auto-scrolling marquee of 6 case-study screenshots.
- * No copy beyond the section header. Cards share a uniform aspect ratio and glide
- * across the viewport on an infinite loop.
+ * Case work carousel — screenshot cards with a metrics overlay that slides up
+ * on hover. Auto-marquee with edge fades. Touch devices show metrics expanded.
  */
 
-const PLACEHOLDERS: Array<{ tint: string; roas: string; ctr: string; image?: string }> = [
-  { tint: "#9ED8F5", roas: "2.52", ctr: "4.20%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010601_xo9r97.png" },
-  { tint: "#E8C9A0", roas: "3.10", ctr: "3.85%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010629_saeqm2.png" },
-  { tint: "#C9B8E8", roas: "2.18", ctr: "5.10%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010602_skqwxz.png" },
-  { tint: "#A8D8C5", roas: "2.74", ctr: "4.45%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010626_cfpvhd.png" },
-  { tint: "#E8A8B8", roas: "3.42", ctr: "3.95%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010612_fchr9z.png" },
-  { tint: "#B8D4E8", roas: "2.66", ctr: "4.80%", image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010649_d2vn3p.png" },
+type CaseItem = {
+  image: string;
+  label: string;
+  spend: string;
+  roas: string;
+  value: string;
+  ctr: string;
+  win?: boolean;
+};
+
+const CASES: CaseItem[] = [
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010601_xo9r97.png", label: "TD · UK · B091", spend: "$142K", roas: "2.52", value: "$358K", ctr: "4.20%" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010629_saeqm2.png", label: "NS · DE · B074", spend: "$96K", roas: "3.10", value: "$298K", ctr: "3.85%", win: true },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010602_skqwxz.png", label: "PG · US · B112", spend: "$210K", roas: "2.18", value: "$458K", ctr: "5.10%" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010626_cfpvhd.png", label: "RC · NO · B058", spend: "$68K", roas: "2.74", value: "$186K", ctr: "4.45%" },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584797/Screenshot_2026-06-26_010612_fchr9z.png", label: "HH · US · B088", spend: "$124K", roas: "3.42", value: "$424K", ctr: "3.95%", win: true },
+  { image: "https://res.cloudinary.com/dqnifzwda/image/upload/v1782584798/Screenshot_2026-06-26_010649_d2vn3p.png", label: "OW · UK · B103", spend: "$88K", roas: "2.66", value: "$234K", ctr: "4.80%" },
 ];
 
-// Duplicate the list so the marquee loops seamlessly.
-const LOOP = [...PLACEHOLDERS, ...PLACEHOLDERS];
+const LOOP = [...CASES, ...CASES];
 
-const Card = ({
-  index,
-  tint,
-  roas,
-  ctr,
-  image,
-}: {
-  index: number;
-  tint: string;
-  roas: string;
-  ctr: string;
-  image?: string;
-}) => {
-  const offsets = [0, -12, 10, -6, 14, -10];
-  const rotations = [-1.5, 1.2, -0.8, 1.4, -1.3, 1.0];
-  const y = offsets[index % offsets.length];
-  const r = rotations[index % rotations.length];
+const Row = ({ k, v, chip }: { k: string; v: string; chip?: boolean }) => (
+  <div className="flex items-center justify-between py-1.5 border-b border-white/10 last:border-b-0">
+    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/60">{k}</span>
+    {chip ? (
+      <span
+        className="font-mono text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-[3px]"
+        style={{ background: "#9ED8F5", color: "#1A1A1A" }}
+      >
+        {v}
+      </span>
+    ) : (
+      <span className="text-[12px] font-semibold tabular-nums text-white">{v}</span>
+    )}
+  </div>
+);
 
-  return (
+const Card = ({ c }: { c: CaseItem }) => (
+  <div
+    className="case-card group/case relative flex-shrink-0 w-[240px] md:w-[280px] aspect-[4/5] rounded-[4px] overflow-hidden bg-white"
+    style={{
+      boxShadow:
+        "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
+    }}
+  >
+    <img
+      src={c.image}
+      alt={c.label}
+      className="w-full h-full object-cover"
+      loading="lazy"
+    />
+    <div className="absolute top-3 left-3 rounded-[3px] bg-black/60 backdrop-blur-md px-2 py-1 ring-1 ring-white/20">
+      <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/90">
+        {c.label}
+      </span>
+    </div>
+
     <div
-      className="relative flex-shrink-0 w-[220px] md:w-[270px] aspect-[3/4] rounded-[18px] overflow-hidden bg-white"
+      className="case-overlay absolute inset-x-0 bottom-0 p-4"
       style={{
-        transform: `translateY(${y}px) rotate(${r}deg)`,
-        boxShadow:
-          "0 40px 80px -32px rgba(25,70,110,0.30), 0 16px 32px -16px rgba(26,26,26,0.18), inset 0 0 0 1px rgba(255,255,255,0.85)",
+        background:
+          "linear-gradient(180deg, rgba(26,26,26,0) 0%, rgba(26,26,26,0.85) 40%, rgba(26,26,26,0.95) 100%)",
       }}
     >
-      {image ? (
-        <img
-          src={image}
-          alt=""
-          className="w-full h-full object-contain"
-          loading="lazy"
-        />
-      ) : (
-        <>
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.5) 0%, transparent 55%)",
-            }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-mono text-[9.5px] uppercase tracking-[0.22em] text-ink/35">
-              Screenshot placeholder
-            </span>
-          </div>
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-[10px] bg-white/75 backdrop-blur-md px-3 py-2 ring-1 ring-white/80">
-            <div>
-              <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">ROAS</div>
-              <div className="text-[13px] font-semibold tabular-nums text-ink leading-none mt-0.5">{roas}</div>
-            </div>
-            <div className="text-right">
-              <div className="font-mono text-[8px] uppercase tracking-[0.18em] text-muted-foreground">CTR</div>
-              <div className="text-[13px] font-semibold tabular-nums text-ink leading-none mt-0.5">{ctr}</div>
-            </div>
-          </div>
-        </>
-      )}
+      <div className="font-mono text-[8.5px] uppercase tracking-[0.22em] text-white/50 mb-1.5">
+        Verified account data
+      </div>
+      <Row k="Spend" v={c.spend} />
+      <Row k="ROAS" v={c.roas} chip={c.win} />
+      <Row k="Value" v={c.value} />
+      <Row k="CTR" v={c.ctr} />
     </div>
-  );
-};
+  </div>
+);
 
 const ResultsMarquee = () => {
   return (
     <section className="relative py-20 sm:py-32 overflow-hidden">
-      {/* Match TwoWaysToWork: white base + airy brand-accent wash for a seamless transition */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -111,9 +107,8 @@ const ResultsMarquee = () => {
         </div>
       </div>
 
-      {/* Marquee track */}
       <div
-        className="relative mt-20 group"
+        className="relative mt-16 group"
         style={{
           maskImage:
             "linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%)",
@@ -122,30 +117,40 @@ const ResultsMarquee = () => {
         }}
       >
         <div
-          className="flex items-center gap-10 md:gap-14 py-16 results-marquee-track"
+          className="flex items-center gap-8 md:gap-10 py-12 results-marquee-track"
           style={{ width: "max-content" }}
         >
-          {LOOP.map((p, i) => (
-            <Card key={i} index={i} tint={p.tint} roas={p.roas} ctr={p.ctr} image={p.image} />
+          {LOOP.map((c, i) => (
+            <Card key={i} c={c} />
           ))}
         </div>
       </div>
 
       <p className="relative mt-10 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto px-6">
-        Some case work includes editor placement services with a separate strategist.
+        Some case work is editing only, delivered under a separate strategist. Strategy results are marked.
       </p>
 
       <style>{`
         .results-marquee-track {
-          animation: results-marquee 38s linear infinite;
+          animation: results-marquee 60s linear infinite;
           will-change: transform;
         }
+        .results-marquee-track:hover { animation-play-state: paused; }
         @keyframes results-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
+        .case-overlay {
+          transform: translateY(72%);
+          transition: transform 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        .case-card:hover .case-overlay { transform: translateY(0%); }
+        @media (hover: none) {
+          .case-overlay { transform: translateY(0%); }
+        }
         @media (prefers-reduced-motion: reduce) {
           .results-marquee-track { animation: none; }
+          .case-overlay { transform: translateY(0%); transition: none; }
         }
       `}</style>
     </section>
