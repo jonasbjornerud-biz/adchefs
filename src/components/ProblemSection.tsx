@@ -155,7 +155,7 @@ const DISTINCT_MEDIA: { type: "image" | "video"; src: string }[] = [
 const ComparisonPanel = ({ active }: { active: boolean }) => {
   return (
     <div
-      className="relative rounded-[4px] p-6 md:p-10"
+      className="relative rounded-[4px] p-6 md:p-7"
       style={{
         background: "rgba(247,246,243,0.02)",
         border: "1px solid rgba(247,246,243,0.07)",
@@ -163,7 +163,7 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
     >
       {/* BLOCK 1 — failure state */}
       <div className="group/block">
-        <div className="flex items-end justify-between mb-6">
+        <div className="flex items-baseline justify-between mb-4">
           <span
             className="font-mono uppercase"
             style={{
@@ -179,7 +179,7 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
               className="font-serif italic leading-none"
               style={{
                 color: "rgba(247,246,243,0.35)",
-                fontSize: "56px",
+                fontSize: "40px",
               }}
             >
               1
@@ -197,8 +197,8 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
           </div>
         </div>
 
-        <div className="flex gap-3 mb-5 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
-          {[1, 0.8, 0.6, 0.45, 0.3].map((op, i) => (
+        <div className="flex gap-[10px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
+          {IDENTICAL_OPACITIES.map((op, i) => (
             <div
               key={i}
               className={FRAME_BASE}
@@ -210,14 +210,30 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
                 transition: `opacity 300ms ease-out ${i * 40}ms, transform 300ms ease-out ${i * 40}ms`,
               }}
             >
-              <IdenticalFrame />
+              <img
+                src={IDENTICAL_SRC}
+                alt=""
+                loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
+                }}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ filter: "grayscale(1)" }}
+              />
+              {i >= 3 && (
+                <div
+                  aria-hidden
+                  className="absolute inset-0"
+                  style={{ background: "rgba(26,26,26,0.3)" }}
+                />
+              )}
             </div>
           ))}
         </div>
 
         <p
-          className="leading-[1.6]"
-          style={{ color: "#75726B", fontSize: "14px" }}
+          className="leading-[1.6] mt-3"
+          style={{ color: "#75726B", fontSize: "13px" }}
         >
           Five lookalike variations. Meta reads them as one signal.
         </p>
@@ -225,13 +241,13 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
 
       <div
         aria-hidden
-        className="h-px w-full my-10"
+        className="h-px w-full my-6"
         style={{ background: "rgba(247,246,243,0.07)" }}
       />
 
       {/* BLOCK 2 — diversified scale */}
       <div className="group/block">
-        <div className="flex items-end justify-between mb-6">
+        <div className="flex items-baseline justify-between mb-4">
           <span
             className="font-mono uppercase"
             style={{
@@ -245,7 +261,7 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
           <div className="flex items-baseline gap-2">
             <span
               className="font-serif italic leading-none"
-              style={{ color: "#9ED8F5", fontSize: "56px" }}
+              style={{ color: "#9ED8F5", fontSize: "40px" }}
             >
               5
             </span>
@@ -262,25 +278,47 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
           </div>
         </div>
 
-        <div className="flex gap-3 mb-5 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
-          {DistinctFrames.map((Frame, i) => (
+        <div className="flex gap-[10px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
+          {DISTINCT_MEDIA.map((media, i) => (
             <div
               key={i}
               className={FRAME_BASE}
               style={{
+                background: "rgba(247,246,243,0.04)",
+                border: "1px solid rgba(158,216,245,0.25)",
                 opacity: active ? 1 : 0,
                 transform: active ? "translateY(0)" : "translateY(6px)",
                 transition: `opacity 300ms ease-out ${200 + i * 40}ms, transform 300ms ease-out ${200 + i * 40}ms`,
               }}
             >
-              <Frame />
+              {media.type === "video" ? (
+                <video
+                  src={media.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <img
+                  src={media.src}
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              )}
             </div>
           ))}
         </div>
 
         <p
-          className="leading-[1.6]"
-          style={{ color: "rgba(247,246,243,0.7)", fontSize: "14px" }}
+          className="leading-[1.6] mt-3"
+          style={{ color: "rgba(247,246,243,0.7)", fontSize: "13px" }}
         >
           Five distinct concepts. Five chances to find a new winner.
         </p>
@@ -288,11 +326,11 @@ const ComparisonPanel = ({ active }: { active: boolean }) => {
 
       <div
         aria-hidden
-        className="h-px w-full mt-10"
+        className="h-px w-full mt-6"
         style={{ background: "rgba(247,246,243,0.07)" }}
       />
 
-      <div className="pt-6 flex items-center justify-center gap-2.5">
+      <div className="pt-5 flex items-center justify-center gap-2.5">
         <span
           className="block rounded-full"
           style={{ width: "6px", height: "6px", background: "#9ED8F5" }}
