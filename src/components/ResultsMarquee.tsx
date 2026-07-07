@@ -72,9 +72,6 @@ const ResultsMarquee = () => {
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
             Results for <em className="font-serif">other brands</em>.
           </h2>
-          <p className="mt-4 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto">
-            Some case work is editing only, delivered under a separate strategist. Strategy results are marked.
-          </p>
         </div>
       </div>
 
@@ -95,6 +92,12 @@ const ResultsMarquee = () => {
             <Card key={i} c={c} i={i} />
           ))}
         </div>
+      </div>
+
+      <div className="relative mx-auto max-w-[1200px] px-6 mt-8 md:mt-10">
+        <p className="text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto">
+          Some case work is editing only, delivered under a separate strategist. Strategy results are marked.
+        </p>
       </div>
 
       <style>{`
