@@ -109,8 +109,8 @@ const WhyAdChefs = () => {
               <p>
                 Every brand I worked with kept hitting the same wall. Freelancers who relearn the
                 brand from zero every quarter. Retainers that bill whether anything ships or not.
-                Briefs filtered through a project manager who has never opened a timeline. So I
-                built AdChefs to strip all of that out.
+                Briefs filtered through a project manager who has never edited a video. So I
+                built AdChefs to fix it all.
               </p>
               <p>
                 Now I run creative end to end. I read the numbers, build the angles, brief shot by
