@@ -123,7 +123,7 @@ const TwoWaysToWork = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 50%, #FFFFFF 100%)",
+            "#FFFFFF",
         }}
         aria-hidden
       />
