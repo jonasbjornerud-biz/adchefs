@@ -127,148 +127,358 @@ const ProblemSection = () => {
           </div>
 
           {/* RIGHT — comparison panel */}
-          <div
-            className="relative rounded-[4px] p-6 md:p-8"
-            style={{
-              background: "rgba(247,246,243,0.03)",
-              border: "1px solid rgba(247,246,243,0.08)",
-            }}
-          >
-            {/* BLOCK 1 — failure state */}
-            <div className="group/block pb-8">
-              <div className="flex items-center justify-between mb-5">
-                <span
-                  className="font-mono uppercase"
-                  style={{
-                    color: "#75726B",
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                  }}
-                >
-                  Most accounts
-                </span>
-                <span
-                  className="font-mono uppercase"
-                  style={{
-                    color: "#F7F6F3",
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                  }}
-                >
-                  1 signal
-                </span>
-              </div>
-              <div className="flex gap-2 mb-5">
-                {[1, 0.85, 0.7, 0.55, 0.4].map((op, i) => (
-                  <div
-                    key={i}
-                    className="rounded-[4px] w-11 h-11 md:w-14 md:h-14 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
-                    style={{
-                      background: "rgba(247,246,243,0.06)",
-                      border: "1px solid rgba(247,246,243,0.1)",
-                      opacity: op,
-                    }}
-                  />
-                ))}
-              </div>
-              <p
-                className="leading-[1.6]"
-                style={{ color: "#75726B", fontSize: "14px" }}
-              >
-                Five lookalike variations. Meta reads them as one signal.
-              </p>
-            </div>
-
-            <div
-              aria-hidden
-              className="h-px w-full"
-              style={{ background: "rgba(247,246,243,0.08)" }}
-            />
-
-            {/* BLOCK 2 — the AdChefs way */}
-            <div className="group/block pt-8 pb-8">
-              <div className="flex items-center justify-between mb-5">
-                <span
-                  className="font-mono uppercase"
-                  style={{
-                    color: "#9ED8F5",
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                  }}
-                >
-                  Diversified scale
-                </span>
-                <span
-                  className="font-mono uppercase"
-                  style={{
-                    color: "#9ED8F5",
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                  }}
-                >
-                  5 signals
-                </span>
-              </div>
-              <div className="flex gap-2 mb-5">
-                {[
-                  { background: "#9ED8F5", border: "1px solid #9ED8F5" },
-                  { background: "transparent", border: "1px solid #9ED8F5" },
-                  {
-                    background: "rgba(158,216,245,0.15)",
-                    border: "1px solid rgba(158,216,245,0.15)",
-                  },
-                  { background: "#F7F6F3", border: "1px solid #F7F6F3" },
-                  { background: "transparent", border: "1px solid #F7F6F3" },
-                ].map((s, i) => (
-                  <div
-                    key={i}
-                    className="rounded-[4px] w-11 h-11 md:w-14 md:h-14 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
-                    style={{
-                      background: s.background,
-                      border: s.border,
-                    }}
-                  />
-                ))}
-              </div>
-              <p
-                className="leading-[1.6]"
-                style={{ color: "rgba(247,246,243,0.7)", fontSize: "14px" }}
-              >
-                Five distinct concepts. Five chances to find a new winner.
-              </p>
-            </div>
-
-            <div
-              aria-hidden
-              className="h-px w-full"
-              style={{ background: "rgba(247,246,243,0.08)" }}
-            />
-
-            {/* FOOTER */}
-            <div className="pt-6 flex items-center justify-center gap-2.5">
-              <span
-                className="block rounded-full"
-                style={{
-                  width: "6px",
-                  height: "6px",
-                  background: "#9ED8F5",
-                }}
-              />
-              <span
-                className="font-mono uppercase"
-                style={{
-                  color: "#75726B",
-                  fontSize: "10px",
-                  letterSpacing: "0.15em",
-                }}
-              >
-                Iteration burns audiences. Variety unlocks new ones.
-              </span>
-            </div>
-          </div>
+          <ComparisonPanel active={active} />
         </div>
       </div>
     </section>
+  );
+};
+
+/* ---------- Mini ad frames ---------- */
+
+const FRAME_BASE =
+  "relative rounded-[4px] overflow-hidden w-[44px] h-[78px] md:w-[52px] md:h-[92px] shrink-0";
+
+const IdenticalFrame = () => (
+  <>
+    {/* hook bar */}
+    <span
+      className="absolute rounded-[2px]"
+      style={{
+        top: "10%",
+        left: "20%",
+        width: "60%",
+        height: "4px",
+        background: "rgba(247,246,243,0.18)",
+      }}
+    />
+    {/* product shot */}
+    <span
+      className="absolute rounded-[2px]"
+      style={{
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "55%",
+        height: "28px",
+        background: "rgba(247,246,243,0.10)",
+      }}
+    />
+    {/* captions */}
+    <span
+      className="absolute rounded-[2px]"
+      style={{
+        bottom: "18%",
+        left: "15%",
+        width: "70%",
+        height: "3px",
+        background: "rgba(247,246,243,0.12)",
+      }}
+    />
+    <span
+      className="absolute rounded-[2px]"
+      style={{
+        bottom: "10%",
+        left: "15%",
+        width: "45%",
+        height: "3px",
+        background: "rgba(247,246,243,0.12)",
+      }}
+    />
+  </>
+);
+
+const DistinctFrames = [
+  // 1 — solid Accent, Ink skeleton (hook + big product)
+  () => (
+    <div className="absolute inset-0" style={{ background: "#9ED8F5" }}>
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          top: "10%",
+          left: "15%",
+          width: "55%",
+          height: "4px",
+          background: "#1A1A1A",
+        }}
+      />
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          bottom: "10%",
+          left: "12%",
+          right: "12%",
+          height: "58%",
+          background: "#1A1A1A",
+          opacity: 0.85,
+        }}
+      />
+    </div>
+  ),
+  // 2 — outlined Accent, three stacked caption lines (testimonial)
+  () => (
+    <div
+      className="absolute inset-0 rounded-[4px]"
+      style={{ border: "1px solid #9ED8F5" }}
+    >
+      {[22, 42, 62].map((t, idx) => (
+        <span
+          key={idx}
+          className="absolute rounded-[2px]"
+          style={{
+            top: `${t}%`,
+            left: "15%",
+            width: idx === 2 ? "55%" : "70%",
+            height: "4px",
+            background: "rgba(158,216,245,0.5)",
+          }}
+        />
+      ))}
+    </div>
+  ),
+  // 3 — light fill, face circle + captions (UGC)
+  () => (
+    <div
+      className="absolute inset-0"
+      style={{ background: "rgba(247,246,243,0.06)" }}
+    >
+      <span
+        className="absolute rounded-full"
+        style={{
+          top: "18%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "20px",
+          height: "20px",
+          background: "rgba(247,246,243,0.25)",
+        }}
+      />
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          bottom: "22%",
+          left: "15%",
+          width: "70%",
+          height: "3px",
+          background: "rgba(247,246,243,0.25)",
+        }}
+      />
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          bottom: "12%",
+          left: "15%",
+          width: "50%",
+          height: "3px",
+          background: "rgba(247,246,243,0.25)",
+        }}
+      />
+    </div>
+  ),
+  // 4 — solid Paper, Ink skeleton product + price bar (static offer)
+  () => (
+    <div className="absolute inset-0" style={{ background: "#F7F6F3" }}>
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          top: "10%",
+          left: "12%",
+          right: "12%",
+          height: "42%",
+          background: "#1A1A1A",
+          opacity: 0.85,
+        }}
+      />
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          bottom: "18%",
+          left: "18%",
+          width: "64%",
+          height: "8px",
+          background: "#1A1A1A",
+        }}
+      />
+    </div>
+  ),
+  // 5 — transparent, faint border, bold Accent headline bar
+  () => (
+    <div
+      className="absolute inset-0 rounded-[4px]"
+      style={{ border: "1px solid rgba(247,246,243,0.25)" }}
+    >
+      <span
+        className="absolute rounded-[2px]"
+        style={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "80%",
+          height: "8px",
+          background: "#9ED8F5",
+        }}
+      />
+    </div>
+  ),
+];
+
+const ComparisonPanel = ({ active }: { active: boolean }) => {
+  return (
+    <div
+      className="relative rounded-[4px] p-6 md:p-10"
+      style={{
+        background: "rgba(247,246,243,0.02)",
+        border: "1px solid rgba(247,246,243,0.07)",
+      }}
+    >
+      {/* BLOCK 1 — failure state */}
+      <div className="group/block">
+        <div className="flex items-end justify-between mb-6">
+          <span
+            className="font-mono uppercase"
+            style={{
+              color: "#75726B",
+              fontSize: "11px",
+              letterSpacing: "0.15em",
+            }}
+          >
+            Most accounts
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span
+              className="font-serif italic leading-none"
+              style={{
+                color: "rgba(247,246,243,0.35)",
+                fontSize: "56px",
+              }}
+            >
+              1
+            </span>
+            <span
+              className="font-mono uppercase"
+              style={{
+                color: "#75726B",
+                fontSize: "10px",
+                letterSpacing: "0.15em",
+              }}
+            >
+              signal
+            </span>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mb-5 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
+          {[1, 0.8, 0.6, 0.45, 0.3].map((op, i) => (
+            <div
+              key={i}
+              className={FRAME_BASE}
+              style={{
+                background: "rgba(247,246,243,0.04)",
+                border: "1px solid rgba(247,246,243,0.10)",
+                opacity: active ? op : 0,
+                transform: active ? "translateY(0)" : "translateY(6px)",
+                transition: `opacity 300ms ease-out ${i * 40}ms, transform 300ms ease-out ${i * 40}ms`,
+              }}
+            >
+              <IdenticalFrame />
+            </div>
+          ))}
+        </div>
+
+        <p
+          className="leading-[1.6]"
+          style={{ color: "#75726B", fontSize: "14px" }}
+        >
+          Five lookalike variations. Meta reads them as one signal.
+        </p>
+      </div>
+
+      <div
+        aria-hidden
+        className="h-px w-full my-10"
+        style={{ background: "rgba(247,246,243,0.07)" }}
+      />
+
+      {/* BLOCK 2 — diversified scale */}
+      <div className="group/block">
+        <div className="flex items-end justify-between mb-6">
+          <span
+            className="font-mono uppercase"
+            style={{
+              color: "#9ED8F5",
+              fontSize: "11px",
+              letterSpacing: "0.15em",
+            }}
+          >
+            Diversified scale
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span
+              className="font-serif italic leading-none"
+              style={{ color: "#9ED8F5", fontSize: "56px" }}
+            >
+              5
+            </span>
+            <span
+              className="font-mono uppercase"
+              style={{
+                color: "#75726B",
+                fontSize: "10px",
+                letterSpacing: "0.15em",
+              }}
+            >
+              signals
+            </span>
+          </div>
+        </div>
+
+        <div className="flex gap-3 mb-5 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
+          {DistinctFrames.map((Frame, i) => (
+            <div
+              key={i}
+              className={FRAME_BASE}
+              style={{
+                opacity: active ? 1 : 0,
+                transform: active ? "translateY(0)" : "translateY(6px)",
+                transition: `opacity 300ms ease-out ${200 + i * 40}ms, transform 300ms ease-out ${200 + i * 40}ms`,
+              }}
+            >
+              <Frame />
+            </div>
+          ))}
+        </div>
+
+        <p
+          className="leading-[1.6]"
+          style={{ color: "rgba(247,246,243,0.7)", fontSize: "14px" }}
+        >
+          Five distinct concepts. Five chances to find a new winner.
+        </p>
+      </div>
+
+      <div
+        aria-hidden
+        className="h-px w-full mt-10"
+        style={{ background: "rgba(247,246,243,0.07)" }}
+      />
+
+      <div className="pt-6 flex items-center justify-center gap-2.5">
+        <span
+          className="block rounded-full"
+          style={{ width: "6px", height: "6px", background: "#9ED8F5" }}
+        />
+        <span
+          className="font-mono uppercase"
+          style={{
+            color: "#75726B",
+            fontSize: "10px",
+            letterSpacing: "0.15em",
+          }}
+        >
+          Iteration burns audiences. Variety unlocks new ones.
+        </span>
+      </div>
+    </div>
   );
 };
 
