@@ -34,7 +34,7 @@ const CSFinalCTA = () => {
             <div className="md:max-w-[640px]">
               <h2 className="font-display text-[30px] sm:text-[40px] lg:text-[46px] leading-[1.04] tracking-[-0.025em] text-background">
                 Ready to hand creative to one{" "}
-                <em className="font-serif">operator</em>?
+                <em className="font-serif text-background">operator</em>?
               </h2>
               <p className="mt-4 text-[15px] sm:text-[16px] leading-relaxed text-background/70">
                 Pricing is built around your account on the call. Two to three brands max at a time.
