@@ -76,7 +76,7 @@ const ResultsMarquee = () => {
       </div>
 
       <div
-        className="relative mt-20 md:mt-24"
+        className="relative mt-10 md:mt-12"
         style={{
           maskImage:
             "linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%)",
@@ -85,7 +85,7 @@ const ResultsMarquee = () => {
         }}
       >
         <div
-          className="flex items-center gap-10 md:gap-14 py-20 results-marquee-track"
+          className="flex items-center gap-10 md:gap-14 py-8 md:py-10 results-marquee-track"
           style={{ width: "max-content" }}
         >
           {LOOP.map((c, i) => (
