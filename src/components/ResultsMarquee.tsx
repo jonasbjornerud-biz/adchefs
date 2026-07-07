@@ -48,7 +48,7 @@ const Card = ({ c, i }: { c: CaseItem; i: number }) => {
 
 const ResultsMarquee = () => {
   return (
-    <section className="relative py-20 sm:pb-16 sm:pt-16 overflow-hidden">
+    <section className="relative py-20 sm:pb-10 sm:pt-16 overflow-hidden">
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
