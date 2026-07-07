@@ -117,7 +117,7 @@ const GlassCard = ({
 
 const TwoWaysToWork = () => {
   return (
-    <section id="services" className="relative py-20 sm:pt-32 sm:pb-16 overflow-hidden">
+    <section id="services" className="relative py-20 sm:pt-12 sm:pb-16 overflow-hidden">
       {/* white base with a single airy brand accent wash */}
       <div
         className="absolute inset-0 pointer-events-none"
