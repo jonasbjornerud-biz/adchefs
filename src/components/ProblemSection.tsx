@@ -162,10 +162,8 @@ const ProblemSection = () => {
                 {[1, 0.85, 0.7, 0.55, 0.4].map((op, i) => (
                   <div
                     key={i}
-                    className="rounded-[4px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
+                    className="rounded-[4px] w-11 h-11 md:w-14 md:h-14 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
                     style={{
-                      width: "44px",
-                      height: "44px",
                       background: "rgba(247,246,243,0.06)",
                       border: "1px solid rgba(247,246,243,0.1)",
                       opacity: op,
@@ -224,10 +222,8 @@ const ProblemSection = () => {
                 ].map((s, i) => (
                   <div
                     key={i}
-                    className="rounded-[4px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
+                    className="rounded-[4px] w-11 h-11 md:w-14 md:h-14 transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
                     style={{
-                      width: "44px",
-                      height: "44px",
                       background: s.background,
                       border: s.border,
                     }}
