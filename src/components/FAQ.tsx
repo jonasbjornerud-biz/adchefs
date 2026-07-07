@@ -38,7 +38,7 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section id="faq" className="relative py-16 sm:py-32 bg-background overflow-hidden">
+    <section id="faq" className="relative py-16 sm:py-32 bg-background">
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
