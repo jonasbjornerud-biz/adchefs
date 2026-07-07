@@ -29,7 +29,7 @@ const ProblemSection = () => {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden py-20 md:py-[120px]"
+      className="relative overflow-hidden py-14 md:py-[88px]"
       style={{ background: "#1A1A1A", color: "#F7F6F3" }}
     >
       {/* Ambient wash */}
@@ -86,7 +86,7 @@ const ProblemSection = () => {
           }}
         >
           {/* LEFT — copy */}
-          <div className="flex flex-col max-w-[480px]">
+          <div className="flex flex-col max-w-[460px]">
             <span
               className="font-mono uppercase mb-8"
               style={{
@@ -126,8 +126,8 @@ const ProblemSection = () => {
             </p>
           </div>
 
-          {/* RIGHT — comparison panel */}
-          <ComparisonPanel active={active} />
+          {/* RIGHT — comparison strip */}
+          <ComparisonStrip active={active} />
         </div>
       </div>
     </section>
@@ -137,12 +137,12 @@ const ProblemSection = () => {
 /* ---------- Mini ad frames ---------- */
 
 const FRAME_BASE =
-  "relative rounded-[4px] overflow-hidden w-[48px] h-[85px] shrink-0";
+  "relative rounded-[4px] overflow-hidden w-11 h-[78px] shrink-0";
 
 const IDENTICAL_SRC =
   "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562215/GIF14_ajoqr7.gif";
 
-const IDENTICAL_OPACITIES = [0.9, 0.7, 0.5, 0.35, 0.22];
+const IDENTICAL_OPACITIES = [1, 0.75, 0.5, 0.3, 0.15];
 
 const DISTINCT_MEDIA: { type: "image" | "video"; src: string }[] = [
   { type: "image", src: "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562212/GIF11_ts3qsg.gif" },
@@ -152,199 +152,135 @@ const DISTINCT_MEDIA: { type: "image" | "video"; src: string }[] = [
   { type: "image", src: "https://res.cloudinary.com/dqnifzwda/image/upload/v1776562702/GIF15_or6gkv.gif" },
 ];
 
-const ComparisonPanel = ({ active }: { active: boolean }) => {
+const ComparisonStrip = ({ active }: { active: boolean }) => {
   return (
-    <div
-      className="relative rounded-[4px] p-6 md:p-7"
-      style={{
-        background: "rgba(247,246,243,0.02)",
-        border: "1px solid rgba(247,246,243,0.07)",
-      }}
-    >
-      {/* BLOCK 1 — failure state */}
-      <div className="group/block">
-        <div className="flex items-baseline justify-between mb-4">
-          <span
-            className="font-mono uppercase"
-            style={{
-              color: "#75726B",
-              fontSize: "11px",
-              letterSpacing: "0.15em",
-            }}
-          >
-            Most accounts
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span
-              className="font-serif italic leading-none"
-              style={{
-                color: "rgba(247,246,243,0.35)",
-                fontSize: "40px",
-              }}
-            >
-              1
-            </span>
-            <span
-              className="font-mono uppercase"
-              style={{
-                color: "#75726B",
-                fontSize: "10px",
-                letterSpacing: "0.15em",
-              }}
-            >
-              signal
-            </span>
-          </div>
-        </div>
+    <div className="flex flex-col min-w-0">
+      {/* Eyebrow */}
+      <span
+        className="font-mono uppercase mb-[14px]"
+        style={{
+          color: "#75726B",
+          fontSize: "10px",
+          letterSpacing: "0.22em",
+        }}
+      >
+        What Meta actually sees
+      </span>
 
-        <div className="flex gap-[10px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
-          {IDENTICAL_OPACITIES.map((op, i) => (
-            <div
-              key={i}
-              className={FRAME_BASE}
-              style={{
-                background: "rgba(247,246,243,0.04)",
-                border: "1px solid rgba(247,246,243,0.10)",
-                opacity: active ? op : 0,
-                transform: active ? "translateY(0)" : "translateY(6px)",
-                transition: `opacity 300ms ease-out ${i * 40}ms, transform 300ms ease-out ${i * 40}ms`,
-              }}
-            >
-              <img
-                src={IDENTICAL_SRC}
-                alt=""
-                loading="lazy"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = "none";
-                }}
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ filter: "grayscale(1)" }}
-              />
-              {i >= 3 && (
+      {/* Strip */}
+      <div className="flex overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0">
+        <div className="flex items-center gap-2">
+          {/* Left half */}
+          <div className="flex flex-col">
+            <div className="flex gap-2">
+              {IDENTICAL_OPACITIES.map((op, i) => (
                 <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{ background: "rgba(26,26,26,0.3)" }}
-                />
-              )}
+                  key={`identical-${i}`}
+                  className={FRAME_BASE}
+                  style={{
+                    background: "rgba(247,246,243,0.04)",
+                    border: "1px solid rgba(247,246,243,0.10)",
+                    opacity: active ? op : 0,
+                    transform: active ? "translateY(0)" : "translateY(4px)",
+                    transition: `opacity 250ms ease-out ${i * 30}ms, transform 250ms ease-out ${i * 30}ms`,
+                  }}
+                >
+                  <img
+                    src={IDENTICAL_SRC}
+                    alt=""
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ filter: "grayscale(1)" }}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        <p
-          className="leading-[1.6] mt-3"
-          style={{ color: "#75726B", fontSize: "13px" }}
-        >
-          Five lookalike variations. Meta reads them as one signal.
-        </p>
-      </div>
-
-      <div
-        aria-hidden
-        className="h-px w-full my-6"
-        style={{ background: "rgba(247,246,243,0.07)" }}
-      />
-
-      {/* BLOCK 2 — diversified scale */}
-      <div className="group/block">
-        <div className="flex items-baseline justify-between mb-4">
-          <span
-            className="font-mono uppercase"
-            style={{
-              color: "#9ED8F5",
-              fontSize: "11px",
-              letterSpacing: "0.15em",
-            }}
-          >
-            Diversified scale
-          </span>
-          <div className="flex items-baseline gap-2">
             <span
-              className="font-serif italic leading-none"
-              style={{ color: "#9ED8F5", fontSize: "40px" }}
-            >
-              5
-            </span>
-            <span
-              className="font-mono uppercase"
+              className="font-mono uppercase mt-[10px]"
               style={{
                 color: "#75726B",
-                fontSize: "10px",
-                letterSpacing: "0.15em",
+                fontSize: "9px",
+                letterSpacing: "0.18em",
               }}
             >
-              signals
+              1 signal · same concept, fatiguing
+            </span>
+          </div>
+
+          {/* Vertical divider */}
+          <div
+            className="shrink-0 flex items-center justify-center"
+            style={{ width: "24px", height: "78px" }}
+          >
+            <div
+              className="relative h-full"
+              style={{ width: "1px", background: "rgba(158,216,245,0.40)" }}
+            >
+              <span
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full block"
+                style={{
+                  width: "5px",
+                  height: "5px",
+                  background: "#9ED8F5",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Right half */}
+          <div className="flex flex-col">
+            <div className="flex gap-2">
+              {DISTINCT_MEDIA.map((media, i) => (
+                <div
+                  key={`distinct-${i}`}
+                  className={FRAME_BASE}
+                  style={{
+                    background: "rgba(247,246,243,0.04)",
+                    border: "1px solid rgba(158,216,245,0.25)",
+                    opacity: active ? 1 : 0,
+                    transform: active ? "translateY(0)" : "translateY(4px)",
+                    transition: `opacity 250ms ease-out ${150 + i * 30}ms, transform 250ms ease-out ${150 + i * 30}ms`,
+                  }}
+                >
+                  {media.type === "video" ? (
+                    <video
+                      src={media.src}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={media.src}
+                      alt=""
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = "none";
+                      }}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <span
+              className="font-mono uppercase mt-[10px]"
+              style={{
+                color: "#9ED8F5",
+                fontSize: "9px",
+                letterSpacing: "0.18em",
+              }}
+            >
+              5 signals · distinct concepts, testing
             </span>
           </div>
         </div>
-
-        <div className="flex gap-[10px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5">
-          {DISTINCT_MEDIA.map((media, i) => (
-            <div
-              key={i}
-              className={FRAME_BASE}
-              style={{
-                background: "rgba(247,246,243,0.04)",
-                border: "1px solid rgba(158,216,245,0.25)",
-                opacity: active ? 1 : 0,
-                transform: active ? "translateY(0)" : "translateY(6px)",
-                transition: `opacity 300ms ease-out ${200 + i * 40}ms, transform 300ms ease-out ${200 + i * 40}ms`,
-              }}
-            >
-              {media.type === "video" ? (
-                <video
-                  src={media.src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <img
-                  src={media.src}
-                  alt=""
-                  loading="lazy"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).style.display = "none";
-                  }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p
-          className="leading-[1.6] mt-3"
-          style={{ color: "rgba(247,246,243,0.7)", fontSize: "13px" }}
-        >
-          Five distinct concepts. Five chances to find a new winner.
-        </p>
-      </div>
-
-      <div
-        aria-hidden
-        className="h-px w-full mt-6"
-        style={{ background: "rgba(247,246,243,0.07)" }}
-      />
-
-      <div className="pt-5 flex items-center justify-center gap-2.5">
-        <span
-          className="block rounded-full"
-          style={{ width: "6px", height: "6px", background: "#9ED8F5" }}
-        />
-        <span
-          className="font-mono uppercase"
-          style={{
-            color: "#75726B",
-            fontSize: "10px",
-            letterSpacing: "0.15em",
-          }}
-        >
-          Iteration burns audiences. Variety unlocks new ones.
-        </span>
       </div>
     </div>
   );
