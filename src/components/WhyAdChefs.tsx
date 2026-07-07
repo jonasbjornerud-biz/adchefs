@@ -18,7 +18,7 @@ const WhyAdChefs = () => {
   }, []);
 
   return (
-    <section ref={ref} className="relative py-20 sm:py-32 overflow-hidden">
+    <section ref={ref} className="relative py-20 sm:pt-32 sm:pb-12 overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{

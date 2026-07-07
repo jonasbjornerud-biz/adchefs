@@ -48,7 +48,7 @@ const Card = ({ c, i }: { c: CaseItem; i: number }) => {
 
 const ResultsMarquee = () => {
   return (
-    <section className="relative py-20 sm:pb-32 sm:pt-16 overflow-hidden">
+    <section className="relative py-20 sm:pb-16 sm:pt-16 overflow-hidden">
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
@@ -72,11 +72,14 @@ const ResultsMarquee = () => {
           <h2 className="mt-5 font-display text-[32px] md:text-[44px] leading-[1.05] tracking-[-0.02em] text-foreground">
             Results for <em className="font-serif">other brands</em>.
           </h2>
+          <p className="mt-4 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto">
+            Some case work is editing only, delivered under a separate strategist. Strategy results are marked.
+          </p>
         </div>
       </div>
 
       <div
-        className="relative mt-10 md:mt-12"
+        className="relative mt-8 md:mt-10"
         style={{
           maskImage:
             "linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%)",
@@ -85,7 +88,7 @@ const ResultsMarquee = () => {
         }}
       >
         <div
-          className="flex items-center gap-10 md:gap-14 py-8 md:py-10 results-marquee-track"
+          className="flex items-center gap-10 md:gap-14 py-6 md:py-8 results-marquee-track"
           style={{ width: "max-content" }}
         >
           {LOOP.map((c, i) => (
@@ -93,10 +96,6 @@ const ResultsMarquee = () => {
           ))}
         </div>
       </div>
-
-      <p className="relative mt-10 text-center text-[12px] md:text-[13px] text-muted-foreground italic max-w-xl mx-auto px-6">
-        Some case work is editing only, delivered under a separate strategist. Strategy results are marked.
-      </p>
 
       <style>{`
         .results-marquee-track {
