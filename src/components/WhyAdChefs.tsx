@@ -89,8 +89,8 @@ const WhyAdChefs = () => {
 
             <div className="mt-8 space-y-5 text-[15px] md:text-[16px] leading-[1.8] text-ink/80">
               <p>
-                I'm Jonas. I spent years cutting direct response ads for e-com brands, then more
-                years running a video department and living inside the performance data. Long
+                I'm Jonas. I spent years editing direct response ads for e-com brands, then more
+                years running a video department and consuming the performance data. Long
                 enough to know{" "}
                 <span
                   className="relative inline"
