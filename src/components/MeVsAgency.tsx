@@ -97,14 +97,14 @@ const MeVsAgency = () => {
             }}
           >
             <div className="grid grid-cols-[1fr_240px_180px] relative">
-              {/* Floating ME pedestal — extends above and below the card */}
+              {/* Floating ME pedestal — sits inside the card */}
               <div
                 className="absolute pointer-events-none mvsa-me-pedestal overflow-hidden"
                 style={{
                   left: "calc(100% - 240px - 180px - 10px)",
                   width: "260px",
                   top: "-28px",
-                  bottom: "-28px",
+                  bottom: "0px",
                   borderRadius: "28px",
                   background:
                     "linear-gradient(160deg, rgba(120,188,224,0.96) 0%, rgba(85,160,200,0.92) 45%, rgba(45,110,150,0.96) 100%)",
@@ -233,7 +233,7 @@ const MeVsAgency = () => {
           ))}
         </div>
 
-        <p className="mt-8 text-center text-[13px] text-muted-foreground italic max-w-xl mx-auto">
+        <p className="mt-14 md:mt-20 text-center text-[13px] text-muted-foreground italic max-w-xl mx-auto">
           Some agencies are great, but most aren't built for brands that value an in-house experience.
         </p>
       </div>
