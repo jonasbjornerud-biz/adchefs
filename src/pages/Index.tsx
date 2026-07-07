@@ -83,7 +83,6 @@ const Index = () => {
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
-      <ScrollReveal><CSFinalCTA /></ScrollReveal>
       <Footer />
     </div>
   );
