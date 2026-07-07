@@ -10,7 +10,6 @@ import ResultsMarquee from "@/components/ResultsMarquee";
 import MeVsAgency from "@/components/MeVsAgency";
 
 import FAQ from "@/components/FAQ";
-import CSFinalCTA from "@/components/cs/CSFinalCTA";
 
 const FAQ_ITEMS: Array<{ q: string; a: string }> = [
   { q: "What counts as a concept?", a: "A genuinely distinct angle: new story, new format, or new awareness level. Hook variations and cutdowns of the same concept are included with it, not counted separately." },
@@ -84,7 +83,6 @@ const Index = () => {
       <ScrollReveal><MeVsAgency /></ScrollReveal>
       <ScrollReveal><CalendlyBooking /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
-      <ScrollReveal><CSFinalCTA /></ScrollReveal>
       <Footer />
     </div>
   );
