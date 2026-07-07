@@ -113,9 +113,7 @@ const WhyAdChefs = () => {
                 built AdChefs to fix it all.
               </p>
               <p>
-                Now I run creative end to end. I read the numbers, build the angles, brief shot by
-                shot, and my editors ship the cuts. When an ad underperforms I know why, and the
-                next batch is built from what the data said.
+                Now I run creative end to end. I read the numbers, build the angles and briefs, and editors go through my video editing masterclass before they start editing. When an ad underperforms I know why, and the next batch is built from what the data said.
               </p>
             </div>
 
