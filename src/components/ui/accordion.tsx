@@ -26,15 +26,15 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between text-left font-medium transition-all hover:no-underline",
+        "group flex flex-1 items-center justify-between text-left font-medium transition-all hover:no-underline",
         className,
       )}
       {...props}
     >
       {children}
-      <span className="relative ml-4 inline-flex h-6 w-6 shrink-0 items-center justify-center">
-        <Plus className="h-4 w-4 transition-opacity duration-200 [[data-state=open]>&]:opacity-0" />
-        <Minus className="absolute inset-0 m-auto h-4 w-4 opacity-0 transition-opacity duration-200 [[data-state=open]>&]:opacity-100" />
+      <span className="relative ml-4 inline-flex h-6 w-6 shrink-0 items-center justify-center text-muted-foreground">
+        <Plus className="h-4 w-4 transition-opacity duration-200 group-data-[state=open]:opacity-0" />
+        <Minus className="absolute inset-0 m-auto h-4 w-4 opacity-0 transition-opacity duration-200 group-data-[state=open]:opacity-100" />
       </span>
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
