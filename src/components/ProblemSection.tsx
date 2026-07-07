@@ -29,7 +29,7 @@ const ProblemSection = () => {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden py-24 md:py-32"
+      className="relative overflow-hidden py-20 md:py-[120px]"
       style={{ background: "#1A1A1A", color: "#F7F6F3" }}
     >
       {/* Ambient wash */}
@@ -77,7 +77,7 @@ const ProblemSection = () => {
 
       <div className="relative mx-auto max-w-[1100px] px-6">
         <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-14 md:gap-24 items-center"
+          className="grid grid-cols-1 md:grid-cols-[45%_55%] gap-14 md:gap-20 items-center"
           style={{
             opacity: active ? 1 : 0,
             transform: active ? "translateY(0)" : "translateY(12px)",
@@ -86,7 +86,7 @@ const ProblemSection = () => {
           }}
         >
           {/* LEFT — copy */}
-          <div className="flex flex-col">
+          <div className="flex flex-col max-w-[480px]">
             <span
               className="font-mono uppercase mb-8"
               style={{
@@ -126,116 +126,144 @@ const ProblemSection = () => {
             </p>
           </div>
 
-          {/* RIGHT — proof lockup */}
-          <div className="relative flex flex-col">
-            {/* Row 1 — single signal */}
-            <div
-              className="flex items-center justify-between py-7"
-              style={{
-                borderTop: "1px solid rgba(247,246,243,0.12)",
-                borderBottom: "1px solid rgba(247,246,243,0.12)",
-              }}
-            >
-              <div className="flex flex-col">
+          {/* RIGHT — comparison panel */}
+          <div
+            className="relative rounded-[4px] p-6 md:p-8"
+            style={{
+              background: "rgba(247,246,243,0.03)",
+              border: "1px solid rgba(247,246,243,0.08)",
+            }}
+          >
+            {/* BLOCK 1 — failure state */}
+            <div className="group/block pb-8">
+              <div className="flex items-center justify-between mb-5">
                 <span
-                  className="font-mono uppercase mb-2"
+                  className="font-mono uppercase"
                   style={{
                     color: "#75726B",
-                    fontSize: "10px",
-                    letterSpacing: "0.22em",
+                    fontSize: "11px",
+                    letterSpacing: "0.15em",
                   }}
                 >
-                  Single signal
+                  Most accounts
                 </span>
                 <span
-                  className="font-display font-medium"
+                  className="font-mono uppercase"
                   style={{
                     color: "#F7F6F3",
-                    fontSize: "18px",
-                    letterSpacing: "-0.01em",
+                    fontSize: "11px",
+                    letterSpacing: "0.15em",
                   }}
                 >
-                  1 iterative idea
+                  1 signal
                 </span>
               </div>
-              <div
-                className="h-12 w-12 flex items-center justify-center rounded-[4px]"
-                style={{ border: "1px solid rgba(247,246,243,0.2)" }}
-              >
-                <span
-                  className="block w-[6px] h-[6px] rounded-full"
-                  style={{ background: "rgba(247,246,243,0.4)" }}
-                />
+              <div className="flex gap-2 mb-5">
+                {[1, 0.85, 0.7, 0.55, 0.4].map((op, i) => (
+                  <div
+                    key={i}
+                    className="rounded-[4px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
+                    style={{
+                      width: "44px",
+                      height: "44px",
+                      background: "rgba(247,246,243,0.06)",
+                      border: "1px solid rgba(247,246,243,0.1)",
+                      opacity: op,
+                    }}
+                  />
+                ))}
               </div>
+              <p
+                className="leading-[1.6]"
+                style={{ color: "#75726B", fontSize: "14px" }}
+              >
+                Five lookalike variations. Meta reads them as one signal.
+              </p>
             </div>
 
-            {/* Row 2 — five signals */}
             <div
-              className="flex items-center justify-between py-7"
-              style={{ borderBottom: "1px solid rgba(247,246,243,0.12)" }}
-            >
-              <div className="flex flex-col">
+              aria-hidden
+              className="h-px w-full"
+              style={{ background: "rgba(247,246,243,0.08)" }}
+            />
+
+            {/* BLOCK 2 — the AdChefs way */}
+            <div className="group/block pt-8 pb-8">
+              <div className="flex items-center justify-between mb-5">
                 <span
-                  className="font-mono uppercase mb-2"
+                  className="font-mono uppercase"
                   style={{
                     color: "#9ED8F5",
-                    fontSize: "10px",
-                    letterSpacing: "0.22em",
+                    fontSize: "11px",
+                    letterSpacing: "0.15em",
                   }}
                 >
                   Diversified scale
                 </span>
                 <span
-                  className="font-display font-medium"
+                  className="font-mono uppercase"
                   style={{
-                    color: "#F7F6F3",
-                    fontSize: "18px",
-                    letterSpacing: "-0.01em",
+                    color: "#9ED8F5",
+                    fontSize: "11px",
+                    letterSpacing: "0.15em",
                   }}
                 >
-                  5 distinct concepts
+                  5 signals
                 </span>
               </div>
-              <div className="flex gap-1.5">
-                {[0, 1, 2, 3, 4].map((i) => (
+              <div className="flex gap-2 mb-5">
+                {[
+                  { background: "#9ED8F5", border: "1px solid #9ED8F5" },
+                  { background: "transparent", border: "1px solid #9ED8F5" },
+                  {
+                    background: "rgba(158,216,245,0.15)",
+                    border: "1px solid rgba(158,216,245,0.15)",
+                  },
+                  { background: "#F7F6F3", border: "1px solid #F7F6F3" },
+                  { background: "transparent", border: "1px solid #F7F6F3" },
+                ].map((s, i) => (
                   <div
                     key={i}
-                    className="h-7 w-7 flex items-center justify-center rounded-[3px]"
+                    className="rounded-[4px] transition-transform duration-150 ease-out group-hover/block:-translate-y-0.5"
                     style={{
-                      border:
-                        i === 4
-                          ? "1px solid rgba(158,216,245,0.9)"
-                          : "1px solid rgba(158,216,245,0.3)",
-                      opacity: active ? 1 : 0,
-                      transform: active ? "translateY(0)" : "translateY(6px)",
-                      transition: `opacity 500ms ease ${200 + i * 90}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${200 + i * 90}ms`,
+                      width: "44px",
+                      height: "44px",
+                      background: s.background,
+                      border: s.border,
                     }}
-                  >
-                    <span
-                      className="block w-[5px] h-[5px] rounded-full"
-                      style={{
-                        background: "#9ED8F5",
-                        boxShadow:
-                          i === 4 ? "0 0 10px rgba(158,216,245,0.75)" : "none",
-                      }}
-                    />
-                  </div>
+                  />
                 ))}
               </div>
+              <p
+                className="leading-[1.6]"
+                style={{ color: "rgba(247,246,243,0.7)", fontSize: "14px" }}
+              >
+                Five distinct concepts. Five chances to find a new winner.
+              </p>
             </div>
 
-            {/* Insight line */}
-            <div className="mt-6 flex items-center gap-3">
+            <div
+              aria-hidden
+              className="h-px w-full"
+              style={{ background: "rgba(247,246,243,0.08)" }}
+            />
+
+            {/* FOOTER */}
+            <div className="pt-6 flex items-center justify-center gap-2.5">
               <span
-                className="block w-1 h-1 rounded-full"
-                style={{ background: "#9ED8F5" }}
+                className="block rounded-full"
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  background: "#9ED8F5",
+                }}
               />
               <span
                 className="font-mono uppercase"
                 style={{
                   color: "#75726B",
                   fontSize: "10px",
-                  letterSpacing: "0.2em",
+                  letterSpacing: "0.15em",
                 }}
               >
                 Iteration burns audiences. Variety unlocks new ones.
