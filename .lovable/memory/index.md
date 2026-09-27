@@ -8,7 +8,7 @@
 - Voice: operator, not copywriter. Lead with the metric then the claim. Never "we help you / solution / amazing results". Use "we build / we ship / per delivered video".
 - Pay-per-video model. No retainers. Target: e-com with >€5k/mo ad spend. Max 2-3 brands/month.
 - Landing flow: Hero → WhyAdChefs (founder) → TwoWaysToWork → ResultsMarquee → MeVsAgency → FAQ → Footer (dark Ink). Never add Results or Case Studies.
-- Contact lives on its own page at /contact (not on the home page): Fulcio-style two-column, circular profile photo, direct email + phone, form with labels inside as placeholders. Footer has variant="grey" only on /contact; hero blue gradient (HeroBackground) is the page background there. Every "Contact us" CTA site-wide points to /contact; submissions email jonas@adchefs.com via contact-notification template.
+- Contact lives on its own page at /contact (not on the home page): Fulcio-style two-column, direct email + phone (+47 942 58 751), circular profile photo under the phone number (no name/Founder text next to it), form with labels inside as placeholders. Footer uses variant="dark" on /contact; hero blue gradient (HeroBackground) is the page background there. First-call copy at top (audit of creative situation + goals); no "What happens next" section. CTAs say "Contact me" (never "us") and all point to /contact; submissions email jonas@adchefs.com via contact-notification template.
 - Logo wordmark: `AdChefs<span class="text-accent">.</span>` — the period is part of the mark.
 - All dashboards (editor/* and mock/*) must stay in sync — mirror every style/layout change across all six files in the same turn; prefer editing shared components in src/components/dashboard/.
 
