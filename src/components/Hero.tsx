@@ -130,7 +130,7 @@ const WallCard = ({ clip, onOpen, horizontal, priority }: WallCardProps) => {
       <span aria-hidden className="hero-wall-card-ring" />
       <span aria-hidden className="hero-wall-card-play">
         <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 1.5 L9 6 L0 10.5 Z" fill="#F7F6F3" />
+          <path d="M0 1.5 L9 6 L0 10.5 Z" fill="#9ED8F5" />
         </svg>
         <span>PLAY</span>
       </span>
@@ -582,9 +582,15 @@ const Hero = () => {
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          padding: 12px 18px;
-          border-radius: 4px;
-          background: #1A1A1A;
+          padding: 13px 22px;
+          border-radius: 9999px;
+          background: rgba(26, 26, 26, 0.30);
+          -webkit-backdrop-filter: blur(16px) saturate(160%);
+          backdrop-filter: blur(16px) saturate(160%);
+          border: 1px solid rgba(247, 246, 243, 0.28);
+          box-shadow:
+            0 12px 40px rgba(26, 26, 26, 0.28),
+            inset 0 1px 0 rgba(247, 246, 243, 0.22);
           font-family: 'JetBrains Mono', ui-monospace, monospace;
           font-weight: 500;
           font-size: 11px;
@@ -593,13 +599,17 @@ const Hero = () => {
           color: #F7F6F3;
           pointer-events: none;
           opacity: 0;
-          transition: opacity 250ms ease;
+          transition: opacity 250ms ease, transform 250ms ease;
         }
         .hero-wall-card-play svg {
           display: block;
           flex-shrink: 0;
+          filter: drop-shadow(0 1px 2px rgba(26,26,26,0.3));
         }
-        .hero-wall-card:hover .hero-wall-card-play { opacity: 1; }
+        .hero-wall-card:hover .hero-wall-card-play {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.04);
+        }
 
         /* === Vertical multi-column wall (desktop + tablet) === */
         /* 1) perspective only */
@@ -640,8 +650,8 @@ const Hero = () => {
         /* Focus-hover: dim & blur siblings when any card is hovered */
         .wall-clip:has(.hero-wall-card:hover) .hero-wall-card,
         .hero-wall-horizontal:has(.hero-wall-card:hover) .hero-wall-card {
-          filter: blur(2px);
-          opacity: 0.45;
+          filter: blur(1px);
+          opacity: 0.6;
           transition: filter 350ms ease, opacity 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
         }
         .wall-clip .hero-wall-card,
