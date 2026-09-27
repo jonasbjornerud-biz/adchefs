@@ -163,7 +163,6 @@ function RangeField({ label, value, min, max, suffix, onChange }: { label: strin
 export default function JobDetail() {
   const { slug } = useParams();
   const [posting, setPosting] = useState<Posting | null>(null);
-  const [centerVideo, setCenterVideo] = useState<HTMLVideoElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -284,7 +283,7 @@ export default function JobDetail() {
               <div className="job-phone-stage">
                 <JobReel reel={JOB_REELS[1]} position="left" />
                 <JobReel reel={JOB_REELS[2]} position="right" />
-                <JobReel reel={JOB_REELS[0]} position="center" videoRef={setCenterVideo} />
+                <JobReel reel={JOB_REELS[0]} position="center" />
                 <div className="job-stat job-stat-hook">
                   <span className="mono text-[9px] uppercase text-background/60">{HERO_STATS.hookRate.label}</span>
                   <span className="mt-1 flex items-center gap-1.5 font-display text-[28px] font-semibold leading-none text-background">{HERO_STATS.hookRate.value}<ArrowUp className="job-stat-up h-4 w-4" strokeWidth={2.5} /></span>
@@ -295,9 +294,7 @@ export default function JobDetail() {
                 </div>
               </div>
             </div>
-          </div>
         </div>
-        <EditingTimeline video={centerVideo} />
       </section>
 
       <main id="apply" className="mx-auto max-w-[850px] px-5 py-14 md:py-20">
