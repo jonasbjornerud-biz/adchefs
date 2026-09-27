@@ -506,7 +506,7 @@
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 620px;
+    width: 500px;
     aspect-ratio: 1;
     transform: translate(-50%, -50%);
     pointer-events: none;
@@ -681,7 +681,6 @@
   @media (max-width: 767px) {
     .job-hero-glow { width: 460px; }
     .job-phone-stage {
-      justify-content: center;
       display: flex;
       align-items: center;
       height: auto;
