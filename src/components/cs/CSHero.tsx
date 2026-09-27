@@ -3,12 +3,6 @@ import { ArrowRight } from "lucide-react";
 import jonasPhoto from "@/assets/jonas.jpg";
 import HeroBackground from "@/components/HeroBackground";
 
-const scrollToBooking = () => {
-  const el = document.getElementById("contact");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-  else window.location.href = "/#contact";
-};
-
 const CSHero = () => {
   return (
     <section className="relative min-h-screen lg:h-screen overflow-hidden bg-background pt-24 pb-12 lg:pt-0 lg:pb-0">
@@ -53,7 +47,7 @@ const CSHero = () => {
                 size="lg"
                 variant="cta"
                 className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
-                onClick={scrollToBooking}
+                onClick={() => window.location.assign("/contact")}
               >
                 Contact Us
                 <ArrowRight className="h-4 w-4" />

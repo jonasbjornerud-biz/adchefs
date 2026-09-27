@@ -6,16 +6,6 @@ type Props = {
   ctaLabel: string;
 };
 
-const scrollToBooking = (e: React.MouseEvent) => {
-  e.preventDefault();
-  const el = document.getElementById("contact");
-  if (el) {
-    el.scrollIntoView({ behavior: "smooth" });
-  } else {
-    window.location.href = "/#contact";
-  }
-};
-
 const ServiceCTA = ({ title, body, ctaLabel }: Props) => {
   return (
     <section className="py-20 sm:py-28" style={{ background: "#F7F6F3" }}>
@@ -34,8 +24,7 @@ const ServiceCTA = ({ title, body, ctaLabel }: Props) => {
         </p>
         <div className="mt-9 flex justify-center">
           <a
-            href="#contact"
-            onClick={scrollToBooking}
+            href="/contact"
             className="group inline-flex items-center justify-center rounded-[4px] px-7 py-4 text-[14px] font-medium transition-all hover:-translate-y-[2px] hover:shadow-[0_12px_32px_-12px_rgba(26,26,26,0.45)]"
             style={{ background: "#1A1A1A", color: "#F7F6F3" }}
           >

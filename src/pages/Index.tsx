@@ -1,7 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WhyAdChefs from "@/components/WhyAdChefs";
-import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import SEO from "@/components/SEO";
@@ -59,7 +58,7 @@ const Index = () => {
                 minPrice: 100,
                 unitText: "video",
               },
-              url: "https://adchefs.com/#contact",
+              url: "https://adchefs.com/contact",
               availability: "https://schema.org/InStock",
             },
           },
@@ -81,7 +80,6 @@ const Index = () => {
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
-      <ScrollReveal><ContactSection /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
       <Footer />
     </div>
