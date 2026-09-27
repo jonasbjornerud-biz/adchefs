@@ -81,7 +81,7 @@ const Index = () => {
       <ScrollReveal><TwoWaysToWork /></ScrollReveal>
       <ScrollReveal><ResultsMarquee /></ScrollReveal>
       <ScrollReveal><MeVsAgency /></ScrollReveal>
-      <ScrollReveal><CalendlyBooking /></ScrollReveal>
+      <ScrollReveal><ContactSection /></ScrollReveal>
       <ScrollReveal><FAQ /></ScrollReveal>
       <Footer />
     </div>

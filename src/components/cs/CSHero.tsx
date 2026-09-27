@@ -4,9 +4,9 @@ import jonasPhoto from "@/assets/jonas.jpg";
 import HeroBackground from "@/components/HeroBackground";
 
 const scrollToBooking = () => {
-  const el = document.getElementById("booking");
+  const el = document.getElementById("contact");
   if (el) el.scrollIntoView({ behavior: "smooth" });
-  else window.location.href = "/#booking";
+  else window.location.href = "/#contact";
 };
 
 const CSHero = () => {
@@ -55,7 +55,7 @@ const CSHero = () => {
                 className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
                 onClick={scrollToBooking}
               >
-                Book a Call
+                Contact Us
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>

@@ -53,7 +53,7 @@ const Navigation = () => {
             </button>
           ))}
           <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm">
-            Book a call
+            Contact us
           </Button>
         </div>
 
@@ -76,7 +76,7 @@ const Navigation = () => {
             </button>
           ))}
           <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm" className="w-full">
-            Book a call
+            Contact us
           </Button>
         </div>
       )}

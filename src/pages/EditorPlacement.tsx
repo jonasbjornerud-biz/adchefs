@@ -69,7 +69,7 @@ const EditorPlacement = () => {
           fromValue="$100"
           fromUnit="/ DELIVERED VIDEO"
           monoNote="CREATIVE DIRECTION IS PRICED SEPARATELY ON THE CALL"
-          ctaLabel="Book a 15 minute call"
+          ctaLabel="Contact us"
           tagline="Built for brands that need consistent output, not a fresh six-figure agency contract."
           graphicKind="receipt"
         />
@@ -95,7 +95,7 @@ const EditorPlacement = () => {
         <ServiceCTA
           title="Get an editor matched this week"
           body="Tell me about the brand and the pace you want. If it's a fit, your editor starts inside a few days."
-          ctaLabel="Book a call"
+          ctaLabel="Contact us"
         />
       </main>
 
