@@ -40,7 +40,14 @@ const schema = z.object({
   best_ad_breakdown: requiredText("Best ad breakdown"),
 });
 
-type FormState = z.input<typeof schema>;
+type FormState = {
+  first_name: string; last_name: string; email: string; country: string; age: string; city: string;
+  referral_source: "LinkedIn" | "OnlineJobs" | "YTJobs" | "Indeed" | "Other" | undefined;
+  software: string; capacity_hours: number; years_experience: number; weekly_video_capacity: number;
+  gpu: string; cpu: string; ram: string; internet_mbps: string; ai_tools_usage: string;
+  ad_quality_answer: string; portfolio_url: string; about_self: string; start_date: string;
+  best_ad_url: string; best_ad_breakdown: string;
+};
 type ErrorState = Partial<Record<keyof FormState, string>>;
 
 const initialForm: FormState = {
