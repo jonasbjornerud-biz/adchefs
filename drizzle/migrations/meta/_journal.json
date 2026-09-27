@@ -8,6 +8,13 @@
       "when": 1790530010261,
       "tag": "0000_expand_editor_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790530429345,
+      "tag": "0001_update_application_start_timing",
+      "breakpoints": true
     }
   ]
 }

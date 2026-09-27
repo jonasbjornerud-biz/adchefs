@@ -65,6 +65,7 @@ export type Database = {
           stage: string
           starred: boolean
           start_date: string | null
+          start_timing: string | null
           trial_email_scheduled_for: string | null
           trial_email_sent_at: string | null
           updated_at: string
@@ -103,6 +104,7 @@ export type Database = {
           stage?: string
           starred?: boolean
           start_date?: string | null
+          start_timing?: string | null
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string
@@ -141,6 +143,7 @@ export type Database = {
           stage?: string
           starred?: boolean
           start_date?: string | null
+          start_timing?: string | null
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string

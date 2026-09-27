@@ -59,6 +59,7 @@ type Application = {
   ad_quality_answer: string | null;
   about_self: string | null;
   start_date: string | null;
+  start_timing: string | null;
   best_ad_url: string | null;
   best_ad_breakdown: string | null;
   stage: string;
@@ -917,7 +918,7 @@ function Pipeline() {
                     <Field label="Weekly output" value={selected.weekly_video_capacity ? `${selected.weekly_video_capacity} videos` : '—'} />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <Field label="Start date" value={selected.start_date ?? '—'} />
+                    <Field label="Can start" value={selected.start_timing ?? selected.start_date ?? '—'} />
                     <Field label="Internet" value={selected.internet_mbps ? `${selected.internet_mbps} Mbps` : '—'} />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
