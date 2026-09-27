@@ -8,7 +8,6 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import HeroBackground from "@/components/HeroBackground";
-import jonasPhoto from "@/assets/jonas.jpg";
 
 const PHONE_DISPLAY = "+47 942 58 751";
 const PHONE_HREF = "tel:+4794258751";
@@ -86,8 +85,8 @@ const Contact = () => {
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-x-clip">
       <SEO
-        title="Contact — AdChefs"
-        description="Get in touch with AdChefs. Email or message Jonas directly — creative strategy and production for 7–8 figure DTC brands."
+        title="Free Consultation — AdChefs"
+        description="Book a free consultation with AdChefs. I'll audit what you're currently running, understand your goals, and we'll see if we're a fit."
         path="/contact"
       />
 
@@ -106,10 +105,10 @@ const Contact = () => {
                 {/* LEFT: intro + direct contact */}
                 <div>
                   <h1 className="font-display text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] text-foreground">
-                    Let's see if we're a <em>fit</em>.
+                    Book a free <em>consultation</em>.
                   </h1>
                   <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-                    On the first call I get a clear picture of your creative situation, run a quick audit of what you're currently running, and understand your goals, then we decide if we're a fit.
+                    The next step is a free consultation. On the call I get a clear picture of your creative situation, run a quick audit of what you're currently running, and understand your goals — then we decide if we're a fit.
                   </p>
 
                   <div className="mt-10">
@@ -240,7 +239,7 @@ const Contact = () => {
                           disabled={submitting}
                           className="gap-[10px] px-7"
                         >
-                          {submitting ? "Sending..." : "Send message"}
+                          {submitting ? "Sending..." : "Get a free consultation"}
                           <ArrowRight className="h-4 w-4" />
                         </Button>
                         <p className="mt-4 text-[12px] text-foreground/50">
