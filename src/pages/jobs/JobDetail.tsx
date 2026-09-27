@@ -35,9 +35,8 @@ const schema = z.object({
   ad_quality_answer: requiredText("Ad quality answer"),
   portfolio_url: z.string().trim().min(1, "Portfolio link is required").url("Enter a valid portfolio URL").max(500),
   about_self: requiredText("About you"),
-  start_date: z.string().min(1, "Start date is required"),
+  start_timing: z.enum(["As soon as possible", "Within a week", "Within two weeks", "Within a month", "More than a month"], { required_error: "Select when you can start" }),
   best_ad_url: z.string().trim().min(1, "Best ad link is required").url("Enter a valid ad URL").max(500),
-  best_ad_breakdown: requiredText("Best ad breakdown"),
 });
 
 type FormState = {
@@ -45,8 +44,9 @@ type FormState = {
   referral_source: "LinkedIn" | "OnlineJobs" | "YTJobs" | "Indeed" | "Other" | undefined;
   software: string; capacity_hours: number; years_experience: number; weekly_video_capacity: number;
   gpu: string; cpu: string; ram: string; internet_mbps: string; ai_tools_usage: string;
-  ad_quality_answer: string; portfolio_url: string; about_self: string; start_date: string;
-  best_ad_url: string; best_ad_breakdown: string;
+  ad_quality_answer: string; portfolio_url: string; about_self: string;
+  start_timing: "As soon as possible" | "Within a week" | "Within two weeks" | "Within a month" | "More than a month" | undefined;
+  best_ad_url: string;
 };
 type ErrorState = Partial<Record<keyof FormState, string>>;
 
@@ -54,7 +54,7 @@ const initialForm: FormState = {
   first_name: "", last_name: "", email: "", country: "", age: "", city: "", referral_source: undefined,
   software: "", capacity_hours: 40, years_experience: 5, weekly_video_capacity: 8,
   gpu: "", cpu: "", ram: "", internet_mbps: "", ai_tools_usage: "", ad_quality_answer: "",
-  portfolio_url: "", about_self: "", start_date: "", best_ad_url: "", best_ad_breakdown: "",
+  portfolio_url: "", about_self: "", start_timing: undefined, best_ad_url: "",
 };
 
 interface Posting {
@@ -166,9 +166,8 @@ export default function JobDetail() {
       ad_quality_answer: data.ad_quality_answer,
       portfolio_url: data.portfolio_url,
       about_self: data.about_self,
-      start_date: data.start_date,
+      start_timing: data.start_timing,
       best_ad_url: data.best_ad_url,
-      best_ad_breakdown: data.best_ad_breakdown,
       additional_info: data.about_self,
     }]);
     setSubmitting(false);
@@ -204,12 +203,32 @@ export default function JobDetail() {
         </div>
       </header>
 
-      <section className="border-b border-accent-deep/15 bg-accent px-6 py-20 text-center md:py-24">
-        <div className="mx-auto max-w-2xl">
-          <span className="eyebrow border-foreground/25 bg-background/50">Now hiring · Fully remote</span>
-          <h1 className="mt-7 font-display text-[44px] font-semibold leading-none md:text-[64px]">{posting.title}</h1>
-          <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-foreground/70">Edit performance ads for fast-growing e-commerce brands and learn from the data behind every cut.</p>
-          <p className="mt-5 mono text-[10px] uppercase text-foreground/55">Pay per video · Fully remote</p>
+      <section className="relative overflow-hidden border-b border-foreground bg-foreground px-5 py-10 text-background md:px-8 md:py-14">
+        <div aria-hidden="true" className="absolute inset-y-0 right-0 hidden w-[34%] border-l border-background/15 bg-accent md:block" />
+        <div aria-hidden="true" className="absolute bottom-0 right-[34%] top-0 hidden w-px bg-background/15 md:block" />
+        <div className="relative mx-auto grid max-w-[1180px] gap-12 md:grid-cols-[minmax(0,1.75fr)_minmax(260px,0.7fr)] md:items-end md:gap-16">
+          <div className="py-6 md:py-12">
+            <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
+              <span className="h-2 w-2 bg-accent" />
+              <span>AdChefs careers</span>
+              <span className="h-px w-9 bg-background/30" />
+              <span>Open role</span>
+            </div>
+            <h1 className="mt-8 max-w-[760px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[78px]">{posting.title}</h1>
+            <p className="mt-7 max-w-[610px] text-[16px] leading-relaxed text-background/65 md:text-lg">Edit performance ads for fast-growing e-commerce brands and learn from the data behind every cut.</p>
+          </div>
+          <div className="grid border-y border-background/15 md:border-y-0 md:py-12 md:text-foreground">
+            <div className="grid grid-cols-2 md:grid-cols-1">
+              <div className="border-r border-background/15 py-5 md:border-b md:border-r-0 md:border-foreground/15 md:pb-6">
+                <p className="mono text-[10px] uppercase text-background/50 md:text-foreground/55">Location</p>
+                <p className="mt-2 font-display text-xl font-semibold">Fully remote</p>
+              </div>
+              <div className="py-5 pl-5 md:pb-0 md:pl-0 md:pt-6">
+                <p className="mono text-[10px] uppercase text-background/50 md:text-foreground/55">Engagement</p>
+                <p className="mt-2 font-display text-xl font-semibold">Pay per video</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -246,7 +265,7 @@ export default function JobDetail() {
                 <div className="mt-5 grid gap-5 sm:grid-cols-2">
                   <div><Label htmlFor="gpu">Graphics card (GPU) *</Label><Input id="gpu" maxLength={120} value={form.gpu} onChange={(e) => update("gpu", e.target.value)} {...field("gpu")} /><FieldError message={errors.gpu} /></div>
                   <div><Label htmlFor="cpu">Processor (CPU) *</Label><Input id="cpu" maxLength={120} value={form.cpu} onChange={(e) => update("cpu", e.target.value)} {...field("cpu")} /><FieldError message={errors.cpu} /></div>
-                  <div><Label htmlFor="ram">RAM *</Label><Input id="ram" maxLength={80} placeholder="e.g. 32 GB" value={form.ram} onChange={(e) => update("ram", e.target.value)} {...field("ram")} /><FieldError message={errors.ram} /></div>
+                  <div><Label htmlFor="ram">RAM (GB) *</Label><Input id="ram" maxLength={80} value={form.ram} onChange={(e) => update("ram", e.target.value)} {...field("ram")} /><FieldError message={errors.ram} /></div>
                   <div><Label htmlFor="internet_mbps">Internet speed (Mbps) *</Label><Input id="internet_mbps" type="number" min={1} max={100000} value={form.internet_mbps} onChange={(e) => update("internet_mbps", e.target.value)} {...field("internet_mbps")} /><FieldError message={errors.internet_mbps} /></div>
                 </div>
               </div>
@@ -255,9 +274,8 @@ export default function JobDetail() {
               <div><Label htmlFor="ad_quality_answer">What makes an ad good? What do you look for in the first three seconds? *</Label><Textarea id="ad_quality_answer" rows={4} maxLength={2000} value={form.ad_quality_answer} onChange={(e) => update("ad_quality_answer", e.target.value)} aria-invalid={Boolean(errors.ad_quality_answer)} className={cn("mt-2 rounded-[4px] bg-card", errors.ad_quality_answer && "border-destructive")} /><FieldError message={errors.ad_quality_answer} /></div>
               <div><Label htmlFor="portfolio_url">Link to a folder with videos you've edited *</Label><p className="mt-1 text-xs text-muted-foreground">One link only. Make sure anyone with the link can view the folder.</p><Input id="portfolio_url" type="url" maxLength={500} placeholder="https://" value={form.portfolio_url} onChange={(e) => update("portfolio_url", e.target.value)} {...field("portfolio_url")} /><FieldError message={errors.portfolio_url} /></div>
               <div><Label htmlFor="about_self">Tell me a bit about yourself *</Label><Textarea id="about_self" rows={4} maxLength={2000} value={form.about_self} onChange={(e) => update("about_self", e.target.value)} aria-invalid={Boolean(errors.about_self)} className={cn("mt-2 rounded-[4px] bg-card", errors.about_self && "border-destructive")} /><FieldError message={errors.about_self} /></div>
-              <div><Label htmlFor="start_date">When can you start? *</Label><Input id="start_date" type="date" value={form.start_date} onChange={(e) => update("start_date", e.target.value)} {...field("start_date")} /><FieldError message={errors.start_date} /></div>
               <div><Label htmlFor="best_ad_url">Link the best ad you've edited *</Label><Input id="best_ad_url" type="url" maxLength={500} placeholder="https://" value={form.best_ad_url} onChange={(e) => update("best_ad_url", e.target.value)} {...field("best_ad_url")} /><FieldError message={errors.best_ad_url} /></div>
-              <div><Label htmlFor="best_ad_breakdown">What was your contribution, and why does this ad work? *</Label><Textarea id="best_ad_breakdown" rows={4} maxLength={2000} value={form.best_ad_breakdown} onChange={(e) => update("best_ad_breakdown", e.target.value)} aria-invalid={Boolean(errors.best_ad_breakdown)} className={cn("mt-2 rounded-[4px] bg-card", errors.best_ad_breakdown && "border-destructive")} /><FieldError message={errors.best_ad_breakdown} /></div>
+              <div><Label>When can you start? *</Label><Select value={form.start_timing} onValueChange={(value) => update("start_timing", value as FormState["start_timing"])}><SelectTrigger aria-invalid={Boolean(errors.start_timing)} className={cn("mt-2 h-11 rounded-[4px] bg-card", errors.start_timing && "border-destructive")}><SelectValue placeholder="Select availability" /></SelectTrigger><SelectContent>{["As soon as possible", "Within a week", "Within two weeks", "Within a month", "More than a month"].map((timing) => <SelectItem key={timing} value={timing}>{timing}</SelectItem>)}</SelectContent></Select><FieldError message={errors.start_timing} /></div>
             </div>
           </section>
 
