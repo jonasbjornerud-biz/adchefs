@@ -18,18 +18,34 @@ function sumActionValues(actions: { action_type: string; value: string }[] | und
   return actions.reduce((sum, a) => sum + parseFloat(a.value), 0);
 }
 
+class MetaApiError extends Error {
+  code?: number;
+  subcode?: number;
+  constructor(message: string, code?: number, subcode?: number) {
+    super(message);
+    this.code = code;
+    this.subcode = subcode;
+  }
+}
+
 async function fetchAllPages(url: string): Promise<any[]> {
   let allData: any[] = [];
   let nextUrl: string | null = url;
   while (nextUrl) {
     const res = await fetch(nextUrl);
     const json = await res.json();
-    if (json.error) throw new Error(json.error.message);
+    if (json.error) {
+      throw new MetaApiError(json.error.message, json.error.code, json.error.error_subcode);
+    }
     allData = allData.concat(json.data || []);
     nextUrl = json.paging?.next || null;
   }
   return allData;
 }
+
+const isPermissionError = (e: unknown): boolean =>
+  e instanceof MetaApiError &&
+  (e.code === 190 || e.code === 200 || /permission|ads_read|ads_management/i.test(e.message));
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
