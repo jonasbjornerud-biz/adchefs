@@ -302,7 +302,7 @@ export default function JobDetail() {
                 {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/15 bg-background/[0.04] px-3 py-1.5 mono text-[9px] uppercase text-background/70">{chip}</span>)}
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-5">
-                <Button asChild variant="accent" size="lg"><a href="#apply">Apply now <ArrowRight /></a></Button>
+                <Button asChild variant="accent" size="lg"><a href="#apply" onClick={(event) => { event.preventDefault(); document.querySelector("#apply")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }}>Apply now <ArrowRight /></a></Button>
                 <a href="#example-ads" className="text-sm text-background/70 underline decoration-background/25 underline-offset-4 transition-colors hover:text-background">See example ads</a>
               </div>
             </div>

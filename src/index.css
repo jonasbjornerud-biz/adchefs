@@ -566,8 +566,8 @@
   }
 
   @keyframes job-timeline-scan {
-    from { transform: translateX(0); }
-    to { transform: translateX(calc(100vw - 270px)); }
+    from { left: 4px; }
+    to { left: calc(100% - 5px); }
   }
 
   @media (max-width: 767px) {
