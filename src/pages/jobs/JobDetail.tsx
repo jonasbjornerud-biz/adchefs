@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -65,6 +65,90 @@ interface Posting {
   senior_pay: string | null;
   created_at?: string | null;
   expires_at?: string | null;
+}
+
+const JOB_REELS = [
+  { id: "AC1_r0bbjh", label: "Rituel ad example one" },
+  { id: "AC3_wa3d0v", label: "Rituel ad example two" },
+  { id: "AC5_v65ofr", label: "Rituel ad example three" },
+].map((reel) => ({
+  ...reel,
+  video: `https://res.cloudinary.com/dqnifzwda/video/upload/so_0,eo_8,w_480,q_auto,f_auto,ac_none/${reel.id}.mp4`,
+  poster: `https://res.cloudinary.com/dqnifzwda/video/upload/so_1,w_480,q_auto,f_auto/${reel.id}.jpg`,
+}));
+
+function JobReel({ reel, index }: { reel: typeof JOB_REELS[number]; index: number }) {
+  const [showVideo, setShowVideo] = useState(false);
+
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePlayback = () => setShowVideo(!mobile.matches && !reducedMotion.matches);
+    updatePlayback();
+    mobile.addEventListener("change", updatePlayback);
+    reducedMotion.addEventListener("change", updatePlayback);
+    return () => {
+      mobile.removeEventListener("change", updatePlayback);
+      reducedMotion.removeEventListener("change", updatePlayback);
+    };
+  }, []);
+
+  return (
+    <figure className={cn("job-phone", `job-phone-${index + 1}`)}>
+      <img src={reel.poster} alt={reel.label} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
+      {showVideo ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          poster={reel.poster}
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="none"
+          aria-label={reel.label}
+        >
+          <source src={reel.video} type="video/mp4" />
+        </video>
+      ) : null}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 z-10 mx-auto mt-2 h-1 w-8 rounded-full bg-foreground/55" />
+    </figure>
+  );
+}
+
+function EditingTimeline() {
+  const [timecode, setTimecode] = useState("00:00:00:00");
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reducedMotion.matches) return;
+    const duration = 12000;
+    const started = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const elapsed = (now - started) % duration;
+      const seconds = Math.floor(elapsed / 1000);
+      const frames = Math.floor(((elapsed % 1000) / 1000) * 24);
+      setTimecode(`00:00:${String(seconds).padStart(2, "0")}:${String(frames).padStart(2, "0")}`);
+      frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <div className="job-timeline" aria-label={`Editing timeline, timecode ${timecode}`}>
+      <span className="mono shrink-0 text-[9px] text-background/45">{timecode}</span>
+      <div className="relative grid h-5 flex-1 grid-cols-[1.4fr_0.65fr_1fr_0.55fr_1.2fr] gap-1 overflow-hidden border-x border-background/10 px-1 py-1">
+        <span className="bg-accent/65" />
+        <span className="bg-background/15" />
+        <span className="bg-accent/35" />
+        <span className="bg-background/20" />
+        <span className="bg-accent/55" />
+        <span className="job-timeline-playhead" />
+      </div>
+      <span className="mono hidden shrink-0 text-[9px] uppercase text-background/35 sm:block">Sequence 01</span>
+    </div>
+  );
 }
 
 function FieldError({ message }: { message?: string }) {
@@ -196,40 +280,40 @@ export default function JobDetail() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEO title={`${posting.title} — Remote Role at AdChefs`} description={(posting.description || "").replace(/\s+/g, " ").trim().slice(0, 155) || `Apply for the ${posting.title} role at AdChefs.`} path={`/jobs/${slug}`} jsonLd={jobJsonLd} />
-      <header className="border-b border-border bg-secondary px-6 py-4">
-        <div className="mx-auto flex max-w-[1180px] items-center justify-between">
-          <Link to="/jobs" className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
-          <Link to="/" className="font-display text-xl font-semibold">AdChefs<span className="text-accent-deep">.</span></Link>
-        </div>
-      </header>
-
-      <section className="relative overflow-hidden border-b border-foreground bg-foreground px-5 py-10 text-background md:px-8 md:py-14">
-        <div aria-hidden="true" className="absolute inset-y-0 right-0 hidden w-[34%] border-l border-background/15 bg-accent md:block" />
-        <div aria-hidden="true" className="absolute bottom-0 right-[34%] top-0 hidden w-px bg-background/15 md:block" />
-        <div className="relative mx-auto grid max-w-[1180px] gap-12 md:grid-cols-[minmax(0,1.75fr)_minmax(260px,0.7fr)] md:items-end md:gap-16">
-          <div className="py-6 md:py-12">
+      <section className="job-hero relative overflow-hidden border-b border-foreground bg-foreground px-5 text-background md:px-8">
+        <div className="hero-grain" aria-hidden="true" />
+        <div className="job-hero-glow" aria-hidden="true" />
+        <div className="relative z-10 mx-auto max-w-[1180px]">
+          <header className="flex items-center justify-between border-b border-background/10 py-5">
+            <Link to="/jobs" className="inline-flex items-center text-sm text-background/60 transition-colors hover:text-background"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
+            <Link to="/" className="font-display text-xl font-semibold text-background">AdChefs<span className="text-accent">.</span></Link>
+          </header>
+          <div className="grid gap-12 pb-24 pt-12 md:min-h-[620px] md:grid-cols-[minmax(0,1.1fr)_minmax(450px,0.9fr)] md:items-center md:gap-10 md:pb-28 md:pt-14">
+            <div className="relative z-20">
             <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
               <span className="h-2 w-2 bg-accent" />
               <span>AdChefs careers</span>
               <span className="h-px w-9 bg-background/30" />
               <span>Open role</span>
             </div>
-            <h1 className="mt-8 max-w-[760px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[78px]">{posting.title}</h1>
-            <p className="mt-7 max-w-[610px] text-[16px] leading-relaxed text-background/65 md:text-lg">Edit performance ads for fast-growing e-commerce brands and learn from the data behind every cut.</p>
-          </div>
-          <div className="grid border-y border-background/15 md:border-y-0 md:py-12 md:text-foreground">
-            <div className="grid grid-cols-2 md:grid-cols-1">
-              <div className="border-r border-background/15 py-5 md:border-b md:border-r-0 md:border-foreground/15 md:pb-6">
-                <p className="mono text-[10px] uppercase text-background/50 md:text-foreground/55">Location</p>
-                <p className="mt-2 font-display text-xl font-semibold">Fully remote</p>
+              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[72px]">{posting.title}</h1>
+              <p className="mt-7 max-w-[590px] text-[16px] leading-relaxed text-background/65 md:text-lg">Edit performance ads for Rituel and learn from the data behind every cut.</p>
+              <div className="mt-7 flex max-w-[620px] flex-wrap gap-2">
+                {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/15 bg-background/[0.04] px-3 py-1.5 mono text-[9px] uppercase text-background/70">{chip}</span>)}
               </div>
-              <div className="py-5 pl-5 md:pb-0 md:pl-0 md:pt-6">
-                <p className="mono text-[10px] uppercase text-background/50 md:text-foreground/55">Engagement</p>
-                <p className="mt-2 font-display text-xl font-semibold">Pay per video</p>
+              <div className="mt-8 flex flex-wrap items-center gap-5">
+                <Button asChild variant="accent" size="lg"><a href="#apply">Apply now <ArrowRight /></a></Button>
+                <a href="#example-ads" className="text-sm text-background/70 underline decoration-background/25 underline-offset-4 transition-colors hover:text-background">See example ads</a>
+              </div>
+            </div>
+            <div id="example-ads" className="relative min-w-0 scroll-mt-6" aria-label="Example ads">
+              <div className="job-phone-row">
+                {JOB_REELS.map((reel, index) => <JobReel key={reel.id} reel={reel} index={index} />)}
               </div>
             </div>
           </div>
         </div>
+        <EditingTimeline />
       </section>
 
       <main id="apply" className="mx-auto max-w-[850px] px-5 py-14 md:py-20">
