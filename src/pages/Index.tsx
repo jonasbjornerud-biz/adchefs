@@ -59,7 +59,7 @@ const Index = () => {
                 minPrice: 100,
                 unitText: "video",
               },
-              url: "https://adchefs.com/#booking",
+              url: "https://adchefs.com/#contact",
               availability: "https://schema.org/InStock",
             },
           },
