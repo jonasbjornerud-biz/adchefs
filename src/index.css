@@ -494,6 +494,110 @@
     opacity: 0.04;
   }
 
+  /* ── Careers hero: editorial phone reel + editing timeline ── */
+  .job-hero-glow {
+    position: absolute;
+    width: min(54vw, 760px);
+    aspect-ratio: 1;
+    right: -8%;
+    top: 2%;
+    pointer-events: none;
+    background: radial-gradient(circle, hsl(var(--accent) / 0.2) 0%, hsl(var(--accent) / 0.07) 38%, transparent 70%);
+    filter: blur(35px);
+  }
+
+  .job-phone-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 440px;
+    padding: 24px 28px;
+  }
+
+  .job-phone {
+    position: relative;
+    flex: 0 0 clamp(142px, 11vw, 178px);
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border: 3px solid hsl(var(--background) / 0.75);
+    border-radius: 22px;
+    background: hsl(var(--foreground));
+    box-shadow: 0 24px 55px -20px hsl(var(--foreground) / 0.8), 0 0 0 1px hsl(var(--background) / 0.12);
+  }
+
+  .job-phone-1 { transform: rotate(-7deg) translateX(18px); z-index: 1; }
+  .job-phone-2 { transform: translateY(-12px); z-index: 3; }
+  .job-phone-3 { transform: rotate(7deg) translateX(-18px); z-index: 2; }
+
+  .job-timeline {
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 42px;
+    padding: 0 max(20px, calc((100vw - 1180px) / 2));
+    border-top: 1px solid hsl(var(--background) / 0.12);
+    background: hsl(var(--foreground) / 0.82);
+    backdrop-filter: blur(12px);
+  }
+
+  .job-timeline-playhead {
+    position: absolute;
+    inset-block: 0;
+    left: 4px;
+    width: 1px;
+    background: hsl(var(--background));
+    box-shadow: 0 0 8px hsl(var(--accent) / 0.8);
+    animation: job-timeline-scan 12s linear infinite;
+  }
+
+  .job-timeline-playhead::before {
+    content: "";
+    position: absolute;
+    left: -3px;
+    top: -1px;
+    width: 7px;
+    height: 5px;
+    background: hsl(var(--background));
+  }
+
+  @keyframes job-timeline-scan {
+    from { left: 4px; }
+    to { left: calc(100% - 5px); }
+  }
+
+  @media (max-width: 767px) {
+    .job-hero-glow { width: 680px; right: -390px; top: 34%; }
+    .job-phone-row {
+      justify-content: flex-start;
+      min-height: 340px;
+      margin-inline: -20px;
+      padding: 16px 28px 28px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .job-phone-row::-webkit-scrollbar { display: none; }
+    .job-phone {
+      flex-basis: 164px;
+      scroll-snap-align: center;
+      border-radius: 19px;
+    }
+    .job-phone + .job-phone { margin-left: 12px; }
+    .job-phone-1,
+    .job-phone-2,
+    .job-phone-3 { transform: none; }
+    .job-timeline { gap: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .job-timeline-playhead { animation-play-state: paused; }
+  }
+
   /* ── Hero animated aurora orbs (subtle, accent on top of dot grid) ── */
   .hero-orb {
     position: absolute;
