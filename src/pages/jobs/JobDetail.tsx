@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -77,76 +77,119 @@ const JOB_REELS = [
   poster: `https://res.cloudinary.com/dqnifzwda/video/upload/so_1,w_480,q_auto,f_auto/${reel.id}.jpg`,
 }));
 
-function JobReel({ reel, index }: { reel: typeof JOB_REELS[number]; index: number }) {
-  const [showVideo, setShowVideo] = useState(false);
+// Editable hero data-card values
+const HERO_STATS = {
+  hookRate: { label: "Hook rate", value: "38%" },
+  ctr: { label: "CTR", value: "2.4%", sparkline: [1.2, 1.5, 1.4, 1.9, 1.7, 2.1, 2.4] },
+};
+const TIMELINE_SECONDS = 8;
 
+function useCanPlayVideo() {
+  const [canPlay, setCanPlay] = useState(false);
   useEffect(() => {
     const mobile = window.matchMedia("(max-width: 767px)");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePlayback = () => setShowVideo(!mobile.matches && !reducedMotion.matches);
-    updatePlayback();
-    mobile.addEventListener("change", updatePlayback);
-    reducedMotion.addEventListener("change", updatePlayback);
+    const update = () => setCanPlay(!mobile.matches && !reducedMotion.matches);
+    update();
+    mobile.addEventListener("change", update);
+    reducedMotion.addEventListener("change", update);
     return () => {
-      mobile.removeEventListener("change", updatePlayback);
-      reducedMotion.removeEventListener("change", updatePlayback);
+      mobile.removeEventListener("change", update);
+      reducedMotion.removeEventListener("change", update);
     };
   }, []);
+  return canPlay;
+}
 
+function JobReel({ reel, position, videoRef }: { reel: typeof JOB_REELS[number]; position: "left" | "center" | "right"; videoRef?: (el: HTMLVideoElement | null) => void }) {
+  const showVideo = useCanPlayVideo();
   return (
-    <figure className={cn("job-phone", `job-phone-${index + 1}`)}>
-      <img src={reel.poster} alt={reel.label} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
-      {showVideo ? (
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          poster={reel.poster}
-          muted
-          autoPlay
-          loop
-          playsInline
-          preload="none"
-          aria-label={reel.label}
-        >
-          <source src={reel.video} type="video/mp4" />
-        </video>
-      ) : null}
-      <span aria-hidden="true" className="absolute inset-x-0 top-0 z-10 mx-auto mt-2 h-1 w-8 rounded-full bg-foreground/55" />
-    </figure>
+    <div className={cn("job-phone-wrap", `job-phone-wrap-${position}`)}>
+      <figure className="job-phone">
+        <img src={reel.poster} alt={reel.label} loading={position === "center" ? "eager" : "lazy"} className="h-full w-full object-cover" />
+        {showVideo ? (
+          <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" poster={reel.poster} muted autoPlay loop playsInline preload="none" aria-label={reel.label}>
+            <source src={reel.video} type="video/mp4" />
+          </video>
+        ) : null}
+        <span aria-hidden="true" className="job-phone-island" />
+      </figure>
+    </div>
   );
 }
 
-function EditingTimeline() {
-  const [timecode, setTimecode] = useState("00:00:00:00");
+function Sparkline({ points }: { points: number[] }) {
+  const min = Math.min(...points), max = Math.max(...points);
+  const d = points.map((v, i) => `${i ? "L" : "M"}${(i / (points.length - 1)) * 56},${18 - ((v - min) / (max - min || 1)) * 16}`).join(" ");
+  return <svg viewBox="0 0 56 20" className="job-spark h-5 w-14" aria-hidden="true"><path d={d} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}
+
+const WAVEFORM = Array.from({ length: 120 }, (_, i) => 0.25 + 0.75 * Math.abs(Math.sin(i * 0.9) * Math.cos(i * 0.23) * (0.6 + 0.4 * Math.sin(i * 0.07))));
+const V2_CLIPS = [{ l: 3, w: 14, t: "HOOK" }, { l: 30, w: 11, t: "CLAIM" }, { l: 55, w: 13, t: "PROOF" }, { l: 84, w: 12, t: "CTA" }];
+const V1_CLIPS = [{ l: 0, w: 27, r: 0 }, { l: 27.4, w: 23, r: 1 }, { l: 50.8, w: 26, r: 2 }, { l: 77.2, w: 22.8, r: 0 }];
+
+function formatTimecode(t: number) {
+  const s = Math.floor(t);
+  const f = Math.floor((t - s) * 24);
+  return `00:00:${String(s).padStart(2, "0")}:${String(f).padStart(2, "0")}`;
+}
+
+function EditingTimeline({ video }: { video: HTMLVideoElement | null }) {
+  const playheadRef = useRef<HTMLSpanElement>(null);
+  const timecodeRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reducedMotion.matches) return;
-    const duration = 12000;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const started = performance.now();
     let frame = 0;
     const tick = (now: number) => {
-      const elapsed = (now - started) % duration;
-      const seconds = Math.floor(elapsed / 1000);
-      const frames = Math.floor(((elapsed % 1000) / 1000) * 24);
-      setTimecode(`00:00:${String(seconds).padStart(2, "0")}:${String(frames).padStart(2, "0")}`);
-      frame = window.requestAnimationFrame(tick);
+      let t: number, duration: number;
+      if (video && Number.isFinite(video.duration) && video.duration > 0) {
+        t = video.currentTime; duration = video.duration;
+      } else {
+        duration = TIMELINE_SECONDS; t = ((now - started) / 1000) % duration;
+      }
+      if (playheadRef.current) playheadRef.current.style.left = `${(t / duration) * 100}%`;
+      if (timecodeRef.current) timecodeRef.current.textContent = formatTimecode(t);
+      frame = requestAnimationFrame(tick);
     };
-    frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [video]);
 
   return (
-    <div className="job-timeline" aria-label={`Editing timeline, timecode ${timecode}`}>
-      <span className="mono shrink-0 text-[9px] text-background/45">{timecode}</span>
-      <div className="relative grid h-5 flex-1 grid-cols-[1.4fr_0.65fr_1fr_0.55fr_1.2fr] gap-1 overflow-hidden border-x border-background/10 px-1 py-1">
-        <span className="bg-accent/65" />
-        <span className="bg-background/15" />
-        <span className="bg-accent/35" />
-        <span className="bg-background/20" />
-        <span className="bg-accent/55" />
-        <span className="job-timeline-playhead" />
+    <div className="job-timeline" aria-label="Editing timeline">
+      <div className="job-tl-grid">
+        <span ref={timecodeRef} className="job-tl-label job-tl-timecode">00:00:00:00</span>
+        <div className="job-tl-ruler">
+          {Array.from({ length: TIMELINE_SECONDS * 4 + 1 }, (_, i) => (
+            <span key={i} className={cn("job-tl-tick", i % 4 === 0 && "job-tl-tick-major")} style={{ left: `${(i / (TIMELINE_SECONDS * 4)) * 100}%` }}>
+              {i % 8 === 0 && i < TIMELINE_SECONDS * 4 ? <em>{formatTimecode(i / 4).slice(3, 8)}</em> : null}
+            </span>
+          ))}
+        </div>
+        <span className="job-tl-label">V2</span>
+        <div className="job-tl-track">
+          {V2_CLIPS.map((c) => <span key={c.t} className="job-tl-clip job-tl-clip-v2" style={{ left: `${c.l}%`, width: `${c.w}%` }}>{c.t}</span>)}
+        </div>
+        <span className="job-tl-label">V1</span>
+        <div className="job-tl-track">
+          {V1_CLIPS.map((c, i) => (
+            <span key={i} className="job-tl-clip job-tl-clip-v1" style={{ left: `${c.l}%`, width: `${c.w}%` }}>
+              <img src={JOB_REELS[c.r].poster} alt="" loading="lazy" />
+            </span>
+          ))}
+        </div>
+        <span className="job-tl-label">A1</span>
+        <div className="job-tl-track">
+          <span className="job-tl-clip job-tl-clip-a1" style={{ left: "0%", width: "100%" }}>
+            <svg viewBox="0 0 120 20" preserveAspectRatio="none" aria-hidden="true">
+              {WAVEFORM.map((h, i) => <rect key={i} x={i + 0.15} y={10 - h * 8} width="0.7" height={h * 16} />)}
+            </svg>
+          </span>
+        </div>
+        <div className="job-tl-playhead-lane" aria-hidden="true"><span ref={playheadRef} className="job-tl-playhead" /></div>
       </div>
-      <span className="mono hidden shrink-0 text-[9px] uppercase text-background/35 sm:block">Sequence 01</span>
     </div>
   );
 }
@@ -280,26 +323,25 @@ export default function JobDetail() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEO title={`${posting.title} — Remote Role at AdChefs`} description={(posting.description || "").replace(/\s+/g, " ").trim().slice(0, 155) || `Apply for the ${posting.title} role at AdChefs.`} path={`/jobs/${slug}`} jsonLd={jobJsonLd} />
-      <section className="job-hero relative overflow-hidden border-b border-foreground bg-foreground px-5 text-background md:px-8">
+      <section className="job-hero relative flex flex-col overflow-hidden border-b border-foreground bg-foreground text-background md:min-h-[calc(100vh-0px)]">
         <div className="hero-grain" aria-hidden="true" />
-        <div className="job-hero-glow" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-[1180px]">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-1 flex-col px-5 md:px-8">
           <header className="flex items-center justify-between border-b border-background/10 py-5">
             <Link to="/jobs" className="inline-flex items-center text-sm text-background/60 transition-colors hover:text-background"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
             <Link to="/" className="font-display text-xl font-semibold text-background">AdChefs<span className="text-accent">.</span></Link>
           </header>
-          <div className="grid gap-12 pb-24 pt-12 md:min-h-[620px] md:grid-cols-[minmax(0,1.1fr)_minmax(450px,0.9fr)] md:items-center md:gap-10 md:pb-28 md:pt-14">
+          <div className="grid flex-1 gap-10 py-10 md:grid-cols-[minmax(0,1.05fr)_minmax(460px,0.95fr)] md:items-center md:gap-8 md:py-12">
             <div className="relative z-20">
-            <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
-              <span className="h-2 w-2 bg-accent" />
-              <span>AdChefs careers</span>
-              <span className="h-px w-9 bg-background/30" />
-              <span>Open role</span>
-            </div>
+              <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
+                <span className="h-2 w-2 bg-accent" />
+                <span>AdChefs careers</span>
+                <span className="h-px w-9 bg-background/30" />
+                <span>Open role</span>
+              </div>
               <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[72px]">{posting.title}</h1>
-              <p className="mt-7 max-w-[590px] text-[16px] leading-relaxed text-background/65 md:text-lg">Edit performance ads for Rituel and learn from the data behind every cut.</p>
+              <p className="mt-7 max-w-[560px] text-[16px] leading-relaxed text-background/70 [text-wrap:balance] md:text-lg">Edit performance ads for Rituel and learn from the data behind every cut.</p>
               <div className="mt-7 flex max-w-[620px] flex-wrap gap-2">
-                {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/15 bg-background/[0.04] px-3 py-1.5 mono text-[9px] uppercase text-background/70">{chip}</span>)}
+                {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/10 bg-background/[0.1] px-3.5 py-2 mono text-[10.5px] uppercase text-background/90">{chip}</span>)}
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-5">
                 <Button asChild variant="accent" size="lg"><a href="#apply" onClick={(event) => { event.preventDefault(); document.querySelector("#apply")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }}>Apply now <ArrowRight /></a></Button>
@@ -307,13 +349,24 @@ export default function JobDetail() {
               </div>
             </div>
             <div id="example-ads" className="relative min-w-0 scroll-mt-6" aria-label="Example ads">
-              <div className="job-phone-row">
-                {JOB_REELS.map((reel, index) => <JobReel key={reel.id} reel={reel} index={index} />)}
+              <div className="job-hero-glow" aria-hidden="true" />
+              <div className="job-phone-stage">
+                <JobReel reel={JOB_REELS[1]} position="left" />
+                <JobReel reel={JOB_REELS[2]} position="right" />
+                <JobReel reel={JOB_REELS[0]} position="center" videoRef={setCenterVideo} />
+                <div className="job-stat job-stat-hook">
+                  <span className="mono text-[9px] uppercase text-background/60">{HERO_STATS.hookRate.label}</span>
+                  <span className="mt-1 flex items-center gap-1.5 font-display text-[28px] font-semibold leading-none text-background">{HERO_STATS.hookRate.value}<ArrowUp className="job-stat-up h-4 w-4" strokeWidth={2.5} /></span>
+                </div>
+                <div className="job-stat job-stat-ctr">
+                  <span className="mono text-[9px] uppercase text-background/60">{HERO_STATS.ctr.label}</span>
+                  <span className="mt-1 flex items-end gap-3 font-display text-[22px] font-semibold leading-none text-background">{HERO_STATS.ctr.value}<Sparkline points={HERO_STATS.ctr.sparkline} /></span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <EditingTimeline />
+        <EditingTimeline video={centerVideo} />
       </section>
 
       <main id="apply" className="mx-auto max-w-[850px] px-5 py-14 md:py-20">
