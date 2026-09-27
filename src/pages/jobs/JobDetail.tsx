@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { osBackend } from "@/integrations/osBackend";
 import { cn } from "@/lib/utils";
 
 const requiredText = (label: string, max = 2000) => z.string().trim().min(1, `${label} is required`).max(max, `${label} is too long`);
@@ -202,7 +203,7 @@ export default function JobDetail() {
     if (!posting) return;
     setSubmitting(true);
     const data = parsed.data;
-    const { error } = await supabase.from("applications").insert([{
+    const { error } = await osBackend.from("applications").insert([{
       job_posting_id: posting.id,
       first_name: data.first_name,
       last_name: data.last_name,
