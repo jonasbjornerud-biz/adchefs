@@ -162,7 +162,7 @@ const TwoWaysToWork = () => {
               "Trained on my direct response master class",
               "Replaced fast if it's not clicking",
             ]}
-            href="/#contact"
+            href="/contact"
             ctaLabel="Contact us"
           />
           <GlassCard
@@ -180,7 +180,7 @@ const TwoWaysToWork = () => {
               "Editor capacity scales with your spend",
               "One operator owning the creative number end to end",
             ]}
-            href="/#contact"
+            href="/contact"
             ctaLabel="Contact us"
           />
         </div>

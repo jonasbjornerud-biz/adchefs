@@ -159,12 +159,6 @@ const Tile = ({ tile, onOpen }: { tile: TileUrls; onOpen: (full: string) => void
   );
 };
 
-const scrollToBooking = () => {
-  const el = document.getElementById("contact");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-  else window.location.href = "/#contact";
-};
-
 const CreativeStrategyHero = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const openLightbox = useCallback((full: string) => setLightboxSrc(full), []);
@@ -233,7 +227,7 @@ const CreativeStrategyHero = () => {
                 size="lg"
                 variant="cta"
                 className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
-                onClick={scrollToBooking}
+                onClick={() => window.location.assign("/contact")}
               >
                 Contact Us
                 <ArrowRight className="h-4 w-4" />

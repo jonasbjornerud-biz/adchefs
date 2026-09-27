@@ -19,7 +19,7 @@ const navLinks = [
 ];
 
 const goBooking = () => {
-  window.location.href = "/#contact";
+  window.location.href = "/contact";
 };
 
 /* ---------- Primitives ---------- */
