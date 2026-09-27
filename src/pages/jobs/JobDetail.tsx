@@ -168,8 +168,8 @@ function EditingTimeline({ video }: { video: HTMLVideoElement | null }) {
             </span>
           ))}
         </div>
-        <span className="job-tl-label">V2</span>
-        <div className="job-tl-track">
+        <span className="job-tl-label job-tl-v2">V2</span>
+        <div className="job-tl-track job-tl-v2">
           {V2_CLIPS.map((c) => <span key={c.t} className="job-tl-clip job-tl-clip-v2" style={{ left: `${c.l}%`, width: `${c.w}%` }}>{c.t}</span>)}
         </div>
         <span className="job-tl-label">V1</span>
@@ -324,14 +324,14 @@ export default function JobDetail() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEO title={`${posting.title} — Remote Role at AdChefs`} description={(posting.description || "").replace(/\s+/g, " ").trim().slice(0, 155) || `Apply for the ${posting.title} role at AdChefs.`} path={`/jobs/${slug}`} jsonLd={jobJsonLd} />
-      <section className="job-hero relative flex flex-col overflow-hidden border-b border-foreground bg-foreground text-background md:min-h-[calc(100vh-0px)]">
+      <section className="job-hero relative flex flex-col overflow-hidden border-b border-foreground bg-foreground text-background">
         <div className="hero-grain" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-1 flex-col px-5 md:px-8">
           <header className="flex items-center justify-between border-b border-background/10 py-5">
             <Link to="/jobs" className="inline-flex items-center text-sm text-background/60 transition-colors hover:text-background"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
             <Link to="/" className="font-display text-xl font-semibold text-background">AdChefs<span className="text-accent">.</span></Link>
           </header>
-          <div className="grid flex-1 gap-10 py-10 md:grid-cols-[minmax(0,1.05fr)_minmax(460px,0.95fr)] md:items-center md:gap-8 md:py-12">
+          <div className="grid gap-8 pb-10 pt-12 md:grid-cols-[55fr_45fr] md:items-start md:gap-6 md:pb-12 md:pt-16">
             <div className="relative z-20">
               <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
                 <span className="h-2 w-2 bg-accent" />
@@ -339,7 +339,7 @@ export default function JobDetail() {
                 <span className="h-px w-9 bg-background/30" />
                 <span>Open role</span>
               </div>
-              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[72px]">{posting.title}</h1>
+              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[56px] lg:whitespace-nowrap lg:text-[64px]">{posting.title}</h1>
               <p className="mt-7 max-w-[560px] text-[16px] leading-relaxed text-background/70 [text-wrap:balance] md:text-lg">Edit performance ads for Rituel and learn from the data behind every cut.</p>
               <div className="mt-7 flex max-w-[620px] flex-wrap gap-2">
                 {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/10 bg-background/[0.1] px-3.5 py-2 mono text-[10.5px] uppercase text-background/90">{chip}</span>)}
