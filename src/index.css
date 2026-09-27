@@ -494,108 +494,225 @@
     opacity: 0.04;
   }
 
-  /* ── Careers hero: editorial phone reel + editing timeline ── */
-  .job-hero-glow {
-    position: absolute;
-    width: min(54vw, 760px);
-    aspect-ratio: 1;
-    right: -8%;
-    top: 2%;
-    pointer-events: none;
-    background: radial-gradient(circle, hsl(var(--accent) / 0.2) 0%, hsl(var(--accent) / 0.07) 38%, transparent 70%);
-    filter: blur(35px);
+  /* ── Careers hero: phone stack, stat cards, editing timeline ── */
+  .job-hero {
+    --tl-panel: 0 0% 14%;
+    --tl-v2: 262 30% 62%;
+    --tl-a1: 146 45% 52%;
+    --stat-up: 146 60% 55%;
   }
 
-  .job-phone-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 440px;
-    padding: 24px 28px;
+  .job-hero-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 620px;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    background: radial-gradient(circle, hsl(var(--accent) / 0.22) 0%, hsl(var(--accent) / 0.08) 35%, transparent 68%);
+    filter: blur(30px);
   }
+
+  .job-phone-stage {
+    position: relative;
+    height: 520px;
+  }
+
+  .job-phone-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  }
+  .job-phone-wrap-center { width: 220px; z-index: 3; transform: translate(-50%, -50%); }
+  .job-phone-wrap-left { width: 168px; z-index: 1; opacity: 0.8; transform: translate(calc(-50% - 150px), calc(-50% + 30px)) rotate(-6deg); }
+  .job-phone-wrap-right { width: 168px; z-index: 1; opacity: 0.8; transform: translate(calc(-50% + 150px), calc(-50% + 30px)) rotate(6deg); }
 
   .job-phone {
     position: relative;
-    flex: 0 0 clamp(142px, 11vw, 178px);
     aspect-ratio: 9 / 16;
     overflow: hidden;
-    border: 3px solid hsl(var(--background) / 0.75);
-    border-radius: 22px;
-    background: hsl(var(--foreground));
-    box-shadow: 0 24px 55px -20px hsl(var(--foreground) / 0.8), 0 0 0 1px hsl(var(--background) / 0.12);
+    border: 6px solid hsl(0 0% 0%);
+    border-radius: 34px;
+    background: hsl(0 0% 0%);
+    box-shadow: 0 40px 70px -24px hsl(0 0% 0% / 0.9), 0 12px 24px -12px hsl(0 0% 0% / 0.7), 0 0 0 1px hsl(var(--background) / 0.1);
+    animation: job-phone-float 6s ease-in-out infinite;
+  }
+  .job-phone-wrap-left .job-phone { border-radius: 28px; animation-duration: 7s; animation-delay: -2s; }
+  .job-phone-wrap-right .job-phone { border-radius: 28px; animation-duration: 6.5s; animation-delay: -4s; }
+
+  .job-phone-island {
+    position: absolute;
+    z-index: 10;
+    top: 8px;
+    left: 50%;
+    width: 32%;
+    height: 14px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: hsl(0 0% 0%);
   }
 
-  .job-phone-1 { transform: rotate(-7deg) translateX(18px); z-index: 1; }
-  .job-phone-2 { transform: translateY(-12px); z-index: 3; }
-  .job-phone-3 { transform: rotate(7deg) translateX(-18px); z-index: 2; }
+  @keyframes job-phone-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .job-stat {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    border: 1px solid hsl(var(--background) / 0.16);
+    border-radius: 12px;
+    background: hsl(var(--foreground) / 0.55);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px -18px hsl(0 0% 0% / 0.8);
+    animation: job-phone-float 7.5s ease-in-out infinite;
+  }
+  .job-stat-hook { left: calc(50% - 190px); top: 60px; animation-delay: -1s; }
+  .job-stat-ctr { left: calc(50% + 70px); bottom: 58px; animation-delay: -3.5s; }
+  .job-stat-up { color: hsl(var(--stat-up)); }
+  .job-spark path { stroke: hsl(var(--accent)); }
 
   .job-timeline {
-    position: absolute;
+    position: relative;
     z-index: 20;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    border-top: 1px solid hsl(var(--background) / 0.1);
+    background: hsl(var(--tl-panel));
+    padding: 8px max(20px, calc((100vw - 1180px) / 2 + 32px)) 10px;
+  }
+  .job-tl-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    grid-template-rows: 20px 18px 30px 22px;
+    row-gap: 4px;
+  }
+  .job-tl-label {
     display: flex;
     align-items: center;
-    gap: 14px;
-    height: 42px;
-    padding: 0 max(20px, calc((100vw - 1180px) / 2));
-    border-top: 1px solid hsl(var(--background) / 0.12);
-    background: hsl(var(--foreground) / 0.82);
-    backdrop-filter: blur(12px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: hsl(var(--background) / 0.45);
   }
-
-  .job-timeline-playhead {
+  .job-tl-timecode { color: hsl(var(--accent)); font-size: 10px; }
+  .job-tl-ruler, .job-tl-track { position: relative; }
+  .job-tl-ruler { border-bottom: 1px solid hsl(var(--background) / 0.12); }
+  .job-tl-track { background: hsl(var(--background) / 0.03); border-radius: 3px; }
+  .job-tl-tick {
     position: absolute;
-    inset-block: 0;
-    left: 4px;
+    bottom: 0;
     width: 1px;
-    background: hsl(var(--background));
-    box-shadow: 0 0 8px hsl(var(--accent) / 0.8);
-    animation: job-timeline-scan 12s linear infinite;
+    height: 4px;
+    background: hsl(var(--background) / 0.22);
   }
-
-  .job-timeline-playhead::before {
+  .job-tl-tick-major { height: 8px; background: hsl(var(--background) / 0.4); }
+  .job-tl-tick em {
+    position: absolute;
+    bottom: 9px;
+    left: 3px;
+    font-style: normal;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8.5px;
+    color: hsl(var(--background) / 0.4);
+    white-space: nowrap;
+  }
+  .job-tl-clip {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+  .job-tl-clip-v2 {
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    background: hsl(var(--tl-v2) / 0.45);
+    border: 1px solid hsl(var(--tl-v2) / 0.7);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8px;
+    color: hsl(var(--background) / 0.85);
+  }
+  .job-tl-clip-v1 {
+    display: flex;
+    gap: 0;
+    background: hsl(var(--accent) / 0.35);
+    border: 1px solid hsl(var(--accent) / 0.8);
+  }
+  .job-tl-clip-v1 img { height: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-right: 1px solid hsl(var(--accent) / 0.8); }
+  .job-tl-clip-a1 {
+    background: hsl(var(--tl-a1) / 0.22);
+    border: 1px solid hsl(var(--tl-a1) / 0.6);
+  }
+  .job-tl-clip-a1 svg { width: 100%; height: 100%; fill: hsl(var(--tl-a1)); }
+  .job-tl-playhead-lane {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 88px;
+    right: 0;
+    pointer-events: none;
+  }
+  .job-tl-playhead {
+    position: absolute;
+    top: 2px;
+    bottom: -4px;
+    left: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: hsl(var(--accent));
+    box-shadow: 0 0 10px hsl(var(--accent) / 0.7);
+  }
+  .job-tl-playhead::before {
     content: "";
     position: absolute;
-    left: -3px;
-    top: -1px;
-    width: 7px;
-    height: 5px;
-    background: hsl(var(--background));
-  }
-
-  @keyframes job-timeline-scan {
-    from { left: 4px; }
-    to { left: calc(100% - 5px); }
+    top: -2px;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    background: hsl(var(--accent));
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
   }
 
   @media (max-width: 767px) {
-    .job-hero-glow { width: 680px; right: -390px; top: 34%; }
-    .job-phone-row {
-      justify-content: flex-start;
-      min-height: 340px;
+    .job-hero-glow { width: 460px; }
+    .job-phone-stage {
+      display: flex;
+      align-items: center;
+      height: auto;
       margin-inline: -20px;
-      padding: 16px 28px 28px;
+      padding: 16px 20px 24px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
+      gap: 12px;
     }
-    .job-phone-row::-webkit-scrollbar { display: none; }
-    .job-phone {
-      flex-basis: 164px;
+    .job-phone-stage::-webkit-scrollbar { display: none; }
+    .job-phone-wrap {
+      position: relative;
+      left: auto;
+      top: auto;
+      flex: 0 0 170px;
+      width: 170px;
+      opacity: 1;
+      transform: none;
       scroll-snap-align: center;
-      border-radius: 19px;
     }
-    .job-phone + .job-phone { margin-left: 12px; }
-    .job-phone-1,
-    .job-phone-2,
-    .job-phone-3 { transform: none; }
-    .job-timeline { gap: 10px; }
+    .job-phone-wrap-center { order: 0; }
+    .job-phone-wrap-left { order: 1; }
+    .job-phone-wrap-right { order: 2; }
+    .job-phone { border-radius: 28px; }
+    .job-stat { display: none; }
+    .job-tl-grid { grid-template-columns: 72px 1fr; }
+    .job-tl-playhead-lane { left: 72px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .job-timeline-playhead { animation-play-state: paused; }
+    .job-phone, .job-stat { animation: none; }
   }
 
   /* ── Hero animated aurora orbs (subtle, accent on top of dot grid) ── */
