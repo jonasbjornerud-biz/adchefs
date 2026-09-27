@@ -104,7 +104,7 @@ function useCanPlayVideo() {
 function JobReel({ reel, position, videoRef }: { reel: typeof JOB_REELS[number]; position: "left" | "center" | "right"; videoRef?: (el: HTMLVideoElement | null) => void }) {
   const showVideo = useCanPlayVideo();
   return (
-    <div className={cn("job-phone-wrap", `job-phone-wrap-${position}`)}>
+    <div className={cn("job-phone-wrap", { left: "job-phone-wrap-left", center: "job-phone-wrap-center", right: "job-phone-wrap-right" }[position])}>
       <figure className="job-phone">
         <img src={reel.poster} alt={reel.label} loading={position === "center" ? "eager" : "lazy"} className="h-full w-full object-cover" />
         {showVideo ? (
