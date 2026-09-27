@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
+import adchefsLogoLight from "@/assets/adchefs-logo-light.png.asset.json";
 import { z } from "zod";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
@@ -68,9 +69,9 @@ interface Posting {
 }
 
 const JOB_REELS = [
-  { id: "AC1_r0bbjh", label: "Rituel ad example one" },
-  { id: "AC3_wa3d0v", label: "Rituel ad example two" },
-  { id: "AC5_v65ofr", label: "Rituel ad example three" },
+  { id: "AC1_r0bbjh", label: "Ad example one" },
+  { id: "AC3_wa3d0v", label: "Ad example two" },
+  { id: "AC5_v65ofr", label: "Ad example three" },
 ].map((reel) => ({
   ...reel,
   video: `https://res.cloudinary.com/dqnifzwda/video/upload/so_0,eo_8,w_480,q_auto,f_auto,ac_none/${reel.id}.mp4`,
@@ -329,7 +330,7 @@ export default function JobDetail() {
         <div className="relative z-10 mx-auto flex w-full max-w-[1180px] flex-1 flex-col px-5 md:px-8">
           <header className="flex items-center justify-between border-b border-background/10 py-5">
             <Link to="/jobs" className="inline-flex items-center text-sm text-background/60 transition-colors hover:text-background"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
-            <Link to="/" className="font-display text-xl font-semibold text-background">AdChefs<span className="text-accent">.</span></Link>
+            <Link to="/" aria-label="AdChefs home"><img src={adchefsLogoLight.url} alt="AdChefs" className="h-8 w-auto md:h-9" /></Link>
           </header>
           <div className="grid gap-8 pb-10 pt-12 md:grid-cols-[55fr_45fr] md:items-start md:gap-6 md:pb-12 md:pt-16">
             <div className="relative z-20">
@@ -339,14 +340,13 @@ export default function JobDetail() {
                 <span className="h-px w-9 bg-background/30" />
                 <span>Open role</span>
               </div>
-              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[56px] lg:whitespace-nowrap lg:text-[64px]">{posting.title}</h1>
-              <p className="mt-7 max-w-[560px] text-[16px] leading-relaxed text-background/70 [text-wrap:balance] md:text-lg">Edit performance ads for Rituel and learn from the data behind every cut.</p>
+              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[56px] lg:whitespace-nowrap lg:text-[64px]">{posting.title.split(":")[0]}</h1>
+              <p className="mt-7 max-w-[560px] text-[16px] leading-relaxed text-background/70 [text-wrap:balance] md:text-lg">Edit performance ads with us and learn from the data behind every cut.</p>
               <div className="mt-7 flex max-w-[620px] flex-wrap gap-2">
-                {["Remote", "Pay per video", "Brand: Rituel", "Reply within 48h"].map((chip) => <span key={chip} className="rounded-full border border-background/10 bg-background/[0.1] px-3.5 py-2 mono text-[10.5px] uppercase text-background/90">{chip}</span>)}
+                {["Remote", "Pay per video"].map((chip) => <span key={chip} className="rounded-full border border-background/10 bg-background/[0.1] px-3.5 py-2 mono text-[10.5px] uppercase text-background/90">{chip}</span>)}
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-5">
                 <Button asChild variant="accent" size="lg"><a href="#apply" onClick={(event) => { event.preventDefault(); document.querySelector("#apply")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); }}>Apply now <ArrowRight /></a></Button>
-                <a href="#example-ads" className="text-sm text-background/70 underline decoration-background/25 underline-offset-4 transition-colors hover:text-background">See example ads</a>
               </div>
             </div>
             <div id="example-ads" className="relative min-w-0 scroll-mt-6" aria-label="Example ads">
@@ -372,13 +372,13 @@ export default function JobDetail() {
 
       <main id="apply" className="mx-auto max-w-[850px] px-5 py-14 md:py-20">
         <div className="mx-auto max-w-[690px] border-b border-border pb-10">
-          <p className="font-display text-xl font-semibold leading-snug md:text-2xl">Tell me who you are, show me your work, and I'll get back to you within 48 hours.</p>
-          <div className="mt-5 flex gap-3 text-sm leading-relaxed text-muted-foreground"><CircleAlert className="mt-0.5 h-4 w-4 shrink-0" /><p>Applications sent by email are not considered. I only review applications submitted through this form.</p></div>
+          <p className="font-display text-xl font-semibold leading-snug md:text-2xl">Tell us who you are, show us your work, and we'll get back to you within 48 hours.</p>
+          <div className="mt-5 flex gap-3 text-sm leading-relaxed text-muted-foreground"><CircleAlert className="mt-0.5 h-4 w-4 shrink-0" /><p>Applications sent by email are not considered. We only review applications submitted through this form.</p></div>
         </div>
 
         <form onSubmit={onSubmit} noValidate className="mt-10 space-y-6">
           <section className="rounded-[4px] border border-border bg-card p-6 md:p-8">
-            <SectionHeading number="01" title="About you" description="The basics, so I know who I'm talking to." icon={UserRound} />
+            <SectionHeading number="01" title="About you" description="The basics, so we know who we're talking to." icon={UserRound} />
             <div className="grid gap-5 sm:grid-cols-2">
               <div><Label htmlFor="first_name">First name *</Label><Input id="first_name" maxLength={80} value={form.first_name} onChange={(e) => update("first_name", e.target.value)} {...field("first_name")} /><FieldError message={errors.first_name} /></div>
               <div><Label htmlFor="last_name">Last name *</Label><Input id="last_name" maxLength={80} value={form.last_name} onChange={(e) => update("last_name", e.target.value)} {...field("last_name")} /><FieldError message={errors.last_name} /></div>
@@ -408,10 +408,10 @@ export default function JobDetail() {
                 </div>
               </div>
 
+              <div><Label htmlFor="about_self">Tell us a bit about yourself *</Label><Textarea id="about_self" rows={4} maxLength={2000} value={form.about_self} onChange={(e) => update("about_self", e.target.value)} aria-invalid={Boolean(errors.about_self)} className={cn("mt-2 rounded-[4px] bg-card", errors.about_self && "border-destructive")} /><FieldError message={errors.about_self} /></div>
               <div><Label htmlFor="ai_tools_usage">Do you use AI tools in your editing, and what for? *</Label><Textarea id="ai_tools_usage" rows={4} maxLength={2000} value={form.ai_tools_usage} onChange={(e) => update("ai_tools_usage", e.target.value)} aria-invalid={Boolean(errors.ai_tools_usage)} className={cn("mt-2 rounded-[4px] bg-card", errors.ai_tools_usage && "border-destructive")} /><FieldError message={errors.ai_tools_usage} /></div>
               <div><Label htmlFor="ad_quality_answer">What makes an ad good? What do you look for in the first three seconds? *</Label><Textarea id="ad_quality_answer" rows={4} maxLength={2000} value={form.ad_quality_answer} onChange={(e) => update("ad_quality_answer", e.target.value)} aria-invalid={Boolean(errors.ad_quality_answer)} className={cn("mt-2 rounded-[4px] bg-card", errors.ad_quality_answer && "border-destructive")} /><FieldError message={errors.ad_quality_answer} /></div>
               <div><Label htmlFor="portfolio_url">Link to a folder with videos you've edited *</Label><p className="mt-1 text-xs text-muted-foreground">One link only. Make sure anyone with the link can view the folder.</p><Input id="portfolio_url" type="url" maxLength={500} placeholder="https://" value={form.portfolio_url} onChange={(e) => update("portfolio_url", e.target.value)} {...field("portfolio_url")} /><FieldError message={errors.portfolio_url} /></div>
-              <div><Label htmlFor="about_self">Tell me a bit about yourself *</Label><Textarea id="about_self" rows={4} maxLength={2000} value={form.about_self} onChange={(e) => update("about_self", e.target.value)} aria-invalid={Boolean(errors.about_self)} className={cn("mt-2 rounded-[4px] bg-card", errors.about_self && "border-destructive")} /><FieldError message={errors.about_self} /></div>
               <div><Label htmlFor="best_ad_url">Link the best ad you've edited *</Label><Input id="best_ad_url" type="url" maxLength={500} placeholder="https://" value={form.best_ad_url} onChange={(e) => update("best_ad_url", e.target.value)} {...field("best_ad_url")} /><FieldError message={errors.best_ad_url} /></div>
               <div><Label>When can you start? *</Label><Select value={form.start_timing} onValueChange={(value) => update("start_timing", value as FormState["start_timing"])}><SelectTrigger aria-invalid={Boolean(errors.start_timing)} className={cn("mt-2 h-11 rounded-[4px] bg-card", errors.start_timing && "border-destructive")}><SelectValue placeholder="Select availability" /></SelectTrigger><SelectContent>{["As soon as possible", "Within a week", "Within two weeks", "Within a month", "More than a month"].map((timing) => <SelectItem key={timing} value={timing}>{timing}</SelectItem>)}</SelectContent></Select><FieldError message={errors.start_timing} /></div>
             </div>
@@ -419,7 +419,7 @@ export default function JobDetail() {
 
           <div className="flex flex-col gap-5 border-t border-border pt-6 sm:flex-row sm:items-center">
             <Button type="submit" disabled={submitting} variant="cta" size="lg" className="min-w-[190px] rounded-[4px]">{submitting ? "Submitting…" : "Submit application"}</Button>
-            <p className="text-xs leading-relaxed text-muted-foreground">By submitting, you agree that I may store and process the information you provide to evaluate your application. I never share it with third parties.</p>
+            <p className="text-xs leading-relaxed text-muted-foreground">By submitting, you agree that we may store and process the information you provide to evaluate your application. We never share it with third parties.</p>
           </div>
         </form>
       </main>
