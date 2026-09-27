@@ -232,6 +232,7 @@ function RangeField({ label, value, min, max, suffix, onChange }: { label: strin
 export default function JobDetail() {
   const { slug } = useParams();
   const [posting, setPosting] = useState<Posting | null>(null);
+  const [centerVideo, setCenterVideo] = useState<HTMLVideoElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
