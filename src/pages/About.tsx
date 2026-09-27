@@ -19,7 +19,7 @@ const navLinks = [
 ];
 
 const goBooking = () => {
-  window.location.href = "/#booking";
+  window.location.href = "/#contact";
 };
 
 /* ---------- Primitives ---------- */
@@ -298,7 +298,7 @@ const About = () => {
             ))}
           </div>
           <Button onClick={goBooking} variant="cta" size="sm">
-            Book a call
+            Contact us
           </Button>
         </div>
       </nav>
@@ -447,7 +447,7 @@ const About = () => {
                   variant="cta"
                   className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
                 >
-                  Book a call
+                  Contact us
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>

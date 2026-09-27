@@ -385,8 +385,8 @@ const Hero = () => {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("booking")}>
-                Book a Call
+              <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("contact")}>
+                Contact Us
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>

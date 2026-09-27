@@ -2,9 +2,9 @@ import { ArrowRight } from "lucide-react";
 
 const scrollToBooking = (e: React.MouseEvent) => {
   e.preventDefault();
-  const el = document.getElementById("booking");
+  const el = document.getElementById("contact");
   if (el) el.scrollIntoView({ behavior: "smooth" });
-  else window.location.href = "/#booking";
+  else window.location.href = "/#contact";
 };
 
 const CSFinalCTA = () => {
@@ -42,11 +42,11 @@ const CSFinalCTA = () => {
             </div>
             <div className="md:flex-shrink-0">
               <a
-                href="#booking"
+                href="#contact"
                 onClick={scrollToBooking}
                 className="group inline-flex items-center justify-center rounded-[4px] bg-accent px-7 py-4 text-[14px] font-medium text-accent-foreground transition-all hover:-translate-y-[2px] hover:shadow-[0_12px_32px_-12px_rgba(158,216,245,0.45)]"
               >
-                Book a call
+                Contact us
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </div>

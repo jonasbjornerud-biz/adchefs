@@ -52,8 +52,8 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm">
-            Book a call
+          <Button onClick={() => scrollToSection("contact")} variant="cta" size="sm">
+            Contact us
           </Button>
         </div>
 
@@ -75,8 +75,8 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("booking")} variant="cta" size="sm" className="w-full">
-            Book a call
+          <Button onClick={() => scrollToSection("contact")} variant="cta" size="sm" className="w-full">
+            Contact us
           </Button>
         </div>
       )}

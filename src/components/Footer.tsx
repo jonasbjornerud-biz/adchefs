@@ -22,7 +22,7 @@ const Footer = () => {
             <ul className="space-y-2.5 text-[14px] text-background/80">
               <li><button onClick={() => scrollTo("how-it-works")} className="hover:text-accent transition-colors">How it works</button></li>
               <li><button onClick={() => scrollTo("pricing")} className="hover:text-accent transition-colors">Pricing</button></li>
-              <li><button onClick={() => scrollTo("booking")} className="hover:text-accent transition-colors">Book a call</button></li>
+              <li><button onClick={() => scrollTo("contact")} className="hover:text-accent transition-colors">Contact us</button></li>
               <li><a href="/jobs" className="hover:text-accent transition-colors">Careers</a></li>
             </ul>
           </div>
