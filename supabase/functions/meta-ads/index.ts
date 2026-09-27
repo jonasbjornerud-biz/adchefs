@@ -18,18 +18,34 @@ function sumActionValues(actions: { action_type: string; value: string }[] | und
   return actions.reduce((sum, a) => sum + parseFloat(a.value), 0);
 }
 
+class MetaApiError extends Error {
+  code?: number;
+  subcode?: number;
+  constructor(message: string, code?: number, subcode?: number) {
+    super(message);
+    this.code = code;
+    this.subcode = subcode;
+  }
+}
+
 async function fetchAllPages(url: string): Promise<any[]> {
   let allData: any[] = [];
   let nextUrl: string | null = url;
   while (nextUrl) {
     const res = await fetch(nextUrl);
     const json = await res.json();
-    if (json.error) throw new Error(json.error.message);
+    if (json.error) {
+      throw new MetaApiError(json.error.message, json.error.code, json.error.error_subcode);
+    }
     allData = allData.concat(json.data || []);
     nextUrl = json.paging?.next || null;
   }
   return allData;
 }
+
+const isPermissionError = (e: unknown): boolean =>
+  e instanceof MetaApiError &&
+  (e.code === 190 || e.code === 200 || /permission|ads_read|ads_management/i.test(e.message));
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -120,7 +136,18 @@ Deno.serve(async (req) => {
     const insightsUrl = `${META_BASE_URL}/${accountId}/insights?level=ad&fields=${insightFields}&time_range=${encodeURIComponent(timeRange)}&time_increment=1&limit=500&access_token=${accessToken}`;
 
     console.log('Fetching account-level insights, date range:', since, 'to', until);
-    const allInsights = await fetchAllPages(insightsUrl);
+    let allInsights: any[];
+    try {
+      allInsights = await fetchAllPages(insightsUrl);
+    } catch (e) {
+      if (isPermissionError(e)) {
+        console.error('Meta permission error:', e);
+        return new Response(JSON.stringify({
+          error: 'The connected Meta ad account has not granted ads_read permission. Reconnect the account with ads_read and ads_management permissions enabled, then try again.',
+        }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      throw e;
+    }
     console.log(`Got ${allInsights.length} insight rows`);
 
     const adMap = new Map<string, {

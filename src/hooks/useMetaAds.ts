@@ -52,13 +52,22 @@ export function useMetaAds(options?: UseMetaAdsOptions) {
   useEffect(() => {
     if (query.error) {
       const msg = (query.error as Error).message;
-      toast({
-        title: "Failed to load data",
-        description: msg.includes("request limit")
-          ? "Meta API rate limit hit. Wait a minute and try again."
-          : msg,
-        variant: "destructive",
-      });
+      if (/ads_read|ads_management|permission/i.test(msg)) {
+        toast({
+          title: "Meta permissions needed",
+          description:
+            "The connected ad account hasn't granted ads_read permission. Reconnect the account with ads_read enabled, then try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Failed to load data",
+          description: msg.includes("request limit")
+            ? "Meta API rate limit hit. Wait a minute and try again."
+            : msg,
+          variant: "destructive",
+        });
+      }
     }
   }, [query.error]);
 
