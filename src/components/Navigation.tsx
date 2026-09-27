@@ -55,7 +55,7 @@ const Navigation = () => {
             </button>
           ))}
           <Button onClick={() => navigate("/contact")} variant="cta" size="sm">
-            Contact us
+            Contact me
           </Button>
         </div>
 
@@ -78,7 +78,7 @@ const Navigation = () => {
             </button>
           ))}
           <Button onClick={() => navigate("/contact")} variant="cta" size="sm" className="w-full">
-            Contact us
+            Contact me
           </Button>
         </div>
       )}

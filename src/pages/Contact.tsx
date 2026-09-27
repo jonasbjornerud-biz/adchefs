@@ -156,6 +156,15 @@ const Contact = () => {
                       <Phone className="h-4 w-4 text-foreground/60" />
                       {PHONE_DISPLAY}
                     </a>
+                    <div className="pt-6">
+                      <div className="w-24 h-24 rounded-full overflow-hidden border border-foreground/15">
+                        <img
+                          src={jonasPhoto}
+                          alt="Jonas Bjørnerud"
+                          className="w-full h-full object-cover grayscale"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -261,7 +270,7 @@ const Contact = () => {
           </section>
         </main>
 
-        <Footer variant="grey" />
+        <Footer variant="dark" />
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ const GlassCard = ({
             className="h-auto px-6 py-3 rounded-full bg-white/90 backdrop-blur-md text-ink hover:bg-white gap-[10px] ring-1 ring-white/60 shadow-[0_6px_24px_-6px_rgba(30,85,130,0.35)] transition-colors"
           >
             <Link to={href}>
-              {ctaLabel ?? "Contact us"}
+              {ctaLabel ?? "Contact me"}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -163,7 +163,7 @@ const TwoWaysToWork = () => {
               "Replaced fast if it's not clicking",
             ]}
             href="/contact"
-            ctaLabel="Contact us"
+            ctaLabel="Contact me"
           />
           <GlassCard
             popular
@@ -181,7 +181,7 @@ const TwoWaysToWork = () => {
               "One operator owning the creative number end to end",
             ]}
             href="/contact"
-            ctaLabel="Contact us"
+            ctaLabel="Contact me"
           />
         </div>
       </div>

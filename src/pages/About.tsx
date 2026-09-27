@@ -298,7 +298,7 @@ const About = () => {
             ))}
           </div>
           <Button onClick={goBooking} variant="cta" size="sm">
-            Contact us
+            Contact me
           </Button>
         </div>
       </nav>
@@ -447,7 +447,7 @@ const About = () => {
                   variant="cta"
                   className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
                 >
-                  Contact us
+                  Contact me
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
