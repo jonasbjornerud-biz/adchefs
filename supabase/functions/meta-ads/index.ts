@@ -136,7 +136,18 @@ Deno.serve(async (req) => {
     const insightsUrl = `${META_BASE_URL}/${accountId}/insights?level=ad&fields=${insightFields}&time_range=${encodeURIComponent(timeRange)}&time_increment=1&limit=500&access_token=${accessToken}`;
 
     console.log('Fetching account-level insights, date range:', since, 'to', until);
-    const allInsights = await fetchAllPages(insightsUrl);
+    let allInsights: any[];
+    try {
+      allInsights = await fetchAllPages(insightsUrl);
+    } catch (e) {
+      if (isPermissionError(e)) {
+        console.error('Meta permission error:', e);
+        return new Response(JSON.stringify({
+          error: 'The connected Meta ad account has not granted ads_read permission. Reconnect the account with ads_read and ads_management permissions enabled, then try again.',
+        }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      throw e;
+    }
     console.log(`Got ${allInsights.length} insight rows`);
 
     const adMap = new Map<string, {
