@@ -4,7 +4,7 @@ import adchefsLogoDark from "@/assets/adchefs-logo-dark.png.asset.json";
 const NAV_ITEMS: Array<{ label: string; href: string; section?: boolean }> = [
   { label: "How it works", href: "/#how-it-works", section: true },
   { label: "Pricing", href: "/#pricing", section: true },
-  { label: "Contact us", href: "/contact" },
+  { label: "Contact me", href: "/contact" },
   { label: "Careers", href: "/jobs" },
 ];
 

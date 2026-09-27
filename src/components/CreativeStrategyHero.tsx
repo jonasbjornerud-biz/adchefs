@@ -229,7 +229,7 @@ const CreativeStrategyHero = () => {
                 className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]"
                 onClick={() => window.location.assign("/contact")}
               >
-                Contact Us
+                Contact me
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>

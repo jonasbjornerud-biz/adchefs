@@ -76,7 +76,7 @@ const Pricing = () => {
                 className="group inline-flex items-center justify-center rounded-[4px] px-7 py-4 text-[14px] font-medium transition-all hover:-translate-y-[2px] hover:shadow-[0_12px_32px_-12px_rgba(26,26,26,0.45)]"
                 style={{ background: "#1A1A1A", color: "#F7F6F3" }}
               >
-                Contact us
+                Contact me
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </div>
