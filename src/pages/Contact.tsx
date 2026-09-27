@@ -109,13 +109,7 @@ const Contact = () => {
                     Let's see if we're a <em>fit</em>.
                   </h1>
                   <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-                    I take on 1 to 2 new brands a month. When the slots are gone, they're gone.
-                    Send a message and I'll get back to you within one working day.
-                  </p>
-                  <p className="mt-4 text-[15px] text-foreground/80 leading-relaxed max-w-md">
-                    On the first call I get a clear picture of your creative situation, run a quick
-                    audit of what you're running, and understand your goals — then we decide if
-                    we're a fit.
+                    On the first call I get a clear picture of your creative situation, run a quick audit of what you're currently running, and understand your goals, then we decide if we're a fit.
                   </p>
 
                   <div className="mt-10">
