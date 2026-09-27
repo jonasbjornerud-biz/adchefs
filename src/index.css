@@ -494,11 +494,8 @@
     opacity: 0.04;
   }
 
-  /* ── Careers hero: phone stack, stat cards, editing timeline ── */
+  /* ── Careers hero: phone stack and stat cards ── */
   .job-hero {
-    --tl-panel: 0 0% 14%;
-    --tl-v2: 262 30% 62%;
-    --tl-a1: 146 45% 52%;
     --stat-up: 146 60% 55%;
   }
 
@@ -606,9 +603,6 @@
     .job-phone-wrap-right { order: 2; }
     .job-phone { border-radius: 28px; }
     .job-stat { display: none; }
-    .job-tl-grid { grid-template-columns: 72px 1fr; grid-template-rows: 18px 22px 16px; }
-    .job-tl-v2 { display: none; }
-    .job-tl-playhead-lane { left: 72px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
