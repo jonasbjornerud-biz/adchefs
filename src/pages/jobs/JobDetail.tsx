@@ -294,6 +294,7 @@ export default function JobDetail() {
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </section>
 
