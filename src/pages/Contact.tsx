@@ -10,9 +10,8 @@ import SEO from "@/components/SEO";
 import HeroBackground from "@/components/HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
 
-// TODO: replace with the real phone number
-const PHONE_DISPLAY = "+47 000 00 000";
-const PHONE_HREF = "tel:+47000000000";
+const PHONE_DISPLAY = "+47 942 58 751";
+const PHONE_HREF = "tel:+4794258751";
 
 const inputClass =
   "rounded-[4px] border-foreground/20 bg-background text-[14px] h-11 placeholder:text-foreground/40 focus-visible:ring-accent/60";
@@ -106,50 +105,37 @@ const Contact = () => {
               <div className="grid lg:grid-cols-[1fr_1.1fr] gap-14 lg:gap-20 items-start">
                 {/* LEFT: intro + direct contact */}
                 <div>
-                  <div className="w-24 h-24 rounded-full overflow-hidden border border-foreground/15">
-                    <img
-                      src={jonasPhoto}
-                      alt="Jonas Bjørnerud"
-                      className="w-full h-full object-cover grayscale"
-                    />
-                  </div>
-                  <p className="mt-5 font-sans font-medium text-[15px] text-foreground leading-tight">
-                    Jonas Bjørnerud
-                  </p>
-                  <p className="mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-0.5">
-                    Founder · AdChefs
-                  </p>
-
-                  <h1 className="mt-8 font-display text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] text-foreground">
+                  <h1 className="font-display text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] text-foreground">
                     Let's see if we're a <em>fit</em>.
                   </h1>
                   <p className="mt-5 text-[15px] text-foreground/80 leading-relaxed max-w-md">
                     I take on 1 to 2 new brands a month. When the slots are gone, they're gone.
                     Send a message and I'll get back to you within one working day.
                   </p>
+                  <p className="mt-4 text-[15px] text-foreground/80 leading-relaxed max-w-md">
+                    On the first call I get a clear picture of your creative situation, run a quick
+                    audit of what you're running, and understand your goals — then we decide if
+                    we're a fit.
+                  </p>
 
-                  <div className="mt-10 space-y-6">
-                    <div>
-                      <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">
-                        Reach out if
-                      </p>
-                      <ul className="space-y-2 text-[14px] text-foreground/85">
-                        <li>· You spend $5K+ a month on ads and your winners fatigue faster than you can replace them</li>
-                        <li>· You want strategy and production owned by one person, not split across an agency</li>
-                        <li>· You care about what converts, not just what gets delivered</li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">
-                        What happens next
-                      </p>
-                      <ul className="space-y-2 text-[14px] text-foreground/85">
-                        <li>· I read your message and reply within one working day</li>
-                        <li>· If we are a fit, we scope a Sprint on a short call</li>
-                        <li>· If not, I point you somewhere better</li>
-                      </ul>
-                    </div>
+                  <div className="mt-10">
+                    <p className="mono text-[11px] uppercase tracking-[0.15em] text-foreground/70 mb-3">
+                      Reach out if
+                    </p>
+                    <ul className="space-y-2.5 text-[14px] text-foreground/85">
+                      <li className="flex items-start gap-3">
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                        You spend $5K+ a month on ads and your winners fatigue faster than you can replace them
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                        You want strategy and production owned by one person, not split across an agency
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                        You care about what converts, not just what gets delivered
+                      </li>
+                    </ul>
                   </div>
 
                   <div className="mt-10 pt-8 border-t border-foreground/10 space-y-3">
