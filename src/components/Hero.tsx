@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, X as XIcon, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroBackground from "./HeroBackground";
 import jonasPhoto from "@/assets/jonas.jpg";
 
@@ -335,6 +336,7 @@ const Lightbox = ({ src, onClose }: LightboxProps) => {
 };
 
 const Hero = () => {
+  const navigate = useNavigate();
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const wallPausedRef = useRef(false);
 
@@ -385,7 +387,7 @@ const Hero = () => {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => scrollToSection("contact")}>
+              <Button size="lg" variant="cta" className="h-auto px-8 py-4 tracking-[0.01em] gap-[10px]" onClick={() => navigate("/contact")}>
                 Contact Us
                 <ArrowRight className="h-4 w-4" />
               </Button>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import adchefsLogo from "@/assets/adchefs-logo-dark.png.asset.json";
 
 const navLinks = [
@@ -9,6 +10,7 @@ const navLinks = [
 ];
 
 const Navigation = () => {
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -52,7 +54,7 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("contact")} variant="cta" size="sm">
+          <Button onClick={() => navigate("/contact")} variant="cta" size="sm">
             Contact us
           </Button>
         </div>
@@ -75,7 +77,7 @@ const Navigation = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => scrollToSection("contact")} variant="cta" size="sm" className="w-full">
+          <Button onClick={() => navigate("/contact")} variant="cta" size="sm" className="w-full">
             Contact us
           </Button>
         </div>
