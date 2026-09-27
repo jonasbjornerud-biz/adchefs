@@ -34,69 +34,117 @@ export type Database = {
       }
       applications: {
         Row: {
+          about_self: string | null
+          ad_quality_answer: string | null
           additional_info: string | null
+          age: number | null
+          ai_tools_usage: string | null
           availability: string
+          best_ad_breakdown: string | null
+          best_ad_url: string | null
+          capacity_hours: number | null
+          city: string | null
+          country: string | null
+          cpu: string | null
           created_at: string
           email: string
           first_name: string
           followup_sent_at: string | null
+          gpu: string | null
           id: string
+          internet_mbps: number | null
           job_posting_id: string | null
           last_name: string
           portfolio_url: string | null
           proceed: boolean | null
           qualifies: boolean
+          ram: string | null
+          referral_source: string | null
           reviewed_at: string | null
           software: string
           stage: string
           starred: boolean
+          start_date: string | null
           trial_email_scheduled_for: string | null
           trial_email_sent_at: string | null
           updated_at: string
+          weekly_video_capacity: number | null
           years_experience: string | null
         }
         Insert: {
+          about_self?: string | null
+          ad_quality_answer?: string | null
           additional_info?: string | null
+          age?: number | null
+          ai_tools_usage?: string | null
           availability: string
+          best_ad_breakdown?: string | null
+          best_ad_url?: string | null
+          capacity_hours?: number | null
+          city?: string | null
+          country?: string | null
+          cpu?: string | null
           created_at?: string
           email: string
           first_name: string
           followup_sent_at?: string | null
+          gpu?: string | null
           id?: string
+          internet_mbps?: number | null
           job_posting_id?: string | null
           last_name: string
           portfolio_url?: string | null
           proceed?: boolean | null
           qualifies?: boolean
+          ram?: string | null
+          referral_source?: string | null
           reviewed_at?: string | null
           software: string
           stage?: string
           starred?: boolean
+          start_date?: string | null
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string
+          weekly_video_capacity?: number | null
           years_experience?: string | null
         }
         Update: {
+          about_self?: string | null
+          ad_quality_answer?: string | null
           additional_info?: string | null
+          age?: number | null
+          ai_tools_usage?: string | null
           availability?: string
+          best_ad_breakdown?: string | null
+          best_ad_url?: string | null
+          capacity_hours?: number | null
+          city?: string | null
+          country?: string | null
+          cpu?: string | null
           created_at?: string
           email?: string
           first_name?: string
           followup_sent_at?: string | null
+          gpu?: string | null
           id?: string
+          internet_mbps?: number | null
           job_posting_id?: string | null
           last_name?: string
           portfolio_url?: string | null
           proceed?: boolean | null
           qualifies?: boolean
+          ram?: string | null
+          referral_source?: string | null
           reviewed_at?: string | null
           software?: string
           stage?: string
           starred?: boolean
+          start_date?: string | null
           trial_email_scheduled_for?: string | null
           trial_email_sent_at?: string | null
           updated_at?: string
+          weekly_video_capacity?: number | null
           years_experience?: string | null
         }
         Relationships: [

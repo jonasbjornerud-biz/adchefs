@@ -45,6 +45,22 @@ type Application = {
   portfolio_url: string | null;
   years_experience: string | null;
   additional_info: string | null;
+  country: string | null;
+  age: number | null;
+  city: string | null;
+  referral_source: string | null;
+  capacity_hours: number | null;
+  weekly_video_capacity: number | null;
+  gpu: string | null;
+  cpu: string | null;
+  ram: string | null;
+  internet_mbps: number | null;
+  ai_tools_usage: string | null;
+  ad_quality_answer: string | null;
+  about_self: string | null;
+  start_date: string | null;
+  best_ad_url: string | null;
+  best_ad_breakdown: string | null;
   stage: string;
   qualifies: boolean;
   trial_email_scheduled_for: string | null;
@@ -888,12 +904,33 @@ function Pipeline() {
                 <div className="mt-6 space-y-5">
                   <Field label="Role" value={posting?.title ?? '—'} />
                   <div className="grid grid-cols-2 gap-3">
+                    <Field label="Location" value={[selected.city, selected.country].filter(Boolean).join(', ') || '—'} />
+                    <Field label="Age" value={selected.age?.toString() ?? '—'} />
+                  </div>
+                  <Field label="Found us through" value={selected.referral_source ?? '—'} />
+                  <div className="grid grid-cols-2 gap-3">
                     <Field label="Software" value={selected.software} />
                     <Field label="Availability" value={selected.availability} />
                   </div>
-                  {selected.portfolio_url && <Field label="Portfolio"><a href={selected.portfolio_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="text-primary underline break-all">{selected.portfolio_url}</a></Field>}
-                  {selected.years_experience && <Field label="Experience" value={selected.years_experience} />}
-                  {selected.additional_info && <Field label="Notes"><p className="text-sm whitespace-pre-wrap">{selected.additional_info}</p></Field>}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Experience" value={selected.years_experience ? `${selected.years_experience} years` : '—'} />
+                    <Field label="Weekly output" value={selected.weekly_video_capacity ? `${selected.weekly_video_capacity} videos` : '—'} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Start date" value={selected.start_date ?? '—'} />
+                    <Field label="Internet" value={selected.internet_mbps ? `${selected.internet_mbps} Mbps` : '—'} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="GPU" value={selected.gpu ?? '—'} />
+                    <Field label="CPU" value={selected.cpu ?? '—'} />
+                  </div>
+                  <Field label="RAM" value={selected.ram ?? '—'} />
+                  <Field label="Portfolio">{selected.portfolio_url ? <a href={selected.portfolio_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="text-primary underline break-all">{selected.portfolio_url}</a> : <span>—</span>}</Field>
+                  <Field label="AI tools"><p className="text-sm whitespace-pre-wrap">{selected.ai_tools_usage ?? '—'}</p></Field>
+                  <Field label="What makes an ad work"><p className="text-sm whitespace-pre-wrap">{selected.ad_quality_answer ?? '—'}</p></Field>
+                  <Field label="About"><p className="text-sm whitespace-pre-wrap">{selected.about_self ?? selected.additional_info ?? '—'}</p></Field>
+                  <Field label="Best ad">{selected.best_ad_url ? <a href={selected.best_ad_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="text-primary underline break-all">{selected.best_ad_url}</a> : <span>—</span>}</Field>
+                  <Field label="Best ad breakdown"><p className="text-sm whitespace-pre-wrap">{selected.best_ad_breakdown ?? '—'}</p></Field>
 
                   <div className="border-t border-border pt-4 space-y-3">
                     <div className="flex items-center justify-between gap-2">
