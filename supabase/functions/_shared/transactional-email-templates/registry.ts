@@ -1,5 +1,6 @@
 import { template as trialTask } from './trial-task.tsx'
 import { template as trialFollowup } from './trial-followup.tsx'
+import { template as contactNotification } from './contact-notification.tsx'
 
 export interface TemplateEntry {
   component: (props: any) => any
@@ -12,4 +13,5 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'trial-task': trialTask,
   'trial-followup': trialFollowup,
+  'contact-notification': contactNotification,
 }
