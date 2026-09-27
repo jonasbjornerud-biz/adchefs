@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ArrowUp, CheckCircle2, CircleAlert, Clapperboard, UserRound } from "lucide-react";
 import adchefsLogoLight from "@/assets/adchefs-logo-light.png.asset.json";
@@ -83,7 +83,6 @@ const HERO_STATS = {
   hookRate: { label: "Hook rate", value: "38%" },
   ctr: { label: "CTR", value: "2.4%", sparkline: [1.2, 1.5, 1.4, 1.9, 1.7, 2.1, 2.4] },
 };
-const TIMELINE_SECONDS = 8;
 
 function useCanPlayVideo() {
   const [canPlay, setCanPlay] = useState(false);
@@ -125,75 +124,6 @@ function Sparkline({ points }: { points: number[] }) {
   return <svg viewBox="0 0 56 20" className="job-spark h-5 w-14" aria-hidden="true"><path d={d} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
-const WAVEFORM = Array.from({ length: 120 }, (_, i) => 0.25 + 0.75 * Math.abs(Math.sin(i * 0.9) * Math.cos(i * 0.23) * (0.6 + 0.4 * Math.sin(i * 0.07))));
-const V2_CLIPS = [{ l: 3, w: 14, t: "HOOK" }, { l: 30, w: 11, t: "CLAIM" }, { l: 55, w: 13, t: "PROOF" }, { l: 84, w: 12, t: "CTA" }];
-const V1_CLIPS = [{ l: 0, w: 27, r: 0 }, { l: 27.4, w: 23, r: 1 }, { l: 50.8, w: 26, r: 2 }, { l: 77.2, w: 22.8, r: 0 }];
-
-function formatTimecode(t: number) {
-  const s = Math.floor(t);
-  const f = Math.floor((t - s) * 24);
-  return `00:00:${String(s).padStart(2, "0")}:${String(f).padStart(2, "0")}`;
-}
-
-function EditingTimeline({ video }: { video: HTMLVideoElement | null }) {
-  const playheadRef = useRef<HTMLSpanElement>(null);
-  const timecodeRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const started = performance.now();
-    let frame = 0;
-    const tick = (now: number) => {
-      let t: number, duration: number;
-      if (video && Number.isFinite(video.duration) && video.duration > 0) {
-        t = video.currentTime; duration = video.duration;
-      } else {
-        duration = TIMELINE_SECONDS; t = ((now - started) / 1000) % duration;
-      }
-      if (playheadRef.current) playheadRef.current.style.left = `${(t / duration) * 100}%`;
-      if (timecodeRef.current) timecodeRef.current.textContent = formatTimecode(t);
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [video]);
-
-  return (
-    <div className="job-timeline" aria-label="Editing timeline">
-      <div className="job-tl-grid">
-        <span ref={timecodeRef} className="job-tl-label job-tl-timecode">00:00:00:00</span>
-        <div className="job-tl-ruler">
-          {Array.from({ length: TIMELINE_SECONDS * 4 + 1 }, (_, i) => (
-            <span key={i} className={cn("job-tl-tick", i % 4 === 0 && "job-tl-tick-major")} style={{ left: `${(i / (TIMELINE_SECONDS * 4)) * 100}%` }}>
-              {i % 8 === 0 && i < TIMELINE_SECONDS * 4 ? <em>{formatTimecode(i / 4).slice(3, 8)}</em> : null}
-            </span>
-          ))}
-        </div>
-        <span className="job-tl-label job-tl-v2">V2</span>
-        <div className="job-tl-track job-tl-v2">
-          {V2_CLIPS.map((c) => <span key={c.t} className="job-tl-clip job-tl-clip-v2" style={{ left: `${c.l}%`, width: `${c.w}%` }}>{c.t}</span>)}
-        </div>
-        <span className="job-tl-label">V1</span>
-        <div className="job-tl-track">
-          {V1_CLIPS.map((c, i) => (
-            <span key={i} className="job-tl-clip job-tl-clip-v1" style={{ left: `${c.l}%`, width: `${c.w}%` }}>
-              <img src={JOB_REELS[c.r].poster} alt="" loading="lazy" />
-            </span>
-          ))}
-        </div>
-        <span className="job-tl-label">A1</span>
-        <div className="job-tl-track">
-          <span className="job-tl-clip job-tl-clip-a1" style={{ left: "0%", width: "100%" }}>
-            <svg viewBox="0 0 120 20" preserveAspectRatio="none" aria-hidden="true">
-              {WAVEFORM.map((h, i) => <rect key={i} x={i + 0.15} y={10 - h * 8} width="0.7" height={h * 16} />)}
-            </svg>
-          </span>
-        </div>
-        <div className="job-tl-playhead-lane" aria-hidden="true"><span ref={playheadRef} className="job-tl-playhead" /></div>
-      </div>
-    </div>
-  );
-}
 
 function FieldError({ message }: { message?: string }) {
   return message ? <p className="mt-1.5 text-xs text-destructive">{message}</p> : null;
@@ -332,7 +262,7 @@ export default function JobDetail() {
             <Link to="/jobs" className="inline-flex items-center text-sm text-background/60 transition-colors hover:text-background"><ArrowLeft className="mr-2 h-4 w-4" />All roles</Link>
             <Link to="/" aria-label="AdChefs home"><img src={adchefsLogoLight.url} alt="AdChefs" className="h-8 w-auto md:h-9" /></Link>
           </header>
-          <div className="grid gap-8 pb-10 pt-12 md:grid-cols-[55fr_45fr] md:items-start md:gap-6 md:pb-12 md:pt-16">
+          <div className="grid gap-8 pb-16 pt-12 md:grid-cols-[55fr_45fr] md:items-start md:gap-6 md:pb-20 md:pt-16">
             <div className="relative z-20">
               <div className="flex items-center gap-3 mono text-[10px] uppercase text-background/60">
                 <span className="h-2 w-2 bg-accent" />
@@ -340,7 +270,7 @@ export default function JobDetail() {
                 <span className="h-px w-9 bg-background/30" />
                 <span>Open role</span>
               </div>
-              <h1 className="mt-8 max-w-[680px] font-display text-[48px] font-semibold leading-[0.95] text-background md:text-[56px] lg:whitespace-nowrap lg:text-[64px]">{posting.title.split(":")[0]}</h1>
+              <h1 className="mt-8 max-w-[680px] text-[50px] font-semibold leading-[0.95] text-background md:text-[60px] lg:whitespace-nowrap lg:text-[68px]"><em className="serif-em text-background">{posting.title.split(":")[0]}</em></h1>
               <p className="mt-7 max-w-[560px] text-[16px] leading-relaxed text-background/70 [text-wrap:balance] md:text-lg">Edit performance ads with us and learn from the data behind every cut.</p>
               <div className="mt-7 flex max-w-[620px] flex-wrap gap-2">
                 {["Remote", "Pay per video"].map((chip) => <span key={chip} className="rounded-full border border-background/10 bg-background/[0.1] px-3.5 py-2 mono text-[10.5px] uppercase text-background/90">{chip}</span>)}
