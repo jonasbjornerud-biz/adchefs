@@ -10,6 +10,7 @@ import GeoGate from "@/components/GeoGate";
 
 // Pages
 import Index from "./pages/Index";
+import Contact from "./pages/Contact";
 import About from "./pages/About";
 import CreativeStrategy from "./pages/CreativeStrategy";
 import EditorPlacement from "./pages/EditorPlacement";
@@ -51,6 +52,7 @@ const App = () => (
           <Routes>
             {/* Public */}
             <Route path="/" element={<Index />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<NotFound />} />
             <Route path="/creative-strategy" element={<CreativeStrategy />} />
             <Route path="/editor-placement" element={<EditorPlacement />} />
