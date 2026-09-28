@@ -21,13 +21,6 @@ import jonasPhoto from "@/assets/jonas.jpg";
 const PHONE_DISPLAY = "+47 942 58 751";
 const PHONE_HREF = "tel:+4794258751";
 
-const BUDGET_OPTIONS = [
-  "Under 20,000 NOK/month",
-  "20,000 to 50,000 NOK/month",
-  "Over 50,000 NOK/month",
-  "One-off project",
-];
-
 const HEARD_OPTIONS = [
   "Google",
   "LinkedIn",
@@ -37,28 +30,6 @@ const HEARD_OPTIONS = [
   "Other",
 ];
 
-const DIAL_CODES = [
-  { flag: "🇳🇴", code: "+47", name: "Norway" },
-  { flag: "🇸🇪", code: "+46", name: "Sweden" },
-  { flag: "🇩🇰", code: "+45", name: "Denmark" },
-  { flag: "🇫🇮", code: "+358", name: "Finland" },
-  { flag: "🇮🇸", code: "+354", name: "Iceland" },
-  { flag: "🇬🇧", code: "+44", name: "United Kingdom" },
-  { flag: "🇮🇪", code: "+353", name: "Ireland" },
-  { flag: "🇩🇪", code: "+49", name: "Germany" },
-  { flag: "🇳🇱", code: "+31", name: "Netherlands" },
-  { flag: "🇧🇪", code: "+32", name: "Belgium" },
-  { flag: "🇫🇷", code: "+33", name: "France" },
-  { flag: "🇪🇸", code: "+34", name: "Spain" },
-  { flag: "🇮🇹", code: "+39", name: "Italy" },
-  { flag: "🇨🇭", code: "+41", name: "Switzerland" },
-  { flag: "🇦🇹", code: "+43", name: "Austria" },
-  { flag: "🇵🇱", code: "+48", name: "Poland" },
-  { flag: "🇺🇸", code: "+1", name: "United States / Canada" },
-  { flag: "🇦🇺", code: "+61", name: "Australia" },
-  { flag: "🇦🇪", code: "+971", name: "UAE" },
-];
-
 const inputClass =
   "rounded-[4px] border-foreground/20 bg-background text-[14px] h-11 placeholder:text-foreground/40 focus-visible:ring-accent/60";
 
@@ -66,17 +37,14 @@ const emptyForm = {
   name: "",
   company: "",
   email: "",
-  phone: "",
   website: "",
   message: "",
-  budget: "",
   how_did_you_hear: "",
   consent: false,
 };
 
 const Contact = () => {
   const [formData, setFormData] = useState(emptyForm);
-  const [dialCode, setDialCode] = useState("+47");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
