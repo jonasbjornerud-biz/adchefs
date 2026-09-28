@@ -2,7 +2,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { getAttribution } from "@/lib/attribution";
 import { ArrowRight, Check, Mail, Phone } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -13,17 +21,39 @@ import jonasPhoto from "@/assets/jonas.jpg";
 const PHONE_DISPLAY = "+47 942 58 751";
 const PHONE_HREF = "tel:+4794258751";
 
+const BUDGET_OPTIONS = [
+  "Under 20 000 kr/mnd",
+  "20 000 til 50 000 kr/mnd",
+  "Over 50 000 kr/mnd",
+  "Engangsprosjekt",
+];
+
+const HEARD_OPTIONS = [
+  "Google",
+  "LinkedIn",
+  "Instagram",
+  "Facebook",
+  "Anbefaling",
+  "Annet",
+];
+
 const inputClass =
   "rounded-[4px] border-foreground/20 bg-background text-[14px] h-11 placeholder:text-foreground/40 focus-visible:ring-accent/60";
 
+const emptyForm = {
+  name: "",
+  company: "",
+  email: "",
+  phone: "",
+  website: "",
+  message: "",
+  budget: "",
+  how_did_you_hear: "",
+  consent: false,
+};
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    email: "",
-    message: "",
-    consent: false,
-  });
+  const [formData, setFormData] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,8 +72,8 @@ const Contact = () => {
     e.preventDefault();
     setError(null);
 
-    const honeypot = (e.currentTarget.elements.namedItem("website") as HTMLInputElement)?.value;
-    if (honeypot) return;
+    const honeypot =
+      (e.currentTarget.elements.namedItem("company_fax") as HTMLInputElement)?.value ?? "";
 
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
       setError("Please fill in your name, email, and message.");
@@ -59,28 +89,38 @@ const Contact = () => {
     }
 
     setSubmitting(true);
+    const { consent: _c, ...fields } = formData;
+    const body = {
+      ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v).trim()])),
+      ...getAttribution(),
+      company_fax: honeypot,
+    };
     try {
-      const { error: fnError } = await supabase.functions.invoke("send-transactional-email", {
-        body: {
-          templateName: "contact-notification",
-          recipientEmail: "jonas@adchefs.com",
-          idempotencyKey: `contact-${crypto.randomUUID()}`,
-          templateData: {
-            name: formData.name.trim(),
-            company: formData.company.trim(),
-            email: formData.email.trim(),
-            message: formData.message.trim(),
-          },
-        },
-      });
-      if (fnError) throw fnError;
-      setSent(true);
-      setFormData({ name: "", company: "", email: "", message: "", consent: false });
+      await supabase.functions.invoke("contact-intake", { body });
     } catch {
-      setError("Something went wrong. Email me directly at jonas@adchefs.com.");
-    } finally {
-      setSubmitting(false);
+      // Server queues failures for retry; visitor always sees thank-you.
     }
+    // Keep the email notification to Jonas as before (best effort).
+    if (!honeypot) {
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            templateName: "contact-notification",
+            recipientEmail: "jonas@adchefs.com",
+            idempotencyKey: `contact-${crypto.randomUUID()}`,
+            templateData: {
+              name: formData.name.trim(),
+              company: formData.company.trim(),
+              email: formData.email.trim(),
+              message: formData.message.trim(),
+            },
+          },
+        })
+        .catch(() => {});
+    }
+    setSent(true);
+    setFormData(emptyForm);
+    setSubmitting(false);
   };
 
   return (
@@ -178,14 +218,15 @@ const Contact = () => {
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-5">
-                      <input
-                        type="text"
-                        name="website"
-                        tabIndex={-1}
-                        autoComplete="off"
-                        className="hidden"
+                      <div
                         aria-hidden="true"
-                      />
+                        style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}
+                      >
+                        <label>
+                          Company fax
+                          <input type="text" name="company_fax" tabIndex={-1} autoComplete="off" defaultValue="" />
+                        </label>
+                      </div>
 
                       <Input
                         name="name"
@@ -194,14 +235,6 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="Full name *"
                         aria-label="Full name"
-                        className={inputClass}
-                      />
-                      <Input
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        placeholder="Company"
-                        aria-label="Company"
                         className={inputClass}
                       />
                       <Input
@@ -214,6 +247,61 @@ const Contact = () => {
                         aria-label="Email"
                         className={inputClass}
                       />
+                      <Input
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Phone"
+                        aria-label="Phone"
+                        className={inputClass}
+                      />
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <Input
+                          name="company"
+                          value={formData.company}
+                          onChange={handleChange}
+                          placeholder="Company"
+                          aria-label="Company"
+                          className={inputClass}
+                        />
+                        <Input
+                          name="website"
+                          value={formData.website}
+                          onChange={handleChange}
+                          placeholder="Website"
+                          aria-label="Website"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <Select
+                          value={formData.budget}
+                          onValueChange={(v) => setFormData((p) => ({ ...p, budget: v }))}
+                        >
+                          <SelectTrigger aria-label="Budget" className={inputClass}>
+                            <SelectValue placeholder="Budget" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BUDGET_OPTIONS.map((o) => (
+                              <SelectItem key={o} value={o}>{o}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={formData.how_did_you_hear}
+                          onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
+                        >
+                          <SelectTrigger aria-label="Hvor hørte du om oss?" className={inputClass}>
+                            <SelectValue placeholder="Hvor hørte du om oss?" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HEARD_OPTIONS.map((o) => (
+                              <SelectItem key={o} value={o}>{o}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <Textarea
                         name="message"
                         required
