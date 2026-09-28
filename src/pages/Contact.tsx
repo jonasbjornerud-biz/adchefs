@@ -238,30 +238,6 @@ const Contact = () => {
                         aria-label="Email"
                         className={inputClass}
                       />
-                      <div className="flex gap-2">
-                        <Select value={dialCode} onValueChange={setDialCode}>
-                          <SelectTrigger aria-label="Country code" className={`${inputClass} w-[112px] shrink-0`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {DIAL_CODES.map((d) => (
-                              <SelectItem key={d.code + d.name} value={d.code}>
-                                <span className="mr-2">{d.flag}</span>{d.code}
-                                <span className="sr-only"> {d.name}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Input
-                          name="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="Phone"
-                          aria-label="Phone"
-                          className={inputClass}
-                        />
-                      </div>
                       <div className="grid sm:grid-cols-2 gap-5">
                         <Input
                           name="company"
@@ -280,21 +256,7 @@ const Contact = () => {
                           className={inputClass}
                         />
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-5">
-                        <Select
-                          value={formData.budget}
-                          onValueChange={(v) => setFormData((p) => ({ ...p, budget: v }))}
-                        >
-                          <SelectTrigger aria-label="Budget" className={inputClass}>
-                            <SelectValue placeholder="Budget" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BUDGET_OPTIONS.map((o) => (
-                              <SelectItem key={o} value={o}>{o}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Select
+                      <Select
                           value={formData.how_did_you_hear}
                           onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
                         >
