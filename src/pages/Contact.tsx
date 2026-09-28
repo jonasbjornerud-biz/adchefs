@@ -81,10 +81,8 @@ const Contact = () => {
 
     setSubmitting(true);
     const { consent: _c, ...fields } = formData;
-    const phone = formData.phone.trim();
     const body = {
       ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v).trim()])),
-      phone: phone ? `${dialCode} ${phone}` : "",
       ...getAttribution(),
       company_fax: honeypot,
     };
