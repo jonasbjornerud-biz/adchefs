@@ -21,13 +21,6 @@ import jonasPhoto from "@/assets/jonas.jpg";
 const PHONE_DISPLAY = "+47 942 58 751";
 const PHONE_HREF = "tel:+4794258751";
 
-const BUDGET_OPTIONS = [
-  "Under 20,000 NOK/month",
-  "20,000 to 50,000 NOK/month",
-  "Over 50,000 NOK/month",
-  "One-off project",
-];
-
 const HEARD_OPTIONS = [
   "Google",
   "LinkedIn",
@@ -37,28 +30,6 @@ const HEARD_OPTIONS = [
   "Other",
 ];
 
-const DIAL_CODES = [
-  { flag: "🇳🇴", code: "+47", name: "Norway" },
-  { flag: "🇸🇪", code: "+46", name: "Sweden" },
-  { flag: "🇩🇰", code: "+45", name: "Denmark" },
-  { flag: "🇫🇮", code: "+358", name: "Finland" },
-  { flag: "🇮🇸", code: "+354", name: "Iceland" },
-  { flag: "🇬🇧", code: "+44", name: "United Kingdom" },
-  { flag: "🇮🇪", code: "+353", name: "Ireland" },
-  { flag: "🇩🇪", code: "+49", name: "Germany" },
-  { flag: "🇳🇱", code: "+31", name: "Netherlands" },
-  { flag: "🇧🇪", code: "+32", name: "Belgium" },
-  { flag: "🇫🇷", code: "+33", name: "France" },
-  { flag: "🇪🇸", code: "+34", name: "Spain" },
-  { flag: "🇮🇹", code: "+39", name: "Italy" },
-  { flag: "🇨🇭", code: "+41", name: "Switzerland" },
-  { flag: "🇦🇹", code: "+43", name: "Austria" },
-  { flag: "🇵🇱", code: "+48", name: "Poland" },
-  { flag: "🇺🇸", code: "+1", name: "United States / Canada" },
-  { flag: "🇦🇺", code: "+61", name: "Australia" },
-  { flag: "🇦🇪", code: "+971", name: "UAE" },
-];
-
 const inputClass =
   "rounded-[4px] border-foreground/20 bg-background text-[14px] h-11 placeholder:text-foreground/40 focus-visible:ring-accent/60";
 
@@ -66,17 +37,14 @@ const emptyForm = {
   name: "",
   company: "",
   email: "",
-  phone: "",
   website: "",
   message: "",
-  budget: "",
   how_did_you_hear: "",
   consent: false,
 };
 
 const Contact = () => {
   const [formData, setFormData] = useState(emptyForm);
-  const [dialCode, setDialCode] = useState("+47");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,10 +81,8 @@ const Contact = () => {
 
     setSubmitting(true);
     const { consent: _c, ...fields } = formData;
-    const phone = formData.phone.trim();
     const body = {
       ...Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v).trim()])),
-      phone: phone ? `${dialCode} ${phone}` : "",
       ...getAttribution(),
       company_fax: honeypot,
     };
@@ -272,30 +238,6 @@ const Contact = () => {
                         aria-label="Email"
                         className={inputClass}
                       />
-                      <div className="flex gap-2">
-                        <Select value={dialCode} onValueChange={setDialCode}>
-                          <SelectTrigger aria-label="Country code" className={`${inputClass} w-[112px] shrink-0`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {DIAL_CODES.map((d) => (
-                              <SelectItem key={d.code + d.name} value={d.code}>
-                                <span className="mr-2">{d.flag}</span>{d.code}
-                                <span className="sr-only"> {d.name}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Input
-                          name="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="Phone"
-                          aria-label="Phone"
-                          className={inputClass}
-                        />
-                      </div>
                       <div className="grid sm:grid-cols-2 gap-5">
                         <Input
                           name="company"
@@ -314,34 +256,19 @@ const Contact = () => {
                           className={inputClass}
                         />
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-5">
-                        <Select
-                          value={formData.budget}
-                          onValueChange={(v) => setFormData((p) => ({ ...p, budget: v }))}
-                        >
-                          <SelectTrigger aria-label="Budget" className={inputClass}>
-                            <SelectValue placeholder="Budget" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BUDGET_OPTIONS.map((o) => (
-                              <SelectItem key={o} value={o}>{o}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Select
-                          value={formData.how_did_you_hear}
-                          onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
-                        >
-                          <SelectTrigger aria-label="How did you hear about us?" className={inputClass}>
-                            <SelectValue placeholder="How did you hear about us?" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {HEARD_OPTIONS.map((o) => (
-                              <SelectItem key={o} value={o}>{o}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <Select
+                        value={formData.how_did_you_hear}
+                        onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
+                      >
+                        <SelectTrigger aria-label="How did you hear about us?" className={inputClass}>
+                          <SelectValue placeholder="How did you hear about us?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HEARD_OPTIONS.map((o) => (
+                            <SelectItem key={o} value={o}>{o}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <Textarea
                         name="message"
                         required
