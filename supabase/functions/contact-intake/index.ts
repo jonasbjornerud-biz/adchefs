@@ -2,7 +2,9 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { z } from 'npm:zod@3'
 
-const str = (max: number) => z.string().trim().max(max).optional().default('')
+// Optional fields are truncated instead of rejected, so a long URL never drops a lead.
+const str = (max: number) =>
+  z.preprocess((v) => (v == null ? '' : String(v).trim().slice(0, max)), z.string())
 
 const BodySchema = z.object({
   name: z.string().trim().min(1).max(200),
