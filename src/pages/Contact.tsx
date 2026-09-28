@@ -257,19 +257,18 @@ const Contact = () => {
                         />
                       </div>
                       <Select
-                          value={formData.how_did_you_hear}
-                          onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
-                        >
-                          <SelectTrigger aria-label="How did you hear about us?" className={inputClass}>
-                            <SelectValue placeholder="How did you hear about us?" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {HEARD_OPTIONS.map((o) => (
-                              <SelectItem key={o} value={o}>{o}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                        value={formData.how_did_you_hear}
+                        onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
+                      >
+                        <SelectTrigger aria-label="How did you hear about us?" className={inputClass}>
+                          <SelectValue placeholder="How did you hear about us?" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HEARD_OPTIONS.map((o) => (
+                            <SelectItem key={o} value={o}>{o}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <Textarea
                         name="message"
                         required

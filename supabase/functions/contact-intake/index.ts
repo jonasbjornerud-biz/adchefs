@@ -9,11 +9,9 @@ const str = (max: number) =>
 const BodySchema = z.object({
   name: z.string().trim().min(1).max(200),
   email: z.string().trim().email().max(255),
-  phone: str(50),
   company: str(200),
   website: str(500),
   message: z.string().trim().min(1).max(5000),
-  budget: str(100),
   how_did_you_hear: str(100),
   utm_source: str(200),
   utm_medium: str(200),
