@@ -218,14 +218,15 @@ const Contact = () => {
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-5">
-                      <input
-                        type="text"
-                        name="website"
-                        tabIndex={-1}
-                        autoComplete="off"
-                        className="hidden"
+                      <div
                         aria-hidden="true"
-                      />
+                        style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}
+                      >
+                        <label>
+                          Company fax
+                          <input type="text" name="company_fax" tabIndex={-1} autoComplete="off" defaultValue="" />
+                        </label>
+                      </div>
 
                       <Input
                         name="name"
@@ -234,14 +235,6 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="Full name *"
                         aria-label="Full name"
-                        className={inputClass}
-                      />
-                      <Input
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        placeholder="Company"
-                        aria-label="Company"
                         className={inputClass}
                       />
                       <Input
@@ -254,6 +247,61 @@ const Contact = () => {
                         aria-label="Email"
                         className={inputClass}
                       />
+                      <Input
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Phone"
+                        aria-label="Phone"
+                        className={inputClass}
+                      />
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <Input
+                          name="company"
+                          value={formData.company}
+                          onChange={handleChange}
+                          placeholder="Company"
+                          aria-label="Company"
+                          className={inputClass}
+                        />
+                        <Input
+                          name="website"
+                          value={formData.website}
+                          onChange={handleChange}
+                          placeholder="Website"
+                          aria-label="Website"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <Select
+                          value={formData.budget}
+                          onValueChange={(v) => setFormData((p) => ({ ...p, budget: v }))}
+                        >
+                          <SelectTrigger aria-label="Budget" className={inputClass}>
+                            <SelectValue placeholder="Budget" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BUDGET_OPTIONS.map((o) => (
+                              <SelectItem key={o} value={o}>{o}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Select
+                          value={formData.how_did_you_hear}
+                          onValueChange={(v) => setFormData((p) => ({ ...p, how_did_you_hear: v }))}
+                        >
+                          <SelectTrigger aria-label="Hvor hørte du om oss?" className={inputClass}>
+                            <SelectValue placeholder="Hvor hørte du om oss?" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HEARD_OPTIONS.map((o) => (
+                              <SelectItem key={o} value={o}>{o}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <Textarea
                         name="message"
                         required
